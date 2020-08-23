@@ -319,6 +319,139 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/15/Online-Learning-5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="YuyangZhangFTD">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arvin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/15/Online-Learning-5/" itemprop="url">Online Learning 5</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-15T20:21:42+08:00">
+                2018-06-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          Online Subgradient Descent在线梯度下降算法如下图所示
+
+其中，每一步迭代的时候，根据梯度（或次梯度）更新后，将新得到的权重投影到权重的可行域上。
+
+定理1：如果$w’\in\mathcal{W}$，$w=\prod_{\mathcal{W}}(w’)$，$w^\in\mathcal{W}$，那么$(w’-w)(w^-w)\leq0$。
+
+证明：
+假设存在$\hat{w}\
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/06/15/Online-Learning-5/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/14/Online-Learning-4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -390,14 +523,13 @@
       
         
           
-          Follow the Leader Against Quadratics
-某些情况下，FTL是非常好的算法，比如一维的线性回归的情况，很容易推广到高维
+          Follow the Leader Against Quadratics某些情况下，FTL是非常好的算法，比如一维的线性回归的情况，很容易推广到高维
 
-每一轮选择\(w_t\in[-1,1]\)
-对手选择\(y_t\in[-1,+1]\)
-计算\(f_t(w)=\frac{1}{2}(w-y_t)^2\)
+每一轮选择$w_t\in[-1,1]$
+对手选择$y_t\in[-1,+1]$
+计算$f_t(w)=\frac{1}{2}(w-y_t)^2$
 
-使用FTL算法： $$ \begin{aligned} w_{t+1}&amp;=f_{
+使用FTL算法：$$\begin{aligned}w_{t+1}&amp;=\underset{w\i
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -523,10 +655,7 @@
       
         
           
-          Example Online Optimizers
-对于FTL（Follow-The-Leader）算法， \[
-\mathbf{w}_{t+1}=\underset{\mathbf{w}\in\mathcal{W}}{\arg\min}\sum^t_{s=1}f_s(\mathbf{w})
-\equiv=\underset{\mathbf{w}}{\arg\min}f_{1:t}(\mathbf
+          Example Online Optimizers对于FTL（Follow-The-Leader）算法，$$\mathbf{w}{t+1}=\underset{\mathbf{w}\in\mathcal{W}}{\arg\min}\sum^t{s=1}f_s(\mathbf{w})\equiv=\underset{\mathbf{w}}{\arg\min}f_{1:t}(\mathbf{w})$$
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -652,14 +781,12 @@
       
         
           
-          The Online Optimization Game
-在线优化问题，具体指如下过程：
-
-The Online Optimization Game
+          The Online Optimization Game在线优化问题，具体指如下过程：
 
 
-在每回合中，玩家（palyer）选择\(\mathbf{w}_t\in\mathcal{W}\)，其中\(\mathcal{W}\subseteq\mathbb{R}^n\)是操作的可行集合
-对手（adversary）选择一个损失函数\(f_t:
+在每回合中，玩家（palyer）选择$\mathbf{w}_t\in\mathcal{W}$，其中$\mathcal{W}\subseteq\mathbb{R}^n$是操作的可行集合
+对手（adversary）选择一个损失函数$f_t:\mathcal{W}\rightarrow\mathbb{R}$
+玩家
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -786,9 +913,8 @@ The Online Optimization Game
         
           
           最近在学习online learning相关的东西，刚好总结一下。
-Introduction to Online Learning
-我们以在线二分类预测问题为例，比如说，日常生活中，我们根据气温、温度等特征来试试判断是否会下雪，这就是一个在线的二分类问题。
-二分类分类器（二分类假设，binary classifier或者说binary hypothesis），将特征\(\mathbf{x}\in\
+Introduction to Online Learning我们以在线二分类预测问题为例，比如说，日常生活中，我们根据气温、温度等特征来试试判断是否会下雪，这就是一个在线的二分类问题。
+二分类分类器（二分类假设，binary classifier或者说binary hypothesis），将特征$\mathbf{x}\in\ma
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -936,8 +1062,7 @@ Introduction to Online Learning
       
         
           
-          Benders Decomposition 总结
-这次主要来总结一下这段时间研究的benders算法，主要是在做一个规模不算大的MIP问题，但是公司没有商业求解器用，很蛋疼。我主要参考一篇17年的综述文章[1]，翻译为主，而且仅写了最近浏览过和比较感兴趣的部分，并不全面，同时会写点自己的理解，但还是希望大家能去看一下原文。同时这次也是参考了QinHu老师之前的内容，在这放出链接，感觉他们写得比我的
+          Benders Decomposition 总结这次主要来总结一下这段时间研究的benders算法，主要是在做一个规模不算大的MIP问题，但是公司没有商业求解器用，很蛋疼。我主要参考一篇17年的综述文章[1]，翻译为主，而且仅写了最近浏览过和比较感兴趣的部分，并不全面，同时会写点自己的理解，但还是希望大家能去看一下原文。同时这次也是参考了QinHu老师之前的内容，在这放出链接，感觉他们写得比我的全
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1064,12 +1189,9 @@ Introduction to Online Learning
         
           
           总结了一些常见的数学规划用到的文件格式，是cplex支持的，gurobi也支持很多，但是没写中文，也比较难查，就不列举了。
-ALP
-文件是包含每个变量的通用名称的 LP 文件，以每个变量的类型以及每个变量的界限来注解。
-BAS
-文件是数学规划系统 (MPS) 约定管理的文本文件（即，它们不是二进制）用于保存问题基础。它们记录在BAS 文件格式：高级基中。
-BZ2
-不是特定于 CPLEX 的文件格式
+ALP文件是包含每个变量的通用名称的 LP 文件，以每个变量的类型以及每个变量的界限来注解。
+BAS文件是数学规划系统 (MPS) 约定管理的文本文件（即，它们不是二进制）用于保存问题基础。它们记录在BAS 文件格式：高级基中。
+BZ2不是特定于 CPLEX 的文件格式。此文
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1217,10 +1339,8 @@ BZ2
       
         
           
-          闲话Variable Selection和Lasso
-最近在看变量选择（也叫subset selection），然后来总结一下，想到哪写到哪的随意风格（手动微笑）。[11,12,13]是主要参考的综述文章。
-Boosting 和 Stagewise Regression
-嗯，我也很惊讶为什么这个Lasso会跟Boosting挂着勾。Lasso这样的带罚项的regression最早的思想来自于lin
+          闲话Variable Selection和Lasso最近在看变量选择（也叫subset selection），然后来总结一下，想到哪写到哪的随意风格（手动微笑）。[11,12,13]是主要参考的综述文章。
+Boosting 和 Stagewise Regression嗯，我也很惊讶为什么这个Lasso会跟Boosting挂着勾。Lasso这样的带罚项的regression最早的思想来自于linea
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1369,8 +1489,13 @@ Boosting 和 Stagewise Regression
         
           
           这篇文章是做online learning的CF，用到了dual-averaging的方法，便于在线计算梯度、更新权重。
-CF一直是非常经典的推荐算法，但经常考虑的都是静态的环境下做推荐，很少有考虑动态场景的，比如说： - 新的物品到达推荐系统中 - 新的用户加入到推荐系统中 - 新的评分出现
-本文主要几点contribution包括提出了两种在线学习的方式，基于PMF和RMF做了在线学习的算法。
+CF一直是非常经典的推荐算法，但经常考虑的都是静态的环境下做推荐，很少有考虑动态场景的，比如说：
+
+新的物品到达推荐系统中
+新的用户加入到推荐系统中
+新的评分出现
+
+本文主要几点contribution包括提出了两种在线学习的方式，基于PMF和RMF做了在线学习的算法。Dual
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1518,162 +1643,14 @@ CF一直是非常经典的推荐算法，但经常考虑的都是静态的环境
       
         
           
-          这篇是之前看到的RMF模型，作者的主要contribution在于改进MF的方法，使它保持线性复杂度的同时同时适应于大规模的数据集。在进行Learning To Rank（LTR）任务时，CF之类的方法需要解决一下的问题： - 用户和物品并不容易被显示的特征所替代，IR中的LTR往往具有用户query信息和物品的特征，以此匹配排序，但在推荐系统中，往往并没有这样的显示特征可以使用 - 并不是所有的
+          这篇是之前看到的RMF模型，作者的主要contribution在于改进MF的方法，使它保持线性复杂度的同时同时适应于大规模的数据集。在进行Learning To Rank（LTR）任务时，CF之类的方法需要解决一下的问题：
+
+用户和物品并不容易被显示的特征所替代，IR中的LTR往往具有用户query信息和物品的特征，以此匹配排序，但在推荐系统中，往往并没有这样的显示特征可以使用
+并不是所有的LTR
           ...
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2018/01/30/List-wise-learning-to-rank-with-matrix-factorization-for-collaborative-filtering/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/29/Playing-Atari-with-Deep-Reinforcement-Learning/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="YuyangZhangFTD">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Arvin's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/01/29/Playing-Atari-with-Deep-Reinforcement-Learning/" itemprop="url">Playing Atari with Deep Reinforcement Learning</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-29T21:29:14+08:00">
-                2018-01-29
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/PaperNote/" itemprop="url" rel="index">
-                    <span itemprop="name">PaperNote</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          看懂这几篇需要一些RL方面的基础知识，之后并不会涉及一些基础内容的讲解。
-Playing Atari with Deep Reinforcement Learning
-这篇是DQN的开山之作，先看这篇也是因为nature上那篇画的太乱了。
-开篇作者先点出将DL应用在RL上的几个挑战： - 大多数深度学习的应用都需要大量的标注训练数据，而增强学习算法往往是从一串序列数据的反馈中学习，而这个反馈信号往
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/01/29/Playing-Atari-with-Deep-Reinforcement-Learning/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1761,7 +1738,7 @@ Playing Atari with Deep Reinforcement Learning
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">78</span>
+                <span class="site-state-item-count">79</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

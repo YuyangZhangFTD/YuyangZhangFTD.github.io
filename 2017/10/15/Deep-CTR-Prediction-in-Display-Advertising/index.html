@@ -94,12 +94,12 @@
 
 
 
-<meta name="description" content="今天这篇是阿里的一篇文章，几个实习生做的，主要解决的是图片广告的推荐问题。这篇论文主要有以下几点：  用DNN模型解决推荐问题，并没有直接采用高维稀疏特征和图片直接作为输入，仍做到了end to end的训练； 可以高效处理高维海量数据； 在真实海量数据上进行实验，并取得了较好的结果；  下面来看模型，用户对一个广告的行为被称为一次impression，用\(x\) 表示，图片\(u\) 的尺寸为">
+<meta name="description" content="今天这篇是阿里的一篇文章，几个实习生做的，主要解决的是图片广告的推荐问题。这篇论文主要有以下几点：  用DNN模型解决推荐问题，并没有直接采用高维稀疏特征和图片直接作为输入，仍做到了end to end的训练； 可以高效处理高维海量数据； 在真实海量数据上进行实验，并取得了较好的结果；  下面来看模型，用户对一个广告的行为被称为一次impression，用$x$ 表示，图片$u$ 的尺寸为$120">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Deep CTR Prediction in Display Advertising">
 <meta property="og:url" content="http://yoursite.com/2017/10/15/Deep-CTR-Prediction-in-Display-Advertising/index.html">
 <meta property="og:site_name" content="Arvin&#39;s Blog">
-<meta property="og:description" content="今天这篇是阿里的一篇文章，几个实习生做的，主要解决的是图片广告的推荐问题。这篇论文主要有以下几点：  用DNN模型解决推荐问题，并没有直接采用高维稀疏特征和图片直接作为输入，仍做到了end to end的训练； 可以高效处理高维海量数据； 在真实海量数据上进行实验，并取得了较好的结果；  下面来看模型，用户对一个广告的行为被称为一次impression，用\(x\) 表示，图片\(u\) 的尺寸为">
+<meta property="og:description" content="今天这篇是阿里的一篇文章，几个实习生做的，主要解决的是图片广告的推荐问题。这篇论文主要有以下几点：  用DNN模型解决推荐问题，并没有直接采用高维稀疏特征和图片直接作为输入，仍做到了end to end的训练； 可以高效处理高维海量数据； 在真实海量数据上进行实验，并取得了较好的结果；  下面来看模型，用户对一个广告的行为被称为一次impression，用$x$ 表示，图片$u$ 的尺寸为$120">
 <meta property="og:image" content="http://yoursite.com/2017/10/15/Deep-CTR-Prediction-in-Display-Advertising/1.png">
 <meta property="og:image" content="http://yoursite.com/2017/10/15/Deep-CTR-Prediction-in-Display-Advertising/2.png">
 <meta property="og:image" content="http://yoursite.com/2017/10/15/Deep-CTR-Prediction-in-Display-Advertising/3.png">
@@ -421,27 +421,16 @@
 <li>可以高效处理高维海量数据；</li>
 <li>在真实海量数据上进行实验，并取得了较好的结果；</li>
 </ul>
-<p>下面来看模型，用户对一个广告的行为被称为一次impression，用<span class="math inline">\(x\)</span> 表示，图片<span class="math inline">\(u\)</span> 的尺寸为<span class="math inline">\(120\times 200\)</span> ，同时用户的特征<span class="math inline">\(v\in\mathbb{R}^d\)</span> ，用对率回归来映射输出值 <span class="math display">\[
-\hat{y}=\frac{1}{1+e^{-z}}\\
-z=f(x)
-\]</span> loss函数为 <span class="math display">\[
-\mathcal{L}=-\frac{1}{N}\sum_i(y_i\log\hat{y}_i+(1-y_i)\log(1-\hat{y}_i))+\lambda\|W\|^2
-\]</span> 在这个模型中，重点在于如何去学习embedding 函数<span class="math inline">\(f(\cdot)\)</span> ，模型的结构如下图所示</p>
-<figure>
-<img src="1.png" alt="1" /><figcaption>1</figcaption>
-</figure>
+<p>下面来看模型，用户对一个广告的行为被称为一次impression，用$x$ 表示，图片$u$ 的尺寸为$120\times 200$ ，同时用户的特征$v\in\mathbb{R}^d$ ，用对率回归来映射输出值<br>$$<br>\hat{y}=\frac{1}{1+e^{-z}}\<br>z=f(x)<br>$$<br>loss函数为<br>$$<br>\mathcal{L}=-\frac{1}{N}\sum_i(y_i\log\hat{y}_i+(1-y_i)\log(1-\hat{y}_i))+\lambda|W|^2<br>$$<br>在这个模型中，重点在于如何去学习embedding 函数$f(\cdot)$ ，模型的结构如下图所示</p>
+<p><img src="1.png" alt="1"></p>
 <p>左侧的卷积方法可以提取图片的特征，与右侧基本特征一起经过非线性的激活函数得到输出，卷积部分用了17层卷机网络</p>
-<figure>
-<img src="2.png" alt="2" /><figcaption>2</figcaption>
-</figure>
+<p><img src="2.png" alt="2"></p>
 <p>模型看上去也很简单，并不出彩，那么我们来看看细节：</p>
 <ul>
-<li>稀疏全连接层，训练集中有接近200000个基本特征（毕竟我阿里。。）如果简单的全连接会产生6千万的参数，所以如何降低参数存储和计算就成了重点，模型中采用CSR格式来代表一个batch的基本特征<span class="math inline">\(V\)</span> ，所以前向传播时<span class="math inline">\(Y_{fc1}=VW\)</span> ，反向传播时，我们只需要更新非0元素的权重<span class="math inline">\(\nabla W =V\)</span> ，这就很大程度上减少了计算开销；</li>
+<li>稀疏全连接层，训练集中有接近200000个基本特征（毕竟我阿里。。）如果简单的全连接会产生6千万的参数，所以如何降低参数存储和计算就成了重点，模型中采用CSR格式来代表一个batch的基本特征$V$ ，所以前向传播时$Y_{fc1}=VW$ ，反向传播时，我们只需要更新非0元素的权重$\nabla W =V$ ，这就很大程度上减少了计算开销；</li>
 <li>数据采样，采用SGD训练时，一般会用很小的batch和较多的iterations，对于这样数据集时，却很难收敛，所以作者提出了一个简单高效的训练方式，很多图片广告点击行为都共用了一个图片，所以相比之下，不同的图片就比较少了，因此一些好的特征可以在稀疏的网络结构中迅速传播，所以我们采用大batch对于特征，小的batch用于图片，具体算法如下图所示。</li>
 </ul>
-<figure>
-<img src="3.png" alt="3" /><figcaption>3</figcaption>
-</figure>
+<p><img src="3.png" alt="3"></p>
 <p>论文后面还对实验部分进行一些分析，感兴趣的同学可以下下来看看，总帖来说文章还不错，一些优化也比较出彩，更重要的是给阿里打了广告。。手动微笑。</p>
 
       
@@ -559,7 +548,7 @@ z=f(x)
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">78</span>
+                <span class="site-state-item-count">79</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

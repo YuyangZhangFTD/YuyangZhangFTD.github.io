@@ -319,6 +319,155 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/18/lightGBM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="YuyangZhangFTD">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arvin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/11/18/lightGBM/" itemprop="url">lightGBM</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-18T18:34:29+08:00">
+                2017-11-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PaperNote/" itemprop="url" rel="index">
+                    <span itemprop="name">PaperNote</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          今天看nips2017的预选论文，翻到了4篇推荐相关的，其中3篇都是做cold start问题，看来这个问题最近很火热嘛，包括了RL和meta learning，看来有必要跟进一波潮流。再看其他的论文的时候，还翻到了微软的lightGBM，果断先捞出来看一下。
+之前网上流传了许多关于lightGBM相关的内容，但是看到论文才是最实在的，文中提到相比于其它关于GBDT的实现，对于计算信息增益来划分节
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/11/18/lightGBM/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/01/BPR-Bayesian-personalized-ranking-from-implicit-feedback/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -714,9 +863,8 @@
       
         
           
-          GAN笔记
-为了不被时代所抛弃，最近准备开始好好学一下深度学习的内容，主要针对CV方面，NLP先缓一缓，我还是会站在统计ML的角度来看DL的，今天先来总结一下最优美的GAN。
-首先明确GAN是什么，GAN是一种生成模型。讲到这里先说一下生成模型和判别模型，这两个模型最大的区别就是在于求解方式不同，一个是求解\(P(X,Y)\) 联合概率，另一个是求\(P(Y|X)\) 条件概率。就拿之前很火的VA
+          GAN笔记为了不被时代所抛弃，最近准备开始好好学一下深度学习的内容，主要针对CV方面，NLP先缓一缓，我还是会站在统计ML的角度来看DL的，今天先来总结一下最优美的GAN。
+首先明确GAN是什么，GAN是一种生成模型。讲到这里先说一下生成模型和判别模型，这两个模型最大的区别就是在于求解方式不同，一个是求解$P(X,Y)$ 联合概率，另一个是求$P(Y|X)$ 条件概率。就拿之前很火的VAE来说明，
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1019,10 +1167,7 @@ pr
         
           
           这次来回顾一下另一个经典模型，Factorization Machine。
-Factorization Machine
-模型形式如下 \[
-\hat{y}(x)=w_0+\sum^n_{i=1}w_ix_i+\sum^n_{i=1}\sum^n_{j=i+1}\langle v_i,v_j\rangle x_ix_j
-\] 包括对一阶和二阶特征的考虑，这样做是因为我们可以证明对于足够大的\(k\)
+Factorization Machine模型形式如下$$\hat{y}(x)=w_0+\sum^n_{i=1}w_ix_i+\sum^n_{i=1}\sum^n_{j=i+1}\langle v_i,v_j\rangle x_ix_j$$包括对一阶和二阶特征的考虑，这样做是因为我们可以证明对于足够大的$k$ 存在矩阵$V
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1322,10 +1467,8 @@ Factorization Machine
           这篇应该是最早的DL做CTR的文章了，好像是KDD2016的best，微软出品。
 现在看这篇文章有点普通，但在当时应该还是挺应景的，做的是15年火的embedding和16年火的residual network的结合。模型结构如图所示
 
-1
-
 本篇论文突出的特点应该是不用人工设计feature，在当时应该也是一个break。
-文章后面重点写了embedding和stacking策略以及residu
+文章后面重点写了embedding和stacking策略以及residual层
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1479,7 +1622,7 @@ Factorization Machine
 可以高效处理高维海量数据；
 在真实海量数据上进行实验，并取得了较好的结果；
 
-下面来看模型，用户对一个广告的行为被称为一次impression，用\(x\) 表示，图片\(u\) 的尺寸为
+下面来看模型，用户对一个广告的行为被称为一次impression，用$x$ 表示，图片$u$ 的尺寸为$120
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1607,149 +1750,11 @@ Factorization Machine
           
           昨天看的有点多了，今天少看点，然后看点别的内容缓解一下，刚好今天看到了这篇是attention模型+FM，所以今天打算再去看看attention。
 回归正题，这篇文章主要思路是在FM的二阶特征上加attention layer
- \[
-f_{\text{Att}}(f_{\text{PI}}(\mathcal{E}))=\sum_{(i,j)\in\mathcal{R}_x}a_{ij}(v_i\
+$$f_{\text{Att}}(f_{\text{PI}}(\mathcal{E}))=\sum_{(i,j)\in\mathcal{R}x}a{ij}(v_i\odot
           ...
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/10/14/Attentional-Factorization-Machines-Learning-the-Weight-of-Feature-Interactions-via-Attention-Networks/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/13/DeepFM-A-Factorization-Machine-based-Neural-Network-for-CTR-Prediction/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="YuyangZhangFTD">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Arvin's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/10/13/DeepFM-A-Factorization-Machine-based-Neural-Network-for-CTR-Prediction/" itemprop="url">DeepFM- A Factorization-Machine based Neural Network for CTR Prediction</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-13T20:34:26+08:00">
-                2017-10-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          再来看一篇。。有点累了都。。这篇文章是一篇FM和DL的结合，2017年的文章，这篇文章读起来就给人感觉比较符合当前的主流想法了。
-模型的主要结构如下图所示
-
-1
-
-与谷歌之前wide &amp; deep的model不同的是，DeepFM的输入层共享同样的embedding，模型也分为两部分，FM和Deep。
-FM部分的结构如下图所示
-
-2
-
-就是一个FM模型 \[
-y_{\text{FM}}=\
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/10/13/DeepFM-A-Factorization-Machine-based-Neural-Network-for-CTR-Prediction/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1837,7 +1842,7 @@ y_{\text{FM}}=\
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">78</span>
+                <span class="site-state-item-count">79</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
