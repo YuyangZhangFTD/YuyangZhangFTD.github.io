@@ -94,12 +94,12 @@
 
 
 
-<meta name="description" content="Benefits of Combination当我们能够生成一堆基学习器后，与其尝试寻找最好的单个学习器，集成方法通过结合的方式产生更好的泛化性能，其中结合的方式是非常重要的一环。通过结合我们有以下的几个好处  statistical issue：当我们的假设空间过大，而数据量受限的时候，会有多种不同的假设能够达到相同的准确度，如果学习算法选择了其中之一，就会有一定风险在真实数据上犯错，而通过结合">
+<meta name="description" content="Benefits of Combination 当我们能够生成一堆基学习器后，与其尝试寻找最好的单个学习器，集成方法通过结合的方式产生更好的泛化性能，其中结合的方式是非常重要的一环。通过结合我们有以下的几个好处  statistical issue：当我们的假设空间过大，而数据量受限的时候，会有多种不同的假设能够达到相同的准确度，如果学习算法选择了其中之一，就会有一定风险在真实数据上犯错，而通过结">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Combination Methods">
 <meta property="og:url" content="http://yoursite.com/2017/08/17/Combination-Methods/index.html">
 <meta property="og:site_name" content="Arvin&#39;s Blog">
-<meta property="og:description" content="Benefits of Combination当我们能够生成一堆基学习器后，与其尝试寻找最好的单个学习器，集成方法通过结合的方式产生更好的泛化性能，其中结合的方式是非常重要的一环。通过结合我们有以下的几个好处  statistical issue：当我们的假设空间过大，而数据量受限的时候，会有多种不同的假设能够达到相同的准确度，如果学习算法选择了其中之一，就会有一定风险在真实数据上犯错，而通过结合">
+<meta property="og:description" content="Benefits of Combination 当我们能够生成一堆基学习器后，与其尝试寻找最好的单个学习器，集成方法通过结合的方式产生更好的泛化性能，其中结合的方式是非常重要的一环。通过结合我们有以下的几个好处  statistical issue：当我们的假设空间过大，而数据量受限的时候，会有多种不同的假设能够达到相同的准确度，如果学习算法选择了其中之一，就会有一定风险在真实数据上犯错，而通过结">
 <meta property="og:image" content="http://yoursite.com/2017/08/17/Combination-Methods/1.png">
 <meta property="og:image" content="http://yoursite.com/2017/08/17/Combination-Methods/2.png">
 <meta property="article:published_time" content="2017-08-17T06:16:18.000Z">
@@ -413,33 +413,73 @@
       
 
       
-        <h3 id="Benefits-of-Combination"><a href="#Benefits-of-Combination" class="headerlink" title="Benefits of Combination"></a>Benefits of Combination</h3><p>当我们能够生成一堆基学习器后，与其尝试寻找最好的单个学习器，集成方法通过结合的方式产生更好的泛化性能，其中结合的方式是非常重要的一环。通过结合我们有以下的几个好处</p>
+        <h3 id="benefits-of-combination">Benefits of Combination</h3>
+<p>当我们能够生成一堆基学习器后，与其尝试寻找最好的单个学习器，集成方法通过结合的方式产生更好的泛化性能，其中结合的方式是非常重要的一环。通过结合我们有以下的几个好处</p>
 <ul>
 <li>statistical issue：当我们的假设空间过大，而数据量受限的时候，会有多种不同的假设能够达到相同的准确度，如果学习算法选择了其中之一，就会有一定风险在真实数据上犯错，而通过结合的方式我们就可以尽量规避这种风险；</li>
 <li>computational issue：许多学习算法只是在局部进行搜索最优，即使有充足的训练数据，但是找到最好的假设仍然很困难。通过选择多个不同的起始点来寻找局部最优，结合的方法可以更接近去南局的最优，选择局部最优假设的风险可以被尽量减小；</li>
 <li>representational issue：在多数机器学习任中，当假设空间中不存在真正的标记函数时，通过结合的手段可以尽量去逼近真实标记函数</li>
 </ul>
-<p><img src="1.png" alt="1"></p>
+<figure>
+<img src="1.png" alt="1" /><figcaption>1</figcaption>
+</figure>
 <p>对于statistical issue，我们通常模型具有high variance，对于computational issue则会产生high computational variance，而representational issue会产生high bias。</p>
-<h3 id="Averaging"><a href="#Averaging" class="headerlink" title="Averaging"></a>Averaging</h3><h4 id="simple-averaging"><a href="#simple-averaging" class="headerlink" title="simple averaging"></a>simple averaging</h4><p>$$<br>H(x)=\frac{1}{T}\sum^T_{i=1}h_i(x)<br>$$</p>
-<p>每一个弱分类器可以写作<br>$$<br>h_i(x)=f(x)+\epsilon_i(x),i=1,…,T<br>$$<br>$h_i(x)$ 的均方误差可以写作<br>$$<br>\int (h_i(x)-f(x))^2p(x)dx=\int\epsilon_t(x)^2p(x)dx<br>$$<br>所以平均误差为<br>$$<br>\overline{err}(h)=\frac{1}{T}\sum^T_{i=1}\int\epsilon_t(x)^2p(x)dx<br>$$<br>结合的学习器的期望误差为<br>$$<br>err(H)=\int(\frac{1}{T}\sum^T_{i=1}h_i(x)-f(x))^2p(x)dx<br>=\int(\frac{1}{T}\sum^T_{i=1}\epsilon_i(x))^2p(x)dx<br>$$<br>所以我们易得<br>$$<br>err(H)\leq\overline{err}(h)<br>$$<br>即集成的误差会小于所有分类器的平均误差。当我们假设误差满足零均值且相互独立时，会有<br>$$<br>err(H)=\frac{1}{T}\overline{err}(h)<br>$$</p>
-<h4 id="Weighted-Averaging"><a href="#Weighted-Averaging" class="headerlink" title="Weighted Averaging"></a>Weighted Averaging</h4><p>$$<br>H(x)=\sum^T_{i=1}w_ih_i(x)<br>$$</p>
-<p>集成模型的误差为<br>$$<br>\begin{aligned}<br>err(H)&amp;=\int (\sum^T_{i=1}w_ih_i(x)-f(x))^2p(x)dx\<br>&amp;=\sum^T_{i=1}\sum^T_{j=1}w_iw_jC_{ij}<br>\end{aligned}<br>$$<br>其中<br>$$<br>C_{ij}=\int (h_i(x)-f(x))(h_j(x)-f(x))p(x)dx<br>$$<br>所以最优的权重为<br>$$<br>w=\underset{w}{\arg\min}\sum^T_{i=1}\sum^T_{j=1}w_iw_jC_{ij}<br>$$<br>求解得<br>$$<br>w_i=\frac{\sum^T_{j=1}C_{ij}^{-1}}{\sum^T_{k=1}\sum^T_{j=1}w_iw_jC_{kj}^{-1}}<br>$$<br>此处注意是用拉格朗日乘子法，以及约束条件是$\sum w_i=1$ 。虽然权重有解析解，但是实际中，不同基分类器并不会完全不相关，同时协方差矩阵$C$ 往往是奇异的。</p>
-<h3 id="Voting"><a href="#Voting" class="headerlink" title="Voting"></a>Voting</h3><p>投票法也是很常用的结合方法，主要有</p>
+<h3 id="averaging">Averaging</h3>
+<h4 id="simple-averaging">simple averaging</h4>
+<p><span class="math display">\[
+H(x)=\frac{1}{T}\sum^T_{i=1}h_i(x)
+\]</span></p>
+<p>每一个弱分类器可以写作 <span class="math display">\[
+h_i(x)=f(x)+\epsilon_i(x),i=1,...,T
+\]</span> <span class="math inline">\(h_i(x)\)</span> 的均方误差可以写作 <span class="math display">\[
+\int (h_i(x)-f(x))^2p(x)dx=\int\epsilon_t(x)^2p(x)dx
+\]</span> 所以平均误差为 <span class="math display">\[
+\overline{err}(h)=\frac{1}{T}\sum^T_{i=1}\int\epsilon_t(x)^2p(x)dx
+\]</span> 结合的学习器的期望误差为 <span class="math display">\[
+err(H)=\int(\frac{1}{T}\sum^T_{i=1}h_i(x)-f(x))^2p(x)dx
+=\int(\frac{1}{T}\sum^T_{i=1}\epsilon_i(x))^2p(x)dx
+\]</span> 所以我们易得 <span class="math display">\[
+err(H)\leq\overline{err}(h)
+\]</span> 即集成的误差会小于所有分类器的平均误差。当我们假设误差满足零均值且相互独立时，会有 <span class="math display">\[
+err(H)=\frac{1}{T}\overline{err}(h)
+\]</span></p>
+<h4 id="weighted-averaging">Weighted Averaging</h4>
+<p><span class="math display">\[
+H(x)=\sum^T_{i=1}w_ih_i(x)
+\]</span></p>
+<p>集成模型的误差为 <span class="math display">\[
+\begin{aligned}
+err(H)&amp;=\int (\sum^T_{i=1}w_ih_i(x)-f(x))^2p(x)dx\\
+&amp;=\sum^T_{i=1}\sum^T_{j=1}w_iw_jC_{ij}
+\end{aligned}
+\]</span> 其中 <span class="math display">\[
+C_{ij}=\int (h_i(x)-f(x))(h_j(x)-f(x))p(x)dx
+\]</span> 所以最优的权重为 <span class="math display">\[
+w=\underset{w}{\arg\min}\sum^T_{i=1}\sum^T_{j=1}w_iw_jC_{ij}
+\]</span> 求解得 <span class="math display">\[
+w_i=\frac{\sum^T_{j=1}C_{ij}^{-1}}{\sum^T_{k=1}\sum^T_{j=1}w_iw_jC_{kj}^{-1}}
+\]</span> 此处注意是用拉格朗日乘子法，以及约束条件是<span class="math inline">\(\sum w_i=1\)</span> 。虽然权重有解析解，但是实际中，不同基分类器并不会完全不相关，同时协方差矩阵<span class="math inline">\(C\)</span> 往往是奇异的。</p>
+<h3 id="voting">Voting</h3>
+<p>投票法也是很常用的结合方法，主要有</p>
 <ul>
 <li>Majority Voting 主要投票法</li>
 <li>Plurality Voting 多数投票法</li>
 <li>Weighted Voting 加权投票</li>
 <li>Soft Voting 软投票</li>
 </ul>
-<h3 id="Combining-by-Learning"><a href="#Combining-by-Learning" class="headerlink" title="Combining by Learning"></a>Combining by Learning</h3><h4 id="Stacking"><a href="#Stacking" class="headerlink" title="Stacking"></a>Stacking</h4><p>单独的一个学习器被叫做一级学习器(first-level learners)，而结合的学习器被称为二级学习器(second-level learner or meta-learner)，Stacking就通过多个基学习器联合学习的过程，主要的想法是用原始训练数据去训练一级学习器，然后生成新的学习数据来训练二级学习器，其中第一级学习器的输出作为第二级学习器的输入。</p>
-<p><img src="2.png" alt="2"></p>
+<h3 id="combining-by-learning">Combining by Learning</h3>
+<h4 id="stacking">Stacking</h4>
+<p>单独的一个学习器被叫做一级学习器(first-level learners)，而结合的学习器被称为二级学习器(second-level learner or meta-learner)，Stacking就通过多个基学习器联合学习的过程，主要的想法是用原始训练数据去训练一级学习器，然后生成新的学习数据来训练二级学习器，其中第一级学习器的输出作为第二级学习器的输入。</p>
+<figure>
+<img src="2.png" alt="2" /><figcaption>2</figcaption>
+</figure>
 <p>一方面，Stacking可以被看做是一个广义的集成学习方法的框架，另一方面，它也可以看做是特别的结合方式，通过学习来combine。</p>
-<h3 id="Other-Combination-Methods"><a href="#Other-Combination-Methods" class="headerlink" title="Other Combination Methods"></a>Other Combination Methods</h3><p>除此之外，还有一些别的结合方式，此处只列举一二，不详细说明了</p>
+<h3 id="other-combination-methods">Other Combination Methods</h3>
+<p>除此之外，还有一些别的结合方式，此处只列举一二，不详细说明了</p>
 <ul>
-<li>Algebraic Methods </li>
-<li>Behavior Knowledge Space Method </li>
-<li>Decision Template Method </li>
+<li>Algebraic Methods</li>
+<li>Behavior Knowledge Space Method</li>
+<li>Decision Template Method</li>
 </ul>
 
       
@@ -627,7 +667,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Benefits-of-Combination"><span class="nav-number">1.</span> <span class="nav-text">Benefits of Combination</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Averaging"><span class="nav-number">2.</span> <span class="nav-text">Averaging</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#simple-averaging"><span class="nav-number">2.1.</span> <span class="nav-text">simple averaging</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Weighted-Averaging"><span class="nav-number">2.2.</span> <span class="nav-text">Weighted Averaging</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Voting"><span class="nav-number">3.</span> <span class="nav-text">Voting</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Combining-by-Learning"><span class="nav-number">4.</span> <span class="nav-text">Combining by Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Stacking"><span class="nav-number">4.1.</span> <span class="nav-text">Stacking</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Other-Combination-Methods"><span class="nav-number">5.</span> <span class="nav-text">Other Combination Methods</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#benefits-of-combination"><span class="nav-number">1.</span> <span class="nav-text">Benefits of Combination</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#averaging"><span class="nav-number">2.</span> <span class="nav-text">Averaging</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#simple-averaging"><span class="nav-number">2.1.</span> <span class="nav-text">simple averaging</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#weighted-averaging"><span class="nav-number">2.2.</span> <span class="nav-text">Weighted Averaging</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#voting"><span class="nav-number">3.</span> <span class="nav-text">Voting</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#combining-by-learning"><span class="nav-number">4.</span> <span class="nav-text">Combining by Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#stacking"><span class="nav-number">4.1.</span> <span class="nav-text">Stacking</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#other-combination-methods"><span class="nav-number">5.</span> <span class="nav-text">Other Combination Methods</span></a></li></ol></div>
             
 
           </div>

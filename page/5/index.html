@@ -863,8 +863,9 @@
       
         
           
-          GAN笔记为了不被时代所抛弃，最近准备开始好好学一下深度学习的内容，主要针对CV方面，NLP先缓一缓，我还是会站在统计ML的角度来看DL的，今天先来总结一下最优美的GAN。
-首先明确GAN是什么，GAN是一种生成模型。讲到这里先说一下生成模型和判别模型，这两个模型最大的区别就是在于求解方式不同，一个是求解$P(X,Y)$ 联合概率，另一个是求$P(Y|X)$ 条件概率。就拿之前很火的VAE来说明，
+          GAN笔记
+为了不被时代所抛弃，最近准备开始好好学一下深度学习的内容，主要针对CV方面，NLP先缓一缓，我还是会站在统计ML的角度来看DL的，今天先来总结一下最优美的GAN。
+首先明确GAN是什么，GAN是一种生成模型。讲到这里先说一下生成模型和判别模型，这两个模型最大的区别就是在于求解方式不同，一个是求解\(P(X,Y)\) 联合概率，另一个是求\(P(Y|X)\) 条件概率。就拿之前很火的VA
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1167,7 +1168,10 @@ pr
         
           
           这次来回顾一下另一个经典模型，Factorization Machine。
-Factorization Machine模型形式如下$$\hat{y}(x)=w_0+\sum^n_{i=1}w_ix_i+\sum^n_{i=1}\sum^n_{j=i+1}\langle v_i,v_j\rangle x_ix_j$$包括对一阶和二阶特征的考虑，这样做是因为我们可以证明对于足够大的$k$ 存在矩阵$V
+Factorization Machine
+模型形式如下 \[
+\hat{y}(x)=w_0+\sum^n_{i=1}w_ix_i+\sum^n_{i=1}\sum^n_{j=i+1}\langle v_i,v_j\rangle x_ix_j
+\] 包括对一阶和二阶特征的考虑，这样做是因为我们可以证明对于足够大的\(k\)
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1467,8 +1471,10 @@ Factorization Machine模型形式如下$$\hat{y}(x)=w_0+\sum^n_{i=1}w_ix_i+\sum^
           这篇应该是最早的DL做CTR的文章了，好像是KDD2016的best，微软出品。
 现在看这篇文章有点普通，但在当时应该还是挺应景的，做的是15年火的embedding和16年火的residual network的结合。模型结构如图所示
 
+1
+
 本篇论文突出的特点应该是不用人工设计feature，在当时应该也是一个break。
-文章后面重点写了embedding和stacking策略以及residual层
+文章后面重点写了embedding和stacking策略以及residu
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1622,7 +1628,7 @@ Factorization Machine模型形式如下$$\hat{y}(x)=w_0+\sum^n_{i=1}w_ix_i+\sum^
 可以高效处理高维海量数据；
 在真实海量数据上进行实验，并取得了较好的结果；
 
-下面来看模型，用户对一个广告的行为被称为一次impression，用$x$ 表示，图片$u$ 的尺寸为$120
+下面来看模型，用户对一个广告的行为被称为一次impression，用\(x\) 表示，图片\(u\) 的尺寸为
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1750,7 +1756,8 @@ Factorization Machine模型形式如下$$\hat{y}(x)=w_0+\sum^n_{i=1}w_ix_i+\sum^
           
           昨天看的有点多了，今天少看点，然后看点别的内容缓解一下，刚好今天看到了这篇是attention模型+FM，所以今天打算再去看看attention。
 回归正题，这篇文章主要思路是在FM的二阶特征上加attention layer
-$$f_{\text{Att}}(f_{\text{PI}}(\mathcal{E}))=\sum_{(i,j)\in\mathcal{R}x}a{ij}(v_i\odot
+ \[
+f_{\text{Att}}(f_{\text{PI}}(\mathcal{E}))=\sum_{(i,j)\in\mathcal{R}_x}a_{ij}(v_i\
           ...
           <!--noindex-->
           <div class="post-button text-center">

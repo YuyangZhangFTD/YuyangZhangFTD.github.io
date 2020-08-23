@@ -94,12 +94,12 @@
 
 
 
-<meta name="description" content="因为最近在公司搞一个实时性要求比较高的推荐，所以最近会看一些新闻推荐、实时推荐相关的论文，今天这篇是一篇比较老的增量学习+协同过滤的论文，想法很简单，就是在计算相似度时分类讨论，不同情况选择不同的增量方式，尽最大的可能性减少计算量。 传统的相似度计算方式为$$\text{sim}(u_x,u_y)&#x3D;\frac{\sum^n_{h&#x3D;1}(r_{u_x,i_h}-\overline{r_{u_x}})">
+<meta name="description" content="因为最近在公司搞一个实时性要求比较高的推荐，所以最近会看一些新闻推荐、实时推荐相关的论文，今天这篇是一篇比较老的增量学习+协同过滤的论文，想法很简单，就是在计算相似度时分类讨论，不同情况选择不同的增量方式，尽最大的可能性减少计算量。 传统的相似度计算方式为 \[ \text{sim}(u_x,u_y)&#x3D;\frac {\sum^n_{h&#x3D;1}(r_{u_x,i_h}-\overline{r_{u_x">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Incremental Collaborative Filtering for Highly-Scalable Recommendation Algorithms">
 <meta property="og:url" content="http://yoursite.com/2017/09/14/Incremental-Collaborative-Filtering-for-Highly-Scalable-Recommendation-Algorithms/index.html">
 <meta property="og:site_name" content="Arvin&#39;s Blog">
-<meta property="og:description" content="因为最近在公司搞一个实时性要求比较高的推荐，所以最近会看一些新闻推荐、实时推荐相关的论文，今天这篇是一篇比较老的增量学习+协同过滤的论文，想法很简单，就是在计算相似度时分类讨论，不同情况选择不同的增量方式，尽最大的可能性减少计算量。 传统的相似度计算方式为$$\text{sim}(u_x,u_y)&#x3D;\frac{\sum^n_{h&#x3D;1}(r_{u_x,i_h}-\overline{r_{u_x}})">
+<meta property="og:description" content="因为最近在公司搞一个实时性要求比较高的推荐，所以最近会看一些新闻推荐、实时推荐相关的论文，今天这篇是一篇比较老的增量学习+协同过滤的论文，想法很简单，就是在计算相似度时分类讨论，不同情况选择不同的增量方式，尽最大的可能性减少计算量。 传统的相似度计算方式为 \[ \text{sim}(u_x,u_y)&#x3D;\frac {\sum^n_{h&#x3D;1}(r_{u_x,i_h}-\overline{r_{u_x">
 <meta property="og:image" content="http://yoursite.com/2017/09/14/Incremental-Collaborative-Filtering-for-Highly-Scalable-Recommendation-Algorithms/1.png">
 <meta property="og:image" content="http://yoursite.com/2017/09/14/Incremental-Collaborative-Filtering-for-Highly-Scalable-Recommendation-Algorithms/2.png">
 <meta property="article:published_time" content="2017-09-14T14:29:07.000Z">
@@ -414,12 +414,24 @@
 
       
         <p>因为最近在公司搞一个实时性要求比较高的推荐，所以最近会看一些新闻推荐、实时推荐相关的论文，今天这篇是一篇比较老的增量学习+协同过滤的论文，想法很简单，就是在计算相似度时分类讨论，不同情况选择不同的增量方式，尽最大的可能性减少计算量。</p>
-<p>传统的相似度计算方式为<br>$$<br>\text{sim}(u_x,u_y)=\frac<br>{\sum^n_{h=1}(r_{u_x,i_h}-\overline{r_{u_x}})((r_{u_x,i_h}-\overline{r_{u_y}})}<br>{\sqrt{\sum^{n’}<em>{h=1}(r</em>{u_x,i_h}-\overline{r_{u_x}}\sum^{n’}<em>{h=1}(r</em>{u_y,i_h}-\overline{r_{u_y}}))}}<br>$$</p>
-<p>$$<br>A=\frac{B}{\sqrt{C}\sqrt{D}}<br>$$</p>
-<p>增量的计算方式为<br>$$<br>A=\frac{B’}{\sqrt{C’}\sqrt{D’}}=\frac{B+e}{\sqrt{C+f}\sqrt{D+g}}<br>$$<br>然后作者就给出了不同情况下的更新方式</p>
-<p><img src="1.png" alt="1"></p>
+<p>传统的相似度计算方式为 <span class="math display">\[
+\text{sim}(u_x,u_y)=\frac
+{\sum^n_{h=1}(r_{u_x,i_h}-\overline{r_{u_x}})((r_{u_x,i_h}-\overline{r_{u_y}})}
+{\sqrt{\sum^{n&#39;}_{h=1}(r_{u_x,i_h}-\overline{r_{u_x}}\sum^{n&#39;}_{h=1}(r_{u_y,i_h}-\overline{r_{u_y}}))}}
+\]</span></p>
+<p><span class="math display">\[
+A=\frac{B}{\sqrt{C}\sqrt{D}}
+\]</span></p>
+<p>增量的计算方式为 <span class="math display">\[
+A=\frac{B&#39;}{\sqrt{C&#39;}\sqrt{D&#39;}}=\frac{B+e}{\sqrt{C+f}\sqrt{D+g}}
+\]</span> 然后作者就给出了不同情况下的更新方式</p>
+<figure>
+<img src="1.png" alt="1" /><figcaption>1</figcaption>
+</figure>
 <p>以及经过简单的缓存与计算就可以快速迭代相似度</p>
-<p><img src="2.png" alt="2"></p>
+<figure>
+<img src="2.png" alt="2" /><figcaption>2</figcaption>
+</figure>
 <p>论文最后作者对各种情况的复杂度进行了分析，并进行了实验。</p>
 <p>总的来说是一篇很基础的论文，我查了一下，2005年发表，引用100+，应该在当时也是种很实用的方法吧。</p>
 

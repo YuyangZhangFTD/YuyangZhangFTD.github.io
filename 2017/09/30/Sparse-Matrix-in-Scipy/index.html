@@ -94,12 +94,12 @@
 
 
 
-<meta name="description" content="spmatrix基本类。     csc_matrix最为常用的稀疏矩阵格式之一，对列运算支持较高，应该是按列存储稀疏结构，CSC格式优点：  高效支持运算符，CSC+CSC,CSC*CSC等等 高效列分割 快速矩阵向量乘积（可能不如CSR和BSR）  缺点：  相比如CSR行切割较慢 转换为其他稀疏结构较慢，如LIL和DOK  csr_matrix最为常用的稀疏矩阵格式之一，对行运算支持较高，应">
+<meta name="description" content="spmatrix 基本类。 csc_matrix 最为常用的稀疏矩阵格式之一，对列运算支持较高，应该是按列存储稀疏结构，CSC格式优点：  高效支持运算符，CSC+CSC,CSC*CSC等等 高效列分割 快速矩阵向量乘积（可能不如CSR和BSR）  缺点：  相比如CSR行切割较慢 转换为其他稀疏结构较慢，如LIL和DOK  csr_matrix 最为常用的稀疏矩阵格式之一，对行运算支持较高，应该">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Sparse Matrix in Scipy">
 <meta property="og:url" content="http://yoursite.com/2017/09/30/Sparse-Matrix-in-Scipy/index.html">
 <meta property="og:site_name" content="Arvin&#39;s Blog">
-<meta property="og:description" content="spmatrix基本类。     csc_matrix最为常用的稀疏矩阵格式之一，对列运算支持较高，应该是按列存储稀疏结构，CSC格式优点：  高效支持运算符，CSC+CSC,CSC*CSC等等 高效列分割 快速矩阵向量乘积（可能不如CSR和BSR）  缺点：  相比如CSR行切割较慢 转换为其他稀疏结构较慢，如LIL和DOK  csr_matrix最为常用的稀疏矩阵格式之一，对行运算支持较高，应">
+<meta property="og:description" content="spmatrix 基本类。 csc_matrix 最为常用的稀疏矩阵格式之一，对列运算支持较高，应该是按列存储稀疏结构，CSC格式优点：  高效支持运算符，CSC+CSC,CSC*CSC等等 高效列分割 快速矩阵向量乘积（可能不如CSR和BSR）  缺点：  相比如CSR行切割较慢 转换为其他稀疏结构较慢，如LIL和DOK  csr_matrix 最为常用的稀疏矩阵格式之一，对行运算支持较高，应该">
 <meta property="article:published_time" content="2017-09-30T13:49:33.000Z">
 <meta property="article:modified_time" content="2017-09-30T13:53:00.000Z">
 <meta property="article:author" content="YuyangZhangFTD">
@@ -409,8 +409,10 @@
       
 
       
-        <h2 id="spmatrix"><a href="#spmatrix" class="headerlink" title="spmatrix"></a><code>spmatrix</code></h2><p>基本类。    </p>
-<h2 id="csc-matrix"><a href="#csc-matrix" class="headerlink" title="csc_matrix"></a><code>csc_matrix</code></h2><p>最为常用的稀疏矩阵格式之一，对列运算支持较高，应该是按列存储稀疏结构，CSC格式优点：</p>
+        <h2 id="spmatrix"><code>spmatrix</code></h2>
+<p>基本类。</p>
+<h2 id="csc_matrix"><code>csc_matrix</code></h2>
+<p>最为常用的稀疏矩阵格式之一，对列运算支持较高，应该是按列存储稀疏结构，CSC格式优点：</p>
 <ul>
 <li>高效支持运算符，CSC+CSC,CSC*CSC等等</li>
 <li>高效列分割</li>
@@ -421,7 +423,8 @@
 <li>相比如CSR行切割较慢</li>
 <li>转换为其他稀疏结构较慢，如LIL和DOK</li>
 </ul>
-<h2 id="csr-matrix"><a href="#csr-matrix" class="headerlink" title="csr_matrix"></a><code>csr_matrix</code></h2><p>最为常用的稀疏矩阵格式之一，对行运算支持较高，应该是按行存储稀疏结构，CSR格式优点：</p>
+<h2 id="csr_matrix"><code>csr_matrix</code></h2>
+<p>最为常用的稀疏矩阵格式之一，对行运算支持较高，应该是按行存储稀疏结构，CSR格式优点：</p>
 <ul>
 <li>高效支持运算符，CSR+CSR,CSR*CSR等等</li>
 <li>高效行分割</li>
@@ -432,8 +435,10 @@
 <li>相比如CSC列切割较慢</li>
 <li>转换为其他稀疏结构较慢，如LIL和DOK</li>
 </ul>
-<h2 id="dok-matrix"><a href="#dok-matrix" class="headerlink" title="dok_matrix"></a><code>dok_matrix</code></h2><p>采用字典的键值对存储的矩阵格式，支持常规运算，并且有O(1)的查找速度，不能复制，可以快速转成coo_matrix格式</p>
-<h2 id="coo-matrix"><a href="#coo-matrix" class="headerlink" title="coo_matrix"></a><code>coo_matrix</code></h2><p>采用坐标记录的，形成<code>(i,j,v)</code> 的三元组，优点为：</p>
+<h2 id="dok_matrix"><code>dok_matrix</code></h2>
+<p>采用字典的键值对存储的矩阵格式，支持常规运算，并且有O(1)的查找速度，不能复制，可以快速转成coo_matrix格式</p>
+<h2 id="coo_matrix"><code>coo_matrix</code></h2>
+<p>采用坐标记录的，形成<code>(i,j,v)</code> 的三元组，优点为：</p>
 <ul>
 <li>转换其他系数格式十分迅速</li>
 <li>允许复制</li>
@@ -443,8 +448,10 @@
 <ul>
 <li>不直接支持运算和切片</li>
 </ul>
-<h2 id="bsr-matrix"><a href="#bsr-matrix" class="headerlink" title="bsr_matrix"></a><code>bsr_matrix</code></h2><p>块稀疏矩阵格式，分成(R,C)的矩阵块来存储。</p>
-<h2 id="lil-matrix"><a href="#lil-matrix" class="headerlink" title="lil_matrix"></a><code>lil_matrix</code></h2><p>行连接列表的系数矩阵格式，适用于大小增长的稀疏矩阵，优点：</p>
+<h2 id="bsr_matrix"><code>bsr_matrix</code></h2>
+<p>块稀疏矩阵格式，分成(R,C)的矩阵块来存储。</p>
+<h2 id="lil_matrix"><code>lil_matrix</code></h2>
+<p>行连接列表的系数矩阵格式，适用于大小增长的稀疏矩阵，优点：</p>
 <ul>
 <li>支持切片</li>
 <li>高效转换成其他稀疏矩阵格式</li>
@@ -455,7 +462,8 @@
 <li>列切片较慢</li>
 <li>乘积较慢</li>
 </ul>
-<h2 id="dia-matrix"><a href="#dia-matrix" class="headerlink" title="dia_matrix"></a><code>dia_matrix</code></h2><p>稀疏对角矩阵存储，支持运算</p>
+<h2 id="dia_matrix"><code>dia_matrix</code></h2>
+<p>稀疏对角矩阵存储，支持运算</p>
 
       
     </div>
@@ -640,7 +648,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#spmatrix"><span class="nav-number">1.</span> <span class="nav-text">spmatrix</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#csc-matrix"><span class="nav-number">2.</span> <span class="nav-text">csc_matrix</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#csr-matrix"><span class="nav-number">3.</span> <span class="nav-text">csr_matrix</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dok-matrix"><span class="nav-number">4.</span> <span class="nav-text">dok_matrix</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#coo-matrix"><span class="nav-number">5.</span> <span class="nav-text">coo_matrix</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bsr-matrix"><span class="nav-number">6.</span> <span class="nav-text">bsr_matrix</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lil-matrix"><span class="nav-number">7.</span> <span class="nav-text">lil_matrix</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dia-matrix"><span class="nav-number">8.</span> <span class="nav-text">dia_matrix</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#spmatrix"><span class="nav-number">1.</span> <span class="nav-text">spmatrix</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#csc_matrix"><span class="nav-number">2.</span> <span class="nav-text">csc_matrix</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#csr_matrix"><span class="nav-number">3.</span> <span class="nav-text">csr_matrix</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dok_matrix"><span class="nav-number">4.</span> <span class="nav-text">dok_matrix</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#coo_matrix"><span class="nav-number">5.</span> <span class="nav-text">coo_matrix</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bsr_matrix"><span class="nav-number">6.</span> <span class="nav-text">bsr_matrix</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lil_matrix"><span class="nav-number">7.</span> <span class="nav-text">lil_matrix</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dia_matrix"><span class="nav-number">8.</span> <span class="nav-text">dia_matrix</span></a></li></ol></div>
             
 
           </div>

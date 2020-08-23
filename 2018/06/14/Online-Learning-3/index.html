@@ -94,12 +94,12 @@
 
 
 
-<meta name="description" content="Example Online Optimizers对于FTL（Follow-The-Leader）算法，$$\mathbf{w}{t+1}&#x3D;\underset{\mathbf{w}\in\mathcal{W}}{\arg\min}\sum^t{s&#x3D;1}f_s(\mathbf{w})\equiv&#x3D;\underset{\mathbf{w}}{\arg\min}f_{1:t}(\mathbf{w})$$">
+<meta name="description" content="Example Online Optimizers 对于FTL（Follow-The-Leader）算法， \[ \mathbf{w}_{t+1}&#x3D;\underset{\mathbf{w}\in\mathcal{W}}{\arg\min}\sum^t_{s&#x3D;1}f_s(\mathbf{w}) \equiv&#x3D;\underset{\mathbf{w}}{\arg\min}f_{1:t}(\mathbf">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Online Learning 3">
 <meta property="og:url" content="http://yoursite.com/2018/06/14/Online-Learning-3/index.html">
 <meta property="og:site_name" content="Arvin&#39;s Blog">
-<meta property="og:description" content="Example Online Optimizers对于FTL（Follow-The-Leader）算法，$$\mathbf{w}{t+1}&#x3D;\underset{\mathbf{w}\in\mathcal{W}}{\arg\min}\sum^t{s&#x3D;1}f_s(\mathbf{w})\equiv&#x3D;\underset{\mathbf{w}}{\arg\min}f_{1:t}(\mathbf{w})$$">
+<meta property="og:description" content="Example Online Optimizers 对于FTL（Follow-The-Leader）算法， \[ \mathbf{w}_{t+1}&#x3D;\underset{\mathbf{w}\in\mathcal{W}}{\arg\min}\sum^t_{s&#x3D;1}f_s(\mathbf{w}) \equiv&#x3D;\underset{\mathbf{w}}{\arg\min}f_{1:t}(\mathbf">
 <meta property="og:image" content="http://yoursite.com/2018/06/14/Online-Learning-3/1.png">
 <meta property="article:published_time" content="2018-06-14T01:24:12.000Z">
 <meta property="article:modified_time" content="2018-06-14T03:38:01.364Z">
@@ -391,33 +391,108 @@
       
 
       
-        <h2 id="Example-Online-Optimizers"><a href="#Example-Online-Optimizers" class="headerlink" title="Example Online Optimizers"></a>Example Online Optimizers</h2><p>对于FTL（Follow-The-Leader）算法，<br>$$<br>\mathbf{w}<em>{t+1}=\underset{\mathbf{w}\in\mathcal{W}}{\arg\min}\sum^t</em>{s=1}f_s(\mathbf{w})<br>\equiv=\underset{\mathbf{w}}{\arg\min}f_{1:t}(\mathbf{w})<br>$$<br>当$f_t$是线性函数的时候，FTL算法最坏的可能悔恨为$\mathcal{O}(T)$。</p>
-<p>对于另一个算法BTL（Be-The-Leader，不可实现，因为它利用了未来的信息），相比于FTL，在$t$轮的时候使用了$\mathbf{w}_{t+1}$。</p>
+        <h2 id="example-online-optimizers">Example Online Optimizers</h2>
+<p>对于FTL（Follow-The-Leader）算法， <span class="math display">\[
+\mathbf{w}_{t+1}=\underset{\mathbf{w}\in\mathcal{W}}{\arg\min}\sum^t_{s=1}f_s(\mathbf{w})
+\equiv=\underset{\mathbf{w}}{\arg\min}f_{1:t}(\mathbf{w})
+\]</span> 当<span class="math inline">\(f_t\)</span>是线性函数的时候，FTL算法最坏的可能悔恨为<span class="math inline">\(\mathcal{O}(T)\)</span>。</p>
+<p>对于另一个算法BTL（Be-The-Leader，不可实现，因为它利用了未来的信息），相比于FTL，在<span class="math inline">\(t\)</span>轮的时候使用了<span class="math inline">\(\mathbf{w}_{t+1}\)</span>。</p>
 <blockquote>
-<p>定理1：对于任何有界的$f_t$，$\text{Regret}(\text{BTL})\leq 0$，即$\sum^T_{t=1}f_t(\mathbf{w}<em>{t+1})\leq\sum^T</em>{t=1}f_t(\mathbf{w}_{T+1})$。</p>
+<p>定理1：对于任何有界的<span class="math inline">\(f_t\)</span>，<span class="math inline">\(\text{Regret}(\text{BTL})\leq 0\)</span>，即<span class="math inline">\(\sum^T_{t=1}f_t(\mathbf{w}_{t+1})\leq\sum^T_{t=1}f_t(\mathbf{w}_{T+1})\)</span>。</p>
 </blockquote>
 <p>证明：</p>
-<p>当$T=1$时，$f_1(\mathbf{w}<em>2)\leq f_1(\mathbf{w_2})$显然成立，则对于$T&gt;1$时，<br>$$<br>\begin{aligned}<br>\sum^{T+1}</em>{t=1}f_t(\mathbf{w}<em>{t+1})<br>&amp;= \sum^{T}</em>{t=1}f_t(\mathbf{w}<em>{t+1}) + f</em>{T+1}(\mathbf{w}<em>{T+2})\<br>&amp;\leq \sum^{T}</em>{t=1}f_t(\mathbf{w}<em>{T+1}) + f</em>{T+1}(\mathbf{w}<em>{T+2})\<br>&amp;\leq \sum^{T}</em>{t=1}f_t(\mathbf{w}<em>{T+2}) + f</em>{T+1}(\mathbf{w}<em>{T+2})\<br>&amp;= \sum^{T+1}</em>{t=1} f_t(\mathbf{w}_{T+2})<br>\end{aligned}<br>$$<br>由以上归纳法证得。$\Box$</p>
+<p>当<span class="math inline">\(T=1\)</span>时，<span class="math inline">\(f_1(\mathbf{w}_2)\leq f_1(\mathbf{w_2})\)</span>显然成立，则对于<span class="math inline">\(T&gt;1\)</span>时， <span class="math display">\[
+\begin{aligned}
+\sum^{T+1}_{t=1}f_t(\mathbf{w}_{t+1})
+&amp;= \sum^{T}_{t=1}f_t(\mathbf{w}_{t+1}) + f_{T+1}(\mathbf{w}_{T+2})\\
+&amp;\leq \sum^{T}_{t=1}f_t(\mathbf{w}_{T+1}) + f_{T+1}(\mathbf{w}_{T+2})\\
+&amp;\leq \sum^{T}_{t=1}f_t(\mathbf{w}_{T+2}) + f_{T+1}(\mathbf{w}_{T+2})\\
+&amp;= \sum^{T+1}_{t=1} f_t(\mathbf{w}_{T+2})
+\end{aligned}
+\]</span> 由以上归纳法证得。<span class="math inline">\(\Box\)</span></p>
 <blockquote>
-<p>定理2：对于$\forall w^*\in\mathcal{W}$，当$f_t$有界时，有<br>$$<br>\text{Regret}(\text{FTL})\leq \sum^{T}<em>{t=1}(f_t(\mathbf{w}_t)-f_t(\mathbf{w}</em>{t+1}))<br>$$</p>
+<p>定理2：对于<span class="math inline">\(\forall w^*\in\mathcal{W}\)</span>，当<span class="math inline">\(f_t\)</span>有界时，有 <span class="math display">\[
+\text{Regret}(\text{FTL})\leq \sum^{T}_{t=1}(f_t(\mathbf{w}_t)-f_t(\mathbf{w}_{t+1}))
+\]</span></p>
 </blockquote>
-<p>证明：<br>$$<br>\begin{aligned}<br>\text{Regret}(\text{FTL})<br>&amp;= \sum^T_{t=1}f_t(\mathbf{w}<em>t)-\sum^T</em>{t=1}f_t(\mathbf{w}^*)\<br>&amp;\leq \sum^T_{t=1}f_t(\mathbf{w}<em>t)-\sum^T</em>{t=1}f_t(\mathbf{w}<em>{T+1})\<br>&amp;= \sum^T</em>{t=1}f_t(\mathbf{w}<em>t)-\sum^T</em>{t=1}f_t(\mathbf{w}<em>{T+1}) + \sum^T</em>{t=1}f_t(\mathbf{w}<em>{t+1})-\sum^T</em>{t=1}f_t(\mathbf{w}<em>{t+1}) \<br>&amp;= (\sum^T</em>{t=1}f_t(\mathbf{w}<em>{t+1})-\sum^T</em>{t=1}f_t(\mathbf{w}<em>{T+1}))+<br>(\sum^T</em>{t=1}f_t(\mathbf{w}<em>t) -\sum^T</em>{t=1}f_t(\mathbf{w}<em>{t+1}))\<br>&amp;= \text{Regret}(\text{BTL}) +<br>(\sum^T</em>{t=1}f_t(\mathbf{w}<em>t) -\sum^T</em>{t=1}f_t(\mathbf{w}<em>{t+1}))\<br>&amp;\leq \sum^T</em>{t=1}f_t(\mathbf{w}<em>t) -\sum^T</em>{t=1}f_t(\mathbf{w}_{t+1})<br>\end{aligned}<br>$$<br>证毕。$\Box$</p>
-<h2 id="Transformations-in-Online-Optimization"><a href="#Transformations-in-Online-Optimization" class="headerlink" title="Transformations in Online Optimization"></a>Transformations in Online Optimization</h2><p><img src="1.png" alt="Transformations in Online Optimization"></p>
-<p>如上图所示，FTRL（Follow-The-Regularized-Leader，著名的在线 CTR预估模型）就是利用了这种转换，将FTL算法用在一个带正则项的损失函数上，每一轮的迭代式为<br>$$<br>\mathbf{w}<em>{t+1}=\underset{\mathbf{w}}{\arg\min}(f</em>{1:t}(\mathbf{w})+r(\mathbf{w}))<br>$$<br>其中正则项函数$r:\mathbb{R}^n\rightarrow\mathbb{R}$，满足$r(\mathbf{w})\geq 0$，$r(0)=0$。</p>
-<p>FTRL算法可以看作是在FTL算法的基础上做如下转换：给定函数$f_t(\mathbf{w})$，令$f’_t(\mathbf{w})=\mathbf{g}_t\cdot\mathbf{w}+r(\mathbf{w})$，然后令$$f’_t=f_t$$。</p>
+<p>证明： <span class="math display">\[
+\begin{aligned}
+\text{Regret}(\text{FTL})
+&amp;= \sum^T_{t=1}f_t(\mathbf{w}_t)-\sum^T_{t=1}f_t(\mathbf{w}^*)\\
+&amp;\leq \sum^T_{t=1}f_t(\mathbf{w}_t)-\sum^T_{t=1}f_t(\mathbf{w}_{T+1})\\
+&amp;= \sum^T_{t=1}f_t(\mathbf{w}_t)-\sum^T_{t=1}f_t(\mathbf{w}_{T+1}) + \sum^T_{t=1}f_t(\mathbf{w}_{t+1})-\sum^T_{t=1}f_t(\mathbf{w}_{t+1}) \\
+&amp;= (\sum^T_{t=1}f_t(\mathbf{w}_{t+1})-\sum^T_{t=1}f_t(\mathbf{w}_{T+1}))+
+(\sum^T_{t=1}f_t(\mathbf{w}_t) -\sum^T_{t=1}f_t(\mathbf{w}_{t+1}))\\
+&amp;= \text{Regret}(\text{BTL}) +
+(\sum^T_{t=1}f_t(\mathbf{w}_t) -\sum^T_{t=1}f_t(\mathbf{w}_{t+1}))\\
+&amp;\leq \sum^T_{t=1}f_t(\mathbf{w}_t) -\sum^T_{t=1}f_t(\mathbf{w}_{t+1})
+\end{aligned}
+\]</span> 证毕。<span class="math inline">\(\Box\)</span></p>
+<h2 id="transformations-in-online-optimization">Transformations in Online Optimization</h2>
+<figure>
+<img src="1.png" alt="Transformations in Online Optimization" /><figcaption>Transformations in Online Optimization</figcaption>
+</figure>
+<p>如上图所示，FTRL（Follow-The-Regularized-Leader，著名的在线 CTR预估模型）就是利用了这种转换，将FTL算法用在一个带正则项的损失函数上，每一轮的迭代式为 <span class="math display">\[
+\mathbf{w}_{t+1}=\underset{\mathbf{w}}{\arg\min}(f_{1:t}(\mathbf{w})+r(\mathbf{w}))
+\]</span> 其中正则项函数<span class="math inline">\(r:\mathbb{R}^n\rightarrow\mathbb{R}\)</span>，满足<span class="math inline">\(r(\mathbf{w})\geq 0\)</span>，<span class="math inline">\(r(0)=0\)</span>。</p>
+<p>FTRL算法可以看作是在FTL算法的基础上做如下转换：给定函数<span class="math inline">\(f_t(\mathbf{w})\)</span>，令<span class="math inline">\(f&#39;_t(\mathbf{w})=\mathbf{g}_t\cdot\mathbf{w}+r(\mathbf{w})\)</span>，然后令<span class="math display">\[f&#39;_t=f_t\]</span>。</p>
 <blockquote>
-<p>定理3：FTRL算法的悔恨界为<br>$$<br>\text{Regret}(\text{FTRL})\leq\sum^T_{t=1}(f_t(\mathbf{w}<em>t)-f_t(\mathbf{w}</em>{t+1}))<br>+r(\mathbf{w}^*)<br>$$</p>
+<p>定理3：FTRL算法的悔恨界为 <span class="math display">\[
+\text{Regret}(\text{FTRL})\leq\sum^T_{t=1}(f_t(\mathbf{w}_t)-f_t(\mathbf{w}_{t+1}))
++r(\mathbf{w}^*)
+\]</span></p>
 </blockquote>
-<p>证明：<br>$$<br>\begin{aligned}<br>\sum_tf’<em>t(\mathbf{w}_t)-\sum_tf’_t(\mathbf{w}^*)<br>&amp;\leq \sum_tf’_t(\mathbf{w}_t)-\sum_tf’_t(\mathbf{w}</em>{t+1})\<br>\sum_tf_t(\mathbf{w}<em>t)-\sum_tf_t(\mathbf{w}^<em>)+r(\mathbf{w}_1)-r(\mathbf{w}^</em>)<br>&amp;\leq\sum_t(f_t(\mathbf{w}_t)-f_t(\mathbf{w}</em>{t+1}))+r(\mathbf{w}<em>1)-r(\mathbf{w}_2)\<br>\text{Regret}(\text{FTRL})<br>&amp;\leq \sum_t(f_t(\mathbf{w}_t)-f_t(\mathbf{w}</em>{t+1}))+r(\mathbf{w}^<em>)-r(\mathbf{w}<em>2)\<br>\text{Regret}(\text{FTRL})<br>&amp;\leq \sum_t(f_t(\mathbf{w}_t)-f_t(\mathbf{w}</em>{t+1}))+r(\mathbf{w}^</em>)<br>\end{aligned}<br>$$<br>证毕。$\Box$</p>
-<p>FTRL对于线性的$f_t$：</p>
+<p>证明： <span class="math display">\[
+\begin{aligned}
+\sum_tf&#39;_t(\mathbf{w}_t)-\sum_tf&#39;_t(\mathbf{w}^*)
+&amp;\leq \sum_tf&#39;_t(\mathbf{w}_t)-\sum_tf&#39;_t(\mathbf{w}_{t+1})\\
+\sum_tf_t(\mathbf{w}_t)-\sum_tf_t(\mathbf{w}^*)+r(\mathbf{w}_1)-r(\mathbf{w}^*)
+&amp;\leq\sum_t(f_t(\mathbf{w}_t)-f_t(\mathbf{w}_{t+1}))+r(\mathbf{w}_1)-r(\mathbf{w}_2)\\
+\text{Regret}(\text{FTRL})
+&amp;\leq \sum_t(f_t(\mathbf{w}_t)-f_t(\mathbf{w}_{t+1}))+r(\mathbf{w}^*)-r(\mathbf{w}_2)\\
+\text{Regret}(\text{FTRL})
+&amp;\leq \sum_t(f_t(\mathbf{w}_t)-f_t(\mathbf{w}_{t+1}))+r(\mathbf{w}^*)
+\end{aligned}
+\]</span> 证毕。<span class="math inline">\(\Box\)</span></p>
+<p>FTRL对于线性的<span class="math inline">\(f_t\)</span>：</p>
 <ul>
-<li>$f_t(\mathbf{w})=\mathbf{g}_t\cdot\mathbf{w}$</li>
-<li>$|\mathbf{g}_t|\leq G$（有界）</li>
-<li>$\mathbf{w}_{t+1}=\underset{\mathbf{w}}{\arg\min}(\sum_t\mathbf{g}_t\cdot\mathbf{w}+\frac{\sigma}{2}|\mathbf{w}|^2)$，其中$\sigma\in\mathbb{R}^+$（二次正则项）</li>
+<li><span class="math inline">\(f_t(\mathbf{w})=\mathbf{g}_t\cdot\mathbf{w}\)</span></li>
+<li><span class="math inline">\(\|\mathbf{g}_t\|\leq G\)</span>（有界）</li>
+<li><span class="math inline">\(\mathbf{w}_{t+1}=\underset{\mathbf{w}}{\arg\min}(\sum_t\mathbf{g}_t\cdot\mathbf{w}+\frac{\sigma}{2}\|\mathbf{w}\|^2)\)</span>，其中<span class="math inline">\(\sigma\in\mathbb{R}^+\)</span>（二次正则项）</li>
 </ul>
-<p>那么我们就有<br>$$<br>\begin{aligned}<br>\text{Regret}(\text{FTRL})<br>&amp;\leq \sum^T_{t=1}(f_t(\mathbf{w}<em>{t})-f_t(\mathbf{w}</em>{t+1}))+r(\mathbf{w}^<em>)\<br>&amp;=\sum_t\mathbf{g}<em>t\cdot(\mathbf{w}_t-\mathbf{w}</em>{t+1}) + r(\mathbf{w}^</em>)\<br>&amp;\leq \sum_t|\mathbf{g}<em>t||\mathbf{w}_t-\mathbf{w}</em>{t+1}|<br>+\frac{\sigma}{2}|\mathbf{w}^<em>|^2 \<br>&amp;\leq \sum_t G |\mathbf{w}<em>t-\mathbf{w}</em>{t+1}|<br>+\frac{\sigma}{2}|\mathbf{w}^</em>|^2 \<br>\end{aligned}<br>$$<br>此时我们，当学习率为$\frac{1}{\sigma}$时，采用梯度下降法时，我们有<br>$$<br>\begin{aligned}<br>\mathbf{w}<em>{t+1}<br>&amp;=\mathbf{w}_t-\gamma \frac{\part f</em>{1:t}(\mathbf{w}<em>t)}{\part \mathbf{w}_t} \<br>\mathbf{w}_t-\mathbf{w}</em>{t+1}<br>&amp;=\frac{-\mathbf{g}<em>{1:t-1}+\mathbf{g}</em>{1:t}}{\sigma}<br>=\frac{\mathbf{g}<em>t}{\sigma}<br>\end{aligned}<br>$$<br>将其带入上面不等式，得<br>$$<br>\begin{aligned}<br>\text{Regret}(\text{FTRL})<br>&amp;\leq \sum_t G |\mathbf{w}_t-\mathbf{w}</em>{t+1}|<br>+\frac{\sigma}{2}|\mathbf{w}^<em>|^2 \<br>&amp;\leq\sum_t G |\frac{\mathbf{g}_t}{\sigma}|<br>+\frac{\sigma}{2}|\mathbf{w}^</em>|^2 \<br>&amp;\leq \frac{TG^2}{\sigma}<br>+\frac{\sigma}{2}|\mathbf{w}^*|^2 \<br>\end{aligned}<br>$$</p>
+<p>那么我们就有 <span class="math display">\[
+\begin{aligned}
+\text{Regret}(\text{FTRL})
+&amp;\leq \sum^T_{t=1}(f_t(\mathbf{w}_{t})-f_t(\mathbf{w}_{t+1}))+r(\mathbf{w}^*)\\
+&amp;=\sum_t\mathbf{g}_t\cdot(\mathbf{w}_t-\mathbf{w}_{t+1}) + r(\mathbf{w}^*)\\
+&amp;\leq \sum_t\|\mathbf{g}_t\|\|\mathbf{w}_t-\mathbf{w}_{t+1}\| 
++\frac{\sigma}{2}\|\mathbf{w}^*\|^2 \\
+&amp;\leq \sum_t G \|\mathbf{w}_t-\mathbf{w}_{t+1}\|
++\frac{\sigma}{2}\|\mathbf{w}^*\|^2 \\
+\end{aligned}
+\]</span> 此时我们，当学习率为<span class="math inline">\(\frac{1}{\sigma}\)</span>时，采用梯度下降法时，我们有 <span class="math display">\[
+\begin{aligned}
+\mathbf{w}_{t+1}
+&amp;=\mathbf{w}_t-\gamma \frac{\part f_{1:t}(\mathbf{w}_t)}{\part \mathbf{w}_t} \\
+\mathbf{w}_t-\mathbf{w}_{t+1}
+&amp;=\frac{-\mathbf{g}_{1:t-1}+\mathbf{g}_{1:t}}{\sigma}
+=\frac{\mathbf{g}_t}{\sigma}
+\end{aligned}
+\]</span> 将其带入上面不等式，得 <span class="math display">\[
+\begin{aligned}
+\text{Regret}(\text{FTRL})
+&amp;\leq \sum_t G \|\mathbf{w}_t-\mathbf{w}_{t+1}\|
++\frac{\sigma}{2}\|\mathbf{w}^*\|^2 \\
+&amp;\leq\sum_t G \|\frac{\mathbf{g}_t}{\sigma}\|
++\frac{\sigma}{2}\|\mathbf{w}^*\|^2 \\
+&amp;\leq \frac{TG^2}{\sigma}
++\frac{\sigma}{2}\|\mathbf{w}^*\|^2 \\
+\end{aligned}
+\]</span></p>
 <blockquote>
-<p>定理4：对于$\forall \mathbf{w}^<em>$，当$|\mathbf{w}^</em>|\leq R$，如果损失函数是线性的$f_t(\mathbf{w})=\mathbf{g}_t\cdot\mathbf{w}$，且$|\mathbf{g}_t|\leq G$，正则项为$r(\mathbf{w})=\frac{\sigma}{2}|\mathbf{w|^2}$，$\sigma=\frac{G\sqrt{2T}}{R}$，我们有<br>$$<br>\text{Regret}(\text{FTRL})\leq GR\sqrt{2T}<br>$$</p>
+<p>定理4：对于<span class="math inline">\(\forall \mathbf{w}^*\)</span>，当<span class="math inline">\(\|\mathbf{w}^*\|\leq R\)</span>，如果损失函数是线性的<span class="math inline">\(f_t(\mathbf{w})=\mathbf{g}_t\cdot\mathbf{w}\)</span>，且<span class="math inline">\(\|\mathbf{g}_t\|\leq G\)</span>，正则项为<span class="math inline">\(r(\mathbf{w})=\frac{\sigma}{2}\|\mathbf{w\|^2}\)</span>，<span class="math inline">\(\sigma=\frac{G\sqrt{2T}}{R}\)</span>，我们有 <span class="math display">\[
+\text{Regret}(\text{FTRL})\leq GR\sqrt{2T}
+\]</span></p>
 </blockquote>
 
       
@@ -607,7 +682,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Example-Online-Optimizers"><span class="nav-number">1.</span> <span class="nav-text">Example Online Optimizers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Transformations-in-Online-Optimization"><span class="nav-number">2.</span> <span class="nav-text">Transformations in Online Optimization</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#example-online-optimizers"><span class="nav-number">1.</span> <span class="nav-text">Example Online Optimizers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#transformations-in-online-optimization"><span class="nav-number">2.</span> <span class="nav-text">Transformations in Online Optimization</span></a></li></ol></div>
             
 
           </div>

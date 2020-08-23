@@ -412,9 +412,10 @@
       
         
           
-          最近关于ML+OR体系的一点思考最近又深入实（被）践（蹂躏）了一波ML+OR的工作，有些感悟思考记录一下。先贴一下一个前辈的思考
+          最近关于ML+OR体系的一点思考
+最近又深入实（被）践（蹂躏）了一波ML+OR的工作，有些感悟思考记录一下。先贴一下一个前辈的思考
 【2019.Q3】谈工业界常见的ML+OR策略架构
-首先是很多场景下的解决方案都可以看作是ML+OR的组合，这个在上面的文章中也已经提到了，包括且不限于最简单的经验预测值+各类规划问题（传统OR场景，强假设+复杂优化）以及各种“高精尖”的预测+简单排序（传统ML场景，强
+首先是很多场景下的解决方案都可以看作是ML+OR的组合，这个在上面的文章中也已经提到了，包括且不限于最简单的经验预测值+各类规划问题（传统OR场景，强假设+复杂优化）以及各种“高精尖”的预测+简单排序（传统ML场景，
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -868,8 +869,10 @@ AccuAir: Winning Solution to Air Quality Prediction for KDD Cup 2018
       
         
           
-          跬步 2019-07-13平时还是有些零星的idea休要记录下来，所以开一个跬步的系列，不积跬步，无以至千里。
-出行的“聚合模式”最近各家都在搞聚合模式，在以前滴滴一家独大的时候，的确是不怎么需要聚合模式的，毕竟离开了滴滴就打不到车了，现在入场的玩家越来越多了，大公司搞起了聚合模式，把自己做成一个真的平台。目前市面上有三家在做聚合平台，高德、滴滴、美团。对于高德来说，如何对流量变现一直是成为“阿里
+          跬步 2019-07-13
+平时还是有些零星的idea休要记录下来，所以开一个跬步的系列，不积跬步，无以至千里。
+出行的“聚合模式”
+最近各家都在搞聚合模式，在以前滴滴一家独大的时候，的确是不怎么需要聚合模式的，毕竟离开了滴滴就打不到车了，现在入场的玩家越来越多了，大公司搞起了聚合模式，把自己做成一个真的平台。目前市面上有三家在做聚合平台，高德、滴滴、美团。对于高德来说，如何对流量变现一直是成为“
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1017,7 +1020,9 @@ AccuAir: Winning Solution to Air Quality Prediction for KDD Cup 2018
       
         
           
-          Bandit Note（进行中）Introduction基本术语：
+          Bandit Note（进行中）
+Introduction
+基本术语：
 
 learner、player，决策者、玩家
 environment，环境
@@ -1027,7 +1032,7 @@ reward，奖励
 policy，策略
 regret，悔恨
 
-玩家在$n$轮决策周期内进行游戏，在每一轮$t\in[n]$中，玩家从给定动作集合$\mathcal{A}$中选择动作$A_t$，环境根
+玩家在\(n\)轮决策周期内进行游戏，在每一轮\(t\in[n]\)中，玩家从给定动作集合\(\mathcal{A}\)中选择动作\
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1175,7 +1180,8 @@ regret，悔恨
       
         
           
-          Scalable Training of L1-Regularized Log-Linear Models最近重读了一下之前阿里的MLR，又仔细研究了一下里面的优化算法，然后发现也是对之前的一个叫Orthant-Wise Limited-memory Quasi-Newton（下文中称OWL-QN，这个owl让我想起了哈利波特的Ordinary Wizarding Level…）的方法进行的一点小
+          Scalable Training of L1-Regularized Log-Linear Models
+最近重读了一下之前阿里的MLR，又仔细研究了一下里面的优化算法，然后发现也是对之前的一个叫Orthant- Wise Limited-memory Quasi-Newton（下文中称OWL-QN，这个owl让我想起了哈利波特的Ordinary Wizarding Level...）的方法进行
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1324,7 +1330,9 @@ regret，悔恨
         
           
           这篇文章是今年年初时候发在sigkdd上的一篇关于eta的文章，《Learning to Estimate the Travel Time》。
-背景车辆行驶时间估计是重要的位置服务的之一，而且在滴滴的服务中占有比较重要的一环，这篇文章提出了一个新的ETA的模型，并应用于滴滴出行的线上服务。传统的ETA主要分为两类，第一类就是基于路径的方法，整条路径的行驶时间等于其中每一段路径时间的和：$$\hat
+背景
+车辆行驶时间估计是重要的位置服务的之一，而且在滴滴的服务中占有比较重要的一环，这篇文章提出了一个新的ETA的模型，并应用于滴滴出行的线上服务。传统的ETA主要分为两类，第一类就是基于路径的方法，整条路径的行驶时间等于其中每一段路径时间的和： \[
+\
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1622,7 +1630,8 @@ regret，悔恨
         
           
           最近要写几个滴滴相关的论文的笔记，顺便解读一下目前的拼车算法等策略，顺带着科普。今天这篇是KDD2017的《A Taxi Order Dispatch Model based On Combinatorial Optimization》，这篇文章是比较早时候的分单算法的文章，跟现在的算法略有差异。
-简介传统的拼车算法是一种顺序的分配策略，在乘客周围选择最近的车辆，最大化每个司机对每个订单的接受概率
+简介
+传统的拼车算法是一种顺序的分配策略，在乘客周围选择最近的车辆，最大化每个司机对每个订单的接受概
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1748,14 +1757,16 @@ regret，悔恨
       
         
           
-          python类笔记私有属性和方法命名前加两个下划线
+          python类笔记
+私有属性和方法
+命名前加两个下划线
 1from module import *
-
 这样做无法直接调用module中的__func()方法，但直接import却是可以的
 1from module import __func
-
-抽象方法用@abstractmethod。
-__new__和__init____init__() 方法用于给属性赋值，不可以有返回值，__new__()多用于构
+抽象方法
+用@abstractmethod。
+__new__和__init__
+__init__() 方法用于给属性赋值，不可以有返回值，__new__()多用
           ...
           <!--noindex-->
           <div class="post-button text-center">

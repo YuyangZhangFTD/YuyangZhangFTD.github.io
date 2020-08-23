@@ -421,14 +421,28 @@
 <li>在部署一个集成模型时，往往需要权衡打分效率和模型准确度，决策表模型可以用紧凑的数据结构所表示，大大节约了内存空间，使得我们可以训练更大的模型，同时达到较高的精度，而不用担心打分的延迟。</li>
 </ul>
 <p>一个通用的梯度提升框架如下所示：</p>
-<p><img src="1.png" alt="1"></p>
-<p>一个$d$ 维的决策表用一个$d$ 维的数组来存储特征下标，另一个$d$ 维数组来存储划分，一个$2^d$ 的数组来存储存储预测值（$d$ 的取值通常较小），预测值通过一个bit的向量来表示，用例子来说明</p>
-<p><img src="2.png" alt="2"></p>
-<p>输入$x_i=(0,3,4,2,1,0)$ ，经过$d=3$ 个test：$x_3\leq 5,x_6\leq0,x_2\leq1$并且产生一个bit向量$[110]<em>2=[6]</em>{10}$ ，然后将它的值作为下标值存储。对于每次划分$k$ ，用$\mathcal{D}<em>k$ 表示划分点的子集，$\mathcal{D}_k^L$ 和$\mathcal{D}_k^R$ 分别表示划分后的两个集合，大于临界值$c$ 的和小于等于的，用$\mathcal{I}_k^L={i|x_i\in\mathcal{D}_k^L}$ 和$\mathcal{I}_k^R={i|x_i\in\mathcal{D}_k^R}$ 表示划分点的下标，定义均方误差为$\text{SE}</em>{\mathcal{D}<em>k}=\sum</em>{i\in\mathcal{I}<em>k}(y_i-\overline{y}_k)^2$ 其中$\overline{y}_k=\frac{1}{|\mathcal{I}_k|}\sum</em>{i\in\mathcal{I}<em>k}y_i$ ，根据基尼系数来划分<br>$$<br>\begin{aligned}<br>\text{Gain}(x_j,c)&amp;=<br>\text{SE}</em>{\mathcal{D}}-\sum_k(\text{SE}<em>{\mathcal{D}_k^L}+\text{SE}</em>{\mathcal{D}<em>k^R})\<br>&amp;=\sum_k(\frac{(\sum</em>{i\in\mathcal{I}<em>k^L}y_i)^2}{|\mathcal{I}_k^L|}-\frac{(\sum</em>{i\in\mathcal{I}_k^R}y_i)^2}{|\mathcal{I}_k^R|})-N\overline{y}^2<br>\end{aligned}<br>$$</p>
-<p>$$<br>\text{Gain}(x_j)=\max_{c\in dom(x_j)}\text{Gain}(x_j,c)<br>$$</p>
+<figure>
+<img src="1.png" alt="1" /><figcaption>1</figcaption>
+</figure>
+<p>一个<span class="math inline">\(d\)</span> 维的决策表用一个<span class="math inline">\(d\)</span> 维的数组来存储特征下标，另一个<span class="math inline">\(d\)</span> 维数组来存储划分，一个<span class="math inline">\(2^d\)</span> 的数组来存储存储预测值（<span class="math inline">\(d\)</span> 的取值通常较小），预测值通过一个bit的向量来表示，用例子来说明</p>
+<figure>
+<img src="2.png" alt="2" /><figcaption>2</figcaption>
+</figure>
+<p>输入<span class="math inline">\(x_i=(0,3,4,2,1,0)\)</span> ，经过<span class="math inline">\(d=3\)</span> 个test：<span class="math inline">\(x_3\leq 5,x_6\leq0,x_2\leq1\)</span>并且产生一个bit向量<span class="math inline">\([110]_2=[6]_{10}\)</span> ，然后将它的值作为下标值存储。对于每次划分<span class="math inline">\(k\)</span> ，用<span class="math inline">\(\mathcal{D}_k\)</span> 表示划分点的子集，<span class="math inline">\(\mathcal{D}_k^L\)</span> 和<span class="math inline">\(\mathcal{D}_k^R\)</span> 分别表示划分后的两个集合，大于临界值<span class="math inline">\(c\)</span> 的和小于等于的，用<span class="math inline">\(\mathcal{I}_k^L=\{i|x_i\in\mathcal{D}_k^L\}\)</span> 和<span class="math inline">\(\mathcal{I}_k^R=\{i|x_i\in\mathcal{D}_k^R\}\)</span> 表示划分点的下标，定义均方误差为<span class="math inline">\(\text{SE}_{\mathcal{D}_k}=\sum_{i\in\mathcal{I}_k}(y_i-\overline{y}_k)^2\)</span> 其中<span class="math inline">\(\overline{y}_k=\frac{1}{|\mathcal{I}_k|}\sum_{i\in\mathcal{I}_k}y_i\)</span> ，根据基尼系数来划分 <span class="math display">\[
+\begin{aligned}
+\text{Gain}(x_j,c)&amp;=
+\text{SE}_{\mathcal{D}}-\sum_k(\text{SE}_{\mathcal{D}_k^L}+\text{SE}_{\mathcal{D}_k^R})\\
+&amp;=\sum_k(\frac{(\sum_{i\in\mathcal{I}_k^L}y_i)^2}{|\mathcal{I}_k^L|}-\frac{(\sum_{i\in\mathcal{I}_k^R}y_i)^2}{|\mathcal{I}_k^R|})-N\overline{y}^2
+\end{aligned}
+\]</span></p>
+<p><span class="math display">\[
+\text{Gain}(x_j)=\max_{c\in dom(x_j)}\text{Gain}(x_j,c)
+\]</span></p>
 <p>很容易看出，寻找最有决策是一个NP问题，所以作者提出了一个反向拟合（backfitting）的方法</p>
-<p><img src="3.png" alt="3"></p>
-<p>首先用贪婪策略去寻找$d$ 次划分，这样可能不会得到最优解，因此，一旦我们完成$d$ 次划分的据侧标，用$n$ 次检验的反向拟合算法来矫正一些次优的划分，每次检验时执行$d$ 次划分，每次选择$d$ 次划分之一时来优化划分临界值，并且从当前决策表中去除，计算当前最优化分，更新划分方式。最后，我们计算每次划分的均值来作为预测值。反向拟合主要有以下三种策略：</p>
+<figure>
+<img src="3.png" alt="3" /><figcaption>3</figcaption>
+</figure>
+<p>首先用贪婪策略去寻找<span class="math inline">\(d\)</span> 次划分，这样可能不会得到最优解，因此，一旦我们完成<span class="math inline">\(d\)</span> 次划分的据侧标，用<span class="math inline">\(n\)</span> 次检验的反向拟合算法来矫正一些次优的划分，每次检验时执行<span class="math inline">\(d\)</span> 次划分，每次选择<span class="math inline">\(d\)</span> 次划分之一时来优化划分临界值，并且从当前决策表中去除，计算当前最优化分，更新划分方式。最后，我们计算每次划分的均值来作为预测值。反向拟合主要有以下三种策略：</p>
 <ul>
 <li>循环反向拟合，cyclic backfitting，从头开始进行划分和优化所有划分序列；</li>
 <li>随机反向拟合，random backfitting，随机选择一次划分并优化；</li>
