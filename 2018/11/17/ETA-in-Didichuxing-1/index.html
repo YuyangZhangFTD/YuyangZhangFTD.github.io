@@ -454,12 +454,12 @@
 <p>在实际中，GBDT和FM并不是解决ETA问题的最好的模型。GBDT难以处理过大的特征集合，FM又很依赖于特征，并且模型表达能力有限。同时，我们又拥有分布复杂数据量庞大的历史数据，这使得我们需要采用更复杂的模型来解决这个问题，所以我们选择了深度学习的方法。</p>
 <p>Wide&amp;Deep Model是之前谷歌提出的，做ctr的模型，一方面做特征的交叉，一方面用简单的网络结构做深层的特征映射。</p>
 <figure>
-<img src="wide&amp;deep.jpg" alt="wide&amp;deep" /><figcaption>wide&amp;deep</figcaption>
+<img src="wide&amp;deep.jpg" alt="wide&amp;deep" /><figcaption aria-hidden="true">wide&amp;deep</figcaption>
 </figure>
 <p>模型中Wide的部分负责将特征映射到高维的特征空间，做叉积的操作，这种方法类似于FM，然后做仿射变化，主要就是一个线性加权求和，一个浅层的网络结构，这部分主要是一个线性的部分，Deep的部分负责将稀疏的特征映射到密集的特征空间中，相当于做embedding，然后concat这部分embedding，再加上一个简单的MLP结构，最后Wide和Deep两部分共同对最后进行输出。</p>
 <p>Wide&amp;Deep Model可以很好地利用一些全局信息，在所有的路径和地理区域信息，但是无法很好的抓住一些局部特征，因此我们增加了另一部分网络结构来利用路段的局部信息，而这种信息又跟NLP中的序列结构很相似，所以我们用了LSTM。</p>
 <figure>
-<img src="LSTM.png" alt="LSTM" /><figcaption>LSTM</figcaption>
+<img src="LSTM.png" alt="LSTM" /><figcaption aria-hidden="true">LSTM</figcaption>
 </figure>
 <p>LSTM最早是用于解决梯度消失问题，它优势在于它的几个门结构，可以控制信息在一个节点内的流动，包括输入门、遗忘门、输出门： <span class="math display">\[
 \begin{aligned}
@@ -475,12 +475,12 @@ h_t&amp;=o_t\odot tanh(c_t)\\
 \end{aligned}
 \]</span> 所以总体的模型结构如下图：</p>
 <figure>
-<img src="WDR.png" alt="WDR" /><figcaption>WDR</figcaption>
+<img src="WDR.png" alt="WDR" /><figcaption aria-hidden="true">WDR</figcaption>
 </figure>
 <p>WDR模型主要分成三部分，wide部分最后传出256维的输出，deep部分做20维的embedding，然后经过一个3层的MLP，激活函数采用ReLU，输出256维向量，recurrent部分则是一个RNN结构的变形，每一段路径都做了256维的embedding，然后传入LSTM单元，最后的隐藏状态作为输出。</p>
 <p>整体的工程结构如下图：</p>
 <figure>
-<img src="pipeline.png" alt="pipeline" /><figcaption>pipeline</figcaption>
+<img src="pipeline.png" alt="pipeline" /><figcaption aria-hidden="true">pipeline</figcaption>
 </figure>
 <h2 id="结语">结语</h2>
 <p>此处不详细列举后面数据的处理和实验结果了，只写个前面的想法，总体来说亮眼的点比较少，中规中矩的工作，但是从实验到落地到上线，这部分东西还是很值得肯定的。建议大家也多关注一些工程上的点，毕竟落地了才能创造价值。</p>
@@ -609,7 +609,7 @@ h_t&amp;=o_t\odot tanh(c_t)\\
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">79</span>
+                <span class="site-state-item-count">82</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -620,7 +620,7 @@ h_t&amp;=o_t\odot tanh(c_t)\\
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

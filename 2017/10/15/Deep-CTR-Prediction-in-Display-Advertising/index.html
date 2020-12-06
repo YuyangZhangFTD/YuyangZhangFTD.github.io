@@ -428,11 +428,11 @@ z=f(x)
 \mathcal{L}=-\frac{1}{N}\sum_i(y_i\log\hat{y}_i+(1-y_i)\log(1-\hat{y}_i))+\lambda\|W\|^2
 \]</span> 在这个模型中，重点在于如何去学习embedding 函数<span class="math inline">\(f(\cdot)\)</span> ，模型的结构如下图所示</p>
 <figure>
-<img src="1.png" alt="1" /><figcaption>1</figcaption>
+<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
 </figure>
 <p>左侧的卷积方法可以提取图片的特征，与右侧基本特征一起经过非线性的激活函数得到输出，卷积部分用了17层卷机网络</p>
 <figure>
-<img src="2.png" alt="2" /><figcaption>2</figcaption>
+<img src="2.png" alt="2" /><figcaption aria-hidden="true">2</figcaption>
 </figure>
 <p>模型看上去也很简单，并不出彩，那么我们来看看细节：</p>
 <ul>
@@ -440,7 +440,7 @@ z=f(x)
 <li>数据采样，采用SGD训练时，一般会用很小的batch和较多的iterations，对于这样数据集时，却很难收敛，所以作者提出了一个简单高效的训练方式，很多图片广告点击行为都共用了一个图片，所以相比之下，不同的图片就比较少了，因此一些好的特征可以在稀疏的网络结构中迅速传播，所以我们采用大batch对于特征，小的batch用于图片，具体算法如下图所示。</li>
 </ul>
 <figure>
-<img src="3.png" alt="3" /><figcaption>3</figcaption>
+<img src="3.png" alt="3" /><figcaption aria-hidden="true">3</figcaption>
 </figure>
 <p>论文后面还对实验部分进行一些分析，感兴趣的同学可以下下来看看，总帖来说文章还不错，一些优化也比较出彩，更重要的是给阿里打了广告。。手动微笑。</p>
 
@@ -559,7 +559,7 @@ z=f(x)
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">79</span>
+                <span class="site-state-item-count">82</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -570,7 +570,7 @@ z=f(x)
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

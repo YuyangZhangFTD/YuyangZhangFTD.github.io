@@ -558,7 +558,7 @@ v_{\text{ESPN}}^{\text{PA}}\cdot v_{\text{Nike}}^{\text{PA}}+v_{\text{ESPN}}^{\t
 <h1 id="factorization-machines-with-libfm">Factorization Machines with libFM</h1>
 <p>这篇文章是对libFM的一个介绍，主要libFM中对于FM的三种计算方法：SGD、ALS和MCMC。其中SGD是原文中最普遍的一种迭代算法，ALS则相对麻烦一点，不断迭代的方式得到收敛解，而MCMC则是求解FM的图模型</p>
 <figure>
-<img src="1.png" alt="1" /><figcaption>1</figcaption>
+<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
 </figure>
 <p>由于我还没怎么入门图模型，就不在这多解释了，不过FM的图模型相对简单很多，看着公式就可以理解。MCMC也在之前博客中讲过了，大家可以去看。</p>
 <h1 id="gradient-boosting-factorization-machines">Gradient Boosting Factorization Machines</h1>
@@ -566,12 +566,12 @@ v_{\text{ESPN}}^{\text{PA}}\cdot v_{\text{Nike}}^{\text{PA}}+v_{\text{ESPN}}^{\t
 \hat{y}_s(x)=\hat{y}_{s-1}(x)+\sum_{i\in\mathcal{C}_p}\sum_{j\in\mathcal{C}_q}\mathbb{I}[i,j\in x]\langle V_p^i,V_q^j\rangle
 \]</span> 其中的<span class="math inline">\(\mathcal{C}_p\)</span> 和<span class="math inline">\(\mathcal{C}_q\)</span> 为选取的交叉特征，其中如何选取好的特征则是我们模型的重点，文中采取的算法是选择尽可能使目标函数降低最快的特征，这点跟xgboost就非常相似，有兴趣的各位可以查阅一下（其实基本上完全相同的做法。。。），这里给出算法流程</p>
 <figure>
-<img src="2.png" alt="2" /><figcaption>2</figcaption>
+<img src="2.png" alt="2" /><figcaption aria-hidden="true">2</figcaption>
 </figure>
 <h1 id="neural-factorization-machines-for-sparse-predictive-analytics">Neural Factorization Machines for Sparse Predictive Analytics</h1>
 <p>这篇文章也是融合FM与DL方法的一篇文章，根据FM提出一种神似的叫Bi-Interaction Pooling的结构，用以刻画二阶特征，带入网络计算，网络结构如图所示</p>
 <figure>
-<img src="3.png" alt="3" /><figcaption>3</figcaption>
+<img src="3.png" alt="3" /><figcaption aria-hidden="true">3</figcaption>
 </figure>
 <p>而这个Bi-Interaction Pooling层的计算方式为 <span class="math display">\[
 f_{\text{BI}}(\mathcal{V}_x)=\sum^n_{i=1}\sum^n_{j=i+1}x_iv_i\odot x_jv_j
@@ -703,7 +703,7 @@ f_{\text{BI}}(\mathcal{V}_x)=\frac{1}{2}[(\sum^n_{i=1}x_iv_i)^2-\sum^n_{i=1}(x_i
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">79</span>
+                <span class="site-state-item-count">82</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -714,7 +714,7 @@ f_{\text{BI}}(\mathcal{V}_x)=\frac{1}{2}[(\sum^n_{i=1}x_iv_i)^2-\sum^n_{i=1}(x_i
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

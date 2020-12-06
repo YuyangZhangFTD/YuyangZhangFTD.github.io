@@ -417,7 +417,7 @@
 <p><a href="https://yuyangzhangftd.github.io/2017/11/01/BPR-Bayesian-personalized-ranking-from-implicit-feedback/" target="_blank" rel="noopener">BPR讲解的传送门</a></p>
 <p>作者对于BPR的改进是14年的这盘文章</p>
 <blockquote>
-<p>Rendle, Steffen, and Christoph Freudenthaler. &quot;Improving pairwise learning for item recommendation from implicit feedback.&quot; Proceedings of the 7th ACM international conference on Web search and data mining. ACM, 2014.</p>
+<p>Rendle, Steffen, and Christoph Freudenthaler. "Improving pairwise learning for item recommendation from implicit feedback." Proceedings of the 7th ACM international conference on Web search and data mining. ACM, 2014.</p>
 </blockquote>
 <p>作者在文中阐述了BPR存在的这样的问题：即经过少数的几次迭代后，热门与不热门的物品就可以明显地区分开了，但是之后的迭代中，产生的loss基本上就趋于0，因为之前迭代更新是用均匀采样，采出来负例样本，在商品呈长尾分布时，这样经过两三次迭代就可以区分出热门和非热门的商品，导致了后续迭代无用，且越热门的物品，出现次数越多，推荐给别人的概率也就越大（因为被迭代的次数多） <img src="1.png" alt="1" /></p>
 <p>同时，我们关心的商品推荐仅仅是前面top-n的商品，而且这n个商品的顺序准确度远远比后面商品顺序准确度要更值得被重视。</p>
@@ -535,7 +535,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">79</span>
+                <span class="site-state-item-count">82</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -546,7 +546,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

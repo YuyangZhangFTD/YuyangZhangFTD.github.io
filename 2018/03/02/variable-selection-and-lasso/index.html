@@ -446,7 +446,7 @@ y=X\beta+\epsilon
 \hat{\beta_j}=\hat{\beta_j^{\text{ls}}}/(1+\lambda),j\in{1,\cdots,p}
 \]</span></p>
 <figure>
-<img src="1.png" alt="1" /><figcaption>1</figcaption>
+<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
 </figure>
 <p>当回归的维数<span class="math inline">\(p\)</span>大于样本数量<span class="math inline">\(N\)</span>时，Lasso可以有效选择出有用的变量并且得到较好的回归效果。</p>
 <p>自由度（df）对于调节参数<span class="math inline">\(\lambda\)</span>的大小通常也很有用，常用的包括Akaike Information Criterion（AIC）和Bayesian Information Criterion（BIC），他们将模型的自由度也作为评判模型好坏的标准，AIC就定义为</p>
@@ -463,7 +463,7 @@ y=X\beta+\epsilon
 <p>其中<span class="math inline">\(\hat{L}\)</span>是最大似然函数，<span class="math inline">\(n\)</span>是观测数据样本数量，<span class="math inline">\(k\)</span>是模型中估计的参数，残差服从正态分布的时候就可以写成上面的形式。</p>
 <p>尽管AIC关注于最小误差，关注BIC可以得到更加稀疏的模型。通常lasso估计的自由度可以用非零系数个数来表示，通过shrinking系数，来削减模型的自由度，这样我们可以选择一些变量同时丢弃一些变量，但要注意这只适用于<span class="math inline">\(p&lt;N\)</span>的情况，当<span class="math inline">\(X\)</span>是否满秩不可知时，也同样不适用。</p>
 <figure>
-<img src="2.png" alt="2" /><figcaption>2</figcaption>
+<img src="2.png" alt="2" /><figcaption aria-hidden="true">2</figcaption>
 </figure>
 <p>对于正则项<span class="math inline">\(\|\cdot\|^q_q\)</span>的选择，当<span class="math inline">\(q\leq 1\)</span>的时候，可以达到变量缩减的目的。</p>
 <p>目前Lasso的主流实现一般用二次规划，同时当<span class="math inline">\(p&gt;n\)</span>的时候最多选择<span class="math inline">\(n-1\)</span>个变量，这个由凸对偶性保证（只是看到，未经深究）。</p>
@@ -476,11 +476,11 @@ y=X\beta+\epsilon
 <h2 id="lar">LAR</h2>
 <p>最小角回归（Least Angle Regression）[2]是今年比较流行的一种求解Lasso的方式，也是LAR出现之后，Lasso才被逐渐重视起来，主要思想是，经过归一化后，选择与<span class="math inline">\(y\)</span>最相关的变量<span class="math inline">\(\beta_j\)</span>加入（也就是加入第<span class="math inline">\(j\)</span>个特征），然后增加<span class="math inline">\(\beta_j\)</span>直至另一个变量比它俩更相关，重复此过程，直至没有变量与<span class="math inline">\(y\)</span>相关或者函数足够拟合。</p>
 <figure>
-<img src="3.png" alt="3" /><figcaption>3</figcaption>
+<img src="3.png" alt="3" /><figcaption aria-hidden="true">3</figcaption>
 </figure>
 <p>与之前的几种方式相比，LAR不用在第一步时候前进多步（boosting会有衰减<span class="math inline">\(\epsilon\)</span>），而是直接到达合适位置直到第二个变量加入模型，也不用在多个变量之间迭代多步，而是在第三个变量加入模型前直接到达合适的点，下图就可以很好地说明</p>
 <figure>
-<img src="4.png" alt="4" /><figcaption>4</figcaption>
+<img src="4.png" alt="4" /><figcaption aria-hidden="true">4</figcaption>
 </figure>
 <p>Stepwise的方式是O-&gt;A-&gt;C，Stagewise的方式是O-&gt;B-&gt;E-&gt;C，注意其中O-&gt;B和B-&gt;E都是多步尝试后到达，LAR则是O-&gt;B-&gt;C，都是选择很合适的位置，其中BC平分角DBA，因为LAR选择时会在BA，BD同样相关的情况（LAR选择策略，一个step前进至两个变量和预测值具有相同相关性的位置）。以上都是在比较理想的情况，大部分高维的情况下都需要满足一定条件才会收敛。</p>
 <p>LAR有几个比较remarkable的性质：</p>
@@ -554,19 +554,19 @@ w_j=\frac{1}{|\hat{\beta}_j^{\text{ls}}|^\gamma},\gamma\geq 0
 <h2 id="reference">Reference</h2>
 <p>[1] Tibshirani, R. (1996). Regression Shrinkage and Selection via the Lasso. J. Roy. Stat. Soc. Ser. B, 58(1), 267–288.</p>
 <p>[2] Efron, B., Johnstone, I., Hastie, T. &amp; Tibshirani, R. (2004). Least Angle Regression. Ann. Statist., 32(2), 407–499</p>
-<p>[3] Friedman, Jerome, et al. &quot;Pathwise coordinate optimization.&quot; The Annals of Applied Statistics 1.2 (2007): 302-332.</p>
-<p>[4] Wu, Tong Tong, and Kenneth Lange. &quot;Coordinate descent algorithms for lasso penalized regression.&quot; The Annals of Applied Statistics 2.1 (2008): 224-244.</p>
+<p>[3] Friedman, Jerome, et al. "Pathwise coordinate optimization." The Annals of Applied Statistics 1.2 (2007): 302-332.</p>
+<p>[4] Wu, Tong Tong, and Kenneth Lange. "Coordinate descent algorithms for lasso penalized regression." The Annals of Applied Statistics 2.1 (2008): 224-244.</p>
 <p>[5] Meinshausen, N. (2007). Lasso with Relaxation. Comput. Stat. Data Anal., 52(1), 374–393.</p>
 <p>[6] Radchenko, P. &amp; James, G. M. (2008). Variable Inclusion and Shrinkage Algorithms. J. Amer. Statist. Assoc., 103(483), 1304–1315.</p>
 <p>[7] Zou, H. (2006). The Adaptive Lasso and Its Oracle Properties. J. Amer. Statist. Assoc., 101(12), 1418–1429.</p>
 <p>[8] Zou, H. &amp; Hastie, T. (2005). Regularization and Variable Selection via the Elastic Net. J. Roy. Stat. Soc. Ser. B, 67(2), 301–320</p>
 <p>[9] Bach, F. R. (2008a). Bolasso: Model Consistent Lasso Estimation Through the Bootstrap. 15th International Conference on Machine Learning; 33–40.</p>
 <p>[10] Chatterjee, A. &amp; Lahiri, S. N. (2011). Bootstrapping Lasso Estimators. J. Amer. Statist. Assoc., 106(494), 608–625.</p>
-<p>[11] Vidaurre, Diego, Concha Bielza, and Pedro Larrañaga. &quot;A survey of L1 regression.&quot; International Statistical Review 81.3 (2013): 361-387.</p>
-<p>[12] Tibshirani, Robert. &quot;Regression shrinkage and selection via the lasso: a retrospective.&quot; Journal of the Royal Statistical Society: Series B (Statistical Methodology) 73.3 (2011): 273-282.</p>
-<p>[13] Hesterberg, Tim, et al. &quot;Least angle and ℓ1 penalized regression: A review.&quot; Statistics Surveys 2 (2008): 61-93.</p>
-<p>[14] Fan, Jianqing, and Runze Li. &quot;Variable selection via nonconcave penalized likelihood and its oracle properties.&quot; Journal of the American statistical Association 96.456 (2001): 1348-1360.</p>
-<p>[15] Candes, Emmanuel, and Terence Tao. &quot;The Dantzig selector: Statistical estimation when p is much larger than n.&quot; The Annals of Statistics 35.6 (2007): 2313-2351.</p>
+<p>[11] Vidaurre, Diego, Concha Bielza, and Pedro Larrañaga. "A survey of L1 regression." International Statistical Review 81.3 (2013): 361-387.</p>
+<p>[12] Tibshirani, Robert. "Regression shrinkage and selection via the lasso: a retrospective." Journal of the Royal Statistical Society: Series B (Statistical Methodology) 73.3 (2011): 273-282.</p>
+<p>[13] Hesterberg, Tim, et al. "Least angle and ℓ1 penalized regression: A review." Statistics Surveys 2 (2008): 61-93.</p>
+<p>[14] Fan, Jianqing, and Runze Li. "Variable selection via nonconcave penalized likelihood and its oracle properties." Journal of the American statistical Association 96.456 (2001): 1348-1360.</p>
+<p>[15] Candes, Emmanuel, and Terence Tao. "The Dantzig selector: Statistical estimation when p is much larger than n." The Annals of Statistics 35.6 (2007): 2313-2351.</p>
 
       
     </div>
@@ -688,7 +688,7 @@ w_j=\frac{1}{|\hat{\beta}_j^{\text{ls}}|^\gamma},\gamma\geq 0
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">79</span>
+                <span class="site-state-item-count">82</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -699,7 +699,7 @@ w_j=\frac{1}{|\hat{\beta}_j^{\text{ls}}|^\gamma},\gamma\geq 0
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

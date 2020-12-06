@@ -457,7 +457,7 @@
 \min_{P,Q}\frac{1}{2}\sum_{u,i\in R}\|r_{u,i}-\widetilde{r}_{u,i}\|^2_F+\frac{\beta}{2}(\|P\|^2_F+\|Q\|^2_F)+\frac{\lambda}{2}\|b_u\|^2_F+\frac{\gamma}{2}\|b_i\|^2_F
 \]</span> 在训练时，进行非负项的采样迭代训练，训练过程如下：</p>
 <figure>
-<img src="1.png" alt="1" /><figcaption>1</figcaption>
+<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
 </figure>
 <p>FISMauc是一种贝叶斯个性化排序（<a href="https://arxiv.org/ftp/arxiv/papers/1205/1205.2618.pdf" target="_blank" rel="noopener">BRP</a>）的思路，同时利用打分和未打分的物品，来优化AUC，主要想法是先用FISMrmse做出初步结果，再去优化成对的目标损失： <span class="math display">\[
 \min_{P,Q}\frac{1}{2}\sum_{c\in \mathcal{C}}\sum_{i\in\mathcal{R}^+_u,j\in\mathcal{R}^-_u}\|(r_{u,i}-r_{u,j})-(\widetilde{r}_{u,i}-\widetilde{r}_{u,j})\|^2_F+\frac{\beta}{2}(\|P\|^2_F+\|Q\|^2_F)+\frac{\gamma}{2}\|b_i\|^2_F
@@ -541,23 +541,39 @@ z^{k+1}=\min_xL_{\rho}(x^{k+1},z,\mu^k)\\
 <p>BTW，牢骚写在最后，我对SLIM已经审美疲劳了，到了看见想吐的地步，大概所有这些看了两周多点，现在整个人都不好了，怎么说呢，大概就是天天回家看老婆的那种感觉吧...现在只想换个方向论文看一看。。大概可能去看看CV的。。</p>
 <h1 id="slim资料汇总">SLIM资料汇总</h1>
 <p>刚好看见别人博客里总结了，复制过来。</p>
-<ul>
-<li><p>[ ] [1] Local Item-Item Models for Top-N Recommendation, Recsys, 2016</p></li>
-<li>[x] [2] SLIM: Sparse LInear Methods for top-n recommender systems, ICDM, 2011</li>
-<li>[x] [3] Sparse Linear Methods with Side Information for Top-N Recommendations, Recsys, 2012</li>
-<li>[x] [4] HOSLIM: Higher-Order Sparse Linear Method for Top-N Recommender Systems, PAKDD, 2014</li>
-<li>[x] [5] CSLIM: Contextual SLIM recommendation algorithms, Recsys, 2014</li>
-<li>[x] [6] Deviation-based contextual SLIM recommenders, CIKM, 2014</li>
-<li>[x] [7] Deviation-based and similarity-based contextual SLIM recommendation algorithms, Recsys, 2014</li>
-<li>[x] [8] Towards Improving Top-N Recommendation by Generalization of SLIM, Recsys, 2015</li>
-<li>[ ] [9] Top-N Recommender System via Matrix Completionm, AAAI, 2016</li>
-<li>[ ] [10] Practical linear models for large-scale one-class collaborative filtering, IJCAI, 2016</li>
-<li>[ ] [11] Top-N recommendation with novel rank approximation, SDM, 2016</li>
-<li>[ ] [12] Top-N Recommendation on Graphs, CIKM, 2016</li>
-<li>[x] [13] On the Effectiveness of Linear Models for One-Class Collaborative Filtering, AAAI, 2016</li>
-<li>[ ] [14] Leveraging High-Dimensional Side Information for Top-N Recommendation, arXiv,2017</li>
-<li>[x] [15] Local Sparse Linear Model Ensemble for Top-N Recommendation, mlrec, 2017</li>
-<li><p>[x] [16] LorSLIM: Low Rank Sparse Linear Methods for Top-N Recommendations</p></li>
+<ul class="task-list">
+<li><p><input type="checkbox" disabled="" />
+[1] Local Item-Item Models for Top-N Recommendation, Recsys, 2016</p></li>
+<li><p><input type="checkbox" disabled="" checked="" />
+[2] SLIM: Sparse LInear Methods for top-n recommender systems, ICDM, 2011</p></li>
+<li><p><input type="checkbox" disabled="" checked="" />
+[3] Sparse Linear Methods with Side Information for Top-N Recommendations, Recsys, 2012</p></li>
+<li><p><input type="checkbox" disabled="" checked="" />
+[4] HOSLIM: Higher-Order Sparse Linear Method for Top-N Recommender Systems, PAKDD, 2014</p></li>
+<li><p><input type="checkbox" disabled="" checked="" />
+[5] CSLIM: Contextual SLIM recommendation algorithms, Recsys, 2014</p></li>
+<li><p><input type="checkbox" disabled="" checked="" />
+[6] Deviation-based contextual SLIM recommenders, CIKM, 2014</p></li>
+<li><p><input type="checkbox" disabled="" checked="" />
+[7] Deviation-based and similarity-based contextual SLIM recommendation algorithms, Recsys, 2014</p></li>
+<li><p><input type="checkbox" disabled="" checked="" />
+[8] Towards Improving Top-N Recommendation by Generalization of SLIM, Recsys, 2015</p></li>
+<li><p><input type="checkbox" disabled="" />
+[9] Top-N Recommender System via Matrix Completionm, AAAI, 2016</p></li>
+<li><p><input type="checkbox" disabled="" />
+[10] Practical linear models for large-scale one-class collaborative filtering, IJCAI, 2016</p></li>
+<li><p><input type="checkbox" disabled="" />
+[11] Top-N recommendation with novel rank approximation, SDM, 2016</p></li>
+<li><p><input type="checkbox" disabled="" />
+[12] Top-N Recommendation on Graphs, CIKM, 2016</p></li>
+<li><p><input type="checkbox" disabled="" checked="" />
+[13] On the Effectiveness of Linear Models for One-Class Collaborative Filtering, AAAI, 2016</p></li>
+<li><p><input type="checkbox" disabled="" />
+[14] Leveraging High-Dimensional Side Information for Top-N Recommendation, arXiv,2017</p></li>
+<li><p><input type="checkbox" disabled="" checked="" />
+[15] Local Sparse Linear Model Ensemble for Top-N Recommendation, mlrec, 2017</p></li>
+<li><p><input type="checkbox" disabled="" checked="" />
+[16] LorSLIM: Low Rank Sparse Linear Methods for Top-N Recommendations</p></li>
 </ul>
 
       
@@ -682,7 +698,7 @@ z^{k+1}=\min_xL_{\rho}(x^{k+1},z,\mu^k)\\
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">79</span>
+                <span class="site-state-item-count">82</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -693,7 +709,7 @@ z^{k+1}=\min_xL_{\rho}(x^{k+1},z,\mu^k)\\
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

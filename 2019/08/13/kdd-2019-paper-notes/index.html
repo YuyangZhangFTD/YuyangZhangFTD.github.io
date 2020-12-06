@@ -427,7 +427,7 @@
 </ul>
 <p>本文提出模型总体结构如下</p>
 <figure>
-<img src="1.1.png" alt="模型结构" /><figcaption>模型结构</figcaption>
+<img src="1.1.png" alt="模型结构" /><figcaption aria-hidden="true">模型结构</figcaption>
 </figure>
 <p>整体上是一个集成模型，包括LightGBM，spatial-temporal gated DNN和一个Seq2Seq的模型，其中LightGBM作为一个快速健壮的特征选择器，同时文中将LightGBM作为基线模型，设计了一个spatial-temporal gated DNN来反应时空关系的复杂影响，最终利用Seq2Seq模型根据历史信息预测。</p>
 <h2 id="deepgbm-a-deep-learning-framework-distilled-by-gbdt-for-online-prediction-tasks">DeepGBM: A Deep Learning Framework Distilled by GBDT for Online Prediction Tasks</h2>
@@ -448,11 +448,11 @@ y_\text{Cat}(x)=&amp;y_\text{FM}(x)+y_\text{Deep}(x)
 \end{aligned}
 \]</span> GBDT2NN部分主要考虑如何从gbdt学到知识，主要是学习gbdt对于特征的选择和特征的重要性（即数据的划分，树的结构）。对于单颗树，对于特征选择，直接采用tree学习到的特征，而非全部特征，而树的结构，则可以通过nn强大的拟合能力来学习，直接学习叶子结点结构，当成一个多分类的问题。</p>
 <figure>
-<img src="2.1.png" alt="单颗树学习结构" /><figcaption>单颗树学习结构</figcaption>
+<img src="2.1.png" alt="单颗树学习结构" /><figcaption aria-hidden="true">单颗树学习结构</figcaption>
 </figure>
 <p>当有了叶子结点的映射之后，就可以根据叶子结点的预测值来构造nn近似tree模型的预测值了。对于多棵树，直接对每一颗树的叶子结点进行embedding，但这会造成维数太多（tree的数量=nn的数量，每棵树有<span class="math inline">\(L\)</span>个叶子结点，最后embdding维度$ (|L|) $），所以在叶子结点的基础上，做叶子结点的embedding，此处包含两层关系，首先用叶结点的值去学习embdding，然后再把embedding作为结果，学习树的结构。</p>
 <figure>
-<img src="2.2.png" alt="叶子结点embdding" /><figcaption>叶子结点embdding</figcaption>
+<img src="2.2.png" alt="叶子结点embdding" /><figcaption aria-hidden="true">叶子结点embdding</figcaption>
 </figure>
 <p>同时我们也需要降低nn的数量，所以对所有树进行随机分组，然后每一组学习一个网络，最终结果为所有nn求和 <span class="math display">\[
 y_\text{GBDT2NN}(x)=\sum_{j=1}^k y_{\mathbb{T}_j}(x)
@@ -585,7 +585,7 @@ y_\text{GBDT2NN}(x)=\sum_{j=1}^k y_{\mathbb{T}_j}(x)
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">79</span>
+                <span class="site-state-item-count">82</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -596,7 +596,7 @@ y_\text{GBDT2NN}(x)=\sum_{j=1}^k y_{\mathbb{T}_j}(x)
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

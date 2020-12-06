@@ -463,16 +463,16 @@
 <h2 id="总结与思考">总结与思考</h2>
 <p>causal tree的思路总结如下：</p>
 <ol type="1">
-<li>传统的方式training set同时用来构建模型、选择模型，会存在一些伪相关性，让模型“过”拟合在一些“无关紧要”的变量上，需要避免这种“过”拟合，得到真正影响结果的“因”变量；</li>
-<li>评估泛化误差与估计潜在处理效应都是没有ground truth的问题，如果我们可以通过划分训练集、测试集来评估一个模型的泛化能力，那么也可以多划出一个子集的样本构建潜在处理效应的无偏估计</li>
-<li>Honest方式建模，训练集构建模型，估计集构建模型预测值，测试集测试</li>
-<li>如何在构建模型时候避免引入估计集数据，使得估计集能够独立于构建模型，作者提出Honest target，EMSE指标</li>
+<li><p>传统的方式training set同时用来构建模型、选择模型，会存在一些伪相关性，让模型“过”拟合在一些“无关紧要”的变量上，需要避免这种“过”拟合，得到真正影响结果的“因”变量；</p></li>
+<li><p>评估泛化误差与估计潜在处理效应都是没有ground truth的问题，如果我们可以通过划分训练集、测试集来评估一个模型的泛化能力，那么也可以多划出一个子集的样本构建潜在处理效应的无偏估计</p></li>
+<li><p>Honest方式建模，训练集构建模型，估计集构建模型预测值，测试集测试</p></li>
+<li><p>如何在构建模型时候避免引入估计集数据，使得估计集能够独立于构建模型，作者提出Honest target，EMSE指标</p></li>
 <li><p>通过一些列公式推导，得到树分支指标和模型选择指标</p></li>
 <li><p>可能在因果建模中，Cross Validation的作用可能要重新审视一下，尤其是因果建模中避免这种“二阶过拟合”。</p></li>
 </ol>
 <h2 id="参考">参考</h2>
 <ol type="1">
-<li>Athey, Susan, and Guido Imbens. &quot;Recursive partitioning for heterogeneous causal effects.&quot; <em>Proceedings of the National Academy of Sciences</em> 113.27 (2016): 7353-7360.</li>
+<li>Athey, Susan, and Guido Imbens. "Recursive partitioning for heterogeneous causal effects." <em>Proceedings of the National Academy of Sciences</em> 113.27 (2016): 7353-7360.</li>
 <li>Susan Athey, Solving Heterogeneous Estimating Equations Using Forest Based Algorithms, <a href="https://www.youtube.com/watch?v=CPz0HdUM3dE" target="_blank" rel="noopener">youtube vedio</a></li>
 <li></li>
 </ol>
@@ -599,7 +599,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">79</span>
+                <span class="site-state-item-count">82</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -610,7 +610,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

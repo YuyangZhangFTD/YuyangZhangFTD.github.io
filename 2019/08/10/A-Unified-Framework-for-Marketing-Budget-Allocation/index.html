@@ -419,7 +419,7 @@
 <h2 id="背景">背景</h2>
 <p>预算分配核心是解决该把钱投在哪的问题，本篇文章意在提出一种做预算分配的通用框架，包括两个步骤，首先通过历史数据去学习需求曲线，也可称为市场响应模型（market response model），然后基于模型进行优化预算分配。</p>
 <figure>
-<img src="fig1.jpg" alt="框架示意图" /><figcaption>框架示意图</figcaption>
+<img src="fig1.jpg" alt="框架示意图" /><figcaption aria-hidden="true">框架示意图</figcaption>
 </figure>
 <p>整个市场可以根据不同的商品、客户、消费习惯等维度分为多个组（定价歧视的分组，segment），为了将预算分配给各个组，我们需要根据每个组的预算来预测每个组的销量变化情况。尽管一些黑盒的预测方法，如深度学习，已经广泛应用于一些预测问题，但是这样预测和制定决策之间还有很大的gap，其中一个重要的问题就是很难将黑盒的预测结果转化成分配决策。相反，如logit demand curve有明确的表达形式，并且广泛应用于经济学之中，它的缺点则是智能对于每一个市场分组来拟合，并不能利用不同分组下的通用的信息，这会造成很严重的数据分离的问题，因此文中提出一种半黑盒的预测模型，用神经网络来扩展logit demand curve的能力。预测模型的输入被分成两部分：独立的变量和环境变量（上下文变量）。环境变量是市场本身的属性，比如商品品牌、顾客属性、消费时间等等。同时可以证明market cost（市场对于价格最敏感的点）只跟bias parameter有关，所以可以用相同的神经网络来计算不同segment的bias parameter，而弹性参数可以在拟合数据的时候求出，这样销量和花费的变动关系可以有一个显示的表示。</p>
 <p>一旦需求曲线确定了，预算分配则可以表示成一个优化问题。用<span class="math inline">\(N\)</span>表示segment数量，预算分配需要优化<span class="math inline">\(N\)</span>个变量，在一定预算约束下最大化销量。由于logit demand cruve是非凸的，所以优化问题也是非凸的，文中提出一种办法可以将该问题转化成等价的凸问题。</p>
@@ -427,7 +427,7 @@
 <h2 id="市场响应market-response">市场响应（Market Response）</h2>
 <h3 id="logit-response-model">Logit Response Model</h3>
 <figure>
-<img src="fig2.jpg" alt="logit response model" /><figcaption>logit response model</figcaption>
+<img src="fig2.jpg" alt="logit response model" /><figcaption aria-hidden="true">logit response model</figcaption>
 </figure>
 <p>第<span class="math inline">\(i\)</span>个segment的logit model定义为 <span class="math display">\[
 d_i(c):=\frac{D_i}{1+\exp{\{-(a_i+b_ic\}}},i=1,\cdots,N
@@ -551,7 +551,7 @@ g(\lambda):=&amp;g(\mathbf{q}(\lambda)),\lambda \in(0,+\infty)
 \]</span> 所以找到使得<span class="math inline">\(g(\lambda)=0\)</span>的根<span class="math inline">\(\lambda^*\)</span>就可以得到原问题的最优解<span class="math inline">\(\mathbf{q}^*=\mathbf{q}(\lambda^*)\)</span>。</p>
 <p>通过分别对<span class="math inline">\(f(\lambda)\)</span>和<span class="math inline">\(g(\lambda)\)</span>求导，可得两个函数的导数都是恒小于零，所以两个函数严格单调递减，所以可以通过二分法来找到最优解。</p>
 <figure>
-<img src="fig3.jpg" alt="algo" /><figcaption>algo</figcaption>
+<img src="fig3.jpg" alt="algo" /><figcaption aria-hidden="true">algo</figcaption>
 </figure>
 <h2 id="总结">总结</h2>
 <p>文章后面给出了几种扩展以及实验，实验先是利用模拟的数据和离线数据集做了验证，之后在淘票票上做了ab测试，roi有40%的提升。</p>
@@ -679,7 +679,7 @@ g(\lambda):=&amp;g(\mathbf{q}(\lambda)),\lambda \in(0,+\infty)
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">79</span>
+                <span class="site-state-item-count">82</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -690,7 +690,7 @@ g(\lambda):=&amp;g(\mathbf{q}(\lambda)),\lambda \in(0,+\infty)
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

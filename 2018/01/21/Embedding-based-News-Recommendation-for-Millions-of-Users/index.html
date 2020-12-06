@@ -427,7 +427,7 @@
 <p>一个最基础的做法是将文章看作是文本中词的集合，将用户看做历史浏览过的文本所包含词得结合，在推荐时根据两者的相关性将两者匹配进行推荐。这样做足够简单，同时也易于迭代，可以满足新闻推荐的基本需求。</p>
 <p>但是这样做也有很多问题： - 第一个就是词的表征问题，两个同样意思的词，却是完全不同的表示，所以这样会导致完全相同的事件，用了不一样的词，变成了完全不同的两个商品 - 第二就是如何处理用户的浏览历史，浏览历史往往是一个序列，如果从序列中获取用户偏好转变的信息也很重要</p>
 <figure>
-<img src="1.png" alt="1" /><figcaption>1</figcaption>
+<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
 </figure>
 <p>雅虎新闻推荐的APP主要分了三部分，第一部分是header，一个导航栏，下面是topics module，是人为维护的新闻，再往下是personalized module，是推荐的部分。</p>
 <p>主要的推荐由五个部分组成 - identify，提前计算用户的特征 - matching，文章与用户相匹配 - ranking，排序 - de-duplication，去重 - advertising，有可能需要广告植入</p>
@@ -557,7 +557,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">79</span>
+                <span class="site-state-item-count">82</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -568,7 +568,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

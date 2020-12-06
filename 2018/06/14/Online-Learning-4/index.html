@@ -94,12 +94,12 @@
 
 
 
-<meta name="description" content="Follow the Leader Against Quadratics 某些情况下，FTL是非常好的算法，比如一维的线性回归的情况，很容易推广到高维  每一轮选择\(w_t\in[-1,1]\) 对手选择\(y_t\in[-1,+1]\) 计算\(f_t(w)&#x3D;\frac{1}{2}(w-y_t)^2\)  使用FTL算法： $$ \begin{aligned} w_{t+1}&amp;&#x3D;f_{">
+<meta name="description" content="Follow the Leader Against Quadratics 某些情况下，FTL是非常好的算法，比如一维的线性回归的情况，很容易推广到高维  每一轮选择\(w_t\in[-1,1]\) 对手选择\(y_t\in[-1,+1]\) 计算\(f_t(w)&#x3D;\frac{1}{2}(w-y_t)^2\)  使用FTL算法： $$ \[\begin{aligned} w_{t+1}&amp;&#x3D;\">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Online Learning 4">
 <meta property="og:url" content="http://yoursite.com/2018/06/14/Online-Learning-4/index.html">
 <meta property="og:site_name" content="Arvin&#39;s Blog">
-<meta property="og:description" content="Follow the Leader Against Quadratics 某些情况下，FTL是非常好的算法，比如一维的线性回归的情况，很容易推广到高维  每一轮选择\(w_t\in[-1,1]\) 对手选择\(y_t\in[-1,+1]\) 计算\(f_t(w)&#x3D;\frac{1}{2}(w-y_t)^2\)  使用FTL算法： $$ \begin{aligned} w_{t+1}&amp;&#x3D;f_{">
+<meta property="og:description" content="Follow the Leader Against Quadratics 某些情况下，FTL是非常好的算法，比如一维的线性回归的情况，很容易推广到高维  每一轮选择\(w_t\in[-1,1]\) 对手选择\(y_t\in[-1,+1]\) 计算\(f_t(w)&#x3D;\frac{1}{2}(w-y_t)^2\)  使用FTL算法： $$ \[\begin{aligned} w_{t+1}&amp;&#x3D;\">
 <meta property="og:image" content="http://yoursite.com/2018/06/14/Online-Learning-4/1.png">
 <meta property="article:published_time" content="2018-06-14T08:50:46.000Z">
 <meta property="article:modified_time" content="2018-06-14T09:51:49.628Z">
@@ -398,10 +398,20 @@
 <li>对手选择<span class="math inline">\(y_t\in[-1,+1]\)</span></li>
 <li>计算<span class="math inline">\(f_t(w)=\frac{1}{2}(w-y_t)^2\)</span></li>
 </ul>
-<p>使用FTL算法： $$ \begin{aligned} w_{t+1}&amp;=f_{1:t}(w)\ f_t(w)&amp;=(w-y_t)<sup>2=w</sup>2-wy_t+y_t^2\</p>
-<p>\end{aligned} <span class="math display">\[
+使用FTL算法： $$
+<span class="math display">\[\begin{aligned}
+w_{t+1}&amp;=\underset{w\in[-1,+1]}{\arg\min}f_{1:t}(w)\\
+f_t(w)&amp;=\frac{1}{2}(w-y_t)^2=\frac{1}{2}w^2-wy_t+\frac{1}{2}y_t^2\\
+
+\end{aligned}\]</span>
+<span class="math display">\[
 由于$y_t^2$是常数，所以我们令
-\]</span> \begin{aligned} f_t(w)&amp;=w<sup>2-wy_t\ f_{1:t}(w)&amp;=w</sup>2-y_{1:t}w \end{aligned} <span class="math display">\[
+\]</span>
+<span class="math display">\[\begin{aligned}
+f_t(w)&amp;=\frac{1}{2}w^2-wy_t\\
+f_{1:t}(w)&amp;=\frac{t}{2}w^2-y_{1:t}w
+\end{aligned}\]</span>
+<p><span class="math display">\[
 我们的目标就是求
 \]</span> w_{t+1}=f_{1:t}(w) <span class="math display">\[
 对$w$求导并令导数为$0$，我们有
@@ -590,7 +600,7 @@ f(w&#39;)-f(w)\leq(w&#39;-w)\cdot g\leq\|w&#39;-w\|\cdot\|g\|\leq\|w&#39;-w\|G
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">79</span>
+                <span class="site-state-item-count">82</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -601,7 +611,7 @@ f(w&#39;)-f(w)\leq(w&#39;-w)\cdot g\leq\|w&#39;-w\|\cdot\|g\|\leq\|w&#39;-w\|G
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

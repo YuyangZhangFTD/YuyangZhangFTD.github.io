@@ -424,11 +424,11 @@
 <li>predictions，根据结果表的二进制结果转为十进制下表，存储结果，也就相当于叶子节点位置</li>
 </ul>
 <figure>
-<img src="1.png" alt="1" /><figcaption>1</figcaption>
+<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
 </figure>
 <p>具体算法流程如下</p>
 <figure>
-<img src="2.png" alt="2" /><figcaption>2</figcaption>
+<img src="2.png" alt="2" /><figcaption aria-hidden="true">2</figcaption>
 </figure>
 <p>先依次初始划分一次，然后进行n次pass，也就是backfitting，来re-split，提升效果，这里有一个迭代的思想，固定其他不变，重新划分其中某一个特征，然后以此重复，最后会收敛到最优解（真的会吗？论文中没给出证明，但很多算法都是这种思想，如坐标上升法、Gibbs采样等等），我看到这里觉得关键问题是n次backfitting的n怎么定，以及每次re-split的特征怎么选。</p>
 <p>文章后面对选特征问题给了三种解决方法：</p>
@@ -445,11 +445,11 @@ Gain(x_j,c)&amp;=SE_{\mathcal{D}}-\sum_k(SE_{\mathcal{D}^L_k}+SE_{\mathcal{D}^R_
 \end{aligned}
 \]</span> 然后作者根据table的结构提出了快速的迭代计算的方式</p>
 <figure>
-<img src="3.png" alt="3" /><figcaption>3</figcaption>
+<img src="3.png" alt="3" /><figcaption aria-hidden="true">3</figcaption>
 </figure>
 <p>后面还有如何快速更新ensemble后的BDT的结果</p>
 <figure>
-<img src="4.png" alt="4" /><figcaption>4</figcaption>
+<img src="4.png" alt="4" /><figcaption aria-hidden="true">4</figcaption>
 </figure>
 <p>总体给我感觉这篇文章也是从数据存储计算格式的角度在工程上对GBDT做了优化提升，还是比较有意思的。</p>
 
@@ -566,7 +566,7 @@ Gain(x_j,c)&amp;=SE_{\mathcal{D}}-\sum_k(SE_{\mathcal{D}^L_k}+SE_{\mathcal{D}^R_
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">79</span>
+                <span class="site-state-item-count">82</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -577,7 +577,7 @@ Gain(x_j,c)&amp;=SE_{\mathcal{D}}-\sum_k(SE_{\mathcal{D}^L_k}+SE_{\mathcal{D}^R_
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

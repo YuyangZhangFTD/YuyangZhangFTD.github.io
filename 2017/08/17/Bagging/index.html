@@ -428,7 +428,7 @@ P(H(x)\neq f(x))=\sum^{[T/2]}_{k=0}C^k_T(1-\epsilon)^k\epsilon^{T-k}\leq\exp(-\f
 <p>Bagging的名字来自于Bootstrap AGGregatING，正如这个模型的名字，Bagging的两个关键在于Bootstrap和aggregation。</p>
 <p>Bagging采用了Bootstrap的方式来获得一定随机性的样本，同时对于聚合的方法，分类问题可以采用投票，回归问题可以采用平均。</p>
 <figure>
-<img src="1.png" alt="1" /><figcaption>1</figcaption>
+<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
 </figure>
 <p>因为采用了Bootstrap的方式，所以会有大于<span class="math inline">\(36.8\%\)</span> 的数据是不会被采到的，而这部分数据可以用作包外估计(out-of-bag estimation) <span class="math display">\[
 H^{oob}(x)=\underset{y\in \mathcal{Y}}{\arg\max}\sum^T_{t=1}\mathbb{I}(h_t(x)=y)\cdot\mathbb{I}(x\notin \mathcal{D}_t)
@@ -447,11 +447,11 @@ H(x)=\mathbb{E}_{\mathcal{D}_{bs}}[h(x)]
 <h3 id="random-tree-ensembles">Random Tree Ensembles</h3>
 <p>随机森林算是Bagging模型的一个代表，不同点在于RF对特征也进行了随机的选择</p>
 <figure>
-<img src="2.png" alt="2" /><figcaption>2</figcaption>
+<img src="2.png" alt="2" /><figcaption aria-hidden="true">2</figcaption>
 </figure>
 <p>VR-Tree模型是随机森林的一个变种，它在每一步加入了一个概率选择的过程，以一定概率随机划分节点</p>
 <figure>
-<img src="3.png" alt="3" /><figcaption>3</figcaption>
+<img src="3.png" alt="3" /><figcaption aria-hidden="true">3</figcaption>
 </figure>
 <h3 id="further-readings">Further Readings</h3>
 <p>随机树的集成学习模型还可以做密度估计和异常检测等问题，此处不具体展开了。</p>
@@ -578,7 +578,7 @@ H(x)=\mathbb{E}_{\mathcal{D}_{bs}}[h(x)]
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">79</span>
+                <span class="site-state-item-count">82</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -589,7 +589,7 @@ H(x)=\mathbb{E}_{\mathcal{D}_{bs}}[h(x)]
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

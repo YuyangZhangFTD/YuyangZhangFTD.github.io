@@ -467,7 +467,7 @@ F_m(x)=F_{m-1}(x)+\rho_mh(x;a_m)
 \]</span></p>
 <p>注意，这里的<span class="math inline">\(\beta\)</span> 和<span class="math inline">\(\rho\)</span> 的不同，一个是针对梯度修正的，一个是针对损失函数的，当你的损失函数比较特别时，二者等价。</p>
 <figure>
-<img src="1.png" alt="1" /><figcaption>1</figcaption>
+<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
 </figure>
 <p>讲到这里，梯度提升内容主要就讲完了，剩下的就是可以换用不同的损失函数和基学习器水论文了，Firedman老爷子还做了一个logistic regression版的。与之思路相似的还有一个likelihood-based boosting，有兴趣的同学可以搜一下。</p>
 <h3 id="xgboost">Xgboost</h3>
@@ -484,7 +484,7 @@ g_i=\partial_{\hat{y}_i^{(t-1)}}\ell(y_i,\hat{y}_i^{(t-1)})\\
 h_i=\partial^2_{\hat{y}_i^{(t-1)}}\ell(y_i,\hat{y}_i^{(t-1)})
 \]</span> 之前论文看到这里我卡在这里好久，如果采用square loss的话，二阶导不就是常数，有啥求的？到处搜找不到答案，知道我看到了陈大哥的slide</p>
 <figure>
-<img src="2.png" alt="2" /><figcaption>2</figcaption>
+<img src="2.png" alt="2" /><figcaption aria-hidden="true">2</figcaption>
 </figure>
 <p>艹，真的就这么简单。所以，去掉常数项之后，我们有第<span class="math inline">\(t\)</span> 步迭代的损失 <span class="math display">\[
 \tilde{\mathcal{L}}^{(t)}\simeq\sum^n_{i=1}[
@@ -646,7 +646,7 @@ w_j^*=\frac{\sum_{i\in I_j}g_i}{\sum_{i\in I_j}h_i+\lambda}\\
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">79</span>
+                <span class="site-state-item-count">82</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -657,7 +657,7 @@ w_j^*=\frac{\sum_{i\in I_j}g_i}{\sum_{i\in I_j}h_i+\lambda}\\
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

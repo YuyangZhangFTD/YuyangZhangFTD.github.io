@@ -473,7 +473,7 @@ r_q^T(d-B\bar{y})\leq 0\quad \forall q\in Q
 <h2 id="benders-decomposition-改进优化">Benders Decomposition 改进优化</h2>
 <p>MP虽然提供了一个很好的求解MIP甚至是MNLP问题的框架，但也同时有很多问题：时间很长的迭代过程，产生的割有可能很弱，特殊情况收敛慢等等。很多文献都做了BD的优化，一方面是通过减少迭代的次数来改进算法的收敛性，另一方面是减少每次迭代的耗时，前者是通过改善产生解和割的质量，后者则是通过改善产生解的过程和每步求解主问题子问题的方式。</p>
 <figure>
-<img src="1.png" alt="1" /><figcaption>1</figcaption>
+<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
 </figure>
 <p>主要通过四个方向来改进BD：</p>
 <ul>
@@ -530,28 +530,28 @@ r_q^T(d-B\bar{y})\leq 0\quad \forall q\in Q
 <h2 id="参考">参考</h2>
 <ol type="1">
 <li>Rahmaniani, Ragheb, et al. “The Benders Decomposition Algorithm: A Literature Review.” <em>European Journal of Operational Research</em>, vol. 259, no. 3, Elsevier B.V., 2017, pp. 801–17, doi:10.1016/j.ejor.2016.12.005.</li>
-<li>Benders, Jacques F. &quot;Partitioning procedures for solving mixed-variables programming problems.&quot; <em>Numerische mathematik</em> 4.1 (1962): 238-252.</li>
-<li>Magnanti, Thomas L., and Richard T. Wong. &quot;Accelerating Benders decomposition: Algorithmic enhancement and model selection criteria.&quot; <em>Operations research</em> 29.3 (1981): 464-484.</li>
-<li>Rei, Walter, et al. &quot;Accelerating Benders decomposition by local branching.&quot; <em>INFORMS Journal on Computing</em> 21.2 (2009): 333-345.</li>
-<li>Yang, Yu, and Jong Min Lee. &quot;A tighter cut generation strategy for acceleration of benders decomposition.&quot; <em>Computers &amp; Chemical Engineering</em> 44 (2012): 84-93.</li>
-<li>Geoffrion, Arthur M. &quot;Generalized benders decomposition.&quot; <em>Journal of optimization theory and applications</em> 10.4 (1972): 237-260.</li>
-<li>Raidl, Günther R. &quot;Decomposition based hybrid metaheuristics.&quot; <em>European journal of operational research</em>244.1 (2015): 66-76.</li>
-<li>Benoist, Thierry, Etienne Gaudin, and Benoît Rottembourg. &quot;Constraint programming contribution to benders decomposition: A case study.&quot; <em>International Conference on Principles and Practice of Constraint Programming</em>. Springer, Berlin, Heidelberg, 2002.</li>
-<li>Cordeau, Jean-François, et al. &quot;Benders decomposition for simultaneous aircraft routing and crew scheduling.&quot; <em>Transportation science</em> 35.4 (2001): 375-388.</li>
-<li>Mercier, Anne, Jean-François Cordeau, and François Soumis. &quot;A computational study of Benders decomposition for the integrated aircraft routing and crew scheduling problem.&quot; <em>Computers &amp; Operations Research</em> 32.6 (2005): 1451-1476.</li>
+<li>Benders, Jacques F. "Partitioning procedures for solving mixed-variables programming problems." <em>Numerische mathematik</em> 4.1 (1962): 238-252.</li>
+<li>Magnanti, Thomas L., and Richard T. Wong. "Accelerating Benders decomposition: Algorithmic enhancement and model selection criteria." <em>Operations research</em> 29.3 (1981): 464-484.</li>
+<li>Rei, Walter, et al. "Accelerating Benders decomposition by local branching." <em>INFORMS Journal on Computing</em> 21.2 (2009): 333-345.</li>
+<li>Yang, Yu, and Jong Min Lee. "A tighter cut generation strategy for acceleration of benders decomposition." <em>Computers &amp; Chemical Engineering</em> 44 (2012): 84-93.</li>
+<li>Geoffrion, Arthur M. "Generalized benders decomposition." <em>Journal of optimization theory and applications</em> 10.4 (1972): 237-260.</li>
+<li>Raidl, Günther R. "Decomposition based hybrid metaheuristics." <em>European journal of operational research</em>244.1 (2015): 66-76.</li>
+<li>Benoist, Thierry, Etienne Gaudin, and Benoît Rottembourg. "Constraint programming contribution to benders decomposition: A case study." <em>International Conference on Principles and Practice of Constraint Programming</em>. Springer, Berlin, Heidelberg, 2002.</li>
+<li>Cordeau, Jean-François, et al. "Benders decomposition for simultaneous aircraft routing and crew scheduling." <em>Transportation science</em> 35.4 (2001): 375-388.</li>
+<li>Mercier, Anne, Jean-François Cordeau, and François Soumis. "A computational study of Benders decomposition for the integrated aircraft routing and crew scheduling problem." <em>Computers &amp; Operations Research</em> 32.6 (2005): 1451-1476.</li>
 <li>Restrepo, María I., Bernard Gendron, and Louis-Martin Rousseau. <em>Combining Benders decomposition and column generation for multi-activity tour scheduling</em>. CIRRELT, 2015.</li>
-<li>Zakeri, Golbon, Andrew B. Philpott, and David M. Ryan. &quot;Inexact cuts in Benders decomposition.&quot; <em>SIAM Journal on Optimization</em> 10.3 (2000): 643-657.</li>
-<li>Papadakos, Nikolaos. &quot;Practical enhancements to the Magnanti–Wong method.&quot; <em>Operations Research Letters</em> 36.4 (2008): 444-449.</li>
-<li>de Sá, Elisangela Martins, Ricardo Saraiva de Camargo, and Gilberto de Miranda. &quot;An improved Benders decomposition algorithm for the tree of hubs location problem.&quot; <em>European Journal of Operational Research</em> 226.2 (2013): 185-202.</li>
-<li>Fortz, Bernard, and Michael Poss. &quot;An improved benders decomposition applied to a multi-layer network design problem.&quot; <em>Operations research letters</em> 37.5 (2009): 359-364.</li>
-<li>Naoum-Sawaya, Joe, and Samir Elhedhli. &quot;An interior-point Benders based branch-and-cut algorithm for mixed integer programs.&quot; <em>Annals of Operations Research</em> 210.1 (2013): 33-55.</li>
-<li>Codato, Gianni, and Matteo Fischetti. &quot;Combinatorial Benders' cuts for mixed-integer linear programming.&quot; <em>Operations Research</em> 54.4 (2006): 756-766.</li>
-<li>Fischetti, Matteo, Domenico Salvagnin, and Arrigo Zanette. &quot;A note on the selection of Benders’ cuts.&quot; <em>Mathematical Programming</em> 124.1-2 (2010): 175-182.</li>
+<li>Zakeri, Golbon, Andrew B. Philpott, and David M. Ryan. "Inexact cuts in Benders decomposition." <em>SIAM Journal on Optimization</em> 10.3 (2000): 643-657.</li>
+<li>Papadakos, Nikolaos. "Practical enhancements to the Magnanti–Wong method." <em>Operations Research Letters</em> 36.4 (2008): 444-449.</li>
+<li>de Sá, Elisangela Martins, Ricardo Saraiva de Camargo, and Gilberto de Miranda. "An improved Benders decomposition algorithm for the tree of hubs location problem." <em>European Journal of Operational Research</em> 226.2 (2013): 185-202.</li>
+<li>Fortz, Bernard, and Michael Poss. "An improved benders decomposition applied to a multi-layer network design problem." <em>Operations research letters</em> 37.5 (2009): 359-364.</li>
+<li>Naoum-Sawaya, Joe, and Samir Elhedhli. "An interior-point Benders based branch-and-cut algorithm for mixed integer programs." <em>Annals of Operations Research</em> 210.1 (2013): 33-55.</li>
+<li>Codato, Gianni, and Matteo Fischetti. "Combinatorial Benders' cuts for mixed-integer linear programming." <em>Operations Research</em> 54.4 (2006): 756-766.</li>
+<li>Fischetti, Matteo, Domenico Salvagnin, and Arrigo Zanette. "A note on the selection of Benders’ cuts." <em>Mathematical Programming</em> 124.1-2 (2010): 175-182.</li>
 <li>Saharidis, Georgios K. D., et al. “Accelerating Benders Method Using Covering Cut Bundle Generation.” International Transactions in Operational Research, vol. 17, no. 2, 2010, pp. 221–37, doi:10.1111/j.1475-3995.2009.00706.x.</li>
 <li>Saharidis, Georgios K. D., and Marianthi G. Ierapetritou. “Speed-up Benders Decomposition Using Maximum Density Cut (MDC) Generation.” Annals of Operations Research, vol. 210, no. 1, 2013, pp. 101–23, doi:10.1007/s10479-012-1237-8.</li>
 <li>Saharidis, G. K. D., and Marianthi G. Ierapetritou. “Improving Benders Decomposition Using Maximum Feasible Subsystem (MFS) Cut Generation Strategy.” Computers and Chemical Engineering, vol. 34, no. 8, 2010, pp. 1237–45, doi:10.1016/j.compchemeng.2009.10.002.</li>
 <li>Crainic, Teodor Gabriel, Mike Hewitt, and Walter Rei. <em>Partial decomposition strategies for two-stage stochastic integer programs</em>. CIRRELT, 2014.</li>
-<li>McDaniel, Dale, and Mike Devine. &quot;A modified Benders' partitioning algorithm for mixed integer programming.&quot; <em>Management Science</em> 24.3 (1977): 312-319.</li>
+<li>McDaniel, Dale, and Mike Devine. "A modified Benders' partitioning algorithm for mixed integer programming." <em>Management Science</em> 24.3 (1977): 312-319.</li>
 <li>Van Roy, Tony J. “Cross Decomposition for Mixed Integer Programming.” <em>Mathematical Programming</em>, vol. 25, no. 1, 1983, pp. 46–63, doi:10.1007/BF02591718.</li>
 </ol>
 
@@ -677,7 +677,7 @@ r_q^T(d-B\bar{y})\leq 0\quad \forall q\in Q
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">79</span>
+                <span class="site-state-item-count">82</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -688,7 +688,7 @@ r_q^T(d-B\bar{y})\leq 0\quad \forall q\in Q
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

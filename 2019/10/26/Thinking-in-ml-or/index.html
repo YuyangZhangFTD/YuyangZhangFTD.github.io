@@ -433,7 +433,7 @@
 <li>ML根据OR层的决策特点进行迭代，这个完全依赖于问题结构与经验，或许可以从点估计转向对概率分布的估计，或许可以通过定制一些metric和loss函数来解决，在美团做骑手ETA时候对偏大和偏小的处理是有权衡的，这样增加了对配送超时估计不准的惩罚，也能降低后面OR层分单的导致的bad case。</li>
 </ol>
 <figure>
-<img src="eta.png" alt="美团eta" /><figcaption>美团eta</figcaption>
+<img src="eta.png" alt="美团eta" /><figcaption aria-hidden="true">美团eta</figcaption>
 </figure>
 <ol start="2" type="1">
 <li>给OR层降级，将OR层降级成为排序，然后ML层直接输出某种排序得分（类端到端），这种得分则是根据OR层的决策特点定制的，同时可以把约束作为罚项加入得分，比如二分图匹配的问题，可以直接对每个pair估计出一个score，然后根据score排序，得到最后的匹配对儿。这样做可以缩短该场景下算法部分的pipeline，同时可以放大模型迭代对提升线上结果的收益，坏处在于可能我们得到的不是最优解，且约束有些情况会不满足（我觉得这点最不用担心，第二类场景中，基于预测值作出的最优解，对我们的意义真的大吗？）。</li>
@@ -562,7 +562,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">79</span>
+                <span class="site-state-item-count">82</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -573,7 +573,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

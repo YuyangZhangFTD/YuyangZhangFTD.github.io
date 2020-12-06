@@ -443,7 +443,7 @@ E(X)=\int xp(x)dx=\int x\frac{p(x)}{q(x)}q(x)dx=\int xw(x)q(x)dx
 \forall x,cQ^*(x)&gt;P^*(x)
 \]</span> 即如下图所示</p>
 <figure>
-<img src="1.png" alt="1" /><figcaption>1</figcaption>
+<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
 </figure>
 <p>需要采样的时候，我们做两步：</p>
 <ol type="1">
@@ -453,7 +453,7 @@ E(X)=\int xp(x)dx=\int x\frac{p(x)}{q(x)}q(x)dx=\int xw(x)q(x)dx
 </ol>
 <p>但拒绝采样也会有些许问题，如下图所示，首先我们并不知道常数<span class="math inline">\(c\)</span> 使得提案分布恒大于目标分布，如果<span class="math inline">\(c\)</span> 取得小了，则达不到采样的目的，<span class="math inline">\(c\)</span> 取得大了，采样的效率就会比较低，采样大部分时候都会被拒绝。同时，对于提案分布，当提案分布与目标分布不相似时，采样的效率同样很低。</p>
 <figure>
-<img src="2.png" alt="2" /><figcaption>2</figcaption>
+<img src="2.png" alt="2" /><figcaption aria-hidden="true">2</figcaption>
 </figure>
 <h3 id="mcmc">MCMC</h3>
 <p>马尔科夫链的蒙特卡洛方法(Markov chain Monte Carlo, MCMC)是一种基于马尔科夫链的蒙特卡洛方法，此篇就不讲解马尔科夫链的相关内容了，MCMC采样的主要思想就是利用马尔科夫的平稳分布来模拟目标分布，随机生成的初始分布并不重要，经过长时间的状态转移之后，初始分布慢慢变成平稳分布，也就是我们的目标分布，而难点就在于怎么构造马尔柯夫的状态转移矩阵。</p>
@@ -489,7 +489,7 @@ x_n^{t+1}\sim P(x|x_1^{t+1},...,x_{n-1}^{t+1})
 <h4 id="slice-sampling">Slice Sampling</h4>
 <p>切片采样(Slice Sampling)也是一种比较简单的MCMC方法之一，如下图所示</p>
 <figure>
-<img src="3.png" alt="3" /><figcaption>3</figcaption>
+<img src="3.png" alt="3" /><figcaption aria-hidden="true">3</figcaption>
 </figure>
 <p>取均匀分布随机数<span class="math inline">\(x_i\)</span> ，再做均匀分布随机数<span class="math inline">\(u\sim U(0,f(x_i))\)</span> ，然后再取<span class="math inline">\(x_{i+1}\)</span> ，如此不断迭代，则可以采样出所需分布的样本。Slice Sampling虽然简单，但是会陷入局部，即某个高峰点，然后难以继续采出下一个点。</p>
 <h3 id="summary">Summary</h3>
@@ -621,7 +621,7 @@ x_n^{t+1}\sim P(x|x_1^{t+1},...,x_{n-1}^{t+1})
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">79</span>
+                <span class="site-state-item-count">82</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -632,7 +632,7 @@ x_n^{t+1}\sim P(x|x_1^{t+1},...,x_{n-1}^{t+1})
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>

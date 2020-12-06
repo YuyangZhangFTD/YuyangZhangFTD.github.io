@@ -433,7 +433,7 @@
 p_{ij}=p(y=1|\bf{x_{ij}})
 \]</span> 这个问题可以描述为一个典型的二分类问题，所以我们用历史数据进行模型训练。我们尝试了LR和GBDT，具体效果如下图所示：</p>
 <figure>
-<img src="1.jpg" alt="lr&amp;gbdt" /><figcaption>lr&amp;gbdt</figcaption>
+<img src="1.jpg" alt="lr&amp;gbdt" /><figcaption aria-hidden="true">lr&amp;gbdt</figcaption>
 </figure>
 <p>实验结果表明LR的效果稍微好一点，所以我们选择LR作为预测模型，采用SGD训练模型。特征方面主要包括四方面：</p>
 <ul>
@@ -451,7 +451,7 @@ E_{SR}=\frac{\sum^N_{i=1}[1-\prod_{j=1}^M(1-p_{ij})^{a_{ij}}]}{N}
 \sum^N_{i=1}a_{ij}\leq 1,\forall j
 \]</span> 这样的组合优化问题往往是NP-Hard的，通常采用启发式的方式求解，如爬山法、遗传算法、模拟退火等等。为了平衡精确度和算法的性能，我们选择爬山算法来求解这个问题：</p>
 <figure>
-<img src="2.png" alt="HillClimbing" /><figcaption>HillClimbing</figcaption>
+<img src="2.png" alt="HillClimbing" /><figcaption aria-hidden="true">HillClimbing</figcaption>
 </figure>
 <h2 id="目的地预测">目的地预测</h2>
 <p>通过长期的观察，我们发现几个有趣的现象：</p>
@@ -462,7 +462,7 @@ E_{SR}=\frac{\sum^N_{i=1}[1-\prod_{j=1}^M(1-p_{ij})^{a_{ij}}]}{N}
 </ul>
 <p>鉴于以上几个现象，我们先将时间划分成工作日和节假日两个部门，工作日的目的地通常是家或者公司，节假日则更多的是购物中心或者娱乐场所，我们发现贝叶斯模型会更适合这样的场景。我们先做如下的标记：</p>
 <figure>
-<img src="image-20181103133110851.png" alt="notation" /><figcaption>notation</figcaption>
+<img src="image-20181103133110851.png" alt="notation" /><figcaption aria-hidden="true">notation</figcaption>
 </figure>
 <p>因为<span class="math inline">\(D\)</span>仅有两类，所以我们先以此把用户历史数据划分成两类，除此之外，我们根据时间对训练的历史数据进行加权，削弱历史对现在的影响。我们定义如下贝叶斯模型： <span class="math display">\[
 p(Y=y_i|X)=\frac{p(X|Y=y_j)p(Y=y_j)}{\sum^n_{j=1}p(X|Y=y_j)p(Y=y_j)}
@@ -501,7 +501,7 @@ T|Y=y_i\sim N(\mu_i,\sigma_i^2)
 Lat,Lng,T|Y=y_j\sim N_3(\pmb{\mu}_i,\Sigma_i)
 \]</span> 为了证实我们的假设，我们做了正态性检验。完整的计算方法如下：</p>
 <figure>
-<img src="image-20181103141133895.png" alt="algorithm" /><figcaption>algorithm</figcaption>
+<img src="image-20181103141133895.png" alt="algorithm" /><figcaption aria-hidden="true">algorithm</figcaption>
 </figure>
 <h2 id="实验">实验</h2>
 <p>具体细节参考论文。</p>
@@ -628,7 +628,7 @@ Lat,Lng,T|Y=y_j\sim N_3(\pmb{\mu}_i,\Sigma_i)
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">79</span>
+                <span class="site-state-item-count">82</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -639,7 +639,7 @@ Lat,Lng,T|Y=y_j\sim N_3(\pmb{\mu}_i,\Sigma_i)
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
