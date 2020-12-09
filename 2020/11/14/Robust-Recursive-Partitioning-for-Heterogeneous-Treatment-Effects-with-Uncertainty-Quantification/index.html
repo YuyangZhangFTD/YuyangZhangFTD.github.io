@@ -105,7 +105,7 @@
 <meta property="og:image" content="http://yoursite.com/2020/11/14/Robust-Recursive-Partitioning-for-Heterogeneous-Treatment-Effects-with-Uncertainty-Quantification/3.jpg">
 <meta property="og:image" content="http://yoursite.com/2020/11/14/Robust-Recursive-Partitioning-for-Heterogeneous-Treatment-Effects-with-Uncertainty-Quantification/4.jpg">
 <meta property="article:published_time" content="2020-11-14T11:18:38.000Z">
-<meta property="article:modified_time" content="2020-12-06T15:57:44.770Z">
+<meta property="article:modified_time" content="2020-12-09T13:47:44.713Z">
 <meta property="article:author" content="YuyangZhangFTD">
 <meta property="article:tag" content="Machine Learning">
 <meta property="article:tag" content="Causal Inference">
@@ -445,15 +445,31 @@ v_l(x)=\big(\hat{\mu}_{l,mean}-\hat{\mu}^{up}_l(x)\big)\mathbb{I}\big[\hat{\mu}_
 <img src="2.jpg" alt="划分例子" /><figcaption aria-hidden="true">划分例子</figcaption>
 </figure>
 <p>如上图所示，在最小化组内的同质性的同时，最大化组间的异质性。</p>
+<p>初始化的时候，定义划分为<span class="math inline">\(\Pi=\{\cal{X}\}\)</span>，存在使得上述指标更小的划分<span class="math inline">\(\Pi_c\)</span>，最开始时候我们令<span class="math inline">\(\Pi_c=\Pi\)</span>，然后用SCR在数据集<span class="math inline">\(\cal{D}\)</span>上构建置信区间，基于这个置信区间我们计算<span class="math inline">\(\hat{\cal{W}}_\cal{X}\)</span>和<span class="math inline">\(\hat{\cal{S}}_\cal{X}\)</span>，即对于任何群体<span class="math inline">\(l\)</span>我们有<span class="math inline">\(\hat{\cal{W}}_l=\frac{1}{N_2^l}\sum_{i\in\cal{I}_2^l}|\hat{\cal{C}_l(x_i)|}\)</span>和<span class="math inline">\(\hat{S}_l=\frac{1}{N_2^l}\sum_{i\in\cal{I}_2^l}v_l(x_i)\)</span>，其中<span class="math inline">\(N_2^l\)</span>是验证集<span class="math inline">\(\cal{I}_2^l\)</span>的样本数量。</p>
+<p>在初始化之后我们尝试递归划分变量空间，来最小化上面的指标，对于每个群体<span class="math inline">\(l\)</span>，我们考虑两个互斥相邻的群体<span class="math inline">\(l_k^+(\phi)=\{x\in l|x_k\geq\phi\}\)</span>和<span class="math inline">\(l_k^-(\phi)=\{x\in l|x_k&lt;\phi\}\)</span>，其中<span class="math inline">\(\phi\in(x_k^{l,\min},x_k^{l,\max})\)</span>是划分的阈值，<span class="math inline">\(x_k\)</span>是第<span class="math inline">\(k\)</span>维的变量，然后我们分别对两个子集使用SCR构建置信区间，嫁给将样本做如下切割<span class="math inline">\(\cal{D}_{l_k^+(\phi)}=\cal{I}_1^{l_k^+(\phi)}\cup \cal{I}_2^{l_k^+(\phi)}\)</span>和<span class="math inline">\(\cal{D}_{l_k^-(\phi)}=\cal{I}_1^{l_k^-(\phi)}\cup \cal{I}_2^{l_k^-(\phi)}\)</span>，在计算残差的时候，我们并不训练新的模型，直接采用上一个节点的预测模型<span class="math inline">\(\hat\mu_{\cal{X}}\)</span>，这使得组内和组间的预测更具有一致性，同时大大降低了计算开销。利用残差我们可以得到置信区间<span class="math inline">\(\hat{\cal{C}}_{l_k^+(\phi)}\)</span>和<span class="math inline">\(\hat{\cal{C}}_{l_k^-(\phi)}\)</span>，然后计算出<span class="math inline">\(\hat{W}_{l_k^+(\phi)}\)</span>、<span class="math inline">\(\hat{S}_{l_k^-(\phi)}\)</span>、<span class="math inline">\(\hat{W}_{l_k^+(\phi)}\)</span>、<span class="math inline">\(\hat{S}_{l_k^-(\phi)}\)</span>，找到最优化划分变量<span class="math inline">\(k_l^*\)</span>和阈值<span class="math inline">\(\phi_l^*\)</span> <span class="math display">\[
+(k_l^*,\phi_l^*)=\underset{k,\phi}{\arg\min} \quad \lambda \bigg(\hat{W}_{l_k^+(\phi)}+\hat{W}_{l_k^-(\phi)}\bigg) + (1-\lambda)\bigg(\hat{S}_{l_k^+(\phi)}+\hat{S}_{l_k^-(\phi)}\bigg)
+\]</span> 当满足一定置信度的时候我们进行空间的分割 <span class="math display">\[
+(1-\gamma)\bigg[\lambda \hat{W}_l + (1-\lambda)\hat{S}_l\bigg] \geq
+\lambda \hat{W}^*_{l^\pm} + (1-\lambda)\hat{S}_{l^\pm}
+\]</span> 其中<span class="math inline">\(\gamma\in[0,1)\)</span>为超参数。通过选择合适的<span class="math inline">\(\gamma\)</span>参数，可以避免过拟合，同时避免过多、过小的子群体。</p>
 <figure>
 <img src="3.jpg" alt="Robust Recursive Partitioning" /><figcaption aria-hidden="true">Robust Recursive Partitioning</figcaption>
 </figure>
 <p>具体递归分裂算法如上所示。</p>
 <h1 id="robust-recursive-partitioning-for-heterogeneous-treatment-effects">Robust Recursive Partitioning for Heterogeneous Treatment Effects</h1>
+<p>现在我们将R2P应用到HTE估计上，用<span class="math inline">\(Y_i(1)\)</span>和<span class="math inline">\(Y_i(0)\)</span>表示潜在结果，0和1分别对应是否施加处理，<span class="math inline">\(t_i\in\{0,1\}\)</span>，ITE定义为<span class="math inline">\(\tau(x)=\mathbb{E}\big[Y(1)-Y(0)|X=x\big]\)</span>，我们分别对实验组和对照组拟合模型<span class="math inline">\(\hat{\mu}^0(x)=\mathbb{E}\big[Y(0)|X=x\big]\)</span>和<span class="math inline">\(\hat{\mu}^1(x)=\mathbb{E}\big[Y(1)|X=x\big]\)</span>。定义<span class="math inline">\(\tau(x)\)</span>的<span class="math inline">\(1-\alpha\)</span>置信区间为 <span class="math display">\[
+\hat{C}^\tau(x)=[
+\hat{\mu}^1(x)-\hat{\mu}^0(X)-\hat{Q}^1_{\sqrt{1-\alpha}}-\hat{Q}^0_{\sqrt{1-\alpha}}
+,\quad
+\hat{\mu}^1(x)-\hat{\mu}^0(X)+\hat{Q}^1_{\sqrt{1-\alpha}}+\hat{Q}^0_{\sqrt{1-\alpha}}
+]
+\]</span> 所以我们可以用相同的方式，来按照HTE进行群体划分。</p>
 <h1 id="experiments">Experiments</h1>
+<p>定义几个指标，测试集为<span class="math inline">\(\cal{D}^{te}\)</span>，群组<span class="math inline">\(l\)</span>，则群组上的均值和方差为<span class="math inline">\(\text{Mean}(\cal{D}_l^{te})\)</span>和<span class="math inline">\(\text{Var}(\cal{D}_l^{te})\)</span>，定义组间的异质性为所有组处理效应均值的期望<span class="math inline">\(V^{across}=\text{Var}(\{\text{Mean}({\cal{D}}_l^{te}\}_{l=1}^L)\)</span>，其中<span class="math inline">\(L\)</span>为组数，定义组的平均方差为<span class="math inline">\(V^{in}=\frac{1}{L}\sum_{l=1}^L\text{Var}({\cal{D}}_l^{te})\)</span>，其中前者用于衡量组间异质性，后者用于衡量组间的同质性</p>
 <figure>
-<img src="4.jpg" alt="实验结果" /><figcaption aria-hidden="true">实验结果</figcaption>
+<img src="4.jpg" alt="实验结果1" /><figcaption aria-hidden="true">实验结果1</figcaption>
 </figure>
+<p>有上图可以看到，R2P在多个数据集上都有较低的组内方差、较高的组间房差，同时置信区间最窄，这也是得益于组内方差较小。同时下面的图是在某个数据集上的分组情况，可以看见R2P产出的分组重叠现象更小，得到的异质群体更有意义。</p>
 
       
     </div>
