@@ -101,7 +101,7 @@
 <meta property="og:site_name" content="Arvin&#39;s Blog">
 <meta property="og:description" content="Background 这次讲的是基础的causal tree和causal forest，最近几篇内容会跟因果推断的有关，关于因果的大框架在最近几篇文章中不会详细写，之后会有总结。总得来说做因果和做纯机器学习主要有以下区别：  与纯预测不同，因果推断中并没有真实目标值，ground truth 机器学习往往在实际中表现很好，但却很76有一些统计性质，在因果问题上，我们又比较需要一些良好的统计性质，">
 <meta property="article:published_time" content="2019-11-30T15:12:15.000Z">
-<meta property="article:modified_time" content="2020-12-11T17:46:21.294Z">
+<meta property="article:modified_time" content="2020-12-11T17:59:27.888Z">
 <meta property="article:author" content="YuyangZhangFTD">
 <meta property="article:tag" content="Machine Learning">
 <meta property="article:tag" content="Causal Inference">
@@ -468,46 +468,46 @@
 - \overbrace{Y_i^2}^\text{add a constant}
 \bigg\}\\
 \text{EMSE}_\mu(\Pi)
-&amp;\equiv \mathbb{E}_{S^{te},S^{est}} \bigg[
+&amp;\equiv {\mathbb{E}}_{S^{te},S^{est}} \bigg[
 \text{MSE}_\mu(S^{te},S^{est},\Pi)
 \bigg]
 \end{aligned}
 \]</span> Honest criterion为最大化 <span class="math display">\[
 Q^{H}(\pi)\equiv 
--\mathbb{E}_{S^{te},S^{est},S^{tr}} \bigg[
+-{\mathbb{E}}_{S^{te},S^{est},S^{tr}} \bigg[
 \text{MSE}_\mu(S^{te},S^{est},\pi(S^{tr}))
 \bigg]
 \]</span></p>
 如果我们不划分estimation set的话，我们的分裂指标为 <span class="math display">\[
 Q^{C}(\pi)\equiv 
--\mathbb{E}_{S^{te},S^{tr},S^{tr}} \bigg[
+-{\mathbb{E}}_{S^{te},S^{tr},S^{tr}} \bigg[
 \text{MSE}_\mu(S^{te},S^{tr},\pi(S^{tr}))
 \bigg]
 \]</span> 因为estimation set的样本只用来做最后的预测，所以我们希望上面的MSE指标只用training set的样本进行计算。 <span class="math display">\[
 \begin{aligned}
 - \text{EMSE}_\mu(\Pi)
-&amp;= \mathbb{E}_{S^{te},S^{est}} \Bigg[
+&amp;= {\mathbb{E}}_{S^{te},S^{est}} \Bigg[
 \bigg(Y_i-\hat\mu(X_i|S^{est}, \Pi)\bigg)^2
 - Y_i^2
 \Bigg] &amp;&amp;(1) \\
-&amp;=\mathbb{E}_{S^{te},S^{est}} \Bigg[
+&amp;={\mathbb{E}}_{S^{te},S^{est}} \Bigg[
 \bigg(
 \underbrace{\color{blue}{Y_i-\mu(X_i|\Pi)}}_\color{blue}{A}+
 \underbrace{\color{orange}{\mu(X_i|\Pi)-\hat\mu(X_i|S^{est}, \Pi)}}_\color{orange}{B}
 \bigg)^2
 - Y_i^2
 \Bigg] &amp;&amp;(2) \\
-&amp;=\mathbb{E}_{S^{te},S^{est}} \Bigg[
+&amp;={\mathbb{E}}_{S^{te},S^{est}} \Bigg[
 \underbrace{\color{blue}{\bigg(Y_i-\mu(X_i|\Pi)\bigg)^2}}_\color{blue}{A^2}
 - Y_i^2 
 \Bigg]\\
-&amp; \quad\quad -\mathbb{E}_{S^{te},S^{est}} \Bigg[
+&amp; \quad\quad -{\mathbb{E}}_{S^{te},S^{est}} \Bigg[
 \underbrace{
 \color{orange}{
 \bigg(\mu(X_i|\Pi)-\hat\mu(X_i|S^{est}, \Pi)\bigg)^2
 }}_\color{orange}{B^2}
 \Bigg] &amp;&amp; (3) \\
-&amp;\quad\quad -\mathbb{E}_{S^{te},S^{est}} \Bigg[
+&amp;\quad\quad -{\mathbb{E}}_{S^{te},S^{est}} \Bigg[
 \underbrace{
 2\color{blue}{\bigg(Y_i-\mu(X_i|\Pi)\bigg)}
 \color{orange}{\bigg(\mu(X_i|\Pi)-\hat\mu(X_i|S^{est}, \Pi)\bigg)}
@@ -522,14 +522,14 @@ Cov(A,B) &amp;= \mathbb{E}(AB) - \mathbb{E}(A)\mathbb{E}(A)\\
 \]</span> 所以最后一项<span class="math inline">\(2\cdot A\cdot B=0\)</span>。 $$
 <span class="math display">\[\begin{aligned}
 - \text{EMSE}_\mu(\Pi)
-&amp;=-\mathbb{E}_{
+&amp;=-{\mathbb{E}}_{
 \underbrace{\color{red}{(Y_i, X_i)}}_{S^{te}=(Y_i, X_i)},S^{est}
 } 
 \Bigg[
 \bigg(Y_i-\mu(X_i|\Pi)\bigg)^2
 - Y_i^2 
 \Bigg] 
-\\ &amp;\quad \quad - \mathbb{E}_{
+\\ &amp;\quad \quad - {\mathbb{E}}_{
 \underbrace{\color{red}{X_i}}_{S^{te}=(Y_i, X_i)},S^{est}
 } 
 \underbrace{\color{red}{
@@ -538,31 +538,31 @@ Cov(A,B) &amp;= \mathbb{E}(AB) - \mathbb{E}(A)\mathbb{E}(A)\\
 \Bigg]
 }}_{\text{independent of } Y_i} &amp;&amp; (4) \\
 
-&amp;=-\mathbb{E}_{(Y_i, X_i),S^{est}} 
+&amp;=-{\mathbb{E}}_{(Y_i, X_i),S^{est}} 
 \Bigg[
-\enclose{downdiagonalstrike}{\color{red}{Y_i^2}}
+\color{red}{Y_i^2}
 - 2\cdot Y_i\cdot \mu(X_i|\Pi)+\mu^2(X_i|\Pi)
-- \enclose{downdiagonalstrike}{\color{red}{Y_i^2}}
+- \color{red}{Y_i^2}
 \Bigg] 
-\\ &amp;\quad \quad - \mathbb{E}_{X_i,S^{est}} 
+\\ &amp;\quad \quad - {\mathbb{E}}_{X_i,S^{est}} 
 \Bigg[
 \bigg(\mu(X_i|\Pi)-\hat\mu(X_i|S^{est}, \Pi)\bigg)^2
 \Bigg] &amp;&amp; (5) \\
 
-&amp;=-\mathbb{E}_{(Y_i, X_i),S^{est}} 
+&amp;=-{\mathbb{E}}_{(Y_i, X_i),S^{est}} 
 \Bigg[
 \mu^2(X_i|\Pi)-2\cdot\underbrace{\color{red}{Y_i}}_{\mathbb{E}(Y_i)= \mu(X_i|\Pi)}\cdot \mu(X_i|\Pi)
 \Bigg] 
-\\ &amp;\quad \quad - \mathbb{E}_{X_i,S^{est}} 
+\\ &amp;\quad \quad - {\mathbb{E}}_{X_i,S^{est}} 
 \Bigg[
 \bigg(\mu(X_i|\Pi)-\hat\mu(X_i|S^{est}, \Pi)\bigg)^2
 \Bigg] &amp;&amp; (6) \\
 
-&amp;=-\mathbb{E}_{\color{red}{X_i}} 
+&amp;=-{\mathbb{E}}_{\color{red}{X_i}} 
 \underbrace{\color{red}{\Bigg[
 \mu^2(X_i|\Pi)-2\cdot \mu^2(X_i|\Pi)
 \Bigg]}}_{\text{independent of } Y_i \text{ and } S^{est}}
-\\ &amp;\quad \quad - \mathbb{E}_{X_i,S^{est}} 
+\\ &amp;\quad \quad - {\mathbb{E}}_{X_i,S^{est}} 
 \Bigg[
 \underbrace{\color{red}{\bigg(\mu(X_i|\Pi)-\hat\mu(X_i|S^{est}, \Pi)\bigg)^2}}_{
 \mathbb{V}(Z) = (Z-\mathbb{E}[Z])^2
@@ -570,12 +570,12 @@ Cov(A,B) &amp;= \mathbb{E}(AB) - \mathbb{E}(A)\mathbb{E}(A)\\
 \Bigg] &amp;&amp; (7) \\
 
 &amp;=\underbrace{\color{blue}{
-\mathbb{E}_{X_i} 
+{\mathbb{E}}_{X_i} 
 \Bigg[
 \mu^2(X_i|\Pi)
 \Bigg]
 }}_{\color{blue}{C}} - \underbrace{\color{orange}{
-\mathbb{E}_{X_i,S^{est}} 
+{\mathbb{E}}_{X_i,S^{est}} 
 \Bigg[
 \mathbb{V}
 \big(\hat\mu(X_i|S^{est}, \Pi)\big)
@@ -620,7 +620,7 @@ N^{est}\big(\ell\big) /\#\ell
 \mu^2(x|\Pi)  
 &amp;\approx \hat\mu^2(x|S^{tr},\Pi) -\frac{S^2_{S^{tr}}\big(\ell(x|\Pi)\big)}{N^{tr}\big(\ell(x|\Pi)\big)}\\
 
-\hat\mathbb{E}_{X_i}\big(\mu^2(X_i|\Pi)\big) 
+\hat{\mathbb{E}}_{X_i}\big(\mu^2(X_i|\Pi)\big) 
 &amp; \approx \frac{1}{N^{tr}}\sum_{i\in S^{tr}} \hat\mu^2(x_i|S^{tr},\Pi)
 - \sum_{\ell} \frac{1}{\#\ell} \frac{
 S^2_{S^{tr}}\big(\ell\big)
