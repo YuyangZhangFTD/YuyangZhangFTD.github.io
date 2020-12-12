@@ -94,17 +94,20 @@
 
 
 
-<meta name="description" content="在本节会阐述一些简单的因果相关的术语和概念。 我们用T表示处理效应，Y表示最后感兴趣的结果变量，X表示协变量，大写字母表示随机变量，小写字母表示该随机变量的取值。大部分情形下我们先考虑T是二元变量，后续我们会讲解多元和连续的情况。 潜在结果和因果效应">
+<meta name="description" content="在本节会阐述一些简单的因果相关的术语和概念。 我们用T表示处理效应，Y表示最后感兴趣的结果变量，X表示协变量，大写字母表示随机变量，小写字母表示该随机变量的取值。大部分情形下我们先考虑T是二元变量，后续我们会讲解多元和连续的情况。 潜在结果 潜在结果\(Y(t)\)表示当一个实验单元（unit）被施加处理（treatment，干预）\(t\)时的结果（outcome），潜在结果可以从观测结果\(Y">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Course ICI 02">
 <meta property="og:url" content="http://yoursite.com/2020/12/06/Course-ICI-02/index.html">
 <meta property="og:site_name" content="Arvin&#39;s Blog">
-<meta property="og:description" content="在本节会阐述一些简单的因果相关的术语和概念。 我们用T表示处理效应，Y表示最后感兴趣的结果变量，X表示协变量，大写字母表示随机变量，小写字母表示该随机变量的取值。大部分情形下我们先考虑T是二元变量，后续我们会讲解多元和连续的情况。 潜在结果和因果效应">
+<meta property="og:description" content="在本节会阐述一些简单的因果相关的术语和概念。 我们用T表示处理效应，Y表示最后感兴趣的结果变量，X表示协变量，大写字母表示随机变量，小写字母表示该随机变量的取值。大部分情形下我们先考虑T是二元变量，后续我们会讲解多元和连续的情况。 潜在结果 潜在结果\(Y(t)\)表示当一个实验单元（unit）被施加处理（treatment，干预）\(t\)时的结果（outcome），潜在结果可以从观测结果\(Y">
+<meta property="og:image" content="http://yoursite.com/2020/12/06/Course-ICI-02/figure_2.2.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/12/06/Course-ICI-02/figure_proof.jpg">
 <meta property="article:published_time" content="2020-12-06T08:43:19.000Z">
-<meta property="article:modified_time" content="2020-12-06T09:05:50.496Z">
+<meta property="article:modified_time" content="2020-12-12T16:38:17.740Z">
 <meta property="article:author" content="YuyangZhangFTD">
 <meta property="article:tag" content="Causal Inference">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2020/12/06/Course-ICI-02/figure_2.2.jpg">
 
 
 
@@ -411,7 +414,53 @@
       
         <p>在本节会阐述一些简单的因果相关的术语和概念。</p>
 <p>我们用T表示处理效应，Y表示最后感兴趣的结果变量，X表示协变量，大写字母表示随机变量，小写字母表示该随机变量的取值。大部分情形下我们先考虑T是二元变量，后续我们会讲解多元和连续的情况。</p>
-<h1 id="潜在结果和因果效应">潜在结果和因果效应</h1>
+<h1 id="潜在结果">潜在结果</h1>
+<p>潜在结果<span class="math inline">\(Y(t)\)</span>表示当一个实验单元（unit）被施加处理（treatment，干预）<span class="math inline">\(t\)</span>时的结果（outcome），潜在结果可以从观测结果<span class="math inline">\(Y\)</span>中得到，但并不是所有潜在结果都可以被观测到，因为每次我们只能受到一个处理的影响，所以依赖于施加在实验单元上的处理<span class="math inline">\(T\)</span>是什么。我们定义第<span class="math inline">\(i\)</span>个实验单元的个体处理效应(ITE，individual treatment effect)为 <span class="math display">\[
+\tau_i=Y_i(1)-Y_i(0)
+\]</span> 无法观测到给定实验单元的所有潜在结果，是因果推断的本质问题。因为我们每次无法同时观测到<span class="math inline">\(Y_i(1)\)</span>和<span class="math inline">\(Y_i(0)\)</span>，所以我们无法得知每个单元的因果效应<span class="math inline">\(Y_i(1)-Y_i(0)\)</span>。相比于机器学习，我们只用关心预测观测到的结果<span class="math inline">\(Y\)</span>。</p>
+<p>虽然我们无法得到个体处理效应，但是我们可以计算平均处理效应（ATE，average treatment effect）： <span class="math display">\[
+\tau=\mathbb{E}[Y_i(1)-Y_i(0)]=\mathbb{E}[Y(1) - Y(0)]
+\]</span> 那么我们如何计算ATE呢，一个简单的做法是直接将两个期望相减<span class="math inline">\(\mathbb{E}[Y|T=1]-\mathbb{E}[Y|T=0]\)</span>，但是实际上很多时候<span class="math inline">\(\mathbb{E}[Y|T=1]-\mathbb{E}[Y|T=0]\neq \mathbb{E}[Y(1)]-\mathbb{E}[Y(0)]\)</span>，前者是一个相关关系，而后者是一个因果关系，它们之间不想等就是因为存在混淆（confounding）。</p>
+<p>那么什么情况下，我们可以用两个期望直接相减得到ATE呢？答案是满足ignorability，假设ignorability就像是可以忽略人群差异，随机选择治疗方案，即X对T不影响</p>
+<figure>
+<img src="figure_2.2.jpg" alt="figure_2.2" /><figcaption aria-hidden="true">figure_2.2</figcaption>
+</figure>
+<p>公式化Ignorability（也叫Exchangeability）为 <span class="math display">\[
+\bigg(Y(1),Y(0)\bigg) \perp T
+\]</span> 当满足Ignorability时， <span class="math display">\[
+\begin{aligned}
+\mathbb{E}[Y(1)] - \mathbb{E}[Y(0)] 
+&amp;= \mathbb{E}[Y(1)|T=1] - \mathbb{E}[Y(0)|T=0] \\
+&amp;= \mathbb{E}[Y|T=1] - \mathbb{E}[Y|T=0]
+\end{aligned}
+\]</span></p>
+在观测数据中，一般很难满足Ignorability的假设，即我们很难假设各个组下的变量分布无差异，但是如果我们控制某些变量，在某个条件下，子群体间可能会是exchangeable，所以我们定义Conditional Exchangeability或者也叫Unconfoundedness为 <span class="math display">\[
+\bigg(Y(1),Y(0)\bigg) \perp T \quad \big| \quad X
+\]</span> 当我们施加干预和潜在结果，在整体上由于存在混淆是有联系的，但是在某个X的分层下，他们并没有联系，换句话说，在控制住X下，使得混淆不存在了，满足了Ignorability。 $$
+<span class="math display">\[\begin{aligned}
+\mathbb{E}[Y(1) - Y(0)] 
+&amp;=\mathbb{E}_X\Big[
+\mathbb{E}\big[Y(1)-Y(0)|X\big]
+\Big]\\
+
+&amp;= \mathbb{E}_X\Big[
+ \mathbb{E}\big[Y|T=1,X\big] -  \mathbb{E}\big[Y|T=0,X\big]
+\Big]
+\end{aligned}\]</span>
+<p>$$ ATE为所有X上取边际X上ATE的期望。通常来说，最好的做法就是观测并拟合尽量多的特征在X中，来保证unconfoundedness。</p>
+<p>当我们加入更多的特征来实现unconfoundedness，我们也需要考虑另一个假设positivity。Positivity（Overlap， common support）是在任意群体的上，都会有一定概率受到处理 <span class="math display">\[
+0 &lt; P(T=1|X=x) &lt;1 \quad \forall x
+\]</span> 这个假设也很重要，如果<span class="math inline">\(P(T=1|X=x)=0\)</span>或者<span class="math inline">\(P(T=0|X=x)=0\)</span>，都会使得我们无法计算ATE。</p>
+<p>在上述几个假设外，还有几个比较重要的：</p>
+<ul>
+<li>No interference，结果不受到其它干预的影响，<span class="math inline">\(Y_i(t1,\cdots,t_i,\cdots,t_n)=Y_i(t_i)\)</span></li>
+<li>Consistency，观测到的结果和潜在结果一致，<span class="math inline">\(T=t \implies Y=Y(t)\)</span></li>
+<li>SUTVA，stable unit-treatment value assumption，如果一个实验单元的结果是受到干预的函数，即consistency和no interference的结合。</li>
+</ul>
+<figure>
+<img src="figure_proof.jpg" alt="proof" /><figcaption aria-hidden="true">proof</figcaption>
+</figure>
+<p>上面的证明讲了满足以上的假设之后，我们怎么计算ATE。</p>
 
       
     </div>
@@ -451,6 +500,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/12/13/Course-ICI-03/" rel="prev" title="Course ICI 03">
+                Course ICI 03 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -529,7 +582,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">83</span>
+                <span class="site-state-item-count">95</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -592,7 +645,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#潜在结果和因果效应"><span class="nav-number">1.</span> <span class="nav-text">潜在结果和因果效应</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#潜在结果"><span class="nav-number">1.</span> <span class="nav-text">潜在结果</span></a></li></ol></div>
             
 
           </div>
