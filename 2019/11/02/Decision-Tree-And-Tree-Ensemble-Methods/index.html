@@ -94,14 +94,14 @@
 
 
 
-<meta name="description" content="决策树模型和集成方法 这次打算系统梳理树方法和相关集成学习的方法，包括但不限于以下内容（持续更新ing，部分基础内容会长时间pending，预计2020，2021年4月前完成，会整理出一个slides）  树模型基础  树模型总结（ID3，C4.5，CART基础树模型，数据处理、剪枝等基础概念）  Boosting基础：A Review for Boosting  Boosting树模型高效工具-">
+<meta name="description" content="决策树模型和集成方法 这次打算系统梳理树方法和相关集成学习的方法，包括但不限于以下内容（持续更新ing，部分基础内容会长时间pending，预计2020，2021年4月前完成，会整理出一个slides）  树模型基础  树模型总结（ID3，C4.5，CART基础树模型，数据处理、剪枝等基础概念）TODO  Boosting基础：A Review for Boosting  Boosting树模型高">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Decision Tree And Tree Ensemble Methods">
 <meta property="og:url" content="http://yoursite.com/2019/11/02/Decision-Tree-And-Tree-Ensemble-Methods/index.html">
 <meta property="og:site_name" content="Arvin&#39;s Blog">
-<meta property="og:description" content="决策树模型和集成方法 这次打算系统梳理树方法和相关集成学习的方法，包括但不限于以下内容（持续更新ing，部分基础内容会长时间pending，预计2020，2021年4月前完成，会整理出一个slides）  树模型基础  树模型总结（ID3，C4.5，CART基础树模型，数据处理、剪枝等基础概念）  Boosting基础：A Review for Boosting  Boosting树模型高效工具-">
+<meta property="og:description" content="决策树模型和集成方法 这次打算系统梳理树方法和相关集成学习的方法，包括但不限于以下内容（持续更新ing，部分基础内容会长时间pending，预计2020，2021年4月前完成，会整理出一个slides）  树模型基础  树模型总结（ID3，C4.5，CART基础树模型，数据处理、剪枝等基础概念）TODO  Boosting基础：A Review for Boosting  Boosting树模型高">
 <meta property="article:published_time" content="2019-11-02T11:56:27.000Z">
-<meta property="article:modified_time" content="2021-02-01T13:01:15.509Z">
+<meta property="article:modified_time" content="2021-02-09T02:37:57.475Z">
 <meta property="article:author" content="YuyangZhangFTD">
 <meta property="article:tag" content="Machine Learning">
 <meta name="twitter:card" content="summary">
@@ -414,20 +414,21 @@
 <ul>
 <li><p>树模型基础</p>
 <ul>
-<li>树模型总结（ID3，C4.5，CART基础树模型，数据处理、剪枝等基础概念）</li>
+<li>树模型总结（ID3，C4.5，CART基础树模型，数据处理、剪枝等基础概念）<a href="">TODO</a></li>
 </ul></li>
 <li><p>Boosting基础：<a href="http://www.arvinzyy.cn/2017/10/12/A-Review-for-Boosting/" target="_blank" rel="noopener">A Review for Boosting</a></p>
 <ul>
 <li>Boosting树模型高效工具-xgboost：<a href="">TODO</a></li>
-<li>Boosting树模型高效工具-lightgbm：<a href="">TODO</a></li>
+<li><a href="http://www.arvinzyy.cn/2017/11/18/lightGBM/" target="_blank" rel="noopener">Boosting树模型高效工具-lightgbm</a></li>
 <li>Boosting树模型高效工具-CatBoost：<a href="">TODO</a></li>
 <li>Boosting树模型-扩展（持续更新近几年关于gbdt相关的新paper）：
 <ul>
 <li>Gradient Boosting with Piece-Wise Linear Regression Trees <a href="">TODO</a></li>
 <li>AugBoos- Gradient Boosting Enhanced with Step-Wise Feature Augmentation <a href="">TODO</a></li>
+<li>XGBoostLSS--An extension of XGBoost to probabilistic forecasting <a href="">TODO</a></li>
 </ul></li>
 </ul></li>
-<li><p>Bagging基础：<a href="http://www.arvinzyy.cn/2017/08/17/Bagging/" target="_blank" rel="noopener">Bagging</a></p>
+<li><p><a href="http://www.arvinzyy.cn/2017/08/17/Bagging/" target="_blank" rel="noopener">Bagging基础</a></p>
 <ul>
 <li>随机森林RF：RandomForest总结 （Working）</li>
 </ul></li>
@@ -441,15 +442,16 @@
 <li><p>贝叶斯加法随机森林：BART <a href="">TODO</a></p></li>
 <li><p>因果树 &amp; 因果森林</p>
 <ul>
-<li><a href="http://www.arvinzyy.cn/2019/11/30/Causal-Tree-Causal-Forests/" target="_blank" rel="noopener">causal tree &amp; causal forest</a></li>
+<li><a href="http://www.arvinzyy.cn/2019/11/30/Causal-Tree/" target="_blank" rel="noopener">causal tree</a></li>
+<li>causal forest（Working）</li>
 <li>generalized random forest（Working）</li>
-<li>orthogonal Random Forest（Working）</li>
+</ul></li>
+<li><p>orthogonal Random Forest（Working）</p></li>
 </ul></li>
 <li><p>相关扩展</p>
 <ul>
-<li><a href="">Learning Triggers for Heterogeneous Treatment Effects</a> （Working）</li>
+<li><a href="http://www.arvinzyy.cn/2021/02/01/Learning-Triggers-for-Heterogeneous-Treatment-Effects/" target="_blank" rel="noopener">Learning Triggers for Heterogeneous Treatment Effects</a></li>
 <li><a href="http://www.arvinzyy.cn/2020/11/14/Robust-Recursive-Partitioning-for-Heterogeneous-Treatment-Effects-with-Uncertainty-Quantification/" target="_blank" rel="noopener">Robust Recursive Partitioning for Heterogeneous Treatment Effects with Uncertainty Quantification</a></li>
-</ul></li>
 </ul></li>
 </ul>
 
@@ -573,7 +575,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">81</span>
+                <span class="site-state-item-count">83</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -595,7 +597,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">31</span>
+                <span class="site-state-item-count">33</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
