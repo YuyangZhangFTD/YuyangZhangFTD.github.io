@@ -6,7 +6,7 @@
   <link href="http://yoursite.com/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2021-03-01T14:54:04.571Z</updated>
+  <updated>2021-05-13T13:03:51.971Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Double Machine Learning(DML algo slides)</title>
+    <link href="http://yoursite.com/2021/05/13/Double-Machine-Learning-DML-algo-slides/"/>
+    <id>http://yoursite.com/2021/05/13/Double-Machine-Learning-DML-algo-slides/</id>
+    <published>2021-05-13T12:55:49.000Z</published>
+    <updated>2021-05-13T13:03:51.971Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近在写一些个人总结，其中部分章节有关算法的总结，拿出来分享。</p><p>这次是Double Machine Learning相关的总结slides，参考文献如下：</p><ol type="1"><li>Díaz, Iván. "Machine learning in the estimation of causal effects: targeted minimum loss-based estimation and double/debiased machine learning." Biostatistics 21.2 (2020): 353-358.</li><li>Chernozhukov, Victor, Whitney K. Newey, and James Robins. Double/de-biased machine learning using regularized Riesz representers. No. CWP15/18. cemmap working paper, 2018.</li><li>Belloni, Alexandre, et al. "Program evaluation and causal inference with high‐dimensional data." Econometrica 85.1 (2017): 233-298.</li><li>Belloni, Alexandre, et al. "Uniformly valid post-regularization confidence regions for many functional parameters in z-estimation framework." Annals of statistics 46.6B (2018): 3643.</li></ol><figure><img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption></figure><figure><img src="2.png" alt="2" /><figcaption aria-hidden="true">2</figcaption></figure><figure><img src="3.png" alt="3" /><figcaption aria-hidden="true">3</figcaption></figure><figure><img src="4.png" alt="4" /><figcaption aria-hidden="true">4</figcaption></figure><figure><img src="5.png" alt="5" /><figcaption aria-hidden="true">5</figcaption></figure><figure><img src="6.png" alt="6" /><figcaption aria-hidden="true">6</figcaption></figure>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;最近在写一些个人总结，其中部分章节有关算法的总结，拿出来分享。&lt;/p&gt;
+&lt;p&gt;这次是Double Machine Learning相关的总结slides，参考文献如下：&lt;/p&gt;
+&lt;ol type=&quot;1&quot;&gt;
+&lt;li&gt;Díaz, Iván. &quot;Machine learning </summary>
+      
+    
+    
+    
+    <category term="Slides" scheme="http://yoursite.com/categories/Slides/"/>
+    
+    
+    <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
+    
+    <category term="Causal Inference" scheme="http://yoursite.com/tags/Causal-Inference/"/>
+    
+  </entry>
   
   <entry>
     <title>Improving Deep Learning For Airbnb Search</title>
@@ -535,34 +564,6 @@
     
     
     <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Thinking in ml+or</title>
-    <link href="http://yoursite.com/2019/10/26/Thinking-in-ml-or/"/>
-    <id>http://yoursite.com/2019/10/26/Thinking-in-ml-or/</id>
-    <published>2019-10-26T14:30:59.000Z</published>
-    <updated>2019-10-27T14:18:58.953Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="最近关于mlor体系的一点思考">最近关于ML+OR体系的一点思考</h1><p>最近又深入实（被）践（蹂躏）了一波ML+OR的工作，有些感悟思考记录一下。先贴一下一个前辈的思考</p><p><a href="https://zhuanlan.zhihu.com/p/80607089" target="_blank" rel="noopener">【2019.Q3】谈工业界常见的ML+OR策略架构</a></p><p>首先是很多场景下的解决方案都可以看作是ML+OR的组合，这个在上面的文章中也已经提到了，包括且不限于最简单的经验预测值+各类规划问题（传统OR场景，强假设+复杂优化）以及各种“高精尖”的预测+简单排序（传统ML场景，强预测+简单排序或其他规则）。</p><p>偏ML的场景多在广告、搜索等方面，做这些方向的同学们会很侧重模型，在得到结果之后会直接对预测结果（如点击率高低）进行排序或者加权排序（成交GMV最大化），这些场景下的提升主要来自于对于模型精度的提升。</p><p>偏OR的场景多在物流、零售企业中出现，如物流中，往往会对路径的耗时、成本进行估计，然后进行一个较为复杂的VRP问题求解，零售企业中会有收益管理相关的东西，dynamic pricing、assortment optimization，都是对用户的response有个比较简单的假设之后，列出一个DP或者MIP的形式然后近似求解，这些场景下的提升主要来自于建模问题的形式和求解优化问题速度、精度（某些场景下等价，足够长的时间可以得到最优解）。</p><p>这些场景可以根据OR层面的建模求解难度大概分为3类：</p><ol type="1"><li>加权排序。</li><li>资源分配 （补贴分配）&amp; 二分图匹配（包括外卖分单、网约车派单、用户补贴策略匹配等等）。</li><li>场景建模（VRP、考虑时间维度上的网约车派单优化、航空酒店动态定价）。</li></ol><p>最近遇到的问题，基本都来自于第二种场景，同时在做的时候会遇到OR层难以评估收益的问题。</p><p>第一种类型的场景，对于简单的OR层，无需评估，当我们做ranking的时候，按照点击率对商品进行排序，此时无需衡量OR层的输出好坏。对于第三种场景，当你的OR问题成为瓶颈的时候，整体的好坏取决于对于OR算法的设计，以VRP问题为例，如果优化的是总花费时间，路径的ETA准确与否很大程度上不会过多影响线上效果，甚至规则ETA就可以解决90%的场景，最后求得解的质量会显著影响线上指标，此时也很容易衡量OR层的好坏。</p><p>而第二种场景就很难评估，以资源分配问题为例，可以参考<a href="http://www.arvinzyy.cn/2019/08/10/A-Unified-Framework-for-Marketing-Budget-Allocation/" target="_blank" rel="noopener">A Unified Framework for Marketing Budget Allocation</a>，ML层给出单位资源倾斜所能带来的收益和成本的增量，然后根据增量与预算的大小，来构造资源分配组合，此处OR层所能做的就是基于预测情况下，给出一组最优解，至于这组解在线上情况的好坏，目前来看应该是跟OR层无关的，做OR层的同学此时可能会很自信的说“我的解是最优解，线上效果不好肯定是预测模型做的不准”。可是情况真的应该是这样的吗？</p><p>很多情况ML层给出的是均值的估计，此时在各种优化机制的作用下，往往会取到一些边缘的极值，而这些地方的预测值往往都是ML层的bad case，而随着模型的迭代，有可能在OR层的作用下，只是从一个bad case到另一个bad case，OR层的存在会掩盖了模型迭代所能提供的收益，这时候模型的正常迭代逻辑（如降低RMSE这种常用指标）是否真的可以为经过OR层的线上结果提供正向作用，是值得怀疑的。</p><p>目前想到的三个可能的解决方案：</p><ol type="1"><li>ML根据OR层的决策特点进行迭代，这个完全依赖于问题结构与经验，或许可以从点估计转向对概率分布的估计，或许可以通过定制一些metric和loss函数来解决，在美团做骑手ETA时候对偏大和偏小的处理是有权衡的，这样增加了对配送超时估计不准的惩罚，也能降低后面OR层分单的导致的bad case。</li></ol><figure><img src="eta.png" alt="美团eta" /><figcaption aria-hidden="true">美团eta</figcaption></figure><ol start="2" type="1"><li>给OR层降级，将OR层降级成为排序，然后ML层直接输出某种排序得分（类端到端），这种得分则是根据OR层的决策特点定制的，同时可以把约束作为罚项加入得分，比如二分图匹配的问题，可以直接对每个pair估计出一个score，然后根据score排序，得到最后的匹配对儿。这样做可以缩短该场景下算法部分的pipeline，同时可以放大模型迭代对提升线上结果的收益，坏处在于可能我们得到的不是最优解，且约束有些情况会不满足（我觉得这点最不用担心，第二类场景中，基于预测值作出的最优解，对我们的意义真的大吗？）。</li><li>给OR层增加超参数，通常可以增加规则罚项，在目标函数中，根据业务规则构造优化目标，比如分单中，往往对超时有不同程度的罚项，通过这种方式避免得到的解过于靠近风险更大的边界，还有就是控制决策结果的方差，增加机会约束等等。</li></ol>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h1 id=&quot;最近关于mlor体系的一点思考&quot;&gt;最近关于ML+OR体系的一点思考&lt;/h1&gt;
-&lt;p&gt;最近又深入实（被）践（蹂躏）了一波ML+OR的工作，有些感悟思考记录一下。先贴一下一个前辈的思考&lt;/p&gt;
-&lt;p&gt;&lt;a href=&quot;https://zhuanlan.zhihu.co</summary>
-      
-    
-    
-    
-    <category term="Thinking" scheme="http://yoursite.com/categories/Thinking/"/>
-    
-    
-    <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
-    
-    <category term="Operation Research" scheme="http://yoursite.com/tags/Operation-Research/"/>
     
   </entry>
   
