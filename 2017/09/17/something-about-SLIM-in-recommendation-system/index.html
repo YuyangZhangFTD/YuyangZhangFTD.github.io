@@ -83,8 +83,6 @@
 
 
 
-  
-
 
   <link rel="alternate" href="/atom.xml" title="Arvin's Blog" type="application/atom+xml" />
 
@@ -104,6 +102,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/09/17/something-about-SLIM-in-recommendation-system/index.html">
 <meta property="og:site_name" content="Arvin&#39;s Blog">
 <meta property="og:description" content="看16年recsys的best paper，Local Item-Item Models for Top-N Recommendation 中提到的SLIM方法，最近抓着这个方法研究了一下。然后还发现了Xia Ning和George Karypis这两位，这两位一直是SLIM相关论文的主要作者，XiaNing应该是George Karypis的学生，从最早的SLIM方法开始，到后面也有两篇（好像是">
+<meta property="og:locale">
 <meta property="og:image" content="http://yoursite.com/2017/09/17/something-about-SLIM-in-recommendation-system/1.png">
 <meta property="article:published_time" content="2017-09-17T14:31:13.000Z">
 <meta property="article:modified_time" content="2019-05-19T11:00:56.016Z">
@@ -118,7 +117,7 @@
 <script type="text/javascript" id="hexo.configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
-    root: '/',
+    root: '',
     scheme: 'Muse',
     sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -162,7 +161,7 @@
 
 
 
-<meta name="generator" content="Hexo 4.2.1"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+<meta name="generator" content="Hexo 5.4.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -330,7 +329,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/09/17/something-about-SLIM-in-recommendation-system/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="YuyangZhangFTD">
+      <meta itemprop="name" content="">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/uploads/avatar.jpg">
     </span>
@@ -416,7 +415,7 @@
       
 
       
-        <p>看16年recsys的best paper，<a href="http://www-users.cs.umn.edu/~evangel/recsy368-christakopoulouA.pdf" target="_blank" rel="noopener">Local Item-Item Models for Top-N Recommendation</a> 中提到的SLIM方法，最近抓着这个方法研究了一下。然后还发现了Xia Ning和George Karypis这两位，这两位一直是SLIM相关论文的主要作者，XiaNing应该是George Karypis的学生，从最早的SLIM方法开始，到后面也有两篇（好像是，没仔细搜）相关改进的文章，都是XiaNing的一作，George Karypis署名二作或者三作。恩，对UMN有些好感。</p>
+        <p>看16年recsys的best paper，<a target="_blank" rel="noopener" href="http://www-users.cs.umn.edu/~evangel/recsy368-christakopoulouA.pdf">Local Item-Item Models for Top-N Recommendation</a> 中提到的SLIM方法，最近抓着这个方法研究了一下。然后还发现了Xia Ning和George Karypis这两位，这两位一直是SLIM相关论文的主要作者，XiaNing应该是George Karypis的学生，从最早的SLIM方法开始，到后面也有两篇（好像是，没仔细搜）相关改进的文章，都是XiaNing的一作，George Karypis署名二作或者三作。恩，对UMN有些好感。</p>
 <h1 id="slim">SLIM</h1>
 <p>SLIM全称是Sparse Linear Methods，Xia Ning和George Karypis两位第一次在2011年提出，主要思想就是通过一个稀疏矩阵作为权重，来给矩阵打分： <span class="math display">\[
 \widetilde{A}=AW
@@ -463,7 +462,7 @@
 <figure>
 <img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
 </figure>
-<p>FISMauc是一种贝叶斯个性化排序（<a href="https://arxiv.org/ftp/arxiv/papers/1205/1205.2618.pdf" target="_blank" rel="noopener">BRP</a>）的思路，同时利用打分和未打分的物品，来优化AUC，主要想法是先用FISMrmse做出初步结果，再去优化成对的目标损失： <span class="math display">\[
+<p>FISMauc是一种贝叶斯个性化排序（<a target="_blank" rel="noopener" href="https://arxiv.org/ftp/arxiv/papers/1205/1205.2618.pdf">BRP</a>）的思路，同时利用打分和未打分的物品，来优化AUC，主要想法是先用FISMrmse做出初步结果，再去优化成对的目标损失： <span class="math display">\[
 \min_{P,Q}\frac{1}{2}\sum_{c\in \mathcal{C}}\sum_{i\in\mathcal{R}^+_u,j\in\mathcal{R}^-_u}\|(r_{u,i}-r_{u,j})-(\widetilde{r}_{u,i}-\widetilde{r}_{u,j})\|^2_F+\frac{\beta}{2}(\|P\|^2_F+\|Q\|^2_F)+\frac{\gamma}{2}\|b_i\|^2_F
 \]</span> 具有优化算法大家见论文，总体上跟FISMrmse相似。</p>
 <p>FISM全称为Factored Item Similarity Methods，大家别拼错了哈哈哈哈，这篇文章看到这里我才发现这个跟SLIM一点屌关系都没有，只不过后面二作、三作是Xia Ning和George Karypis，往下看参考文献列表发现里面也没有这篇，恩，这种心情简直逼了个狗，大概看错以为是SLIM改进的只有我吧。</p>
@@ -504,7 +503,7 @@ y^{(u)}=2R_{u:}-1
 <h1 id="local-slim-ensemble">Local SLIM Ensemble</h1>
 <p>用SLIM做局部特征，然后进行Ensemble，作者是根据一种LLORMA，local low-rank matrix approximation的方法改进，该方法随机选出多个子集，然后训练子集模型，最后结果做子集结果的加权平均，论文中作者对训练数据对的选择和局部的划分都给出了一些自己的建议，模型的效果有所改进，但给我感觉不是很impressive，毕竟我是看见ensemble才点进来的，插句题外话，目前ensemble方法在推荐系统中用的比较少，以后可以考虑一下怎么结合。</p>
 <h1 id="local-item-item-models">Local Item-Item Models</h1>
-<p>这篇文章是recsys的best，在没看SLIM之前，我就被这篇文章的思路惊艳到了，虽然是个局部相似是个老问题，但也是大家容易忽视的盲区之一，这篇文章用SLIM同时去刻画全局和局部的物品潜在联系，然后作为最终的预测，如果把SLIM的贡献加进来，这篇文章的确是实至名归的best paper，具体详情见论文吧，这里不赘述了，对于局部用户的分割采用的是<a href="http://glaros.dtc.umn.edu/gkhome/cluto/cluto/overview" target="_blank" rel="noopener">CLUTO</a> ，基本上就是SLIM+local SLIM。</p>
+<p>这篇文章是recsys的best，在没看SLIM之前，我就被这篇文章的思路惊艳到了，虽然是个局部相似是个老问题，但也是大家容易忽视的盲区之一，这篇文章用SLIM同时去刻画全局和局部的物品潜在联系，然后作为最终的预测，如果把SLIM的贡献加进来，这篇文章的确是实至名归的best paper，具体详情见论文吧，这里不赘述了，对于局部用户的分割采用的是<a target="_blank" rel="noopener" href="http://glaros.dtc.umn.edu/gkhome/cluto/cluto/overview">CLUTO</a> ，基本上就是SLIM+local SLIM。</p>
 <h1 id="cslim">CSLIM</h1>
 <p>之后的这几篇是一位叫Yong Zheng的年轻人在2014年的作品，这篇思路很简单，之前的SLIM模型，不管是针对物品还是针对用户，都属于协同过滤的思路，去做线性推广，这篇文章中提到，在SLIM的基础上，考虑上下文信息，并且认为在估计最后得分时，有上下文信息的评分和没有的之前会有一些差距 <span class="math display">\[
 \hat{R}_{i,j,c}=R_{i,j}+\sum^L_{l=1}D_{j,l}c_l
@@ -538,7 +537,7 @@ z^{k+1}=\min_xL_{\rho}(x^{k+1},z,\mu^k)\\
 \]</span> 总的来说就是做了两步矩阵分解，只不过第二步比较像SLIM而已，看到这里我也是一头雾水，我猜作者这么做的目的是为了尽可能去刻画相似用户对评分的影响。</p>
 <h1 id="todo">TODO</h1>
 <ul>
-<li>[9]和[11]涉及到一些基于矩阵补全与低秩分解的内容，留个坑，之后把基于矩阵的推荐模型总结一下，然后查阅相关内容的时候，看见了知乎上<a href="https://www.zhihu.com/question/47716840" target="_blank" rel="noopener">覃含章的回答</a> ，打算下一阶段好好研究一下这个。</li>
+<li>[9]和[11]涉及到一些基于矩阵补全与低秩分解的内容，留个坑，之后把基于矩阵的推荐模型总结一下，然后查阅相关内容的时候，看见了知乎上<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/47716840">覃含章的回答</a> ，打算下一阶段好好研究一下这个。</li>
 <li>[1]是去年的best paper，简单浏览过一次，做全局和局部的SLIM，我等着过一阵细细再品味一下。</li>
 <li>其实参考文献本来有20+，但是有些我下载不到就删掉了。</li>
 </ul>
@@ -691,10 +690,10 @@ z^{k+1}=\min_xL_{\rho}(x^{k+1},z,\mu^k)\\
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/uploads/avatar.jpg"
-               alt="YuyangZhangFTD" />
-          <p class="site-author-name" itemprop="name">YuyangZhangFTD</p>
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
            
-              <p class="site-description motion-element" itemprop="description">张 雨阳</p>
+              <p class="site-description motion-element" itemprop="description"></p>
           
         </div>
         <nav class="site-state motion-element">
@@ -702,7 +701,7 @@ z^{k+1}=\min_xL_{\rho}(x^{k+1},z,\mu^k)\\
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">89</span>
+                <span class="site-state-item-count">90</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -772,7 +771,7 @@ z^{k+1}=\min_xL_{\rho}(x^{k+1},z,\mu^k)\\
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#slim"><span class="nav-number">1.</span> <span class="nav-text">SLIM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sslim"><span class="nav-number">2.</span> <span class="nav-text">SSLIM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#fism"><span class="nav-number">3.</span> <span class="nav-text">FISM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#hoslim"><span class="nav-number">4.</span> <span class="nav-text">HOSLIM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#lrec"><span class="nav-number">5.</span> <span class="nav-text">LRec</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#local-slim-ensemble"><span class="nav-number">6.</span> <span class="nav-text">Local SLIM Ensemble</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#local-item-item-models"><span class="nav-number">7.</span> <span class="nav-text">Local Item-Item Models</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#cslim"><span class="nav-number">8.</span> <span class="nav-text">CSLIM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#lorslim"><span class="nav-number">9.</span> <span class="nav-text">LorSLIM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#gslim"><span class="nav-number">10.</span> <span class="nav-text">GSLIM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#todo"><span class="nav-number">11.</span> <span class="nav-text">TODO</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#slim资料汇总"><span class="nav-number">12.</span> <span class="nav-text">SLIM资料汇总</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#slim"><span class="nav-number">1.</span> <span class="nav-text">SLIM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sslim"><span class="nav-number">2.</span> <span class="nav-text">SSLIM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#fism"><span class="nav-number">3.</span> <span class="nav-text">FISM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#hoslim"><span class="nav-number">4.</span> <span class="nav-text">HOSLIM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#lrec"><span class="nav-number">5.</span> <span class="nav-text">LRec</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#local-slim-ensemble"><span class="nav-number">6.</span> <span class="nav-text">Local SLIM Ensemble</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#local-item-item-models"><span class="nav-number">7.</span> <span class="nav-text">Local Item-Item Models</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#cslim"><span class="nav-number">8.</span> <span class="nav-text">CSLIM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#lorslim"><span class="nav-number">9.</span> <span class="nav-text">LorSLIM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#gslim"><span class="nav-number">10.</span> <span class="nav-text">GSLIM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#todo"><span class="nav-number">11.</span> <span class="nav-text">TODO</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#slim%E8%B5%84%E6%96%99%E6%B1%87%E6%80%BB"><span class="nav-number">12.</span> <span class="nav-text">SLIM资料汇总</span></a></li></ol></div>
             
 
           </div>
@@ -809,12 +808,12 @@ z^{k+1}=\min_xL_{\rho}(x^{k+1},z,\mu^k)\\
 
 
 <div class="powered-by">
-  由 <a class="theme-link" href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 强力驱动
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 强力驱动
 </div>
 
 <div class="theme-info">
   主题 -
-  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="noopener">
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
     NexT.Muse
   </a>
 </div>

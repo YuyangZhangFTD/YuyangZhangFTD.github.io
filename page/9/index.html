@@ -83,8 +83,6 @@
 
 
 
-  
-
 
   <link rel="alternate" href="/atom.xml" title="Arvin's Blog" type="application/atom+xml" />
 
@@ -104,6 +102,7 @@
 <meta property="og:url" content="http://yoursite.com/page/9/index.html">
 <meta property="og:site_name" content="Arvin&#39;s Blog">
 <meta property="og:description" content="张 雨阳">
+<meta property="og:locale">
 <meta property="article:author" content="YuyangZhangFTD">
 <meta name="twitter:card" content="summary">
 
@@ -112,7 +111,7 @@
 <script type="text/javascript" id="hexo.configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
-    root: '/',
+    root: '',
     scheme: 'Muse',
     sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -156,7 +155,7 @@
 
 
 
-<meta name="generator" content="Hexo 4.2.1"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+<meta name="generator" content="Hexo 5.4.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -323,10 +322,160 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/24/Understanding-Bias-and-Variance/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arvin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/24/Understanding-Bias-and-Variance/" itemprop="url">Understanding Bias and Variance</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-24T22:34:10+08:00">
+                2017-08-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/BriefSummary/" itemprop="url" rel="index">
+                    <span itemprop="name">BriefSummary</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          今天读ESL，看到第二章中对LS(Least Square)和k-NN的bias和variance对比，突然有了些新的理解，在这里记录一下。
+All we know
+放一张经常可以看到的图，这张图来自机器学习中的Bias(偏差)，Error(误差)，和Variance(方差)有什么区别和联系？ 中的[@修宇亮](https://www.zhihu.com/people/yuliangxiu/ans
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/08/24/Understanding-Bias-and-Variance/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/17/Combination-Methods/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="YuyangZhangFTD">
+      <meta itemprop="name" content="">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/uploads/avatar.jpg">
     </span>
@@ -477,7 +626,7 @@ statistical issue：当我们的假设空间过大，而数据量受限的时候
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/17/Bagging/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="YuyangZhangFTD">
+      <meta itemprop="name" content="">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/uploads/avatar.jpg">
     </span>
@@ -627,7 +776,7 @@ Two Ensemble Paradigms
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/16/Boosting/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="YuyangZhangFTD">
+      <meta itemprop="name" content="">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/uploads/avatar.jpg">
     </span>
@@ -777,7 +926,7 @@ A General Boosting Procedure
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/12/Sampling-From-Distribution/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="YuyangZhangFTD">
+      <meta itemprop="name" content="">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/uploads/avatar.jpg">
     </span>
@@ -933,7 +1082,7 @@ P(x)=\frac{P^*(x)}{Z}
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/08/Ad-Click-Prediction-a-View-from-the-Trenches/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="YuyangZhangFTD">
+      <meta itemprop="name" content="">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/uploads/avatar.jpg">
     </span>
@@ -1084,7 +1233,7 @@ P(\text{click}|q,a)
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/06/Learning-Piece-wise-Linear-Models-from-Large-Scale-Data-for-Ad-ClickPrediction/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="YuyangZhangFTD">
+      <meta itemprop="name" content="">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/uploads/avatar.jpg">
     </span>
@@ -1233,7 +1382,7 @@ CTR预估(click-through-rate prediction)是广告行业比较常见的问题，�
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/06/CollaborativeDeepEmbeddingviaDualNetworks/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="YuyangZhangFTD">
+      <meta itemprop="name" content="">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/uploads/avatar.jpg">
     </span>
@@ -1386,7 +1535,7 @@ CTR预估(click-through-rate prediction)是广告行业比较常见的问题，�
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/05/DeepMatrixFactorizationModelsforRecommenderSystems/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="YuyangZhangFTD">
+      <meta itemprop="name" content="">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/uploads/avatar.jpg">
     </span>
@@ -1538,7 +1687,7 @@ CTR预估(click-through-rate prediction)是广告行业比较常见的问题，�
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/05/NewHomeHere/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="YuyangZhangFTD">
+      <meta itemprop="name" content="">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/uploads/avatar.jpg">
     </span>
@@ -1710,10 +1859,10 @@ CTR预估(click-through-rate prediction)是广告行业比较常见的问题，�
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/uploads/avatar.jpg"
-               alt="YuyangZhangFTD" />
-          <p class="site-author-name" itemprop="name">YuyangZhangFTD</p>
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
            
-              <p class="site-description motion-element" itemprop="description">张 雨阳</p>
+              <p class="site-description motion-element" itemprop="description"></p>
           
         </div>
         <nav class="site-state motion-element">
@@ -1721,7 +1870,7 @@ CTR预估(click-through-rate prediction)是广告行业比较常见的问题，�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">89</span>
+                <span class="site-state-item-count">90</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -1812,12 +1961,12 @@ CTR预估(click-through-rate prediction)是广告行业比较常见的问题，�
 
 
 <div class="powered-by">
-  由 <a class="theme-link" href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 强力驱动
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 强力驱动
 </div>
 
 <div class="theme-info">
   主题 -
-  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="noopener">
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
     NexT.Muse
   </a>
 </div>

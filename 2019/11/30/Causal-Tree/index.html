@@ -83,8 +83,6 @@
 
 
 
-  
-
 
   <link rel="alternate" href="/atom.xml" title="Arvin's Blog" type="application/atom+xml" />
 
@@ -104,8 +102,9 @@
 <meta property="og:url" content="http://yoursite.com/2019/11/30/Causal-Tree/index.html">
 <meta property="og:site_name" content="Arvin&#39;s Blog">
 <meta property="og:description" content="Background 这次讲的是基础的causal tree和causal forest，最近几篇内容会跟因果推断的有关，关于因果的大框架在最近几篇文章中不会详细写，之后会有总结。总得来说做因果和做纯机器学习主要有以下区别：  与纯预测不同，因果推断中并没有真实目标值，ground truth 机器学习往往在实际中表现很好，但却很76有一些统计性质，在因果问题上，我们又比较需要一些良好的统计性质，">
+<meta property="og:locale">
 <meta property="article:published_time" content="2019-11-30T15:12:15.000Z">
-<meta property="article:modified_time" content="2021-02-08T08:37:16.419Z">
+<meta property="article:modified_time" content="2021-05-14T14:43:58.556Z">
 <meta property="article:author" content="YuyangZhangFTD">
 <meta property="article:tag" content="Machine Learning">
 <meta property="article:tag" content="Causal Inference">
@@ -116,7 +115,7 @@
 <script type="text/javascript" id="hexo.configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
-    root: '/',
+    root: '',
     scheme: 'Muse',
     sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -160,7 +159,7 @@
 
 
 
-<meta name="generator" content="Hexo 4.2.1"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+<meta name="generator" content="Hexo 5.4.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -328,7 +327,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/30/Causal-Tree/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="YuyangZhangFTD">
+      <meta itemprop="name" content="">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/uploads/avatar.jpg">
     </span>
@@ -420,7 +419,7 @@
 <li>与纯预测不同，因果推断中并没有真实目标值，ground truth</li>
 <li>机器学习往往在实际中表现很好，但却很76有一些统计性质，在因果问题上，我们又比较需要一些良好的统计性质，在很多场景下也需要对于置信区间的估计</li>
 </ol>
-<p>常见因果问题的术语详见<a href="http://www.arvinzyy.cn/2019/11/30/Causal-Inference-Fundation/" target="_blank" rel="noopener">因果推断基础</a>。</p>
+<p>常见因果问题的术语详见<a target="_blank" rel="noopener" href="http://www.arvinzyy.cn/2019/11/30/Causal-Inference-Fundation/">因果推断基础</a>。</p>
 <p>对于i.i.d.的样本<span class="math inline">\(i=1,\cdots,n\)</span>，我们可以观测到<span class="math inline">\((X_i, Y_i,W_i)\)</span>，</p>
 <ul>
 <li>feture vector 特征向量，<span class="math inline">\(X_i\in\Bbb{R}^p\)</span></li>
@@ -464,7 +463,7 @@
 \right]
 \]</span></p>
 <h1 id="causal-tree-分裂指标推导">Causal Tree 分裂指标推导</h1>
-<p>犹豫了很久，最终还是打算完整把推导写一遍，加深一下印象，网上Ian Lundberg的<a href="https://scholar.princeton.edu/sites/default/files/bstewart/files/lundberg_methods_tutorial_reading_group_version.pdf" target="_blank" rel="noopener">slides</a>也讲得很清楚，我基本上只是搬运。 <span class="math display">\[
+<p>犹豫了很久，最终还是打算完整把推导写一遍，加深一下印象，网上Ian Lundberg的<a target="_blank" rel="noopener" href="https://scholar.princeton.edu/sites/default/files/bstewart/files/lundberg_methods_tutorial_reading_group_version.pdf">slides</a>也讲得很清楚，我基本上只是搬运。 <span class="math display">\[
 \begin{aligned}
 \text{MSE}_\mu(S^{te},S^{est},\Pi) 
 &amp;\equiv \frac{1}{\#(S^{te})} \sum_{i\in S^{te}} \bigg\{
@@ -685,7 +684,7 @@ N^{tr}\big(\ell\big) /\#\ell
 <h2 id="参考">参考</h2>
 <ol type="1">
 <li>Athey, Susan, and Guido Imbens. "Recursive partitioning for heterogeneous causal effects." <em>Proceedings of the National Academy of Sciences</em> 113.27 (2016): 7353-7360.</li>
-<li>Susan Athey, Solving Heterogeneous Estimating Equations Using Forest Based Algorithms, <a href="https://www.youtube.com/watch?v=CPz0HdUM3dE" target="_blank" rel="noopener">youtube vedio</a></li>
+<li>Susan Athey, Solving Heterogeneous Estimating Equations Using Forest Based Algorithms, <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=CPz0HdUM3dE">youtube vedio</a></li>
 </ol>
 
       
@@ -799,10 +798,10 @@ N^{tr}\big(\ell\big) /\#\ell
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/uploads/avatar.jpg"
-               alt="YuyangZhangFTD" />
-          <p class="site-author-name" itemprop="name">YuyangZhangFTD</p>
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
            
-              <p class="site-description motion-element" itemprop="description">张 雨阳</p>
+              <p class="site-description motion-element" itemprop="description"></p>
           
         </div>
         <nav class="site-state motion-element">
@@ -810,7 +809,7 @@ N^{tr}\big(\ell\big) /\#\ell
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">89</span>
+                <span class="site-state-item-count">90</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -880,7 +879,7 @@ N^{tr}\big(\ell\big) /\#\ell
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#background"><span class="nav-number">1.</span> <span class="nav-text">Background</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#causal-tree"><span class="nav-number">2.</span> <span class="nav-text">Causal Tree</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#causal-tree-分裂指标推导"><span class="nav-number">3.</span> <span class="nav-text">Causal Tree 分裂指标推导</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#总结与思考"><span class="nav-number">3.1.</span> <span class="nav-text">总结与思考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">3.2.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#background"><span class="nav-number">1.</span> <span class="nav-text">Background</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#causal-tree"><span class="nav-number">2.</span> <span class="nav-text">Causal Tree</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#causal-tree-%E5%88%86%E8%A3%82%E6%8C%87%E6%A0%87%E6%8E%A8%E5%AF%BC"><span class="nav-number">3.</span> <span class="nav-text">Causal Tree 分裂指标推导</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%E4%B8%8E%E6%80%9D%E8%80%83"><span class="nav-number">3.1.</span> <span class="nav-text">总结与思考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">3.2.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -917,12 +916,12 @@ N^{tr}\big(\ell\big) /\#\ell
 
 
 <div class="powered-by">
-  由 <a class="theme-link" href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 强力驱动
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 强力驱动
 </div>
 
 <div class="theme-info">
   主题 -
-  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="noopener">
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
     NexT.Muse
   </a>
 </div>

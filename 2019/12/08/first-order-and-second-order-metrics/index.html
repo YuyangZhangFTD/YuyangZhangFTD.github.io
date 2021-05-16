@@ -83,8 +83,6 @@
 
 
 
-  
-
 
   <link rel="alternate" href="/atom.xml" title="Arvin's Blog" type="application/atom+xml" />
 
@@ -104,6 +102,7 @@
 <meta property="og:url" content="http://yoursite.com/2019/12/08/first-order-and-second-order-metrics/index.html">
 <meta property="og:site_name" content="Arvin&#39;s Blog">
 <meta property="og:description" content="“一阶”和“二阶”指标 “一阶”和“二阶”指标的定义 本节内容仅针对分类与概率预测类问题。 算法实践中，常用的机器学习模型评估指标可以hold住大部分场景，包括常见的准确率，查准率、查全率、AUC等等，但是在最近的实践的场景中，我发现上述指标并不能完全适用于我们的场景。 首先定义一阶指标（此处的“一阶”和“二阶”完全是我的定义，为了方便下面不会加引号。），一阶指标就是常见的准确率、查准率、AUC等">
+<meta property="og:locale">
 <meta property="article:published_time" content="2019-12-08T10:11:57.000Z">
 <meta property="article:modified_time" content="2019-12-08T11:31:05.758Z">
 <meta property="article:author" content="YuyangZhangFTD">
@@ -115,7 +114,7 @@
 <script type="text/javascript" id="hexo.configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
-    root: '/',
+    root: '',
     scheme: 'Muse',
     sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -159,7 +158,7 @@
 
 
 
-<meta name="generator" content="Hexo 4.2.1"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+<meta name="generator" content="Hexo 5.4.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -327,7 +326,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/08/first-order-and-second-order-metrics/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="YuyangZhangFTD">
+      <meta itemprop="name" content="">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/uploads/avatar.jpg">
     </span>
@@ -422,7 +421,7 @@
 <p>在这些时候，我们会去看一些群体指标，也就是二阶指标。二阶指标可以定义为在单体维度上不可观测，只有计算一个群体时候才能得到真实值的指标。拿预估司机出车概率的场景来说，我们会算这些司机的出车概率的平均是否真的等于这些司机的总体出车率。当然，这样的二阶指标应该尽量计算到比较细的人群上，比如说出车概率从0到1分10桶，我们在第一桶，出车概率预测为0-0.1的这群人，对这些司机的出车概率预估的平均是否真的等于他们的总体出车率。简单来说，二阶指标就是需要群体来衡量的指标，因为这些时候一阶指标往往不可观测，我们预测一个人的点击概率是0.8，我们无法真正观测到“概率”，我们只能看到这个人要么点了label为1，要么没点label为0，所以只有两种做法，要么这个人在完全一模一样的场景中，怀着一样的心态，重复实验N次，我们计算概率，要么我们在这个样本的特征空间内，找到与它相近的N个样本，认为这N个样本的实际点击概率与这个样本相近，他们的均值可以代表这个样本的概率（也就是相近群体的整体概率）。</p>
 <p>上述方法前者不可行，只能用后者，所以当输出值是概率的时候，我们需要更多关注一些群体性的二阶指标。</p>
 <h2 id="二阶指标与因果建模">二阶指标与因果建模</h2>
-<p>在一些非常规机器学习场景下，我们只能关注二阶指标，比如说因果建模，因果建模关注的是，当我给一个实验对象一个处理效应和不给他时候的差异，因为我们只能观测到实验对象有处理效应的情况或者没有处理效应的情况，所以对于单体样本，我们永远不可能得到一个处理效应的实际值，所以在这种时候，我们就需要通过一些手段，才能去直接优化二阶指标。具体因果建模的内容可以关注我博客里的其他文章，如：<a href="http://www.arvinzyy.cn/2019/11/30/Causal-Tree-Causal-Forests/" target="_blank" rel="noopener">写了三周没写完的causal tree，大家可以隔几周再点</a>，此处就不多赘述了。</p>
+<p>在一些非常规机器学习场景下，我们只能关注二阶指标，比如说因果建模，因果建模关注的是，当我给一个实验对象一个处理效应和不给他时候的差异，因为我们只能观测到实验对象有处理效应的情况或者没有处理效应的情况，所以对于单体样本，我们永远不可能得到一个处理效应的实际值，所以在这种时候，我们就需要通过一些手段，才能去直接优化二阶指标。具体因果建模的内容可以关注我博客里的其他文章，如：<a target="_blank" rel="noopener" href="http://www.arvinzyy.cn/2019/11/30/Causal-Tree-Causal-Forests/">写了三周没写完的causal tree，大家可以隔几周再点</a>，此处就不多赘述了。</p>
 <h2 id="为什么要多关注二阶指标">为什么要多关注二阶指标</h2>
 <p>最大的问题是关于模型预测值的使用方法，如果我们对样本的预测值只是做优劣排序，我觉得一阶指标完全够用，但如果是后面有一些别的操作，就需要关注二阶指标了，比如说我们希望预测一个活动的期望成本的时候，对每个人是否获奖的概率有一个估计，由于每个人的成本不一样，所以做最后的期望成本用每个人的概率乘以每个人的成本，这个时候预测概率值具体多少就比较重要了。</p>
 <h2 id="阶指标">2.5阶指标？</h2>
@@ -540,10 +539,10 @@
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/uploads/avatar.jpg"
-               alt="YuyangZhangFTD" />
-          <p class="site-author-name" itemprop="name">YuyangZhangFTD</p>
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
            
-              <p class="site-description motion-element" itemprop="description">张 雨阳</p>
+              <p class="site-description motion-element" itemprop="description"></p>
           
         </div>
         <nav class="site-state motion-element">
@@ -551,7 +550,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">89</span>
+                <span class="site-state-item-count">90</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -621,7 +620,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一阶和二阶指标"><span class="nav-number">1.</span> <span class="nav-text">“一阶”和“二阶”指标</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一阶和二阶指标的定义"><span class="nav-number">1.1.</span> <span class="nav-text">“一阶”和“二阶”指标的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二阶指标与因果建模"><span class="nav-number">1.2.</span> <span class="nav-text">二阶指标与因果建模</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么要多关注二阶指标"><span class="nav-number">1.3.</span> <span class="nav-text">为什么要多关注二阶指标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#阶指标"><span class="nav-number">1.4.</span> <span class="nav-text">2.5阶指标？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附吹捧dl-e2e"><span class="nav-number">1.5.</span> <span class="nav-text">附吹捧dl e2e</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E9%98%B6%E5%92%8C%E4%BA%8C%E9%98%B6%E6%8C%87%E6%A0%87"><span class="nav-number">1.</span> <span class="nav-text">“一阶”和“二阶”指标</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E9%98%B6%E5%92%8C%E4%BA%8C%E9%98%B6%E6%8C%87%E6%A0%87%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">1.1.</span> <span class="nav-text">“一阶”和“二阶”指标的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E9%98%B6%E6%8C%87%E6%A0%87%E4%B8%8E%E5%9B%A0%E6%9E%9C%E5%BB%BA%E6%A8%A1"><span class="nav-number">1.2.</span> <span class="nav-text">二阶指标与因果建模</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%A4%9A%E5%85%B3%E6%B3%A8%E4%BA%8C%E9%98%B6%E6%8C%87%E6%A0%87"><span class="nav-number">1.3.</span> <span class="nav-text">为什么要多关注二阶指标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%B6%E6%8C%87%E6%A0%87"><span class="nav-number">1.4.</span> <span class="nav-text">2.5阶指标？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%84%E5%90%B9%E6%8D%A7dl-e2e"><span class="nav-number">1.5.</span> <span class="nav-text">附吹捧dl e2e</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -658,12 +657,12 @@
 
 
 <div class="powered-by">
-  由 <a class="theme-link" href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 强力驱动
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 强力驱动
 </div>
 
 <div class="theme-info">
   主题 -
-  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="noopener">
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
     NexT.Muse
   </a>
 </div>

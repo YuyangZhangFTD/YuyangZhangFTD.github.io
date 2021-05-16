@@ -83,8 +83,6 @@
 
 
 
-  
-
 
   <link rel="alternate" href="/atom.xml" title="Arvin's Blog" type="application/atom+xml" />
 
@@ -104,6 +102,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/08/24/Understanding-Bias-and-Variance/index.html">
 <meta property="og:site_name" content="Arvin&#39;s Blog">
 <meta property="og:description" content="今天读ESL，看到第二章中对LS(Least Square)和k-NN的bias和variance对比，突然有了些新的理解，在这里记录一下。 All we know 放一张经常可以看到的图，这张图来自机器学习中的Bias(偏差)，Error(误差)，和Variance(方差)有什么区别和联系？ 中的[@修宇亮](https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;yuliangxiu&#x2F;ans">
+<meta property="og:locale">
 <meta property="og:image" content="http://yoursite.com/2017/08/24/Understanding-Bias-and-Variance/1.png">
 <meta property="og:image" content="http://yoursite.com/2017/08/24/Understanding-Bias-and-Variance/2.png">
 <meta property="og:image" content="http://yoursite.com/2017/08/24/Understanding-Bias-and-Variance/10.png">
@@ -126,7 +125,7 @@
 <script type="text/javascript" id="hexo.configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
-    root: '/',
+    root: '',
     scheme: 'Muse',
     sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -170,7 +169,7 @@
 
 
 
-<meta name="generator" content="Hexo 4.2.1"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+<meta name="generator" content="Hexo 5.4.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -338,7 +337,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/24/Understanding-Bias-and-Variance/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="YuyangZhangFTD">
+      <meta itemprop="name" content="">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/uploads/avatar.jpg">
     </span>
@@ -426,7 +425,7 @@
       
         <p>今天读ESL，看到第二章中对LS(Least Square)和k-NN的bias和variance对比，突然有了些新的理解，在这里记录一下。</p>
 <h3 id="all-we-know">All we know</h3>
-<p>放一张经常可以看到的图，这张图来自<a href="https://www.zhihu.com/question/27068705" target="_blank" rel="noopener">机器学习中的Bias(偏差)，Error(误差)，和Variance(方差)有什么区别和联系？</a> 中的<span class="citation" data-cites="修宇亮">[@修宇亮]</span>(https://www.zhihu.com/people/yuliangxiu/answers) 的回答。</p>
+<p>放一张经常可以看到的图，这张图来自<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/27068705">机器学习中的Bias(偏差)，Error(误差)，和Variance(方差)有什么区别和联系？</a> 中的<span class="citation" data-cites="修宇亮">[@修宇亮]</span>(https://www.zhihu.com/people/yuliangxiu/answers) 的回答。</p>
 <figure>
 <img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
 </figure>
@@ -483,7 +482,7 @@
 <figure>
 <img src="3.png" alt="3" /><figcaption aria-hidden="true">3</figcaption>
 </figure>
-<p>这张图也来自<a href="https://www.zhihu.com/question/27068705" target="_blank" rel="noopener">机器学习中的Bias(偏差)，Error(误差)，和Variance(方差)有什么区别和联系？</a> 中的<span class="citation" data-cites="修宇亮">[@修宇亮]</span>(https://www.zhihu.com/people/yuliangxiu/answers) 的回答。刚好看到这段，读过UML之后对这段话也是有所理解了。如果让训练误差小，则需要增加模型的capacity，模型复杂了，假设集合就大了，使训练误差和泛化误差足够接近的样本数也就多了，此时复杂的模型具有低的bias，反之，如果样本数量一定了，为了让训练误差和泛化误差足够接近则需要选择小的假设集合，也就是降低模型的capacity（某种程度上可以认为是参数数量），此时模型有较小的variance。</p>
+<p>这张图也来自<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/27068705">机器学习中的Bias(偏差)，Error(误差)，和Variance(方差)有什么区别和联系？</a> 中的<span class="citation" data-cites="修宇亮">[@修宇亮]</span>(https://www.zhihu.com/people/yuliangxiu/answers) 的回答。刚好看到这段，读过UML之后对这段话也是有所理解了。如果让训练误差小，则需要增加模型的capacity，模型复杂了，假设集合就大了，使训练误差和泛化误差足够接近的样本数也就多了，此时复杂的模型具有低的bias，反之，如果样本数量一定了，为了让训练误差和泛化误差足够接近则需要选择小的假设集合，也就是降低模型的capacity（某种程度上可以认为是参数数量），此时模型有较小的variance。</p>
 
       
     </div>
@@ -594,10 +593,10 @@
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/uploads/avatar.jpg"
-               alt="YuyangZhangFTD" />
-          <p class="site-author-name" itemprop="name">YuyangZhangFTD</p>
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
            
-              <p class="site-description motion-element" itemprop="description">张 雨阳</p>
+              <p class="site-description motion-element" itemprop="description"></p>
           
         </div>
         <nav class="site-state motion-element">
@@ -605,7 +604,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">89</span>
+                <span class="site-state-item-count">90</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -712,12 +711,12 @@
 
 
 <div class="powered-by">
-  由 <a class="theme-link" href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 强力驱动
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 强力驱动
 </div>
 
 <div class="theme-info">
   主题 -
-  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="noopener">
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
     NexT.Muse
   </a>
 </div>

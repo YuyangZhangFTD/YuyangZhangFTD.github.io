@@ -83,8 +83,6 @@
 
 
 
-  
-
 
   <link rel="alternate" href="/atom.xml" title="Arvin's Blog" type="application/atom+xml" />
 
@@ -104,6 +102,7 @@
 <meta property="og:url" content="http://yoursite.com/2020/12/06/Course-ICI/index.html">
 <meta property="og:site_name" content="Arvin&#39;s Blog">
 <meta property="og:description" content="之前承诺朋友写一些入门的东西，刚好趁这个机会对某些方向进行一些系统化的梳理。这次主要是Brady Neal的 Introduction to Causal Inference(ICI)的课程笔记的翻译和精讲，完整课程链接奉上，同时也希望越来越多的人关注这个方向。 目录：  因果推断简介  辛普森悖论 相关性非因果性  潜在结果 因果图   因果推断简介 辛普森悖论（Simpson&#39;s Parado">
+<meta property="og:locale">
 <meta property="og:image" content="http://yoursite.com/2020/12/06/Course-ICI/table_1.1.jpg">
 <meta property="og:image" content="http://yoursite.com/2020/12/06/Course-ICI/figure_1.1.jpg">
 <meta property="og:image" content="http://yoursite.com/2020/12/06/Course-ICI/figure_1.2.jpg">
@@ -127,7 +126,7 @@
 <script type="text/javascript" id="hexo.configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
-    root: '/',
+    root: '',
     scheme: 'Muse',
     sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -171,7 +170,7 @@
 
 
 
-<meta name="generator" content="Hexo 4.2.1"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+<meta name="generator" content="Hexo 5.4.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -339,7 +338,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/12/06/Course-ICI/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="YuyangZhangFTD">
+      <meta itemprop="name" content="">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/uploads/avatar.jpg">
     </span>
@@ -425,7 +424,7 @@
       
 
       
-        <p>之前承诺朋友写一些入门的东西，刚好趁这个机会对某些方向进行一些系统化的梳理。这次主要是Brady Neal的 <font color='red'>I</font>ntroduction to <font color='red'>C</font>ausal <font color='red'>I</font>nference(ICI)的课程笔记的翻译和精讲，<a href="https://www.bradyneal.com/causal-inference-course" target="_blank" rel="noopener">完整课程链接奉上</a>，同时也希望越来越多的人关注这个方向。</p>
+        <p>之前承诺朋友写一些入门的东西，刚好趁这个机会对某些方向进行一些系统化的梳理。这次主要是Brady Neal的 <font color='red'>I</font>ntroduction to <font color='red'>C</font>ausal <font color='red'>I</font>nference(ICI)的课程笔记的翻译和精讲，<a target="_blank" rel="noopener" href="https://www.bradyneal.com/causal-inference-course">完整课程链接奉上</a>，同时也希望越来越多的人关注这个方向。</p>
 <p>目录：</p>
 <ol type="1">
 <li>因果推断简介
@@ -670,10 +669,10 @@ P(x_1,x_2,x_3,x_4)
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/uploads/avatar.jpg"
-               alt="YuyangZhangFTD" />
-          <p class="site-author-name" itemprop="name">YuyangZhangFTD</p>
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
            
-              <p class="site-description motion-element" itemprop="description">张 雨阳</p>
+              <p class="site-description motion-element" itemprop="description"></p>
           
         </div>
         <nav class="site-state motion-element">
@@ -681,7 +680,7 @@ P(x_1,x_2,x_3,x_4)
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">89</span>
+                <span class="site-state-item-count">90</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -751,7 +750,7 @@ P(x_1,x_2,x_3,x_4)
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#因果推断简介"><span class="nav-number">1.</span> <span class="nav-text">因果推断简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#辛普森悖论simpsons-paradox"><span class="nav-number">1.1.</span> <span class="nav-text">辛普森悖论（Simpson&#39;s Paradox）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#场景1"><span class="nav-number">1.1.1.</span> <span class="nav-text">场景1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#场景2"><span class="nav-number">1.1.2.</span> <span class="nav-text">场景2</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关性并不意味着因果性"><span class="nav-number">1.2.</span> <span class="nav-text">相关性并不意味着因果性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#潜在结果"><span class="nav-number">2.</span> <span class="nav-text">潜在结果</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#因果图"><span class="nav-number">3.</span> <span class="nav-text">因果图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#graph-terminology"><span class="nav-number">3.1.</span> <span class="nav-text">Graph Terminology</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bayesian-networks"><span class="nav-number">3.2.</span> <span class="nav-text">Bayesian Networks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#causal-graphs"><span class="nav-number">3.3.</span> <span class="nav-text">Causal Graphs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#two-node-graphs-and-graphical-building-blocks"><span class="nav-number">3.4.</span> <span class="nav-text">Two-Node Graphs and Graphical Building Blocks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#chains-and-forks"><span class="nav-number">3.5.</span> <span class="nav-text">Chains and Forks</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%A0%E6%9E%9C%E6%8E%A8%E6%96%AD%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">因果推断简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%9B%E6%99%AE%E6%A3%AE%E6%82%96%E8%AE%BAsimpsons-paradox"><span class="nav-number">1.1.</span> <span class="nav-text">辛普森悖论（Simpson&#39;s Paradox）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF1"><span class="nav-number">1.1.1.</span> <span class="nav-text">场景1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF2"><span class="nav-number">1.1.2.</span> <span class="nav-text">场景2</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E6%80%A7%E5%B9%B6%E4%B8%8D%E6%84%8F%E5%91%B3%E7%9D%80%E5%9B%A0%E6%9E%9C%E6%80%A7"><span class="nav-number">1.2.</span> <span class="nav-text">相关性并不意味着因果性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BD%9C%E5%9C%A8%E7%BB%93%E6%9E%9C"><span class="nav-number">2.</span> <span class="nav-text">潜在结果</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%A0%E6%9E%9C%E5%9B%BE"><span class="nav-number">3.</span> <span class="nav-text">因果图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#graph-terminology"><span class="nav-number">3.1.</span> <span class="nav-text">Graph Terminology</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bayesian-networks"><span class="nav-number">3.2.</span> <span class="nav-text">Bayesian Networks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#causal-graphs"><span class="nav-number">3.3.</span> <span class="nav-text">Causal Graphs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#two-node-graphs-and-graphical-building-blocks"><span class="nav-number">3.4.</span> <span class="nav-text">Two-Node Graphs and Graphical Building Blocks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#chains-and-forks"><span class="nav-number">3.5.</span> <span class="nav-text">Chains and Forks</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -788,12 +787,12 @@ P(x_1,x_2,x_3,x_4)
 
 
 <div class="powered-by">
-  由 <a class="theme-link" href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 强力驱动
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 强力驱动
 </div>
 
 <div class="theme-info">
   主题 -
-  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="noopener">
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
     NexT.Muse
   </a>
 </div>

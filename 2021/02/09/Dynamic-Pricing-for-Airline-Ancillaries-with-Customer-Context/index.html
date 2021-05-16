@@ -83,8 +83,6 @@
 
 
 
-  
-
 
   <link rel="alternate" href="/atom.xml" title="Arvin's Blog" type="application/atom+xml" />
 
@@ -104,6 +102,7 @@
 <meta property="og:url" content="http://yoursite.com/2021/02/09/Dynamic-Pricing-for-Airline-Ancillaries-with-Customer-Context/index.html">
 <meta property="og:site_name" content="Arvin&#39;s Blog">
 <meta property="og:description" content="定价相关文章三连，第二篇，这篇是美国某航空咨询公司发表的一篇航旅附加产品定价的文章，主要思路与airbnb的较为一致，但是业务场景会有些差别，中了kdd2019。 Introduction 在航旅行业中，附加产品（Ancillariey，不知道怎么翻译）已经是提升收益和利润的主要来源，传统的定价策略只是基于商业规则来制定的，并没有根据市场的变化进行改变。这篇文章描述了一个第三方航旅咨询提供的动态定">
+<meta property="og:locale">
 <meta property="og:image" content="http://yoursite.com/2021/02/09/Dynamic-Pricing-for-Airline-Ancillaries-with-Customer-Context/1.jpg">
 <meta property="og:image" content="http://yoursite.com/2021/02/09/Dynamic-Pricing-for-Airline-Ancillaries-with-Customer-Context/2.jpg">
 <meta property="og:image" content="http://yoursite.com/2021/02/09/Dynamic-Pricing-for-Airline-Ancillaries-with-Customer-Context/3.jpg">
@@ -130,7 +129,7 @@
 <script type="text/javascript" id="hexo.configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
-    root: '/',
+    root: '',
     scheme: 'Muse',
     sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -174,7 +173,7 @@
 
 
 
-<meta name="generator" content="Hexo 4.2.1"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+<meta name="generator" content="Hexo 5.4.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -342,7 +341,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/02/09/Dynamic-Pricing-for-Airline-Ancillaries-with-Customer-Context/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="YuyangZhangFTD">
+      <meta itemprop="name" content="">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/uploads/avatar.jpg">
     </span>
@@ -653,10 +652,10 @@ U(P_{ij},\delta_{ij})=(1-\delta_{ij})\cdot P_{ij}+\delta_{ij}\cdot c_1P_{ij}
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/uploads/avatar.jpg"
-               alt="YuyangZhangFTD" />
-          <p class="site-author-name" itemprop="name">YuyangZhangFTD</p>
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
            
-              <p class="site-description motion-element" itemprop="description">张 雨阳</p>
+              <p class="site-description motion-element" itemprop="description"></p>
           
         </div>
         <nav class="site-state motion-element">
@@ -664,7 +663,7 @@ U(P_{ij},\delta_{ij})=(1-\delta_{ij})\cdot P_{ij}+\delta_{ij}\cdot c_1P_{ij}
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">89</span>
+                <span class="site-state-item-count">90</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -734,7 +733,7 @@ U(P_{ij},\delta_{ij})=(1-\delta_{ij})\cdot P_{ij}+\delta_{ij}\cdot c_1P_{ij}
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pricing-factors"><span class="nav-number">2.</span> <span class="nav-text">Pricing Factors</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pricing-model"><span class="nav-number">3.</span> <span class="nav-text">Pricing Model</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ancillary-purchase-probability-model"><span class="nav-number">3.1.</span> <span class="nav-text">Ancillary Purchase Probability Model</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#收益优化"><span class="nav-number">3.2.</span> <span class="nav-text">收益优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定制loss的dnn-cl模型"><span class="nav-number">3.3.</span> <span class="nav-text">定制Loss的DNN-CL模型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#evaluation"><span class="nav-number">4.</span> <span class="nav-text">Evaluation</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pricing-factors"><span class="nav-number">2.</span> <span class="nav-text">Pricing Factors</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pricing-model"><span class="nav-number">3.</span> <span class="nav-text">Pricing Model</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ancillary-purchase-probability-model"><span class="nav-number">3.1.</span> <span class="nav-text">Ancillary Purchase Probability Model</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%B6%E7%9B%8A%E4%BC%98%E5%8C%96"><span class="nav-number">3.2.</span> <span class="nav-text">收益优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E5%88%B6loss%E7%9A%84dnn-cl%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.3.</span> <span class="nav-text">定制Loss的DNN-CL模型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#evaluation"><span class="nav-number">4.</span> <span class="nav-text">Evaluation</span></a></li></ol></div>
             
 
           </div>
@@ -771,12 +770,12 @@ U(P_{ij},\delta_{ij})=(1-\delta_{ij})\cdot P_{ij}+\delta_{ij}\cdot c_1P_{ij}
 
 
 <div class="powered-by">
-  由 <a class="theme-link" href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 强力驱动
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 强力驱动
 </div>
 
 <div class="theme-info">
   主题 -
-  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="noopener">
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
     NexT.Muse
   </a>
 </div>

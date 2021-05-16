@@ -83,8 +83,6 @@
 
 
 
-  
-
 
   <link rel="alternate" href="/atom.xml" title="Arvin's Blog" type="application/atom+xml" />
 
@@ -104,6 +102,7 @@
 <meta property="og:url" content="http://yoursite.com/2018/01/30/Online-Learning-for-Collaborative-Filtering/index.html">
 <meta property="og:site_name" content="Arvin&#39;s Blog">
 <meta property="og:description" content="这篇文章是做online learning的CF，用到了dual-averaging的方法，便于在线计算梯度、更新权重。 CF一直是非常经典的推荐算法，但经常考虑的都是静态的环境下做推荐，很少有考虑动态场景的，比如说： - 新的物品到达推荐系统中 - 新的用户加入到推荐系统中 - 新的评分出现 本文主要几点contribution包括提出了两种在线学习的方式，基于PMF和RMF做了在线学习的算法。">
+<meta property="og:locale">
 <meta property="og:image" content="http://yoursite.com/2018/01/30/Online-Learning-for-Collaborative-Filtering/1.png">
 <meta property="og:image" content="http://yoursite.com/2018/01/30/Online-Learning-for-Collaborative-Filtering/2.png">
 <meta property="og:image" content="http://yoursite.com/2018/01/30/Online-Learning-for-Collaborative-Filtering/3.png">
@@ -122,7 +121,7 @@
 <script type="text/javascript" id="hexo.configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
-    root: '/',
+    root: '',
     scheme: 'Muse',
     sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -166,7 +165,7 @@
 
 
 
-<meta name="generator" content="Hexo 4.2.1"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+<meta name="generator" content="Hexo 5.4.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -334,7 +333,7 @@
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/30/Online-Learning-for-Collaborative-Filtering/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="YuyangZhangFTD">
+      <meta itemprop="name" content="">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/uploads/avatar.jpg">
     </span>
@@ -568,10 +567,10 @@ H(p,q)=E_p[-\log q]=-\sum_x p(x)\log(q(x))
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/uploads/avatar.jpg"
-               alt="YuyangZhangFTD" />
-          <p class="site-author-name" itemprop="name">YuyangZhangFTD</p>
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
            
-              <p class="site-description motion-element" itemprop="description">张 雨阳</p>
+              <p class="site-description motion-element" itemprop="description"></p>
           
         </div>
         <nav class="site-state motion-element">
@@ -579,7 +578,7 @@ H(p,q)=E_p[-\log q]=-\sum_x p(x)\log(q(x))
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">89</span>
+                <span class="site-state-item-count">90</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -686,12 +685,12 @@ H(p,q)=E_p[-\log q]=-\sum_x p(x)\log(q(x))
 
 
 <div class="powered-by">
-  由 <a class="theme-link" href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 强力驱动
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 强力驱动
 </div>
 
 <div class="theme-info">
   主题 -
-  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="noopener">
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
     NexT.Muse
   </a>
 </div>
