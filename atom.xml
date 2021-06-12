@@ -6,7 +6,7 @@
   <link href="http://yoursite.com/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2021-05-16T13:43:55.346Z</updated>
+  <updated>2021-06-12T15:54:06.692Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,37 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Markdowns in E-Commerce Fresh Retail: A Counterfactual Prediction and Multi-Period Optimization Approach</title>
+    <link href="http://yoursite.com/2021/06/06/Markdowns-in-E-Commerce-Fresh-Retail-A-Counterfactual-Prediction-and-Multi-Period-Optimization-Approach/"/>
+    <id>http://yoursite.com/2021/06/06/Markdowns-in-E-Commerce-Fresh-Retail-A-Counterfactual-Prediction-and-Multi-Period-Optimization-Approach/</id>
+    <published>2021-06-06T07:32:05.000Z</published>
+    <updated>2021-06-12T15:54:06.692Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;markdowns-in-e-commerce-fresh-retail-a-counterfactual-prediction-and-multi-period-optimization-approach&quot;&gt;Markdowns in E-Commerce</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
+    
+    <category term="Causal Inference" scheme="http://yoursite.com/tags/Causal-Inference/"/>
+    
+    <category term="Dynamic Pricing" scheme="http://yoursite.com/tags/Dynamic-Pricing/"/>
+    
+    <category term="Online Marketing" scheme="http://yoursite.com/tags/Online-Marketing/"/>
+    
+  </entry>
   
   <entry>
     <title>Causal Tree &amp; Causal Forest &amp; Generalized Random Forest(grf algo slides)</title>
@@ -551,32 +582,6 @@
     <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
     
     <category term="Causal Inference" scheme="http://yoursite.com/tags/Causal-Inference/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Bayes Model And Residual Error</title>
-    <link href="http://yoursite.com/2019/11/03/Bayes-Model-And-Residual-Error/"/>
-    <id>http://yoursite.com/2019/11/03/Bayes-Model-And-Residual-Error/</id>
-    <published>2019-11-03T04:51:28.000Z</published>
-    <updated>2019-11-03T06:03:17.785Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;这次记一个ML里的小概念，bayes model和residual error。&lt;/p&gt;
-&lt;p&gt;使用算法&lt;span class=&quot;math inline&quot;&gt;\(\mathcal{A}\)&lt;/span&gt;在数据集&lt;span class=&quot;math</summary>
-        
-      
-    
-    
-    
-    <category term="Note" scheme="http://yoursite.com/categories/Note/"/>
-    
-    
-    <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
     
   </entry>
   
