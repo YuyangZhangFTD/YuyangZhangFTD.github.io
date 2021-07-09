@@ -6,7 +6,7 @@
   <link href="http://yoursite.com/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2021-06-12T15:54:06.692Z</updated>
+  <updated>2021-07-09T12:37:52.258Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,66 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Causal Models for Real Time Bidding with Repeated User Interactions</title>
+    <link href="http://yoursite.com/2021/07/09/Causal-Models-for-Real-Time-Bidding-with-Repeated-User-Interactions/"/>
+    <id>http://yoursite.com/2021/07/09/Causal-Models-for-Real-Time-Bidding-with-Repeated-User-Interactions/</id>
+    <published>2021-07-09T12:36:44.000Z</published>
+    <updated>2021-07-09T12:37:52.258Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">
+</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
+    
+    <category term="Causal Inference" scheme="http://yoursite.com/tags/Causal-Inference/"/>
+    
+    <category term="Advertising" scheme="http://yoursite.com/tags/Advertising/"/>
+    
+    <category term="Attribution" scheme="http://yoursite.com/tags/Attribution/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>日拱一卒</title>
+    <link href="http://yoursite.com/2021/06/26/%E6%97%A5%E6%8B%B1%E4%B8%80%E5%8D%92/"/>
+    <id>http://yoursite.com/2021/06/26/%E6%97%A5%E6%8B%B1%E4%B8%80%E5%8D%92/</id>
+    <published>2021-06-26T07:34:40.000Z</published>
+    <updated>2021-07-09T13:07:45.233Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;平时的阅读列表，一般会附上下载链接和关键词。日拱一卒，与诸君共勉。&lt;/p&gt;
+&lt;h1 id=&quot;section&quot;&gt;2021&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;07.10 [Causal Inference, Recommendation System, KDD2021] &lt;a</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
+    
+  </entry>
   
   <entry>
     <title>Markdowns in E-Commerce Fresh Retail: A Counterfactual Prediction and Multi-Period Optimization Approach</title>
@@ -526,62 +586,6 @@
     
     
     <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Causal Inference Fundation</title>
-    <link href="http://yoursite.com/2019/11/30/Causal-Inference-Fundation/"/>
-    <id>http://yoursite.com/2019/11/30/Causal-Inference-Fundation/</id>
-    <published>2019-11-30T15:53:23.000Z</published>
-    <updated>2021-01-31T16:27:11.153Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">
-</summary>
-        
-      
-    
-    
-    
-    <category term="BriefSummary" scheme="http://yoursite.com/categories/BriefSummary/"/>
-    
-    
-    <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
-    
-    <category term="Causal inference" scheme="http://yoursite.com/tags/Causal-inference/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Causal Tree</title>
-    <link href="http://yoursite.com/2019/11/30/Causal-Tree/"/>
-    <id>http://yoursite.com/2019/11/30/Causal-Tree/</id>
-    <published>2019-11-30T15:12:15.000Z</published>
-    <updated>2021-05-14T14:43:58.556Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;background&quot;&gt;Background&lt;/h1&gt;
-&lt;p&gt;这次讲的是基础的causal tree和causal</summary>
-        
-      
-    
-    
-    
-    <category term="BriefSummary" scheme="http://yoursite.com/categories/BriefSummary/"/>
-    
-    
-    <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
-    
-    <category term="Causal Inference" scheme="http://yoursite.com/tags/Causal-Inference/"/>
     
   </entry>
   
