@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Optimization,OperationResearch," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Arvin's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="Benders Decomposition 总结 这次主要来总结一下这段时间研究的benders算法，主要是在做一个规模不算大的MIP问题，但是公司没有商业求解器用，很蛋疼。我主要参考一篇17年的综述文章[1]，翻译为主，而且仅写了最近浏览过和比较感兴趣的部分，并不全面，同时会写点自己的理解，但还是希望大家能去看一下原文。同时这次也是参考了QinHu老师之前的内容，在这放出链接，感觉他们写得比我的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="benders">
+<meta property="og:url" content="http://yoursite.com/2018/04/07/benders/index.html">
+<meta property="og:site_name" content="Arvin&#39;s Blog">
+<meta property="og:description" content="Benders Decomposition 总结 这次主要来总结一下这段时间研究的benders算法，主要是在做一个规模不算大的MIP问题，但是公司没有商业求解器用，很蛋疼。我主要参考一篇17年的综述文章[1]，翻译为主，而且仅写了最近浏览过和比较感兴趣的部分，并不全面，同时会写点自己的理解，但还是希望大家能去看一下原文。同时这次也是参考了QinHu老师之前的内容，在这放出链接，感觉他们写得比我的">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/2018/04/07/benders/1.png">
+<meta property="article:published_time" content="2018-04-07T05:58:51.000Z">
+<meta property="article:modified_time" content="2018-04-14T13:47:42.776Z">
+<meta property="article:author" content="YuyangZhangFTD">
+<meta property="article:tag" content="Optimization">
+<meta property="article:tag" content="OperationResearch">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2018/04/07/benders/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/04/07/benders/"/>
+
+
+
+
+
+  <title>benders | Arvin's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Arvin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Poem & Algorithm</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/07/benders/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arvin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">benders</h1>
+        
+
+        <div class="post-meta">
+          
+
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-07T13:58:51+08:00">
+                2018-04-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/OperationResearch/" itemprop="url" rel="index">
+                    <span itemprop="name">OperationResearch</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="benders-decomposition-总结">Benders Decomposition 总结</h1>
+<p>这次主要来总结一下这段时间研究的benders算法，主要是在做一个规模不算大的MIP问题，但是公司没有商业求解器用，很蛋疼。我主要参考一篇17年的综述文章[1]，翻译为主，而且仅写了最近浏览过和比较感兴趣的部分，并不全面，同时会写点自己的理解，但还是希望大家能去看一下原文。同时这次也是参考了QinHu老师之前的内容，在这放出链接，感觉他们写得比我的全面且详细：</p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzIyNzg5MTQ5Mg==&amp;mid=2247484283&amp;idx=1&amp;sn=4cf3c196b1b5514c3bf51a5190fc816b&amp;chksm=e85b0330df2c8a26d89aa549328e2883e89188c3983a75119dac6aea4d7056e8377977e410e1&amp;scene=21#wechat_redirect">Benders教学1</a></p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/2bS-P5gmGeidoMgMEffJtg">Benders教学2</a></p>
+<h2 id="benders-decomposition简介">Benders Decomposition简介</h2>
+<p>Benders Decompostion（BD）最早在[2]于1962年提出，是一种非常流行的解决含有复杂变量（当该变量固定后，原问题会变成一个易于求解）的问题，并且在很多小方向上都有广泛应用，如调度、运输等等。BD是基于一系列投影映射和松弛，原问题最先被影射到由复杂变量定义的子空间，然后再做对偶，通过极射线和极点来定义可行割（feasibility cut）和最优割（optimality cuts）来约束复杂变量，也就是枚举所有的极射线和极点。但枚举往往是不可行的，所以我们可以对可行割和最优割采用一种松弛的策略，建立主问题（Master Problem）和子问题（Subproblem），通过迭代求解的方式，来确定搜索的顺序，产生有效的割。跟B&amp;B一样，也是一种“聪明”的“枚举”。</p>
+<p>BD最早被应用在MIP问题上，其中固定了“复杂”的整数变量，原问题就成为一个LP问题，可以快速求解。考虑经典的MIP问题： <span class="math display">\[
+\begin{aligned}
+\min &amp;&amp; f^Ty+c^Tx\\
+\text{s.t.} &amp;&amp; Ay=b\\
+&amp;&amp; By+Dx=d\\
+&amp;&amp; x \in \mathbb{R}_+^{n_2} \quad y \in \mathbb{Z}_+^{n_1}\\
+\end{aligned}
+\]</span> 上述模型可以简写为 <span class="math display">\[
+\min_{\bar{y}\in Y}
+\lbrace
+f^T\bar{y}+
+\min_{x\geq0}
+\{c^Tx:Dx=d-B\bar{y}
+\}
+\rbrace
+\]</span> 其中<span class="math inline">\(\bar{y}\)</span>是给定值的复杂变量。内部是求最小的一个LP问题，令<span class="math inline">\(\pi\)</span>为其约束<span class="math inline">\(Dx=d-B\bar{y}\)</span>所对应的对偶变量，则有</p>
+<p><span class="math display">\[
+\max_{\pi\in\mathbb{R}^{m_2}_+}\{\pi^T(d-B\bar{y}):\pi^T D\leq c\}
+\]</span></p>
+<p>根据对偶理论，我们有</p>
+<p><span class="math display">\[
+\min_{\bar{y}\in Y}
+\lbrace
+f^T\bar{y}+
+\max_{\pi\in\mathbb{R}^{m_2}}
+\{\pi^T(d-B\bar{y}):\pi^TD\leq c\}
+\rbrace
+\]</span></p>
+<p>内部的最大化问题的可行域<span class="math inline">\(F=\{\pi|\pi^TD\leq c\}\)</span>是独立于<span class="math inline">\(\bar{y}\)</span>的，因此，对于任意给定的<span class="math inline">\(\bar{y}\)</span>，如果<span class="math inline">\(F\)</span>非空，里面的最大化的问题要么是无界的，要么是可行的。对于前一种情况，极射线<span class="math inline">\(Q\)</span>的集合，<span class="math inline">\(Q\subset F\)</span>，定义了一个无界的方向<span class="math inline">\(r_q,q\in Q,r_q^T(d-B\bar{y})&gt;0\)</span>。为了避免这种情况（因为对偶出现无界解，原问题无最优解），所以我们需要避免这种情况的发生，在原问题中加割（cut） <span class="math display">\[
+r_q^T(d-B\bar{y})\leq 0\quad \forall q\in Q
+\]</span> 对于后一种情况，内部最大化问题的解是一个极点<span class="math inline">\(\pi_e,e\in E\)</span>，其中<span class="math inline">\(E\)</span>是可行域<span class="math inline">\(F\)</span>中极点的集合，所以原问题等价于 <span class="math display">\[
+\begin{aligned}
+\min_{\bar{y}\in Y} &amp;&amp; f^T\bar{y} +
+\max_{e\in E}\{\pi_e^T(d-B\bar{y})\}\\
+\text{s.t.} &amp;&amp; r_q^T(d-B\bar{y})\leq 0\quad \forall q\in Q
+\end{aligned}
+\]</span> 我们用变量<span class="math inline">\(\eta\in\mathbb{R}^1_+\)</span>来获得其等价问题，定义主问题（MP）为 <span class="math display">\[
+\begin{aligned}
+\min_{y,\eta} &amp;&amp; f^Ty + \eta \\
+\text{s.t.} &amp;&amp; Ay=b\\
+&amp;&amp; \eta \geq \pi_e^T(d-By) &amp;&amp; e \in E\\
+&amp;&amp; 0 \geq \pi_q^T(d-By) &amp;&amp; q \in Q\\
+&amp;&amp; y \geq 0 \quad \text{and integer}
+\end{aligned}
+\]</span> 其中第二个和第三个约束被称为最优割和可行割。如果想完整枚举出所有的割是不现实的，所以[2]中提出了一种迭代的方式来产生割，BD重复求解MP问题，每次求解时候只加入可行割和最优割的一部分子集（初始的时候可以为空集），然后给定复杂变量<span class="math inline">\(\bar{y}\)</span>通过求解子问题，逐步加入可行割或者最优割。通过迭代不断产生新的割，MP则会收敛至最优解，MP的目标函数值为原问题提供了一个有效的下界，而子问题对偶为原问题提供了一个有效的上界。</p>
+<h2 id="benders-dcomposition实现">Benders Dcomposition实现</h2>
+<p>之前网上秦老师有一版java调用cplex的实现，但。。我java水平真一般。。看得很费劲，加上这次做项目，就同样的例子自己用python调用gurobi和谷歌的or-tools自己实现了一遍。用or-tools主要是因为公司目前还没有买开源求解器，目前还在用cbc，而or-tools提供了统一的接口封装，相对友好（但实现的功能也少了很多）。</p>
+<p>还有，因为or-tools上暂时没找到cbc的相关api，所以基于or-tools里面只实现combinatorial benders cuts。</p>
+<h3 id="gurobi实现">Gurobi实现</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> gurobipy <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">example = <span class="number">1</span></span><br><span class="line">cuts_type = <span class="string">&quot;general&quot;</span></span><br><span class="line"><span class="comment"># cuts_type = &quot;cb&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> example == <span class="number">1</span>:</span><br><span class="line">    <span class="comment"># example 1, optimal 350</span></span><br><span class="line">    num_s = <span class="number">4</span></span><br><span class="line">    num_d = <span class="number">3</span></span><br><span class="line">    supply = [<span class="number">10</span>, <span class="number">30</span>, <span class="number">40</span>, <span class="number">20</span>]</span><br><span class="line">    demand = [<span class="number">20</span>, <span class="number">50</span>, <span class="number">30</span>]</span><br><span class="line">    c = np.array([</span><br><span class="line">        [<span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>],</span><br><span class="line">        [<span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>],</span><br><span class="line">        [<span class="number">1</span>, <span class="number">4</span>, <span class="number">3</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">5</span>, <span class="number">2</span>]</span><br><span class="line">    ])</span><br><span class="line">    f = np.array(</span><br><span class="line">        [[<span class="number">10</span>, <span class="number">30</span>, <span class="number">20</span>] <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">4</span>)]</span><br><span class="line">    )</span><br><span class="line">    bar_y = np.array([</span><br><span class="line">        [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>],</span><br><span class="line">        [<span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>]</span><br><span class="line">    ])</span><br><span class="line"><span class="keyword">elif</span> example == <span class="number">2</span>:</span><br><span class="line">    <span class="comment"># example 2, optimal 4541</span></span><br><span class="line">    num_s = <span class="number">8</span></span><br><span class="line">    num_d = <span class="number">7</span></span><br><span class="line">    supply = [<span class="number">20</span>, <span class="number">20</span>, <span class="number">20</span>, <span class="number">18</span>, <span class="number">18</span>, <span class="number">17</span>, <span class="number">17</span>, <span class="number">10</span>]</span><br><span class="line">    demand = [<span class="number">20</span>, <span class="number">19</span>, <span class="number">19</span>, <span class="number">18</span>, <span class="number">17</span>, <span class="number">16</span>, <span class="number">16</span>]</span><br><span class="line">    c = np.array([</span><br><span class="line">        [<span class="number">31</span>, <span class="number">27</span>, <span class="number">28</span>, <span class="number">10</span>, <span class="number">7</span>, <span class="number">26</span>, <span class="number">30</span>],</span><br><span class="line">        [<span class="number">15</span>, <span class="number">19</span>, <span class="number">17</span>, <span class="number">7</span>, <span class="number">22</span>, <span class="number">17</span>, <span class="number">16</span>],</span><br><span class="line">        [<span class="number">21</span>, <span class="number">17</span>, <span class="number">19</span>, <span class="number">29</span>, <span class="number">27</span>, <span class="number">22</span>, <span class="number">13</span>],</span><br><span class="line">        [<span class="number">9</span>, <span class="number">19</span>, <span class="number">7</span>, <span class="number">15</span>, <span class="number">20</span>, <span class="number">17</span>, <span class="number">22</span>],</span><br><span class="line">        [<span class="number">19</span>, <span class="number">7</span>, <span class="number">18</span>, <span class="number">10</span>, <span class="number">12</span>, <span class="number">27</span>, <span class="number">23</span>],</span><br><span class="line">        [<span class="number">8</span>, <span class="number">16</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">11</span>, <span class="number">13</span>, <span class="number">15</span>],</span><br><span class="line">        [<span class="number">14</span>, <span class="number">32</span>, <span class="number">22</span>, <span class="number">10</span>, <span class="number">22</span>, <span class="number">15</span>, <span class="number">19</span>],</span><br><span class="line">        [<span class="number">30</span>, <span class="number">27</span>, <span class="number">24</span>, <span class="number">26</span>, <span class="number">25</span>, <span class="number">15</span>, <span class="number">19</span>]</span><br><span class="line">    ]).reshape(num_s, num_d)</span><br><span class="line">    f = np.array([</span><br><span class="line">        [<span class="number">649</span>, <span class="number">685</span>, <span class="number">538</span>, <span class="number">791</span>, <span class="number">613</span>, <span class="number">205</span>, <span class="number">467</span>],</span><br><span class="line">        [<span class="number">798</span>, <span class="number">211</span>, <span class="number">701</span>, <span class="number">506</span>, <span class="number">431</span>, <span class="number">907</span>, <span class="number">945</span>],</span><br><span class="line">        [<span class="number">687</span>, <span class="number">261</span>, <span class="number">444</span>, <span class="number">264</span>, <span class="number">443</span>, <span class="number">946</span>, <span class="number">372</span>],</span><br><span class="line">        [<span class="number">335</span>, <span class="number">385</span>, <span class="number">967</span>, <span class="number">263</span>, <span class="number">423</span>, <span class="number">592</span>, <span class="number">939</span>],</span><br><span class="line">        [<span class="number">819</span>, <span class="number">340</span>, <span class="number">233</span>, <span class="number">889</span>, <span class="number">211</span>, <span class="number">854</span>, <span class="number">823</span>],</span><br><span class="line">        [<span class="number">307</span>, <span class="number">620</span>, <span class="number">845</span>, <span class="number">919</span>, <span class="number">223</span>, <span class="number">854</span>, <span class="number">823</span>],</span><br><span class="line">        [<span class="number">560</span>, <span class="number">959</span>, <span class="number">782</span>, <span class="number">417</span>, <span class="number">358</span>, <span class="number">589</span>, <span class="number">383</span>],</span><br><span class="line">        [<span class="number">375</span>, <span class="number">791</span>, <span class="number">720</span>, <span class="number">416</span>, <span class="number">251</span>, <span class="number">887</span>, <span class="number">235</span>]</span><br><span class="line">    ])</span><br><span class="line">    bar_y = np.array([</span><br><span class="line">        [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>]</span><br><span class="line">    ])</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Example not found&quot;</span>)</span><br><span class="line"></span><br><span class="line">M = np.ones((num_s, num_d))</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s):</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d):</span><br><span class="line">        M[i, j] = <span class="built_in">min</span>(supply[i], demand[j])</span><br><span class="line"></span><br><span class="line">params = <span class="built_in">dict</span>()</span><br><span class="line">params[<span class="string">&quot;num_s&quot;</span>] = num_s</span><br><span class="line">params[<span class="string">&quot;num_d&quot;</span>] = num_d</span><br><span class="line">params[<span class="string">&quot;supply&quot;</span>] = supply</span><br><span class="line">params[<span class="string">&quot;demand&quot;</span>] = demand</span><br><span class="line">params[<span class="string">&quot;c&quot;</span>] = c</span><br><span class="line">params[<span class="string">&quot;f&quot;</span>] = f</span><br><span class="line">params[<span class="string">&quot;M&quot;</span>] = M</span><br><span class="line"></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string"># ====================== solve problem directly ====================== </span></span><br><span class="line"><span class="string">mip = Model()</span></span><br><span class="line"><span class="string">x = mip.addVars([i for i in range(num_s)], [j for j in range(num_d)], vtype=GRB.CONTINUOUS, name=&quot;x&quot;)</span></span><br><span class="line"><span class="string">y = mip.addVars([i for i in range(num_s)], [j for j in range(num_d)], vtype=GRB.BINARY, name=&quot;y&quot;)</span></span><br><span class="line"><span class="string">mip.setObjective(</span></span><br><span class="line"><span class="string">    quicksum(</span></span><br><span class="line"><span class="string">        quicksum(</span></span><br><span class="line"><span class="string">            x[i,j] * c[i,j] + y[i,j] * f[i,j]</span></span><br><span class="line"><span class="string">            for j in range(num_d)</span></span><br><span class="line"><span class="string">        )</span></span><br><span class="line"><span class="string">        for i in range(num_s)</span></span><br><span class="line"><span class="string">    ), GRB.MINIMIZE</span></span><br><span class="line"><span class="string">)</span></span><br><span class="line"><span class="string">u = mip.addConstrs((</span></span><br><span class="line"><span class="string">    quicksum(</span></span><br><span class="line"><span class="string">        x[i,j] for j in range(num_d)</span></span><br><span class="line"><span class="string">    ) &lt;= supply[i]</span></span><br><span class="line"><span class="string">    for i in range(num_s) </span></span><br><span class="line"><span class="string">))</span></span><br><span class="line"><span class="string">v = mip.addConstrs((</span></span><br><span class="line"><span class="string">    quicksum(</span></span><br><span class="line"><span class="string">        x[i,j] for i in range(num_s)</span></span><br><span class="line"><span class="string">    ) &gt;= demand[j]</span></span><br><span class="line"><span class="string">    for j in range(num_d)</span></span><br><span class="line"><span class="string">))</span></span><br><span class="line"><span class="string">w = mip.addConstrs((</span></span><br><span class="line"><span class="string">    x[i,j] &lt;= M[i,j] * y[i,j]</span></span><br><span class="line"><span class="string">    for i in range(num_s)</span></span><br><span class="line"><span class="string">    for j in range(num_d)</span></span><br><span class="line"><span class="string">))</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">mip.optimize()</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ====================== benders decomposition ======================</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mp</span>(<span class="params">Q, E, iter_i, parameter, cuts_type</span>):</span></span><br><span class="line">    <span class="comment"># read parameters</span></span><br><span class="line">    num_s = parameter[<span class="string">&quot;num_s&quot;</span>]</span><br><span class="line">    num_d = parameter[<span class="string">&quot;num_d&quot;</span>]</span><br><span class="line">    supply = parameter[<span class="string">&quot;supply&quot;</span>]</span><br><span class="line">    demand = parameter[<span class="string">&quot;demand&quot;</span>]</span><br><span class="line">    c = parameter[<span class="string">&quot;c&quot;</span>]</span><br><span class="line">    f = parameter[<span class="string">&quot;f&quot;</span>]</span><br><span class="line">    stop = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># master problem</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;=&quot;</span> * <span class="number">20</span> + <span class="string">&quot; master problem &quot;</span> + <span class="string">&quot;=&quot;</span> * <span class="number">20</span>)</span><br><span class="line">    master = Model(<span class="string">&quot;master&quot;</span>)</span><br><span class="line"></span><br><span class="line">    y = master.addVars(</span><br><span class="line">        [i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)],</span><br><span class="line">        [j <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)],</span><br><span class="line">        vtype=GRB.BINARY, name=<span class="string">&quot;y&quot;</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    q = master.addVar(vtype=GRB.CONTINUOUS, name=<span class="string">&quot;q&quot;</span>)</span><br><span class="line"></span><br><span class="line">    master.addConstrs((</span><br><span class="line">        quicksum(y[i,j] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)) &gt;= <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)</span><br><span class="line">    ))</span><br><span class="line"></span><br><span class="line">    master.addConstrs((</span><br><span class="line">        quicksum(y[i,j] <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)) &gt;= <span class="number">1</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)</span><br><span class="line">    ))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> cuts_type == <span class="string">&quot;general&quot;</span>:</span><br><span class="line">        <span class="comment"># benders feasiblity cut</span></span><br><span class="line">        <span class="keyword">for</span> item <span class="keyword">in</span> Q.values():</span><br><span class="line">            master.addConstr(</span><br><span class="line">                quicksum(-<span class="number">1</span> * supply[i] * item[<span class="string">&quot;u&quot;</span>][i] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)) +</span><br><span class="line">                quicksum(demand[j] * item[<span class="string">&quot;v&quot;</span>][j] <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)) +</span><br><span class="line">                quicksum(-<span class="number">1</span> * M[i, j] * item[<span class="string">&quot;w&quot;</span>][i, j] * y[i, j] </span><br><span class="line">                         <span class="keyword">for</span> i <span class="keyword">in</span>  <span class="built_in">range</span>(num_s) </span><br><span class="line">                         <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)</span><br><span class="line">                ) &lt;= <span class="number">0</span></span><br><span class="line">            )</span><br><span class="line">    <span class="keyword">elif</span> cuts_type == <span class="string">&quot;cb&quot;</span>:</span><br><span class="line">        <span class="comment"># addConstraints do not support dict enumeration</span></span><br><span class="line">        <span class="comment"># combinatorial benders cut</span></span><br><span class="line">        <span class="keyword">for</span> item <span class="keyword">in</span> Q.values():</span><br><span class="line">            master.addConstr(</span><br><span class="line">                quicksum(y[i, j] <span class="keyword">for</span> (i, j) <span class="keyword">in</span> item[<span class="number">0</span>]) +</span><br><span class="line">                quicksum(<span class="number">1</span> - y[i, j] <span class="keyword">for</span> (i, j) <span class="keyword">in</span> item[<span class="number">1</span>]) &gt;= <span class="number">1</span></span><br><span class="line">            )</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;no available cuts types&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># benders optimality cut</span></span><br><span class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> E.values():</span><br><span class="line">        master.addConstr(</span><br><span class="line">            quicksum(-<span class="number">1</span> * supply[i] * item[<span class="string">&quot;u&quot;</span>][i] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)) +</span><br><span class="line">            quicksum(demand[j] * item[<span class="string">&quot;v&quot;</span>][j] <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)) +</span><br><span class="line">            quicksum(-<span class="number">1</span> * M[i, j] * item[<span class="string">&quot;w&quot;</span>][i, j] * y[i, j] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s) <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d))</span><br><span class="line">            &lt;= q</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    master.setObjective(quicksum(</span><br><span class="line">        f[i, j] * y[i, j]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)</span><br><span class="line">    ) + q, GRB.MINIMIZE)</span><br><span class="line"></span><br><span class="line">    master.optimize()</span><br><span class="line">    bar_y = <span class="built_in">dict</span>()</span><br><span class="line">    <span class="keyword">if</span> master.status == GRB.OPTIMAL:</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d):</span><br><span class="line">                bar_y[i, j] = <span class="number">1</span> <span class="keyword">if</span> y[i, j].x &gt; <span class="number">0.01</span> <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;There is no feasible solution in primal problem&quot;</span>)</span><br><span class="line">        stop = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> master, bar_y, stop</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sp</span>(<span class="params">Q, E, bar_y, iter_i, parameter</span>):</span></span><br><span class="line">    <span class="comment"># read parameters</span></span><br><span class="line">    num_s = parameter[<span class="string">&quot;num_s&quot;</span>]</span><br><span class="line">    num_d = parameter[<span class="string">&quot;num_d&quot;</span>]</span><br><span class="line">    supply = parameter[<span class="string">&quot;supply&quot;</span>]</span><br><span class="line">    demand = parameter[<span class="string">&quot;demand&quot;</span>]</span><br><span class="line">    c = parameter[<span class="string">&quot;c&quot;</span>]</span><br><span class="line">    f = parameter[<span class="string">&quot;f&quot;</span>]</span><br><span class="line">    M = parameter[<span class="string">&quot;M&quot;</span>]</span><br><span class="line">    stop = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># dual problem of slave problem</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;=&quot;</span> * <span class="number">20</span> + <span class="string">&quot; slave problem with general feasible cuts &quot;</span> + <span class="string">&quot;=&quot;</span> * <span class="number">20</span>)</span><br><span class="line">    dual = Model(<span class="string">&quot;dual_slave&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># get unboundedRay</span></span><br><span class="line">    dual.Params.InfUnbdInfo = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    u = dual.addVars([i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)], name=<span class="string">&quot;u&quot;</span>)</span><br><span class="line">    v = dual.addVars([j <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)], name=<span class="string">&quot;v&quot;</span>)</span><br><span class="line">    w = dual.addVars([i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)], [j <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)], name=<span class="string">&quot;w&quot;</span>)</span><br><span class="line"></span><br><span class="line">    dual.setObjective(</span><br><span class="line">        quicksum(-<span class="number">1</span> * supply[i] * u[i] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)) +</span><br><span class="line">        quicksum(demand[j] * v[j] <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)) +</span><br><span class="line">        quicksum(</span><br><span class="line">            -<span class="number">1</span> * M[i,j] * bar_y[i,j] * w[i,j]</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)</span><br><span class="line">        ), GRB.MAXIMIZE</span><br><span class="line">    ) </span><br><span class="line"></span><br><span class="line">    dual.addConstrs((</span><br><span class="line">        -<span class="number">1</span> * u[i] + v[j] - w[i,j] &lt;= c[i,j]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)</span><br><span class="line">    ))</span><br><span class="line"></span><br><span class="line">    dual.optimize()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> dual.status == GRB.UNBOUNDED:</span><br><span class="line">        item = <span class="built_in">dict</span>()</span><br><span class="line">        item[<span class="string">&quot;u&quot;</span>] = &#123;i:u[i].unbdRay <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)&#125;</span><br><span class="line">        item[<span class="string">&quot;v&quot;</span>] = &#123;j:v[j].unbdRay <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)&#125;</span><br><span class="line">        item[<span class="string">&quot;w&quot;</span>] = &#123;(i,j):w[i,j].unbdRay <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s) <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)&#125;</span><br><span class="line">        Q[iter_i] = item</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Add feasible cut&quot;</span>)</span><br><span class="line">    <span class="keyword">elif</span> dual.status == GRB.OPTIMAL:</span><br><span class="line">        item = <span class="built_in">dict</span>()</span><br><span class="line">        item[<span class="string">&quot;u&quot;</span>] = &#123;i:u[i].x <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)&#125;</span><br><span class="line">        item[<span class="string">&quot;v&quot;</span>] = &#123;j:v[j].x <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)&#125;</span><br><span class="line">        item[<span class="string">&quot;w&quot;</span>] = &#123;(i,j):w[i,j].x <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s) <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)&#125;</span><br><span class="line">        E[iter_i] = item</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Add optimal cut&quot;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;wrong slave sub-problem status  &quot;</span> + <span class="built_in">str</span>(dual.status))</span><br><span class="line">        stop = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> dual, stop</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sp_cb</span>(<span class="params">Q, E, bar_y, iter_i, parameter</span>):</span></span><br><span class="line">    <span class="comment"># read parameters</span></span><br><span class="line">    num_s = parameter[<span class="string">&quot;num_s&quot;</span>]</span><br><span class="line">    num_d = parameter[<span class="string">&quot;num_d&quot;</span>]</span><br><span class="line">    supply = parameter[<span class="string">&quot;supply&quot;</span>]</span><br><span class="line">    demand = parameter[<span class="string">&quot;demand&quot;</span>]</span><br><span class="line">    c = parameter[<span class="string">&quot;c&quot;</span>]</span><br><span class="line">    f = parameter[<span class="string">&quot;f&quot;</span>]</span><br><span class="line">    M = parameter[<span class="string">&quot;M&quot;</span>]</span><br><span class="line">    stop = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># slave problem</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;=&quot;</span> * <span class="number">20</span> + <span class="string">&quot; slave problem with cb feasible cuts &quot;</span> + <span class="string">&quot;=&quot;</span> * <span class="number">20</span>)</span><br><span class="line">    slave = Model(<span class="string">&quot;slave&quot;</span>)</span><br><span class="line"></span><br><span class="line">    x = slave.addVars(</span><br><span class="line">        [i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)],</span><br><span class="line">        [j <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)],</span><br><span class="line">        vytpe=GRB.CONTINUOUS, name=<span class="string">&quot;x&quot;</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    con_u = slave.addConstrs((</span><br><span class="line">        quicksum(</span><br><span class="line">            -<span class="number">1</span> * x[i, j] <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)</span><br><span class="line">        ) &gt;= -<span class="number">1</span> * supply[i]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)</span><br><span class="line">    ))</span><br><span class="line"></span><br><span class="line">    con_v = slave.addConstrs((</span><br><span class="line">        quicksum(</span><br><span class="line">            x[i, j] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)</span><br><span class="line">        ) &gt;= demand[j]</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)</span><br><span class="line">    ))</span><br><span class="line"></span><br><span class="line">    con_w = slave.addConstrs((</span><br><span class="line">        -<span class="number">1</span> * x[i, j] + bar_y[i, j] * M[i, j] &gt;= <span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)</span><br><span class="line">    ))</span><br><span class="line"></span><br><span class="line">    slave.setObjective(quicksum(</span><br><span class="line">        c[i, j] * x[i, j]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)</span><br><span class="line">    ), GRB.MINIMIZE)</span><br><span class="line"></span><br><span class="line">    slave.optimize()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> slave.status == GRB.INFEASIBLE:</span><br><span class="line">        item = <span class="built_in">dict</span>()</span><br><span class="line">        item[<span class="number">0</span>] = [</span><br><span class="line">            k <span class="keyword">for</span> k, v <span class="keyword">in</span> bar_y.items() <span class="keyword">if</span> v &lt; <span class="number">0.001</span></span><br><span class="line">        ]</span><br><span class="line">        item[<span class="number">1</span>] = [</span><br><span class="line">            k <span class="keyword">for</span> k, v <span class="keyword">in</span> bar_y.items() <span class="keyword">if</span> v &gt;= <span class="number">0.001</span></span><br><span class="line">        ]</span><br><span class="line">        Q[iter_i] = item</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Add feasible cut&quot;</span>)</span><br><span class="line">    <span class="keyword">elif</span> slave.status == GRB.OPTIMAL:</span><br><span class="line">        item = <span class="built_in">dict</span>()</span><br><span class="line">        item[<span class="string">&quot;u&quot;</span>] = &#123;k: v.pi <span class="keyword">for</span> k, v <span class="keyword">in</span> con_u.items()&#125;</span><br><span class="line">        item[<span class="string">&quot;v&quot;</span>] = &#123;k: v.pi <span class="keyword">for</span> k, v <span class="keyword">in</span> con_v.items()&#125;</span><br><span class="line">        item[<span class="string">&quot;w&quot;</span>] = &#123;k: v.pi <span class="keyword">for</span> k, v <span class="keyword">in</span> con_w.items()&#125;</span><br><span class="line">        E[iter_i] = item</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Add optimal cut&quot;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;wrong slave sub-problem status  &quot;</span> + <span class="built_in">str</span>(slave_status))</span><br><span class="line">        stop = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> slave, stop</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># main iteration</span></span><br><span class="line">E_set = <span class="built_in">dict</span>()</span><br><span class="line">Q_set = <span class="built_in">dict</span>()</span><br><span class="line"></span><br><span class="line">LB = -<span class="number">1</span> * <span class="number">1e10</span></span><br><span class="line">UB = <span class="number">1e10</span></span><br><span class="line"></span><br><span class="line">warm_start = <span class="literal">True</span></span><br><span class="line">feasible_cnt = <span class="number">0</span></span><br><span class="line">optimal_cnt = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> iter_i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> np.<span class="built_in">abs</span>(UB - LB) &lt; <span class="number">0.01</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Optimal&quot;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;=&quot;</span> * <span class="number">100</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;iteration at &quot;</span> + <span class="built_in">str</span>(iter_i))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> cuts_type == <span class="string">&quot;general&quot;</span>:</span><br><span class="line">        dual, stop = sp(Q_set, E_set, bar_y, iter_i, params)</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">elif</span> cuts_type == <span class="string">&quot;cb&quot;</span>:</span><br><span class="line">        slave, stop = sp_cb(Q_set, E_set, bar_y, iter_i, params)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;no available cuts type&quot;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Q  &quot;</span> + <span class="built_in">str</span>(<span class="built_in">len</span>(Q_set.keys())))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;E  &quot;</span> + <span class="built_in">str</span>(<span class="built_in">len</span>(E_set.keys())))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> stop:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Wong slave problem&quot;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    item = E_set.get(iter_i, <span class="literal">False</span>)</span><br><span class="line">    <span class="keyword">if</span> item:</span><br><span class="line"></span><br><span class="line">        dual_optimal = <span class="built_in">sum</span>(</span><br><span class="line">            [-<span class="number">1</span> * supply[i] * item[<span class="string">&quot;u&quot;</span>][i] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)]</span><br><span class="line">        ) + <span class="built_in">sum</span>(</span><br><span class="line">            [demand[j] * item[<span class="string">&quot;v&quot;</span>][j] <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)]</span><br><span class="line">        ) + <span class="built_in">sum</span>(</span><br><span class="line">            [-<span class="number">1</span> * M[i, j] * bar_y[i, j] * item[<span class="string">&quot;w&quot;</span>][i, j]</span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)]</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;slave dual objective value&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(dual_optimal)</span><br><span class="line"></span><br><span class="line">        UB = <span class="built_in">min</span>(</span><br><span class="line">            UB, dual_optimal + <span class="built_in">sum</span>(</span><br><span class="line">                [bar_y[i, j] * f[i, j]</span><br><span class="line">                <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)</span><br><span class="line">                <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)]</span><br><span class="line">            )</span><br><span class="line">        )</span><br><span class="line">    </span><br><span class="line">    master, bar_y, stop = mp(Q_set, E_set, iter_i, params, cuts_type)</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;bar_y&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(bar_y)</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;master objective value&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(master.objVal)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> stop:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;wrong master problem&quot;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    LB = master.objVal</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;UB &quot;</span> + <span class="built_in">str</span>(UB))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;LB &quot;</span> + <span class="built_in">str</span>(LB))</span><br></pre></td></tr></table></figure>
+<h3 id="or-toolscbc实现">Or-tools(CBC)实现</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line"><span class="keyword">from</span> ortools.linear_solver <span class="keyword">import</span> pywraplp</span><br><span class="line"></span><br><span class="line">example = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> example == <span class="number">1</span>:</span><br><span class="line">    <span class="comment"># example 1, optimal 350</span></span><br><span class="line">    num_s = <span class="number">4</span></span><br><span class="line">    num_d = <span class="number">3</span></span><br><span class="line">    supply = [<span class="number">10</span>, <span class="number">30</span>, <span class="number">40</span>, <span class="number">20</span>]</span><br><span class="line">    demand = [<span class="number">20</span>, <span class="number">50</span>, <span class="number">30</span>]</span><br><span class="line">    c = np.array([</span><br><span class="line">        [<span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>],</span><br><span class="line">        [<span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>],</span><br><span class="line">        [<span class="number">1</span>, <span class="number">4</span>, <span class="number">3</span>],</span><br><span class="line">        [<span class="number">4</span>, <span class="number">5</span>, <span class="number">2</span>]</span><br><span class="line">    ])</span><br><span class="line">    f = np.array(</span><br><span class="line">        [[<span class="number">10</span>, <span class="number">30</span>, <span class="number">20</span>] <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">4</span>)]</span><br><span class="line">    )</span><br><span class="line">    bar_y = np.array([</span><br><span class="line">        [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>],</span><br><span class="line">        [<span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>]</span><br><span class="line">    ])</span><br><span class="line"><span class="keyword">elif</span> example == <span class="number">2</span>:</span><br><span class="line">    <span class="comment"># example 2, optimal 4541</span></span><br><span class="line">    num_s = <span class="number">8</span></span><br><span class="line">    num_d = <span class="number">7</span></span><br><span class="line">    supply = [<span class="number">20</span>, <span class="number">20</span>, <span class="number">20</span>, <span class="number">18</span>, <span class="number">18</span>, <span class="number">17</span>, <span class="number">17</span>, <span class="number">10</span>]</span><br><span class="line">    demand = [<span class="number">20</span>, <span class="number">19</span>, <span class="number">19</span>, <span class="number">18</span>, <span class="number">17</span>, <span class="number">16</span>, <span class="number">16</span>]</span><br><span class="line">    c = np.array([</span><br><span class="line">        [<span class="number">31</span>, <span class="number">27</span>, <span class="number">28</span>, <span class="number">10</span>, <span class="number">7</span>, <span class="number">26</span>, <span class="number">30</span>],</span><br><span class="line">        [<span class="number">15</span>, <span class="number">19</span>, <span class="number">17</span>, <span class="number">7</span>, <span class="number">22</span>, <span class="number">17</span>, <span class="number">16</span>],</span><br><span class="line">        [<span class="number">21</span>, <span class="number">17</span>, <span class="number">19</span>, <span class="number">29</span>, <span class="number">27</span>, <span class="number">22</span>, <span class="number">13</span>],</span><br><span class="line">        [<span class="number">9</span>, <span class="number">19</span>, <span class="number">7</span>, <span class="number">15</span>, <span class="number">20</span>, <span class="number">17</span>, <span class="number">22</span>],</span><br><span class="line">        [<span class="number">19</span>, <span class="number">7</span>, <span class="number">18</span>, <span class="number">10</span>, <span class="number">12</span>, <span class="number">27</span>, <span class="number">23</span>],</span><br><span class="line">        [<span class="number">8</span>, <span class="number">16</span>, <span class="number">10</span>, <span class="number">10</span>, <span class="number">11</span>, <span class="number">13</span>, <span class="number">15</span>],</span><br><span class="line">        [<span class="number">14</span>, <span class="number">32</span>, <span class="number">22</span>, <span class="number">10</span>, <span class="number">22</span>, <span class="number">15</span>, <span class="number">19</span>],</span><br><span class="line">        [<span class="number">30</span>, <span class="number">27</span>, <span class="number">24</span>, <span class="number">26</span>, <span class="number">25</span>, <span class="number">15</span>, <span class="number">19</span>]</span><br><span class="line">    ])</span><br><span class="line">    f = np.array([</span><br><span class="line">        [<span class="number">649</span>, <span class="number">685</span>, <span class="number">538</span>, <span class="number">791</span>, <span class="number">613</span>, <span class="number">205</span>, <span class="number">467</span>],</span><br><span class="line">        [<span class="number">798</span>, <span class="number">211</span>, <span class="number">701</span>, <span class="number">506</span>, <span class="number">431</span>, <span class="number">907</span>, <span class="number">945</span>],</span><br><span class="line">        [<span class="number">687</span>, <span class="number">261</span>, <span class="number">444</span>, <span class="number">264</span>, <span class="number">443</span>, <span class="number">946</span>, <span class="number">372</span>],</span><br><span class="line">        [<span class="number">335</span>, <span class="number">385</span>, <span class="number">967</span>, <span class="number">263</span>, <span class="number">423</span>, <span class="number">592</span>, <span class="number">939</span>],</span><br><span class="line">        [<span class="number">819</span>, <span class="number">340</span>, <span class="number">233</span>, <span class="number">889</span>, <span class="number">211</span>, <span class="number">854</span>, <span class="number">823</span>],</span><br><span class="line">        [<span class="number">307</span>, <span class="number">620</span>, <span class="number">845</span>, <span class="number">919</span>, <span class="number">223</span>, <span class="number">854</span>, <span class="number">823</span>],</span><br><span class="line">        [<span class="number">560</span>, <span class="number">959</span>, <span class="number">782</span>, <span class="number">417</span>, <span class="number">358</span>, <span class="number">589</span>, <span class="number">383</span>],</span><br><span class="line">        [<span class="number">375</span>, <span class="number">791</span>, <span class="number">720</span>, <span class="number">416</span>, <span class="number">251</span>, <span class="number">887</span>, <span class="number">235</span>]</span><br><span class="line">    ])</span><br><span class="line">    bar_y = np.array([</span><br><span class="line">        [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>],</span><br><span class="line">        [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>]</span><br><span class="line">    ])</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Example not found&quot;</span>)</span><br><span class="line"></span><br><span class="line">M = np.ones((num_s, num_d))</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s):</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d):</span><br><span class="line">        M[i, j] = <span class="built_in">min</span>(supply[i], demand[j])</span><br><span class="line"></span><br><span class="line">params = <span class="built_in">dict</span>()</span><br><span class="line">params[<span class="string">&quot;num_s&quot;</span>] = num_s</span><br><span class="line">params[<span class="string">&quot;num_d&quot;</span>] = num_d</span><br><span class="line">params[<span class="string">&quot;supply&quot;</span>] = supply</span><br><span class="line">params[<span class="string">&quot;demand&quot;</span>] = demand</span><br><span class="line">params[<span class="string">&quot;c&quot;</span>] = c</span><br><span class="line">params[<span class="string">&quot;f&quot;</span>] = f</span><br><span class="line">params[<span class="string">&quot;M&quot;</span>] = M</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string"># ====================== solve problem directly ======================</span></span><br><span class="line"><span class="string"># init solver</span></span><br><span class="line"><span class="string">solver = pywraplp.Solver(&quot;test&quot;, pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)</span></span><br><span class="line"><span class="string"># solver = pywraplp.Solver(&quot;test&quot;, pywraplp.Solver.GLOP_LINEAR_PROGRAMMING)</span></span><br><span class="line"><span class="string"># solver = pywraplp.Solver(&quot;test&quot;, pywraplp.Solver.CLP_LINEAR_PROGRAMMING)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># add variables</span></span><br><span class="line"><span class="string">x = dict()</span></span><br><span class="line"><span class="string">y = dict()</span></span><br><span class="line"><span class="string">for i in range(num_s):</span></span><br><span class="line"><span class="string">    for j in range(num_d):</span></span><br><span class="line"><span class="string">        x[i, j] = solver.NumVar(0, solver.infinity(), &#x27;x[%i,%i]&#x27; % (i, j))</span></span><br><span class="line"><span class="string">        y[i, j] = solver.IntVar(0, 1, &#x27;y[%i,%i]&#x27; % (i, j))</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    # add objective</span></span><br><span class="line"><span class="string">z = solver.Sum([</span></span><br><span class="line"><span class="string">    solver.Sum([</span></span><br><span class="line"><span class="string">        c[i, j] * x[i, j] + f[i, j] * y[i, j]</span></span><br><span class="line"><span class="string">        for i in range(num_s)</span></span><br><span class="line"><span class="string">    ]) for j in range(num_d)</span></span><br><span class="line"><span class="string">])</span></span><br><span class="line"><span class="string">objective = solver.Minimize(z)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># add constraints</span></span><br><span class="line"><span class="string">st_s = dict()</span></span><br><span class="line"><span class="string">for i in range(num_s):</span></span><br><span class="line"><span class="string">    st_s[i] = solver.Add(solver.Sum([x[i, j] for j in range(num_d)]) &lt;= supply[i])</span></span><br><span class="line"><span class="string">st_d = dict()</span></span><br><span class="line"><span class="string">for j in range(num_d):</span></span><br><span class="line"><span class="string">    st_d[i] = solver.Add(solver.Sum([x[i, j] for i in range(num_s)]) &gt;= demand[j])</span></span><br><span class="line"><span class="string">st_f = dict()</span></span><br><span class="line"><span class="string">for i in range(num_s):</span></span><br><span class="line"><span class="string">    for j in range(num_d):</span></span><br><span class="line"><span class="string">        st_f[i, j] = solver.Add(x[i, j] &lt;= M[i, j] * y[i, j])</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># optimize</span></span><br><span class="line"><span class="string">solver.Solve()</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">print(&#x27;z = &#x27;, solver.Objective().Value())</span></span><br><span class="line"><span class="string">for i in range(num_s):</span></span><br><span class="line"><span class="string">    for j in range(num_d):</span></span><br><span class="line"><span class="string">        print(&quot;x%i%i  &quot; % (i, j) + str(x[i, j].solution_value()))</span></span><br><span class="line"><span class="string">        print(&quot;y%i%i  &quot; % (i, j) + str(y[i, j].solution_value()))</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># ====================== benders decomposition ======================</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mp</span>(<span class="params">Q, E, iter_i, parameter</span>):</span></span><br><span class="line">    <span class="comment"># read parameters</span></span><br><span class="line">    num_s = parameter[<span class="string">&quot;num_s&quot;</span>]</span><br><span class="line">    num_d = parameter[<span class="string">&quot;num_d&quot;</span>]</span><br><span class="line">    supply = parameter[<span class="string">&quot;supply&quot;</span>]</span><br><span class="line">    demand = parameter[<span class="string">&quot;demand&quot;</span>]</span><br><span class="line">    c = parameter[<span class="string">&quot;c&quot;</span>]</span><br><span class="line">    f = parameter[<span class="string">&quot;f&quot;</span>]</span><br><span class="line">    stop = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># master problem</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot; === master problem ===&quot;</span>)</span><br><span class="line">    master = pywraplp.Solver(<span class="string">&quot;master%i&quot;</span> % iter_i, pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)</span><br><span class="line"></span><br><span class="line">    y = <span class="built_in">dict</span>()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d):</span><br><span class="line">            y[i, j] = master.IntVar(<span class="number">0</span>, <span class="number">1</span>, <span class="string">&quot;y[%i,%i]&quot;</span> % (i, j))</span><br><span class="line"></span><br><span class="line">    q = master.NumVar(<span class="number">0</span>, master.infinity(), <span class="string">&quot;q&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># other constraints</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s):</span><br><span class="line">        master.Add(master.Sum([y[i, j] <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)]) &gt;= <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d):</span><br><span class="line">        master.Add(master.Sum([y[i, j] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)]) &gt;= <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># general benders optimality cut</span></span><br><span class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> E.values():</span><br><span class="line">        master.Add(</span><br><span class="line">            master.Sum([-<span class="number">1</span> * supply[i] * item[<span class="string">&quot;u&quot;</span>][i] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)]) +</span><br><span class="line">            master.Sum([demand[j] * item[<span class="string">&quot;v&quot;</span>][j] <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)]) +</span><br><span class="line">            master.Sum([</span><br><span class="line">                -<span class="number">1</span> * M[i, j] * item[<span class="string">&quot;w&quot;</span>][i, j] * y[i, j]</span><br><span class="line">                <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)</span><br><span class="line">                <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)</span><br><span class="line">            ]) &lt;= q</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    <span class="comment"># general benders feasiblity cuts</span></span><br><span class="line">    <span class="comment"># add extreme ray</span></span><br><span class="line">    <span class="comment"># or-tools does not support getRay() </span></span><br><span class="line">    <span class="comment"># combinatorial benders cuts</span></span><br><span class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> Q.values():</span><br><span class="line">        master.Add(</span><br><span class="line">            master.Sum([y[i, j] <span class="keyword">for</span> (i, j) <span class="keyword">in</span> item[<span class="number">0</span>]]) +</span><br><span class="line">            master.Sum([<span class="number">1</span> - y[i, j] <span class="keyword">for</span> (i, j) <span class="keyword">in</span> item[<span class="number">1</span>]])</span><br><span class="line">            &gt;= <span class="number">1</span></span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    master.Minimize(master.Sum([</span><br><span class="line">        f[i, j] * y[i, j]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)</span><br><span class="line">    ]) + q)</span><br><span class="line"></span><br><span class="line">    master_status = master.Solve()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># if optimal or feasible</span></span><br><span class="line">    bar_y = <span class="built_in">dict</span>()</span><br><span class="line">    <span class="keyword">if</span> master_status == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d):</span><br><span class="line">                bar_y[i, j] = <span class="number">1</span> <span class="keyword">if</span> y[i, j].solution_value() &gt; <span class="number">0.1</span> <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;There is no feasible solution in primal problem&quot;</span>)</span><br><span class="line">        stop = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> master, bar_y, stop</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sp</span>(<span class="params">Q, E, bar_y, iter_i, parameter</span>):</span></span><br><span class="line">    <span class="comment"># read parameters</span></span><br><span class="line">    num_s = parameter[<span class="string">&quot;num_s&quot;</span>]</span><br><span class="line">    num_d = parameter[<span class="string">&quot;num_d&quot;</span>]</span><br><span class="line">    supply = parameter[<span class="string">&quot;supply&quot;</span>]</span><br><span class="line">    demand = parameter[<span class="string">&quot;demand&quot;</span>]</span><br><span class="line">    c = parameter[<span class="string">&quot;c&quot;</span>]</span><br><span class="line">    f = parameter[<span class="string">&quot;f&quot;</span>]</span><br><span class="line">    M = parameter[<span class="string">&quot;M&quot;</span>]</span><br><span class="line">    stop = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># slave sub-problem</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot; === slave sub-problem ===&quot;</span>)</span><br><span class="line">    slave = pywraplp.Solver(<span class="string">&quot;slave%i&quot;</span> % iter_i, pywraplp.Solver.CLP_LINEAR_PROGRAMMING)</span><br><span class="line"></span><br><span class="line">    x = <span class="built_in">dict</span>()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d):</span><br><span class="line">            x[i, j] = slave.NumVar(<span class="number">0</span>, M[i, j], <span class="string">&quot;x[%i,%i]&quot;</span> % (i, j))</span><br><span class="line"></span><br><span class="line">    con_u = <span class="built_in">dict</span>()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s):</span><br><span class="line">        con_u[i] = slave.Add(slave.Sum([</span><br><span class="line">            -<span class="number">1</span> * x[i, j] <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)</span><br><span class="line">        ]) &gt;= -<span class="number">1</span> * supply[i])</span><br><span class="line"></span><br><span class="line">    con_v = <span class="built_in">dict</span>()</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d):</span><br><span class="line">        con_v[j] = slave.Add(slave.Sum([</span><br><span class="line">            x[i, j] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)</span><br><span class="line">        ]) &gt;= demand[j])</span><br><span class="line"></span><br><span class="line">    con_w = <span class="built_in">dict</span>()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d):</span><br><span class="line">            con_w[i, j] = slave.Add(</span><br><span class="line">                -<span class="number">1</span> * x[i, j] + M[i, j] * bar_y[i, j] &gt;= <span class="number">0</span></span><br><span class="line">            )</span><br><span class="line"></span><br><span class="line">    slave.Minimize(slave.Sum([</span><br><span class="line">        c[i, j] * x[i, j]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)</span><br><span class="line">    ]))</span><br><span class="line"></span><br><span class="line">    slave_status = slave.Solve()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> slave_status == slave.OPTIMAL:</span><br><span class="line">        item = <span class="built_in">dict</span>()</span><br><span class="line">        item[<span class="string">&quot;u&quot;</span>] = &#123;k: u.dual_value() <span class="keyword">for</span> k, u <span class="keyword">in</span> con_u.items()&#125;</span><br><span class="line">        item[<span class="string">&quot;v&quot;</span>] = &#123;k: v.dual_value() <span class="keyword">for</span> k, v <span class="keyword">in</span> con_v.items()&#125;</span><br><span class="line">        item[<span class="string">&quot;w&quot;</span>] = &#123;k: w.dual_value() <span class="keyword">for</span> k, w <span class="keyword">in</span> con_w.items()&#125;</span><br><span class="line">        E[iter_i] = item</span><br><span class="line">    <span class="keyword">elif</span> slave_status == slave.INFEASIBLE:</span><br><span class="line">        <span class="comment"># general benders feasiblity cuts should have been added</span></span><br><span class="line">        <span class="comment"># or-tools does not support getRay() which exists in cplex</span></span><br><span class="line">        <span class="comment"># so we add combinatorial cuts instead</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># combinatorial benders cuts</span></span><br><span class="line">        item = defaultdict(<span class="built_in">list</span>)</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d):</span><br><span class="line">                <span class="keyword">if</span> bar_y[i, j] &gt; <span class="number">0</span>:</span><br><span class="line">                    item[<span class="number">1</span>].append((i, j))</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    item[<span class="number">0</span>].append((i, j))</span><br><span class="line">        Q[iter_i] = item</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;wrong slave sub-problem status  &quot;</span> + <span class="built_in">str</span>(slave_status))</span><br><span class="line">        stop = <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> slave, stop</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># main iteration</span></span><br><span class="line">Q_set = <span class="built_in">dict</span>()</span><br><span class="line">E_set = <span class="built_in">dict</span>()</span><br><span class="line"></span><br><span class="line">LB = -<span class="number">1</span> * <span class="number">1e10</span></span><br><span class="line">UB = <span class="number">1e10</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> iter_i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1000</span>):</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> np.<span class="built_in">abs</span>(UB - LB) &lt; <span class="number">0.01</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Optimal&quot;</span>)</span><br><span class="line">        <span class="comment"># break</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;=&quot;</span> * <span class="number">100</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;iteration at &quot;</span> + <span class="built_in">str</span>(iter_i))</span><br><span class="line"></span><br><span class="line">    slave, stop = sp(Q_set, E_set, bar_y, iter_i, params)</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Q  &quot;</span> + <span class="built_in">str</span>(<span class="built_in">len</span>(Q_set.keys())))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;E  &quot;</span> + <span class="built_in">str</span>(<span class="built_in">len</span>(E_set.keys())))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> stop:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;Wong slave problem&quot;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    item = E_set.get(iter_i, <span class="literal">False</span>)</span><br><span class="line">    <span class="keyword">if</span> item:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;slave objective value&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(slave.Objective().Value())</span><br><span class="line"></span><br><span class="line">        dual_optimal = <span class="built_in">sum</span>(</span><br><span class="line">            [-<span class="number">1</span> * supply[i] * item[<span class="string">&quot;u&quot;</span>][i] <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)]</span><br><span class="line">        ) + <span class="built_in">sum</span>(</span><br><span class="line">            [demand[j] * item[<span class="string">&quot;v&quot;</span>][j] <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)]</span><br><span class="line">        ) + <span class="built_in">sum</span>(</span><br><span class="line">            [-<span class="number">1</span> * M[i, j] * bar_y[i, j] * item[<span class="string">&quot;w&quot;</span>][i, j]</span><br><span class="line">             <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)</span><br><span class="line">             <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)]</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;slave dual objective value&quot;</span>)</span><br><span class="line">        <span class="built_in">print</span>(dual_optimal)</span><br><span class="line"></span><br><span class="line">        UB = <span class="built_in">min</span>(</span><br><span class="line">            UB, dual_optimal + <span class="built_in">sum</span>(</span><br><span class="line">                [bar_y[i, j] * f[i, j]</span><br><span class="line">                 <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(num_s)</span><br><span class="line">                 <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(num_d)]</span><br><span class="line">            )</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">    master, bar_y, stop = mp(Q_set, E_set, iter_i, params)</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;bar_y&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(bar_y)</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;master objective value&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(master.Objective().Value())</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> stop:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;wrong master problem&quot;</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    LB = master.Objective().Value()</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;UB &quot;</span> + <span class="built_in">str</span>(UB))</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;LB &quot;</span> + <span class="built_in">str</span>(LB))</span><br></pre></td></tr></table></figure>
+<h2 id="benders-decomposition-改进优化">Benders Decomposition 改进优化</h2>
+<p>MP虽然提供了一个很好的求解MIP甚至是MNLP问题的框架，但也同时有很多问题：时间很长的迭代过程，产生的割有可能很弱，特殊情况收敛慢等等。很多文献都做了BD的优化，一方面是通过减少迭代的次数来改进算法的收敛性，另一方面是减少每次迭代的耗时，前者是通过改善产生解和割的质量，后者则是通过改善产生解的过程和每步求解主问题子问题的方式。</p>
+<figure>
+<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
+</figure>
+<p>主要通过四个方向来改进BD：</p>
+<ul>
+<li>主问题和子问题分解策略</li>
+<li>主问题和子问题求解的过程，图中“S”之标准求解过程，“A”指特别的求解方式，“S/A”指标准的方式求解主问题，特别的方式求解子问题</li>
+<li>主问题产生的解</li>
+<li>子问题产生的割，图中“C”指普通的割，“I”指改进的割，“C/I”指普通的最优割，改进的可行割。</li>
+</ul>
+<h3 id="从求解过程优化">从求解过程优化</h3>
+<p>主问题和子问题迭代求解是主要的计算瓶颈之一，MP经常通过B&amp;B来求解，子问题则用单纯形法。</p>
+<h4 id="mp层面">MP层面</h4>
+<p>在BD算法中，往往90%的时间都花在求解MP上[3]。一般会从两个角度来降低其影响：问题规模算法本身。</p>
+<h5 id="限制问题规模">限制问题规模</h5>
+<p>在任何MP的最优解中，有效的约束数量总是不超过决策变量的数量，因此，大部分产生的割都不会对算法的收敛起到作用，甚至起反作用（浪费计算时间与内存）。所以，割的清除策略也很重要，特别是每次迭代中都增加多组割的时候。然而并没有成熟的办法来鉴定一个割是否有用，所以往往割的清理删除策略都是启发式的，当一个约束的松弛变量太大的时候，则可以被移除，要注意被移除的割不应被重复加入MP。</p>
+<p>有时，多个割会被加入MP，但是并不是全部都有用，[4]中提出如果当前的解绝对小于当前已知最好上界时，这时可以产生相对好的割。[5]中选择根据到不同的内点的距离，选择更紧的割。总的来说，这些方法通过移除不重要的割或者限制不必要割的加入来控制MP的问题规模，然而效果并不是很显著，一方面是会带来额外的难度来计算割的好坏，同时启发式的方法会移除一些有用的割。</p>
+<h5 id="算法本身改进">算法本身改进</h5>
+<p>在求解MP问题中，每次迭代中并不需要求得最优解来得到全局的收敛，一些研究关注于如何快速找到次优解，其他的则关注于利用MP结构的优势高效求解。[6]中第一次指出计算MP的难度，他们发现迭代中每步求解MP的最优来产生割并不是必要的。实际中，在算法开始的时候并不需要这样做，所以他们求解MP问题采用<span class="math inline">\(\epsilon\text{-optimality}\)</span>的策略。</p>
+<p>我们也可以选择通过启发式来求解MP，这样不仅可以减少时间，还可以在每次迭代中产生多组割，更快的提高下界[7]。</p>
+<p>约束规划（Constraint Programming）也是一种可行的方式[8]，但我对CP了解不多，也不赘述了。</p>
+<p>列生成（Column Generation）算法也是一个求解MP问题的很好的选择，用CG来更高效地处理确定结构的问题，在根节点上更紧的bounds。[9]中提出利用BD来处理约束之间的连接，来处理航空路线规划和人员调度问题，将该问题处理成路径规划的主问题和一个人员配对的子问题。同时可以参考[10,11]。</p>
+<p>在传统的BD算法中，主问题往往是利用B&amp;B来求解，在迭代中，往往会花很多时间来访问之前被否决掉的节点，所以可以建立一个搜索树，并通过产生有效割来寻找最优解，这样的策略被称为Branch-and-Benders-cut（B&amp;BC）。</p>
+<h4 id="子问题层面">子问题层面</h4>
+<p>子问题往往是规模很大的LP问题，[12]中表明子问题对偶问题的次优解也能产生有效的割，同时这些不精确的解的计算难度很低，却能产生很好的效果。[5]中提到这样的做法有可能会导致错误的解，因为有非极点的割加入MP，但[12]中inexact benders cuts却可以保证收敛。</p>
+<p>同时CG也可以应用于子问题求解，对于特殊结构的问题，也可能会存在解析解。当子问题可以被分离时候，可以并行求解多个子问题。</p>
+<h3 id="优化子问题产生的割">优化子问题产生的割</h3>
+<p>迭代的次数与产生的割的强度是强相关的，以前有很多文章都有研究如何选择较强的割或者产生额外的有效割。</p>
+<p>[3]是第一个考虑子问题退化情况的，当对偶子问题有多个最优解的时候，会产生并不同的割，文中提出Pareto-optimality割的概念，一个pareto-optimal的解会在核点（core point）处得到最大值，在解决常规的对偶子问题后，作者增加了一个辅助子问题来找pareto-optimal 最优割： <span class="math display">\[
+\max_{\pi\in \mathbb{R}^{m_2}}\lbrace
+\pi^T(d-B\hat{y}):
+\pi^TD\leq c,
+\pi^T(d-B\bar{y})=Q(\bar{y})
+\rbrace
+\]</span> 其中<span class="math inline">\(Q(\bar{y})\)</span>表示对于主问题给定的<span class="math inline">\(\bar{y}\)</span>，常规子问题的最优花费。这样做虽然很高效，但仍然带来了多余计算量，同时很难去找到核点，后续文章[13,14,15,16]都是基于此的改进。</p>
+<p>[17]中提出一种针对于0-1变量的组合割（combinatorial benders cuts），是一种改进的可行割，作者发现由于大M的约束，产生的割会很弱，而这种方法可以有效提高模型的表现。[5]发现由于选择弱的可行割，会造成算法整体的收敛速度漫，所以提出了一种精确的更紧可行割，扩展了pareto-optimal cuts的概念，将其用于feasibility cuts上，根据可行点和不可行点，找出较合适的割加入子问题，效果提升的同时也带来了很多额外的计算。</p>
+<p>还有很多关注于其他方面的，[19]中关注了产生的割一般是low-density的问题，MP中大部分变量在这些割中的系数都是0，这样的割就很弱，作者提出一种covering cut bundle cut-generation的方法，每次迭代产生多个割，这样一组割的cover程度高，有助于提高收敛速度（作者在文中指出，多个low-density的割效果比单个high-density的割效果好）。[20]中作者提出一种更少的计算量的方法，可以cover所有MP中的变量。[21]中关注了很难找到optimality cut的情况，通过求解一个最大可行问题（MFS，maximal feasible subsystem）来产生optimality cuts，[18]也采用相似的做法。</p>
+<h3 id="通过分解策略来优化">通过分解策略来优化</h3>
+<p>[22]中指出BD使得MP问题失去了简单变量的信息，所以提出了一种局部分解的策略。除此之外还有一些非标准的分解方式，我不是很了解就不在此罗列了，详细可以参考[1]的全文。</p>
+<h3 id="优化主问题产生的解">优化主问题产生的解</h3>
+<p>复杂决策变量的解的质量直接决定了迭代的次数，有三种方式来改善解的质量或提高求解速度：</p>
+<ul>
+<li>使用非传统的形式</li>
+<li>改善MP的形式</li>
+<li>用启发式得到解或者改善已经找到的解</li>
+</ul>
+<h4 id="使用非传统的形式">使用非传统的形式</h4>
+<p>[23]中指出从MP的LP松弛中也可以产生有效的割，所以将BD算法分成两个阶段，第一个阶段快速产生解，然后再加上整数的约束。[24]提出一种交叉分解的方式，将拉格朗日松弛和BD结合，给定整数变量<span class="math inline">\(y\)</span>可以从BD的子问题求出拉格朗日乘子<span class="math inline">\(\pi\)</span>，然后根据<span class="math inline">\(\pi\)</span>，求解拉格朗日子问题产生新的<span class="math inline">\(y\)</span>。这样的交替结束后，两个子问题的解都可以用来产生新的割给主问题。</p>
+<h4 id="优化主问题">优化主问题</h4>
+<p>优化住问题最有效的办法就是增加有效不等式，增加有效不等式来得到更紧的MP，同时当子问题可分的时候，也可以从每个子问题中都产生割来加入到MP中。</p>
+<h4 id="启发式">启发式</h4>
+<p>启发式可以作为“热启动”（warm-start）策略，在初始就得到一些约束较紧的割。同时启发式也可以用来生成解的近邻解作为一种增强策略。</p>
+<h2 id="benders-decomposition-总结-1">Benders Decomposition 总结</h2>
+<p>总的来说BD是一种求解大规模MIP问题的利器，是一种基于松弛和投影的求解方式，一种聪明的加割的方式，某种程度上与分之定界类似，MP的求解依赖于最优割（分之定界法的可行解的作用，提供下界），而MP的求解就是松弛问题不断被压紧的过程（多种割来割掉解的空间，类似于分之定界的LP松弛通过不断branch而解空间缩小）。</p>
+<p>说点我的直观感受，我一直觉得割平面法是一种从外往内找最优解的过程，而分之定界框架是一种由内到外找最优的方法，而BD就是提供了一种迭代的“割平面”框架。</p>
+<h2 id="参考">参考</h2>
+<ol type="1">
+<li>Rahmaniani, Ragheb, et al. “The Benders Decomposition Algorithm: A Literature Review.” <em>European Journal of Operational Research</em>, vol. 259, no. 3, Elsevier B.V., 2017, pp. 801–17, doi:10.1016/j.ejor.2016.12.005.</li>
+<li>Benders, Jacques F. "Partitioning procedures for solving mixed-variables programming problems." <em>Numerische mathematik</em> 4.1 (1962): 238-252.</li>
+<li>Magnanti, Thomas L., and Richard T. Wong. "Accelerating Benders decomposition: Algorithmic enhancement and model selection criteria." <em>Operations research</em> 29.3 (1981): 464-484.</li>
+<li>Rei, Walter, et al. "Accelerating Benders decomposition by local branching." <em>INFORMS Journal on Computing</em> 21.2 (2009): 333-345.</li>
+<li>Yang, Yu, and Jong Min Lee. "A tighter cut generation strategy for acceleration of benders decomposition." <em>Computers &amp; Chemical Engineering</em> 44 (2012): 84-93.</li>
+<li>Geoffrion, Arthur M. "Generalized benders decomposition." <em>Journal of optimization theory and applications</em> 10.4 (1972): 237-260.</li>
+<li>Raidl, Günther R. "Decomposition based hybrid metaheuristics." <em>European journal of operational research</em>244.1 (2015): 66-76.</li>
+<li>Benoist, Thierry, Etienne Gaudin, and Benoît Rottembourg. "Constraint programming contribution to benders decomposition: A case study." <em>International Conference on Principles and Practice of Constraint Programming</em>. Springer, Berlin, Heidelberg, 2002.</li>
+<li>Cordeau, Jean-François, et al. "Benders decomposition for simultaneous aircraft routing and crew scheduling." <em>Transportation science</em> 35.4 (2001): 375-388.</li>
+<li>Mercier, Anne, Jean-François Cordeau, and François Soumis. "A computational study of Benders decomposition for the integrated aircraft routing and crew scheduling problem." <em>Computers &amp; Operations Research</em> 32.6 (2005): 1451-1476.</li>
+<li>Restrepo, María I., Bernard Gendron, and Louis-Martin Rousseau. <em>Combining Benders decomposition and column generation for multi-activity tour scheduling</em>. CIRRELT, 2015.</li>
+<li>Zakeri, Golbon, Andrew B. Philpott, and David M. Ryan. "Inexact cuts in Benders decomposition." <em>SIAM Journal on Optimization</em> 10.3 (2000): 643-657.</li>
+<li>Papadakos, Nikolaos. "Practical enhancements to the Magnanti–Wong method." <em>Operations Research Letters</em> 36.4 (2008): 444-449.</li>
+<li>de Sá, Elisangela Martins, Ricardo Saraiva de Camargo, and Gilberto de Miranda. "An improved Benders decomposition algorithm for the tree of hubs location problem." <em>European Journal of Operational Research</em> 226.2 (2013): 185-202.</li>
+<li>Fortz, Bernard, and Michael Poss. "An improved benders decomposition applied to a multi-layer network design problem." <em>Operations research letters</em> 37.5 (2009): 359-364.</li>
+<li>Naoum-Sawaya, Joe, and Samir Elhedhli. "An interior-point Benders based branch-and-cut algorithm for mixed integer programs." <em>Annals of Operations Research</em> 210.1 (2013): 33-55.</li>
+<li>Codato, Gianni, and Matteo Fischetti. "Combinatorial Benders' cuts for mixed-integer linear programming." <em>Operations Research</em> 54.4 (2006): 756-766.</li>
+<li>Fischetti, Matteo, Domenico Salvagnin, and Arrigo Zanette. "A note on the selection of Benders’ cuts." <em>Mathematical Programming</em> 124.1-2 (2010): 175-182.</li>
+<li>Saharidis, Georgios K. D., et al. “Accelerating Benders Method Using Covering Cut Bundle Generation.” International Transactions in Operational Research, vol. 17, no. 2, 2010, pp. 221–37, doi:10.1111/j.1475-3995.2009.00706.x.</li>
+<li>Saharidis, Georgios K. D., and Marianthi G. Ierapetritou. “Speed-up Benders Decomposition Using Maximum Density Cut (MDC) Generation.” Annals of Operations Research, vol. 210, no. 1, 2013, pp. 101–23, doi:10.1007/s10479-012-1237-8.</li>
+<li>Saharidis, G. K. D., and Marianthi G. Ierapetritou. “Improving Benders Decomposition Using Maximum Feasible Subsystem (MFS) Cut Generation Strategy.” Computers and Chemical Engineering, vol. 34, no. 8, 2010, pp. 1237–45, doi:10.1016/j.compchemeng.2009.10.002.</li>
+<li>Crainic, Teodor Gabriel, Mike Hewitt, and Walter Rei. <em>Partial decomposition strategies for two-stage stochastic integer programs</em>. CIRRELT, 2014.</li>
+<li>McDaniel, Dale, and Mike Devine. "A modified Benders' partitioning algorithm for mixed integer programming." <em>Management Science</em> 24.3 (1977): 312-319.</li>
+<li>Van Roy, Tony J. “Cross Decomposition for Mixed Integer Programming.” <em>Mathematical Programming</em>, vol. 25, no. 1, 1983, pp. 46–63, doi:10.1007/BF02591718.</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Optimization/" rel="tag"># Optimization</a>
+          
+            <a href="/tags/OperationResearch/" rel="tag"># OperationResearch</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/21/MP-file-format/" rel="next" title="MP file format">
+                <i class="fa fa-chevron-left"></i> MP file format
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/13/Online-Learning-1/" rel="prev" title="Online Learning 1">
+                Online Learning 1 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">110</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">51</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#benders-decomposition-%E6%80%BB%E7%BB%93"><span class="nav-number">1.</span> <span class="nav-text">Benders Decomposition 总结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#benders-decomposition%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">Benders Decomposition简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#benders-dcomposition%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.2.</span> <span class="nav-text">Benders Dcomposition实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gurobi%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.2.1.</span> <span class="nav-text">Gurobi实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#or-toolscbc%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.2.2.</span> <span class="nav-text">Or-tools(CBC)实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#benders-decomposition-%E6%94%B9%E8%BF%9B%E4%BC%98%E5%8C%96"><span class="nav-number">1.3.</span> <span class="nav-text">Benders Decomposition 改进优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8E%E6%B1%82%E8%A7%A3%E8%BF%87%E7%A8%8B%E4%BC%98%E5%8C%96"><span class="nav-number">1.3.1.</span> <span class="nav-text">从求解过程优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mp%E5%B1%82%E9%9D%A2"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">MP层面</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%99%90%E5%88%B6%E9%97%AE%E9%A2%98%E8%A7%84%E6%A8%A1"><span class="nav-number">1.3.1.1.1.</span> <span class="nav-text">限制问题规模</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E6%9C%AC%E8%BA%AB%E6%94%B9%E8%BF%9B"><span class="nav-number">1.3.1.1.2.</span> <span class="nav-text">算法本身改进</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%90%E9%97%AE%E9%A2%98%E5%B1%82%E9%9D%A2"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">子问题层面</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E5%AD%90%E9%97%AE%E9%A2%98%E4%BA%A7%E7%94%9F%E7%9A%84%E5%89%B2"><span class="nav-number">1.3.2.</span> <span class="nav-text">优化子问题产生的割</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E5%88%86%E8%A7%A3%E7%AD%96%E7%95%A5%E6%9D%A5%E4%BC%98%E5%8C%96"><span class="nav-number">1.3.3.</span> <span class="nav-text">通过分解策略来优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E4%B8%BB%E9%97%AE%E9%A2%98%E4%BA%A7%E7%94%9F%E7%9A%84%E8%A7%A3"><span class="nav-number">1.3.4.</span> <span class="nav-text">优化主问题产生的解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E9%9D%9E%E4%BC%A0%E7%BB%9F%E7%9A%84%E5%BD%A2%E5%BC%8F"><span class="nav-number">1.3.4.1.</span> <span class="nav-text">使用非传统的形式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E4%B8%BB%E9%97%AE%E9%A2%98"><span class="nav-number">1.3.4.2.</span> <span class="nav-text">优化主问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%AF%E5%8F%91%E5%BC%8F"><span class="nav-number">1.3.4.3.</span> <span class="nav-text">启发式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#benders-decomposition-%E6%80%BB%E7%BB%93-1"><span class="nav-number">1.4.</span> <span class="nav-text">Benders Decomposition 总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">1.5.</span> <span class="nav-text">参考</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YuyangZhangFTD</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2140861"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.2"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

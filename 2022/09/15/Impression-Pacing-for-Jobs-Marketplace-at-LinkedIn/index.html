@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Advertising,BudgetControl,Pacing,Calibration," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Arvin's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="TL;DR 本文是LinkedIn发表在CIKM 2020上的文章，主要内容是基于曝光行为来做Pacing，控制预算消耗，帮助广告主触达更广泛的人群。 问题背景 LinkedIn的工作搜索和推荐服务的目标是帮助LinkedIn会员寻找下一份好工作，会基于求职人员的兴趣和技能推荐工作机会，同时求职者也可以主动搜索相关工作机会。向求职者推荐的工作大部分都是会基于其与求职者对的相关性进行推荐，同时Lin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Impression Pacing for Jobs Marketplace at LinkedIn">
+<meta property="og:url" content="http://yoursite.com/2022/09/15/Impression-Pacing-for-Jobs-Marketplace-at-LinkedIn/index.html">
+<meta property="og:site_name" content="Arvin&#39;s Blog">
+<meta property="og:description" content="TL;DR 本文是LinkedIn发表在CIKM 2020上的文章，主要内容是基于曝光行为来做Pacing，控制预算消耗，帮助广告主触达更广泛的人群。 问题背景 LinkedIn的工作搜索和推荐服务的目标是帮助LinkedIn会员寻找下一份好工作，会基于求职人员的兴趣和技能推荐工作机会，同时求职者也可以主动搜索相关工作机会。向求职者推荐的工作大部分都是会基于其与求职者对的相关性进行推荐，同时Lin">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/2022/09/15/Impression-Pacing-for-Jobs-Marketplace-at-LinkedIn/1.png">
+<meta property="og:image" content="http://yoursite.com/2022/09/15/Impression-Pacing-for-Jobs-Marketplace-at-LinkedIn/2.png">
+<meta property="og:image" content="http://yoursite.com/2022/09/15/Impression-Pacing-for-Jobs-Marketplace-at-LinkedIn/4.png">
+<meta property="og:image" content="http://yoursite.com/2022/09/15/Impression-Pacing-for-Jobs-Marketplace-at-LinkedIn/3.png">
+<meta property="og:image" content="http://yoursite.com/2022/09/15/Impression-Pacing-for-Jobs-Marketplace-at-LinkedIn/5.png">
+<meta property="article:published_time" content="2022-09-15T02:51:22.000Z">
+<meta property="article:modified_time" content="2022-09-18T05:47:39.586Z">
+<meta property="article:author" content="YuyangZhangFTD">
+<meta property="article:tag" content="Advertising">
+<meta property="article:tag" content="BudgetControl">
+<meta property="article:tag" content="Pacing">
+<meta property="article:tag" content="Calibration">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2022/09/15/Impression-Pacing-for-Jobs-Marketplace-at-LinkedIn/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2022/09/15/Impression-Pacing-for-Jobs-Marketplace-at-LinkedIn/"/>
+
+
+
+
+
+  <title>Impression Pacing for Jobs Marketplace at LinkedIn | Arvin's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Arvin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Poem & Algorithm</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/09/15/Impression-Pacing-for-Jobs-Marketplace-at-LinkedIn/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arvin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Impression Pacing for Jobs Marketplace at LinkedIn</h1>
+        
+
+        <div class="post-meta">
+          
+
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-09-15T10:51:22+08:00">
+                2022-09-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PaperNote/" itemprop="url" rel="index">
+                    <span itemprop="name">PaperNote</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>TL;DR</p>
+<p>本文是LinkedIn发表在CIKM 2020上的文章，主要内容是基于曝光行为来做Pacing，控制预算消耗，帮助广告主触达更广泛的人群。</p>
+<h1 id="问题背景">问题背景</h1>
+<p>LinkedIn的工作搜索和推荐服务的目标是帮助LinkedIn会员寻找下一份好工作，会基于求职人员的兴趣和技能推荐工作机会，同时求职者也可以主动搜索相关工作机会。向求职者推荐的工作大部分都是会基于其与求职者对的相关性进行推荐，同时LinkedIn也支持广告，招聘方可以通过设置一笔预算来获得更靠前的展示位。如何排序以及何时展示的决策机制，我们称为工作求职市场机制(Jobs Marketplace)。</p>
+<p>Jobs Marketplace的目标是将LinkedIn会员匹配给招聘广告，使得招聘方的ROI有保证（平均每次点击和每次申请所需要花的钱）同时展示给求职者更加匹配的工作机会。这些是通过一价竞价机制所实现，每一个招聘广告都会设置一个出价(bid)，代表了当前会员的价值，其依赖于匹配程度以及该招聘广告的剩余预算。因为需要考虑匹配程度，所以按照点击来进行付费，当一个招聘广告拥有更多的需求时，通过点击收费会更容易消耗其预算。</p>
+<p>均匀地或是根据预设计划来花费每日预算的能力会变得极其重要，因为：</p>
+<ol type="1">
+<li>避免过高的出价可以合理消耗预算，参与更多次数的竞价，进而触达更广泛的候选人群。</li>
+<li>不同的预算计划可以满足广告主不同的目标诉求</li>
+<li>广告竞价的竞争会更加充分</li>
+</ol>
+<p>Pacing算法是指进行预算消耗控制的方法，其输出一般是一个平滑分(pacing score)，用于控制预算消耗速度。平滑分的计算方式一般会依赖于当前已经消耗的金额，但这样做会产生以下问题：</p>
+<ol type="1">
+<li>点击事件十分稀疏而且存在噪声</li>
+<li>点击事件会导致“尖刺”行为的出现，比如一个招聘广告在第一个小时并没有任何点击，此时pacing算法会认为这个招聘广告无法花掉预算，进而增加出价帮它排在更靠前的位置，在下一次点击时，就会花费更多的钱。</li>
+</ol>
+<h1 id="解决方案">解决方案</h1>
+<p>简化版的架构如下图所示：</p>
+<figure>
+<img src="1.png" alt="Simplified Architecture" /><figcaption aria-hidden="true">Simplified Architecture</figcaption>
+</figure>
+<p>主要分为6个阶段：</p>
+<ol type="1">
+<li>用户访问页面</li>
+<li>招聘广告召回，过滤和排序，选出更匹配的候选集合</li>
+<li>模型打分，计算用户点击以及后续转化的概率</li>
+<li>平滑，根据实时花费和预设消耗计划返回平滑分</li>
+<li>根据预测概率和平滑分，进行竞价</li>
+<li>将竞价胜出的招聘广告返回（可以返回多个）</li>
+</ol>
+<p>其中平滑分：</p>
+<p><span class="math display">\[
+\Psi_t(\text{job}_i)=f(
+S_{a,t&#39;\rightarrow t},
+S_{p,t&#39;\rightarrow t},
+\Psi_{t-1}, \text{job}_i
+)
+\]</span> 其中<span class="math inline">\(\Psi_t(\text{job}_i)\)</span>为广告<span class="math inline">\(i\)</span>在<span class="math inline">\(t\)</span>时刻的平滑分，<span class="math inline">\(S_{a,t&#39;\rightarrow t}\)</span>表示从<span class="math inline">\(t&#39;\)</span>到<span class="math inline">\(t\)</span>时间内实际消耗，<span class="math inline">\(S_{p,t&#39;\rightarrow t}\)</span>为计划消耗。这样的形式化定义有几点需要注意的：</p>
+<ol type="1">
+<li><span class="math inline">\(t&#39;\)</span>可以为0也可以为任意时刻，我们关心的是任意时间区间上平滑问题</li>
+<li><span class="math inline">\(\Psi_{t-1}\)</span>也是输入，前一时刻的平滑分也会影响当前平滑分的计算</li>
+<li><span class="math inline">\(\text{job}_i\)</span>相关信息，不同招聘可能会有不同的流量结构，所以需要考虑job相关信息</li>
+</ol>
+<p>处于商业考虑，此处不说明函数<span class="math inline">\(f\)</span>的细节，整体上满足如下关系： <span class="math display">\[
+\begin{aligned}
+\frac{S_{a,t&#39;\rightarrow t}}{S_{p,t&#39;\rightarrow t}} &lt; 1 &amp;&amp; \Longrightarrow &amp;&amp; \Psi_t &gt;\Psi_{t=1}\\
+\frac{S_{a,t&#39;\rightarrow t}}{S_{p,t&#39;\rightarrow t}} &gt; 1 &amp;&amp; \Longrightarrow &amp;&amp; \Psi_t &lt;\Psi_{t=1}\\
+\end{aligned}
+\]</span> 如果消耗超出计划了，平滑分降低，反之平滑分增大。</p>
+<p>在竞价阶段，排序分为： <span class="math display">\[
+S(\text{job}_i, \text{job-seeker}_j) = \text{pCTR} \cdot \beta(\Psi(\text{job}_i)) +\Omega(\text{pApply},\cdots)
+\]</span> 其中<span class="math inline">\(\text{pCTR}\)</span>和<span class="math inline">\(\text{pApply}\)</span>是模型的预估值，为点击的概率和申请的概率，<span class="math inline">\(\Omega\)</span>主要是为了考虑求职者申请工作的概率，类似后转化链路的质量分，<span class="math inline">\(\beta\)</span>是出价函数，其输入为平滑分<span class="math inline">\(\Psi\)</span>，具体函数细节不方便展示，但满足单调性。</p>
+<p>由于是一价竞价、点击扣费，点击行为的噪声和稀疏会导致pacing算法不稳定。为了解决这个问题，我们提出基于曝光数据的平滑算法，用期望消耗来替代实际消耗，<span class="math inline">\(\hat{C}_{\text{auction}_i,\text{job}_j}=\text{pCTR}\cdot \beta\)</span>，累计消耗为<span class="math inline">\(\hat{C}_{\text{job}_j}=\sum_i \hat{C}_{\text{auction}_i,\text{job}_j}\)</span>。</p>
+<p>因为我们希望使用点击率来做平滑算法，所以需要对点击概率做校准。点击率的差异主要是位置的偏差，在推荐时我们并不知道最终广告会被排在什么样的位置，一般的做法是所有广告在计算点击率时都用默认的值（比如都设置为第一位），所以我们采用后置校准的方式。</p>
+<figure>
+<img src="2.png" alt="Post-ranking Calibration" /><figcaption aria-hidden="true">Post-ranking Calibration</figcaption>
+</figure>
+<figure>
+<img src="4.png" alt="Modified Architecture" /><figcaption aria-hidden="true">Modified Architecture</figcaption>
+</figure>
+<p>在计算<span class="math inline">\(\text{pCTR}\)</span>时，用默认位置信息，进行竞价排序、展示后，重新计算校准后的值 <span class="math display">\[
+\text{pCTR}_\text{calibrated}=\sigma(X_\text{position}\cdot w_\text{position} +\sigma^{-1}(\text{pCTR}))
+\]</span> 在得到校准后的值后，会用于计算实时期望消耗，然后和实际消耗一起考虑，产出平滑分</p>
+<figure>
+<img src="3.png" alt="Algorithm" /><figcaption aria-hidden="true">Algorithm</figcaption>
+</figure>
+<ul>
+<li>其中<span class="math inline">\(\alpha\)</span>用于控制预算消耗量，一般<span class="math inline">\(\alpha\leq 1\)</span>，期望花费只能消耗掉整体预算的一部分</li>
+<li>如果点击花费超过期望花费，此时以点击花费为准</li>
+<li>如果点击花费为0，说明此时没有点击发生，用期望点击消耗为主，用<span class="math inline">\(\gamma\)</span>来限制上限（如果<span class="math inline">\(\text{pCTR}\)</span>高估严重，ceilProjectedCharge会非常高，但是实际消耗为0，如果直接用ceilProjectedCharge会拉低出价，所以用<span class="math inline">\(\gamma\)</span>限制这个偏差程度）</li>
+<li>如果真实点击消耗不为0，且小于期望值，此时用期望点击消耗为主，用<span class="math inline">\(\zeta\)</span>限制这个差异的上限（同理，避免<span class="math inline">\(\text{pCTR}\)</span>高估严重，所以限制了和实际消耗的差异）</li>
+</ul>
+<p>线上尝试后，最终<span class="math inline">\(\alpha=0.7\)</span>，<span class="math inline">\(\gamma=0.3\)</span>，<span class="math inline">\(\zeta=1.3\)</span>。</p>
+<h1 id="实验效果">实验效果</h1>
+<p>实验方式为天轮转，2周之后得到最终的对比结果（也是之前LinkedIn Pacing实验的评估方式）</p>
+<figure>
+<img src="5.png" alt="Result" /><figcaption aria-hidden="true">Result</figcaption>
+</figure>
+<h1 id="总结">总结</h1>
+<p>文中写了一种基于曝光数据的Pacing算法，核心思想就是用期望成本替代实际成本，并对pCTR的预估做校准。</p>
+<p>这种方式应该已经是很通用的方式了（调控系统中，用模型期望值代替实际值），创新性欠佳，更多的是把已经证实有效的东西写出来。</p>
+<p>实验方面做的很单薄，并没有从离线数据中证明校准的有效性，位置偏差对于最终Pacing结果的影响是有待商榷的。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Advertising/" rel="tag"># Advertising</a>
+          
+            <a href="/tags/BudgetControl/" rel="tag"># BudgetControl</a>
+          
+            <a href="/tags/Pacing/" rel="tag"># Pacing</a>
+          
+            <a href="/tags/Calibration/" rel="tag"># Calibration</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/07/03/What-Makes-Forest-Based-Heterogeneous-Treatment-Effect-Estimators-Work/" rel="next" title="What Makes Forest-Based Heterogeneous Treatment Effect Estimators Work?">
+                <i class="fa fa-chevron-left"></i> What Makes Forest-Based Heterogeneous Treatment Effect Estimators Work?
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/10/07/On-the-Factory-Floor-ML-Engineering-for-Industrial-Scale-Ads-Recommendation-Models/" rel="prev" title="On the Factory Floor: ML Engineering for Industrial-Scale Ads Recommendation Models">
+                On the Factory Floor: ML Engineering for Industrial-Scale Ads Recommendation Models <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">110</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">51</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">问题背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">2.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E6%95%88%E6%9E%9C"><span class="nav-number">3.</span> <span class="nav-text">实验效果</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YuyangZhangFTD</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2140861"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.2"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

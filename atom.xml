@@ -1,0 +1,632 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Arvin&#39;s Blog</title>
+  <icon>http://yoursite.com/icon.png</icon>
+  <subtitle>Poem &amp; Algorithm</subtitle>
+  <link href="http://yoursite.com/atom.xml" rel="self"/>
+  
+  <link href="http://yoursite.com/"/>
+  <updated>2023-07-01T10:28:22.547Z</updated>
+  <id>http://yoursite.com/</id>
+  
+  <author>
+    <name>YuyangZhangFTD</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Attention is all you need</title>
+    <link href="http://yoursite.com/2023/07/01/Attention-is-all-you-need/"/>
+    <id>http://yoursite.com/2023/07/01/Attention-is-all-you-need/</id>
+    <published>2023-07-01T10:24:02.000Z</published>
+    <updated>2023-07-01T10:28:22.547Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;摘要&quot;&gt;摘要&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The dominant sequence transduction models are based on complex recurrent or convolutional neural</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="Deep Learning" scheme="http://yoursite.com/tags/Deep-Learning/"/>
+    
+    <category term="NLP" scheme="http://yoursite.com/tags/NLP/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>On the Factory Floor: ML Engineering for Industrial-Scale Ads Recommendation Models</title>
+    <link href="http://yoursite.com/2022/10/07/On-the-Factory-Floor-ML-Engineering-for-Industrial-Scale-Ads-Recommendation-Models/"/>
+    <id>http://yoursite.com/2022/10/07/On-the-Factory-Floor-ML-Engineering-for-Industrial-Scale-Ads-Recommendation-Models/</id>
+    <published>2022-10-07T13:37:16.000Z</published>
+    <updated>2022-10-30T09:18:37.123Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;写在最前面，&lt;/p&gt;
+&lt;p&gt;本来是想简单摘抄一下这篇文章中的精华，写到一半觉得这篇文章不应如此，本文应该是一篇可以比肩Wide&amp;amp;Deep的文章。如果说Wide&amp;amp;Deep告诉业界推荐就是要搞Embedding，E2E，那么本文可能就是告诉大家CTR模型就是要搞</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
+    
+    <category term="Deep Learning" scheme="http://yoursite.com/tags/Deep-Learning/"/>
+    
+    <category term="Best Practice" scheme="http://yoursite.com/tags/Best-Practice/"/>
+    
+    <category term="Online Learning" scheme="http://yoursite.com/tags/Online-Learning/"/>
+    
+    <category term="Advertisiing" scheme="http://yoursite.com/tags/Advertisiing/"/>
+    
+    <category term="CTR" scheme="http://yoursite.com/tags/CTR/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Impression Pacing for Jobs Marketplace at LinkedIn</title>
+    <link href="http://yoursite.com/2022/09/15/Impression-Pacing-for-Jobs-Marketplace-at-LinkedIn/"/>
+    <id>http://yoursite.com/2022/09/15/Impression-Pacing-for-Jobs-Marketplace-at-LinkedIn/</id>
+    <published>2022-09-15T02:51:22.000Z</published>
+    <updated>2022-09-18T05:47:39.586Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;TL;DR&lt;/p&gt;
+&lt;p&gt;本文是LinkedIn发表在CIKM 2020上的文章，主要内容是基于曝光行为来做Pacing，控制预算消耗，帮助广告主触达更广泛的人群。&lt;/p&gt;
+&lt;h1</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="Advertising" scheme="http://yoursite.com/tags/Advertising/"/>
+    
+    <category term="BudgetControl" scheme="http://yoursite.com/tags/BudgetControl/"/>
+    
+    <category term="Pacing" scheme="http://yoursite.com/tags/Pacing/"/>
+    
+    <category term="Calibration" scheme="http://yoursite.com/tags/Calibration/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>What Makes Forest-Based Heterogeneous Treatment Effect Estimators Work?</title>
+    <link href="http://yoursite.com/2022/07/03/What-Makes-Forest-Based-Heterogeneous-Treatment-Effect-Estimators-Work/"/>
+    <id>http://yoursite.com/2022/07/03/What-Makes-Forest-Based-Heterogeneous-Treatment-Effect-Estimators-Work/</id>
+    <published>2022-07-03T04:39:13.000Z</published>
+    <updated>2022-07-03T08:42:53.239Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;TL;DR,&lt;/p&gt;
+&lt;p&gt;本文感觉像是一篇大作业文章，应该还不是终稿，有很多typo而且写得不那么易懂，但Stefan Wager是作者之一。主要讨论两个常见的用于估计“异质处理效应”（HTE）的forest模型，causal forest和model-based</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="Causal Inference" scheme="http://yoursite.com/tags/Causal-Inference/"/>
+    
+    <category term="Individual Treatment Effect" scheme="http://yoursite.com/tags/Individual-Treatment-Effect/"/>
+    
+    <category term="Heterogeneous Treatment Effect" scheme="http://yoursite.com/tags/Heterogeneous-Treatment-Effect/"/>
+    
+    <category term="Causal Forest" scheme="http://yoursite.com/tags/Causal-Forest/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>1 Year in HangZhou</title>
+    <link href="http://yoursite.com/2022/06/18/1-Year-in-HangZhou/"/>
+    <id>http://yoursite.com/2022/06/18/1-Year-in-HangZhou/</id>
+    <published>2022-06-18T14:51:20.000Z</published>
+    <updated>2022-06-19T01:21:32.359Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;figure&gt;
+&lt;img src=&quot;1year.jpeg&quot; alt=&quot;一年香&quot; /&gt;&lt;figcaption</summary>
+        
+      
+    
+    
+    
+    <category term="Dairy" scheme="http://yoursite.com/categories/Dairy/"/>
+    
+    
+    <category term="Dairy" scheme="http://yoursite.com/tags/Dairy/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>A Unified Solution to Constrained Bidding in Online Display Advertising</title>
+    <link href="http://yoursite.com/2022/06/18/A-Unified-Solution-to-Constrained-Bidding-in-Online-Display-Advertising/"/>
+    <id>http://yoursite.com/2022/06/18/A-Unified-Solution-to-Constrained-Bidding-in-Online-Display-Advertising/</id>
+    <published>2022-06-18T03:26:45.000Z</published>
+    <updated>2022-06-25T07:40:43.458Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;TL;DR&lt;/p&gt;
+&lt;p&gt;本文提出一种通用的智能出价框架，可以满足不同广告主关于竞价目标和约束的诉求，具体出价调控算法的实现为DDPG，目前该算法已经在淘宝广告平台部署使用。&lt;/p&gt;
+&lt;h1</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
+    
+    <category term="Advertising" scheme="http://yoursite.com/tags/Advertising/"/>
+    
+    <category term="Bidding" scheme="http://yoursite.com/tags/Bidding/"/>
+    
+    <category term="Reinforcement Learning" scheme="http://yoursite.com/tags/Reinforcement-Learning/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Ads Allocation in Feed via Constrained Optimization</title>
+    <link href="http://yoursite.com/2022/06/10/Ads-Allocation-in-Feed-via-Constrained-Optimization/"/>
+    <id>http://yoursite.com/2022/06/10/Ads-Allocation-in-Feed-via-Constrained-Optimization/</id>
+    <published>2022-06-10T14:38:43.000Z</published>
+    <updated>2022-06-11T10:55:54.057Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;TL;DR&lt;/p&gt;
+&lt;p&gt;LinkedIn发表在KDD2020上的文章，主要想解决在信息流中，如何将自然推荐物品和广告进行混排的问题，文中将该问题建模为带约束的优化问题，并提出了一种归并排序的方式。&lt;/p&gt;
+&lt;p&gt;目前这种方法及其衍生版本、简化版本，在日常工作中都非常常见，</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="Advertising" scheme="http://yoursite.com/tags/Advertising/"/>
+    
+    <category term="Ad Allocation" scheme="http://yoursite.com/tags/Ad-Allocation/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Bid Optimization by Multivariable Control in Display Advertising</title>
+    <link href="http://yoursite.com/2022/06/06/Bid-Optimization-by-Multivariable-Control-in-Display-Advertising/"/>
+    <id>http://yoursite.com/2022/06/06/Bid-Optimization-by-Multivariable-Control-in-Display-Advertising/</id>
+    <published>2022-06-06T13:38:19.000Z</published>
+    <updated>2022-06-06T14:37:48.289Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;TL;DR,&lt;/p&gt;
+&lt;p&gt;预算约束+效率成本约束下，最优广告出价策略，双PID在线调节超参数（对偶变量）&lt;/p&gt;
+&lt;h1 id=&quot;摘要&quot;&gt;摘要&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Real-Time Bidding (RTB) is an important</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="Advertising" scheme="http://yoursite.com/tags/Advertising/"/>
+    
+    <category term="Bidding" scheme="http://yoursite.com/tags/Bidding/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Optimized Cost per Click in Taobao Display Advertising</title>
+    <link href="http://yoursite.com/2022/05/29/Optimized-Cost-per-Click-in-Taobao-Display-Advertising/"/>
+    <id>http://yoursite.com/2022/05/29/Optimized-Cost-per-Click-in-Taobao-Display-Advertising/</id>
+    <published>2022-05-29T13:07:35.000Z</published>
+    <updated>2022-05-29T13:11:43.782Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;TL;DR,&lt;/p&gt;
+&lt;p&gt;很早期的阿里妈妈在广告出价方向的实践，细节比较多，很适合做baseline。&lt;/p&gt;
+&lt;p&gt;但很多做法以及解法在今天来看都比较过时了，后续会逐渐写近几年怎么做出价问题的。&lt;/p&gt;
+&lt;h1</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="Advertising" scheme="http://yoursite.com/tags/Advertising/"/>
+    
+    <category term="Bidding" scheme="http://yoursite.com/tags/Bidding/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Smart Pacing for Effective Online Ad Campaign Optimization</title>
+    <link href="http://yoursite.com/2022/05/21/Smart-Pacing-for-Effective-Online-Ad-Campaign-Optimization/"/>
+    <id>http://yoursite.com/2022/05/21/Smart-Pacing-for-Effective-Online-Ad-Campaign-Optimization/</id>
+    <published>2022-05-21T07:04:53.000Z</published>
+    <updated>2022-05-22T08:42:41.526Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;这篇文章是广告预算控制平滑的第二篇经典文章解读，来自Yahoo，KDD2015。&lt;/p&gt;
+&lt;p&gt;与之前LinkedIn那篇文章类似，这篇文章也是用概率节流的方式进行预算控制，同时这篇文章考虑有无效率保障情况下，如何平滑预算消耗。&lt;/p&gt;
+&lt;h1</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="BudgetControl" scheme="http://yoursite.com/tags/BudgetControl/"/>
+    
+    <category term="Pacing" scheme="http://yoursite.com/tags/Pacing/"/>
+    
+    <category term="Advertisinig" scheme="http://yoursite.com/tags/Advertisinig/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Budget Pacing for Targeted Online Advertisements at LinkedIn</title>
+    <link href="http://yoursite.com/2022/05/21/Budget-Pacing-for-Targeted-Online-Advertisements-at-LinkedIn/"/>
+    <id>http://yoursite.com/2022/05/21/Budget-Pacing-for-Targeted-Online-Advertisements-at-LinkedIn/</id>
+    <published>2022-05-21T04:48:17.000Z</published>
+    <updated>2022-06-10T14:30:42.901Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;最近恶补了一波广告相关文章，本文是预算控制平滑方面很经典的文章之一，由LinkedIn团队发表在KDD2014上。&lt;/p&gt;
+&lt;h1 id=&quot;摘要&quot;&gt;摘要&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Targeted online advertising is a prime</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="Advertising" scheme="http://yoursite.com/tags/Advertising/"/>
+    
+    <category term="BudgetControl" scheme="http://yoursite.com/tags/BudgetControl/"/>
+    
+    <category term="Pacing" scheme="http://yoursite.com/tags/Pacing/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Field-aware Calibration- A Simple and Empirically Strong Method for Reliable Probabilistic Predictions</title>
+    <link href="http://yoursite.com/2022/05/08/Field-aware-Calibration-A-Simple-and-Empirically-Strong-Method-for-Reliable-Probabilistic-Predictions/"/>
+    <id>http://yoursite.com/2022/05/08/Field-aware-Calibration-A-Simple-and-Empirically-Strong-Method-for-Reliable-Probabilistic-Predictions/</id>
+    <published>2022-05-08T05:19:30.000Z</published>
+    <updated>2022-06-10T13:40:10.925Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;最近要做一些和广告出价相关的工作，恶补了一下广告相关的知识，这篇文章是WWW2020 腾讯的文章，解决广告场景下的概率校准问题。&lt;/p&gt;
+&lt;h1</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
+    
+    <category term="Advertising" scheme="http://yoursite.com/tags/Advertising/"/>
+    
+    <category term="Calibration" scheme="http://yoursite.com/tags/Calibration/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>A Deep Probabilistic Model for Customer Lifetime Value Prediction</title>
+    <link href="http://yoursite.com/2022/04/26/A-Deep-Probabilistic-Model-for-Customer-Lifetime-Value-Prediction/"/>
+    <id>http://yoursite.com/2022/04/26/A-Deep-Probabilistic-Model-for-Customer-Lifetime-Value-Prediction/</id>
+    <published>2022-04-26T11:41:12.000Z</published>
+    <updated>2022-04-30T11:11:27.000Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;TL;DR&lt;/p&gt;
+&lt;p&gt;提出一种新的回归Loss来建模用户的长期价值，解决LTV分布并非高斯分布，而是一部分为0和一部分服从log normal的问题。&lt;/p&gt;
+&lt;h1</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
+    
+    <category term="LTV" scheme="http://yoursite.com/tags/LTV/"/>
+    
+    <category term="Deep Learning" scheme="http://yoursite.com/tags/Deep-Learning/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>ate_decomposition</title>
+    <link href="http://yoursite.com/2022/04/24/ate-decomposition/"/>
+    <id>http://yoursite.com/2022/04/24/ate-decomposition/</id>
+    <published>2022-04-24T10:42:43.000Z</published>
+    <updated>2022-04-24T12:22:00.000Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;今天在公司内部技术论坛上看到一个帖子，关于用Tree方法做ATE估计的，本着一个严（zhao）谨（cha）的态度，认认真真看了一遍，发现里面一个式子长的比较奇怪，随手推了推感觉还挺有意思的。在这里记一下。&lt;/p&gt;
+&lt;p&gt;POM框架就不多写了，这篇文章的目的是估计平均因果效应</summary>
+        
+      
+    
+    
+    
+    <category term="BriefSummary" scheme="http://yoursite.com/categories/BriefSummary/"/>
+    
+    
+    <category term="Causal Inference" scheme="http://yoursite.com/tags/Causal-Inference/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Beyond Customer Lifetime Valuation: Measuring the Value of Acquisition and Retention for Subscription Services</title>
+    <link href="http://yoursite.com/2022/03/18/Beyond-Customer-Lifetime-Valuation-Measuring-the-Value-of-Acquisition-and-Retention-for-Subscription-Services/"/>
+    <id>http://yoursite.com/2022/03/18/Beyond-Customer-Lifetime-Valuation-Measuring-the-Value-of-Acquisition-and-Retention-for-Subscription-Services/</id>
+    <published>2022-03-17T16:01:34.000Z</published>
+    <updated>2022-03-17T16:05:39.448Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;TL;DR&lt;/p&gt;
+&lt;p&gt;这篇文章核心是在回答，如何评估营销活动期间的拉新、留存和流失召回的增量LTV。&lt;/p&gt;
+&lt;h1 id=&quot;introduction&quot;&gt;Introduction&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Understanding the</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="LTV" scheme="http://yoursite.com/tags/LTV/"/>
+    
+    <category term="Causal Inference" scheme="http://yoursite.com/tags/Causal-Inference/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Personalized Treatment Selection using Causal Heterogeneity</title>
+    <link href="http://yoursite.com/2021/11/30/Personalized-Treatment-Selection-using-Causal-Heterogeneity/"/>
+    <id>http://yoursite.com/2021/11/30/Personalized-Treatment-Selection-using-Causal-Heterogeneity/</id>
+    <published>2021-11-30T15:44:24.000Z</published>
+    <updated>2021-12-12T16:13:31.461Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="Causal Inference" scheme="http://yoursite.com/tags/Causal-Inference/"/>
+    
+    <category term="Optimization" scheme="http://yoursite.com/tags/Optimization/"/>
+    
+    <category term="Individual Treatment Effect" scheme="http://yoursite.com/tags/Individual-Treatment-Effect/"/>
+    
+    <category term="Promotion" scheme="http://yoursite.com/tags/Promotion/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Large-Scale Data-Driven Airline Market Influence Maximization</title>
+    <link href="http://yoursite.com/2021/08/21/Large-Scale-Data-Driven-Airline-Market-Influence-Maximization/"/>
+    <id>http://yoursite.com/2021/08/21/Large-Scale-Data-Driven-Airline-Market-Influence-Maximization/</id>
+    <published>2021-08-21T15:33:55.000Z</published>
+    <updated>2021-08-28T16:05:03.746Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;这篇文章是KDD2021的一篇文章，讲的是做航空路线的资源分配的。&lt;/p&gt;
+&lt;p&gt;我发现自己好像就喜欢看这个类型的文章，偏实际的业务问题+充斥着骚操作的解决方案，对于那种well-defined问题的文章好像看的不是那么多。&lt;/p&gt;
+&lt;p&gt;最近也被若干老板diss了说写东西</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
+    
+    <category term="Operation Research" scheme="http://yoursite.com/tags/Operation-Research/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Causal Models for Real Time Bidding with Repeated User Interactions</title>
+    <link href="http://yoursite.com/2021/07/09/Causal-Models-for-Real-Time-Bidding-with-Repeated-User-Interactions/"/>
+    <id>http://yoursite.com/2021/07/09/Causal-Models-for-Real-Time-Bidding-with-Repeated-User-Interactions/</id>
+    <published>2021-07-09T12:36:44.000Z</published>
+    <updated>2021-07-16T16:04:42.424Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;这篇文章是criteo ai lab发表在KDD2021上的一篇文章，文中的一些idea非常棒，同时跟我最近手头上做的事情比较像，拿出来详细写一下。&lt;/p&gt;
+&lt;h1</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
+    
+    <category term="Advertising" scheme="http://yoursite.com/tags/Advertising/"/>
+    
+    <category term="Causal Inference" scheme="http://yoursite.com/tags/Causal-Inference/"/>
+    
+    <category term="Attribution" scheme="http://yoursite.com/tags/Attribution/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>日拱一卒</title>
+    <link href="http://yoursite.com/2021/06/26/%E6%97%A5%E6%8B%B1%E4%B8%80%E5%8D%92/"/>
+    <id>http://yoursite.com/2021/06/26/%E6%97%A5%E6%8B%B1%E4%B8%80%E5%8D%92/</id>
+    <published>2021-06-26T07:34:40.000Z</published>
+    <updated>2023-07-01T10:43:40.420Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;平时的阅读列表，一般会附上下载链接和关键词。日拱一卒，与诸君共勉。&lt;/p&gt;
+&lt;h1 id=&quot;section&quot;&gt;2023&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;M6
+&lt;ul&gt;
+&lt;li&gt;[Advertising, CTR, Debias, Alibaba, KDD 2023] &lt;a</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Markdowns in E-Commerce Fresh Retail: A Counterfactual Prediction and Multi-Period Optimization Approach</title>
+    <link href="http://yoursite.com/2021/06/06/Markdowns-in-E-Commerce-Fresh-Retail-A-Counterfactual-Prediction-and-Multi-Period-Optimization-Approach/"/>
+    <id>http://yoursite.com/2021/06/06/Markdowns-in-E-Commerce-Fresh-Retail-A-Counterfactual-Prediction-and-Multi-Period-Optimization-Approach/</id>
+    <published>2021-06-06T07:32:05.000Z</published>
+    <updated>2021-06-12T15:54:06.692Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;markdowns-in-e-commerce-fresh-retail-a-counterfactual-prediction-and-multi-period-optimization-approach&quot;&gt;Markdowns in E-Commerce</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
+    
+    <category term="Causal Inference" scheme="http://yoursite.com/tags/Causal-Inference/"/>
+    
+    <category term="Dynamic Pricing" scheme="http://yoursite.com/tags/Dynamic-Pricing/"/>
+    
+    <category term="Online Marketing" scheme="http://yoursite.com/tags/Online-Marketing/"/>
+    
+  </entry>
+  
+</feed>

@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Machine Learning,Statistic,Sampling,MCMC," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Arvin's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="Purpose 采样(Sampling)是统计学底下一个比较热门的分支，采样的目的主要有两个：  生成服从某个概率分布\(P(x)\) 的样本\(\{x^{(r)}\}^R_{r&#x3D;1}\) 估计某个分布\(P(x)\) 的期望  其中概率分布\(P(x)\) 被称为目标密度(target density)，我们假设我们已知分布的概率密度，记为 \[ P(x)&#x3D;\frac{P^*(x)}{Z} \]">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sampling From Distribution">
+<meta property="og:url" content="http://yoursite.com/2017/08/12/Sampling-From-Distribution/index.html">
+<meta property="og:site_name" content="Arvin&#39;s Blog">
+<meta property="og:description" content="Purpose 采样(Sampling)是统计学底下一个比较热门的分支，采样的目的主要有两个：  生成服从某个概率分布\(P(x)\) 的样本\(\{x^{(r)}\}^R_{r&#x3D;1}\) 估计某个分布\(P(x)\) 的期望  其中概率分布\(P(x)\) 被称为目标密度(target density)，我们假设我们已知分布的概率密度，记为 \[ P(x)&#x3D;\frac{P^*(x)}{Z} \]">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/2017/08/12/Sampling-From-Distribution/1.png">
+<meta property="og:image" content="http://yoursite.com/2017/08/12/Sampling-From-Distribution/2.png">
+<meta property="og:image" content="http://yoursite.com/2017/08/12/Sampling-From-Distribution/3.png">
+<meta property="article:published_time" content="2017-08-12T03:19:20.000Z">
+<meta property="article:modified_time" content="2017-08-12T06:21:16.000Z">
+<meta property="article:author" content="YuyangZhangFTD">
+<meta property="article:tag" content="Machine Learning">
+<meta property="article:tag" content="Statistic">
+<meta property="article:tag" content="Sampling">
+<meta property="article:tag" content="MCMC">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2017/08/12/Sampling-From-Distribution/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/08/12/Sampling-From-Distribution/"/>
+
+
+
+
+
+  <title>Sampling From Distribution | Arvin's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Arvin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Poem & Algorithm</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/12/Sampling-From-Distribution/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arvin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Sampling From Distribution</h1>
+        
+
+        <div class="post-meta">
+          
+
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-12T11:19:20+08:00">
+                2017-08-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/BriefSummary/" itemprop="url" rel="index">
+                    <span itemprop="name">BriefSummary</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="purpose">Purpose</h3>
+<p>采样(Sampling)是统计学底下一个比较热门的分支，采样的目的主要有两个：</p>
+<ol type="1">
+<li>生成服从某个概率分布<span class="math inline">\(P(x)\)</span> 的样本<span class="math inline">\(\{x^{(r)}\}^R_{r=1}\)</span></li>
+<li>估计某个分布<span class="math inline">\(P(x)\)</span> 的期望</li>
+</ol>
+<p>其中概率分布<span class="math inline">\(P(x)\)</span> 被称为目标密度(target density)，我们假设我们已知分布的概率密度，记为 <span class="math display">\[
+P(x)=\frac{P^*(x)}{Z}
+\]</span> 即概率密度函数除以一个归一化常数。有些人会问，既然我们有<span class="math inline">\(P^*(x)\)</span> ，为什么不能解决采样的问题？这其中存在两个困难，首先是我们并不知道其中的归一化常数 <span class="math display">\[
+Z=\int P^*(x)d^Nx
+\]</span> 其次即使我们知道常数<span class="math inline">\(Z\)</span> ，从<span class="math inline">\(P(x)\)</span> 中采样得到样本仍然困难，特别是在高维空间中。</p>
+<h3 id="bayesian-sampling">Bayesian Sampling</h3>
+<h4 id="inverse-cdf-sampling">Inverse CDF Sampling</h4>
+<p>逆累计概率密度(Inverse CDF)是利用cdf来生成样本，生成一个均匀分布的随机数<span class="math inline">\(u\sim U(0,1)\)</span> ，然后根据概率分布的cdf查找对应的采样值，是最简单的采样方法之一，但我们需要计算概率分布cdf的反函数。</p>
+<h4 id="importance-sampling">Importance Sampling</h4>
+<p>重要性采样(Importance Sampling)重点是为了解决估计期望的问题。假设<span class="math inline">\(Q(x)\)</span> 是一个容易采样的已知分布，对于期望的估计我们有 <span class="math display">\[
+E(X)=\int xp(x)dx=\int x\frac{p(x)}{q(x)}q(x)dx=\int xw(x)q(x)dx
+\]</span> 其中<span class="math inline">\(w(x)=\frac{p(x)}{q(x)}\)</span> ，对于分布<span class="math inline">\(P(x)\)</span> 的期望我们通常可以这样计算 <span class="math display">\[
+\hat{E}(X)=\frac{1}{n}\sum_i^n x_i, x\sim P(x)
+\]</span> 当我们加入分布<span class="math inline">\(Q(x)\)</span> 时，期望就变成 <span class="math display">\[
+\hat{E}(X)=\frac{1}{n}\sum^n_ix_i*w(x_i),x_i\sim Q(x)
+\]</span> 所以，对于易于采样的分布<span class="math inline">\(Q(x)\)</span> 中采出<span class="math inline">\(x\)</span> ，对<span class="math inline">\(x\)</span> 进行加权<span class="math inline">\(w(x)\)</span> 然后计算期望的估计。</p>
+<h4 id="rejection-sampling">Rejection Sampling</h4>
+<p>拒绝采样(Rejection Sampling)主要是为了解决第一个问题。我们假设我们找到了一个常数<span class="math inline">\(c\)</span> 和一个易于计算的提案分布<span class="math inline">\(Q(x)\)</span> (proposal distribution)，使得 <span class="math display">\[
+\forall x,cQ^*(x)&gt;P^*(x)
+\]</span> 即如下图所示</p>
+<figure>
+<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
+</figure>
+<p>需要采样的时候，我们做两步：</p>
+<ol type="1">
+<li>在定义域上做均匀分布<span class="math inline">\(x\sim U(-\infty,+\infty)\)</span> ；</li>
+<li>做接受概率<span class="math inline">\(u\sim U(0,cq(x))\)</span> ；</li>
+<li>如果<span class="math inline">\(u&lt;\frac{p(x)}{cq(x)}\)</span> ，则接受这个采样的样本<span class="math inline">\(x\)</span> ，反之则拒绝。</li>
+</ol>
+<p>但拒绝采样也会有些许问题，如下图所示，首先我们并不知道常数<span class="math inline">\(c\)</span> 使得提案分布恒大于目标分布，如果<span class="math inline">\(c\)</span> 取得小了，则达不到采样的目的，<span class="math inline">\(c\)</span> 取得大了，采样的效率就会比较低，采样大部分时候都会被拒绝。同时，对于提案分布，当提案分布与目标分布不相似时，采样的效率同样很低。</p>
+<figure>
+<img src="2.png" alt="2" /><figcaption aria-hidden="true">2</figcaption>
+</figure>
+<h3 id="mcmc">MCMC</h3>
+<p>马尔科夫链的蒙特卡洛方法(Markov chain Monte Carlo, MCMC)是一种基于马尔科夫链的蒙特卡洛方法，此篇就不讲解马尔科夫链的相关内容了，MCMC采样的主要思想就是利用马尔科夫的平稳分布来模拟目标分布，随机生成的初始分布并不重要，经过长时间的状态转移之后，初始分布慢慢变成平稳分布，也就是我们的目标分布，而难点就在于怎么构造马尔柯夫的状态转移矩阵。</p>
+<h4 id="metropolis-hastings">Metropolis Hastings</h4>
+<p>Metropolis-Hastings算法的重点在于细致平稳条件的构造 <span class="math display">\[
+\pi(x)P(x&#39;|x)=\pi(x&#39;)P(x|x&#39;)
+\]</span> 状态<span class="math inline">\(\pi(x)\)</span> 转换到<span class="math inline">\(\pi(x&#39;)\)</span> 的概率和<span class="math inline">\(\pi(x&#39;)\)</span> 转换到<span class="math inline">\(\pi(x)\)</span> 的概率是相同的，在采样的问题中，也就是采样出<span class="math inline">\(x_i\)</span> 再采出<span class="math inline">\(x_j\)</span> 的概率和采样出<span class="math inline">\(x_j\)</span> 再采出<span class="math inline">\(x_i\)</span> 的概率相同，可是一般情况下，概率分布会满足细致平稳条件(detailed balance condition) <span class="math display">\[
+p(x_i)q(x_i,x_j)\neq p(x_j)p(x_j,x_i)
+\]</span> 所以我们引入一个函数<span class="math inline">\(\alpha(x,y)\)</span> 使得 <span class="math display">\[
+p(x_i)q(x_i,x_j)\alpha(x_i,x_j)=p(x_j)p(x_j,x_i)\alpha(x_j,x_i)
+\]</span> 那么问题来了，这个<span class="math inline">\(\alpha(x,y)\)</span> 该怎么取？最简单，取对称的函数，即 <span class="math display">\[
+\alpha(x,y)=p(y)q(y,x)
+\]</span> 所以我们令 <span class="math display">\[
+Q&#39;(x_i,x_j)=q(x_i,x_j)\alpha(x_i,x_j)
+\]</span> 所以以<span class="math inline">\(Q&#39;(x,y)\)</span> 为转移矩阵，则目标分布<span class="math inline">\(P(x)\)</span> 就是平稳分布。所以我们做均匀分布的随机数<span class="math inline">\(u\sim U(0,1)\)</span> ，当<span class="math inline">\(u&lt;\alpha(x_i,x_j)=p(x_j)q(x_i|x_j)\)</span> ，接收转移，将<span class="math inline">\(x_j\)</span> 作为采到的样本，重复此步骤，一段时间后，采到的样本就是服从平稳分布的，也就是服从我们的目标分布。</p>
+<p>同时，如果<span class="math inline">\(\alpha(x_i,x_j)\)</span> 过小，则不容易产生新的样本，我们给等号两边同时扩大一定倍数，这样不改变细致平稳条件，也会提高转化概率，所以我们取 <span class="math display">\[
+\alpha(x_i,x_j)=\min\{\frac{p(x_j)q(x_j,x_i)}{p(x_i)q(x_i,x_j)},1\}
+\]</span> 注意在不断迭代后，我们只取后部分的样本作为采样得到的样本，因为前面的样本有可能还没有收敛到稳态分布，所以只取后面的样本。</p>
+<h4 id="gibbs-sampling">Gibbs Sampling</h4>
+<p>吉布斯采样(Gibbs Sampling)是Metropolis Hastings的一种变种，当接受概率恒为<span class="math inline">\(1\)</span> 的时候，同时改用采样于条件分布，Metropolis Hastings就变成了Gibbs Sampling，但适用于多维的分布。对于一组数<span class="math inline">\(\{x_1,...,x_n\}\)</span> 进行以下迭代 <span class="math display">\[
+x_1^{t+1}\sim P(x|x_2^t,...,x_n^t)
+\]</span></p>
+<p><span class="math display">\[
+x_2^{t+1}\sim P(x|x_1^{t+1},x_3^t,...,x_n^t)
+\]</span></p>
+<p><span class="math display">\[
+...
+\]</span></p>
+<p><span class="math display">\[
+x_n^{t+1}\sim P(x|x_1^{t+1},...,x_{n-1}^{t+1})
+\]</span></p>
+<p>如此更迭多次之后，得到的样本就是从我们的目标分布中采样得到的分布。</p>
+<h4 id="slice-sampling">Slice Sampling</h4>
+<p>切片采样(Slice Sampling)也是一种比较简单的MCMC方法之一，如下图所示</p>
+<figure>
+<img src="3.png" alt="3" /><figcaption aria-hidden="true">3</figcaption>
+</figure>
+<p>取均匀分布随机数<span class="math inline">\(x_i\)</span> ，再做均匀分布随机数<span class="math inline">\(u\sim U(0,f(x_i))\)</span> ，然后再取<span class="math inline">\(x_{i+1}\)</span> ，如此不断迭代，则可以采样出所需分布的样本。Slice Sampling虽然简单，但是会陷入局部，即某个高峰点，然后难以继续采出下一个点。</p>
+<h3 id="summary">Summary</h3>
+<p>总结了一下常见的采样方法，采样广泛用于图模型和贝叶斯方法，虽然现在传统的统计学习方法和贝叶斯方法现在不如深度学习热门，但这些方法的思想，却值得我们了解，博而广，方才能专而精。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          
+            <a href="/tags/Statistic/" rel="tag"># Statistic</a>
+          
+            <a href="/tags/Sampling/" rel="tag"># Sampling</a>
+          
+            <a href="/tags/MCMC/" rel="tag"># MCMC</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/08/Ad-Click-Prediction-a-View-from-the-Trenches/" rel="next" title="Ad Click Prediction: a View from the Trenches">
+                <i class="fa fa-chevron-left"></i> Ad Click Prediction: a View from the Trenches
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/16/Boosting/" rel="prev" title="Boosting">
+                Boosting <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">110</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">51</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#purpose"><span class="nav-number">1.</span> <span class="nav-text">Purpose</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bayesian-sampling"><span class="nav-number">2.</span> <span class="nav-text">Bayesian Sampling</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#inverse-cdf-sampling"><span class="nav-number">2.1.</span> <span class="nav-text">Inverse CDF Sampling</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#importance-sampling"><span class="nav-number">2.2.</span> <span class="nav-text">Importance Sampling</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#rejection-sampling"><span class="nav-number">2.3.</span> <span class="nav-text">Rejection Sampling</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mcmc"><span class="nav-number">3.</span> <span class="nav-text">MCMC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#metropolis-hastings"><span class="nav-number">3.1.</span> <span class="nav-text">Metropolis Hastings</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gibbs-sampling"><span class="nav-number">3.2.</span> <span class="nav-text">Gibbs Sampling</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#slice-sampling"><span class="nav-number">3.3.</span> <span class="nav-text">Slice Sampling</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#summary"><span class="nav-number">4.</span> <span class="nav-text">Summary</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YuyangZhangFTD</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2140861"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.2"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Causal Inference,Individual Treatment Effect,Heterogeneous Treatment Effect,Causal Forest," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Arvin's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="TL;DR, 本文感觉像是一篇大作业文章，应该还不是终稿，有很多typo而且写得不那么易懂，但Stefan Wager是作者之一。主要讨论两个常见的用于估计“异质处理效应”（HTE）的forest模型，causal forest和model-based forest，这两个模型之间的差异，以及是什么技巧使得这两个模型效果非常好。 结论是，当存在较强confounding时，对于是否施加treatm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="What Makes Forest-Based Heterogeneous Treatment Effect Estimators Work?">
+<meta property="og:url" content="http://yoursite.com/2022/07/03/What-Makes-Forest-Based-Heterogeneous-Treatment-Effect-Estimators-Work/index.html">
+<meta property="og:site_name" content="Arvin&#39;s Blog">
+<meta property="og:description" content="TL;DR, 本文感觉像是一篇大作业文章，应该还不是终稿，有很多typo而且写得不那么易懂，但Stefan Wager是作者之一。主要讨论两个常见的用于估计“异质处理效应”（HTE）的forest模型，causal forest和model-based forest，这两个模型之间的差异，以及是什么技巧使得这两个模型效果非常好。 结论是，当存在较强confounding时，对于是否施加treatm">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/2022/07/03/What-Makes-Forest-Based-Heterogeneous-Treatment-Effect-Estimators-Work/1.jpg">
+<meta property="og:image" content="http://yoursite.com/2022/07/03/What-Makes-Forest-Based-Heterogeneous-Treatment-Effect-Estimators-Work/2.jpg">
+<meta property="article:published_time" content="2022-07-03T04:39:13.000Z">
+<meta property="article:modified_time" content="2022-07-03T08:42:53.239Z">
+<meta property="article:author" content="YuyangZhangFTD">
+<meta property="article:tag" content="Causal Inference">
+<meta property="article:tag" content="Individual Treatment Effect">
+<meta property="article:tag" content="Heterogeneous Treatment Effect">
+<meta property="article:tag" content="Causal Forest">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2022/07/03/What-Makes-Forest-Based-Heterogeneous-Treatment-Effect-Estimators-Work/1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2022/07/03/What-Makes-Forest-Based-Heterogeneous-Treatment-Effect-Estimators-Work/"/>
+
+
+
+
+
+  <title>What Makes Forest-Based Heterogeneous Treatment Effect Estimators Work? | Arvin's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Arvin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Poem & Algorithm</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/07/03/What-Makes-Forest-Based-Heterogeneous-Treatment-Effect-Estimators-Work/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arvin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">What Makes Forest-Based Heterogeneous Treatment Effect Estimators Work?</h1>
+        
+
+        <div class="post-meta">
+          
+
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-07-03T12:39:13+08:00">
+                2022-07-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PaperNote/" itemprop="url" rel="index">
+                    <span itemprop="name">PaperNote</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>TL;DR,</p>
+<p>本文感觉像是一篇大作业文章，应该还不是终稿，有很多typo而且写得不那么易懂，但Stefan Wager是作者之一。主要讨论两个常见的用于估计“异质处理效应”（HTE）的forest模型，causal forest和model-based forest，这两个模型之间的差异，以及是什么技巧使得这两个模型效果非常好。</p>
+<p>结论是，当存在较强confounding时，对于是否施加treatment的indicator做local centering（即orthogonalization）是最重要的，对于随机实验数据，两者之间并没有显著差异，但是面对更为复杂的函数关系，对treatment indicator和outcome都做local centering会有一定效果提升，即使此时并没有必要针对confounding做调整。</p>
+<p>我个人经验是，做orthogonalization是HTE估计是有提升的，对于非随机数据而言效果会好很多，honest对于防止过拟合和提升模型泛化准确性非常有效。数据随机但数据少，优先honest再orthogonalization，数据非随机，一定要orthogonalization，数据多且随机，大概率模型调调参做好就行。</p>
+<h1 id="问题定义-模型">问题定义 &amp; 模型</h1>
+<p>定义模型形式为 <span class="math display">\[
+Y = \mu({\rm{X}}) + \tau({\rm{X}}) W +\phi Z
+\]</span> 其中<span class="math inline">\(Y\in \Bbb{R}\)</span>是outcome，变量<span class="math inline">\({\Bbb{X}}\in{\cal{X}}\)</span>，二元变量<span class="math inline">\(W\in\{0,1\}\)</span>表示是否施加treatment，对于给定特征值下，是否施加干预服从二项分布，均值为<span class="math inline">\(\pi({\rm{x}})\)</span>，<span class="math inline">\(W|{\rm{X}}=x \sim B(1, \pi({\rm{x}}))\)</span>，最后的残差项<span class="math inline">\({\Bbb{E}}(Z|{\rm{X}},W)=0\)</span>，<span class="math inline">\(\phi&gt;0\)</span>。其条件均值为 <span class="math display">\[
+{\Bbb{E}(Y|{\rm{X}}=x)}=\mu(x) +\tau(x)\pi(x) =:m(x)
+\]</span> 其中<span class="math inline">\(\mu(x)\)</span>也称为prognostic，处理效应<span class="math inline">\(\tau(x)\)</span>也称为predictive（应该是医学术语，model-based forest中提到的）。干预的分配机制假设是非确定的，即propensity score是介于0和1之间 <span class="math display">\[
+0 &lt; \pi(x)={\sf{P}}(W=1|{\rm{X}}={\rm{x}})={\Bbb{E}}(W|{\rm{X}}={\rm{x}}) &lt; 1
+\]</span> 对于causal forest，采用2-step的方式，第一步先预估<span class="math inline">\(m({\rm{x}})={\Bbb{E}}(Y|\rm{X=x})\)</span>和<span class="math inline">\(\pi({\rm{x}})={\Bbb{E}}(W|{\rm{X=x}})\)</span>，并且做local centering，<span class="math inline">\(Y-\hat{m}({\rm{x}})\)</span>和<span class="math inline">\(W-\hat{\pi}({\rm{x}})\)</span>，第二步用残差估计<span class="math inline">\(\tau({\rm{x}})\)</span>，损失函数为 <span class="math display">\[
+\ell_\text{cf}(\tau) = \frac{1}{2}\Big(Y-\hat{m}({\rm{x}})-\tau({\rm{x}})\big(w-\hat{\pi}({\rm{x}})\big)\Big)^2
+\]</span> 做分裂点选择时，首先在父节点中通过最小化上述损失函数，估计一个常量的treatment effect，<span class="math inline">\(\hat{\tau}\)</span>，也即求解 <span class="math display">\[
+s_\text{cf}(\tau)=\frac{\partial \ell_\text{cf}(\tau)}{\partial \tau} = \Big(
+Y - \hat{m}({\rm{x}}) - \tau\big(w-\hat{\pi}({\rm{x}})\big)
+\Big) \big(w - \hat{\pi}({\rm{x}})\big) = 0
+\]</span> 然后计算cut-point的score <span class="math display">\[
+s_\text{cf}(\hat{\tau})=\Big(
+Y - \hat{m}({\rm{x}}) - \hat{\tau}\big(w-\hat{\pi}({\rm{x}})\big)
+\Big) \big(w - \hat{\pi}({\rm{x}})\big)
+\]</span> 选择候选分裂点中，score差异最大的进行树的生长。（文中有证明这和grf中的分裂方式结果是一样的）</p>
+<p>对于model-based forest，与causal forest最大的差异在于该模型会同事估计<span class="math inline">\(\mu({\rm{x}})\)</span>和<span class="math inline">\(\tau({\rm{x}})\)</span>，损失函数为 <span class="math display">\[
+\ell_\text{mob}(\mu,\tau) = \frac{1}{2}\Big(Y - \mu({\rm{x}}) - \tau({\rm{x}})w\Big)^2
+\]</span> 在每个节点中，需要被估计的常量<span class="math inline">\((\hat{\mu},\hat{\tau})^\mathsf{T}\)</span>通过最小化上述损失函数得到，分裂的特征是通过置换检验得到，其原假设是<span class="math inline">\(\mu\)</span>和<span class="math inline">\(\tau\)</span>是一个常量并且独立于其他分裂变量<span class="math inline">\(\rm{X}\)</span>，然后选择p值最低的特征，再通过score选择分裂点的值 <span class="math display">\[
+s_\text{mob}(\hat{\mu},\hat{\tau}) = (Y - \hat{\mu} - \hat{\tau} w)(1, w)^\mathsf{T}
+\]</span> （因为这篇文章中，我不太关心model-based forest的具体算法，所以就不做具体展开了）</p>
+<p>在样本子集上拟合多个tree共同构成forest，之后两个算法都是采用局部最大似然聚合的方式来估计最后的异质处理效应<span class="math inline">\(\tau({\rm{x}})\)</span> <span class="math display">\[
+\hat{\tau}({\rm{x}}) = \underset{\tau}{\arg\min} \sum_i^n \alpha_i^\text{cf}({\rm{x}})\ell_{\text{cf},i}(\tau)\\
+\big(\hat{\mu}({\rm{x}}), \hat{\tau}({\rm{x}})\big)^{\mathsf{T}} = \underset{\mu, \tau}{\arg\min} \sum_i^n \alpha_i^\text{mob}({\rm{x}})\ell_{\text{mob},i}(\mu,\tau)\\
+\]</span> 其中<span class="math inline">\(\ell_{\text{cf},i}\)</span>和<span class="math inline">\(\ell_{\text{mob},i}\)</span>是第<span class="math inline">\(i\)</span>个样本的损失，<span class="math inline">\(\alpha_i^\text{cf}\)</span>和<span class="math inline">\(\alpha_i^\text{mob}\)</span>是forest产出的权重，为样本<span class="math inline">\(i\)</span>在叶子节点的出现频率。</p>
+<p>在cuasl forest中，还额外推荐了一种子样本切分的技术honest，即一个样本要么用来生成树结构，要么用来做最后的预测，honest使其能够达到有效的统计推断（honesty is necessary to accomplish valid statistical inference，个人狭义理解就是可以给出置信区间）。</p>
+<h1 id="实验-结论">实验 &amp; 结论</h1>
+<p>具体实验怎么做的，暂且不关心，感兴趣的可以读原文，此处列举结论。</p>
+<figure>
+<img src="1.jpg" alt="Experiment Result" /><figcaption aria-hidden="true">Experiment Result</figcaption>
+</figure>
+<p>上述对比实验并没有考虑Honest做法。实验结论：</p>
+<ul>
+<li><p>Setup A，比较复杂的confounding，model-based forest很难处理这种情况（该算法常用于随机数据），对<span class="math inline">\(W\)</span>做local centering是有效的，同时对<span class="math inline">\(W\)</span>和<span class="math inline">\(Y\)</span>做并没有进一步提升效果，causal forest有相近的表现，但是会稍微差一点</p></li>
+<li><p>Setup B，完全随机，同时对<span class="math inline">\(W\)</span>和<span class="math inline">\(Y\)</span>做local centering会效果更好，即使此时并没有调整confounding的必要</p></li>
+<li><p>Setup C，强confounding，没有local centering的模型效果非常差，对于<span class="math inline">\(W\)</span>做会有很大改进，同时对<span class="math inline">\(W\)</span>和<span class="math inline">\(Y\)</span>做提升较小</p></li>
+<li><p>Setup D，with unrelated treatment and control arms，treatment和control组没有关系，此时所有方法效果都一般（MSE较大），因为这个时候联合建模并没有必要。</p></li>
+</ul>
+<p>综上，对于<span class="math inline">\(W\)</span>做centering是最有效的手段，如果可以，对<span class="math inline">\(Y\)</span>也做centering会更好，但是增量可能不大，其他手段对于最终表现影响不大。</p>
+<p>文章的附录中还对比了honest的作用，方法是一样的，结论是honest对于存在confounding的情况会更加有效，随机数据上优势并不大。</p>
+<figure>
+<img src="2.jpg" alt="Honest Diff" /><figcaption aria-hidden="true">Honest Diff</figcaption>
+</figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Causal-Inference/" rel="tag"># Causal Inference</a>
+          
+            <a href="/tags/Individual-Treatment-Effect/" rel="tag"># Individual Treatment Effect</a>
+          
+            <a href="/tags/Heterogeneous-Treatment-Effect/" rel="tag"># Heterogeneous Treatment Effect</a>
+          
+            <a href="/tags/Causal-Forest/" rel="tag"># Causal Forest</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/06/18/1-Year-in-HangZhou/" rel="next" title="1 Year in HangZhou">
+                <i class="fa fa-chevron-left"></i> 1 Year in HangZhou
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/09/15/Impression-Pacing-for-Jobs-Marketplace-at-LinkedIn/" rel="prev" title="Impression Pacing for Jobs Marketplace at LinkedIn">
+                Impression Pacing for Jobs Marketplace at LinkedIn <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">110</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">51</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%AE%9A%E4%B9%89-%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">问题定义 &amp; 模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C-%E7%BB%93%E8%AE%BA"><span class="nav-number">2.</span> <span class="nav-text">实验 &amp; 结论</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YuyangZhangFTD</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2140861"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.2"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>
