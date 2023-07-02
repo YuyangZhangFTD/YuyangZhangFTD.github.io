@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Machine Learning,Causal Inference,Dynamic Pricing,Online Marketing," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Arvin's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="Markdowns in E-Commerce Fresh Retail: A Counterfactual Prediction and Multi-Period Optimization Approach 这篇文章中了KDD2021，是做阿里盒马生鲜的折扣定价问题。 我个人很早之前也关注过电商商品定价的问题，之前看过比如说rue lala、一号店、zara的一些动态定价的方法，心里有些比较模糊">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Markdowns in E-Commerce Fresh Retail: A Counterfactual Prediction and Multi-Period Optimization Approach">
+<meta property="og:url" content="http://yoursite.com/2021/06/06/Markdowns-in-E-Commerce-Fresh-Retail-A-Counterfactual-Prediction-and-Multi-Period-Optimization-Approach/index.html">
+<meta property="og:site_name" content="Arvin&#39;s Blog">
+<meta property="og:description" content="Markdowns in E-Commerce Fresh Retail: A Counterfactual Prediction and Multi-Period Optimization Approach 这篇文章中了KDD2021，是做阿里盒马生鲜的折扣定价问题。 我个人很早之前也关注过电商商品定价的问题，之前看过比如说rue lala、一号店、zara的一些动态定价的方法，心里有些比较模糊">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/2021/06/06/Markdowns-in-E-Commerce-Fresh-Retail-A-Counterfactual-Prediction-and-Multi-Period-Optimization-Approach/1.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/06/06/Markdowns-in-E-Commerce-Fresh-Retail-A-Counterfactual-Prediction-and-Multi-Period-Optimization-Approach/2.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/06/06/Markdowns-in-E-Commerce-Fresh-Retail-A-Counterfactual-Prediction-and-Multi-Period-Optimization-Approach/3.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/06/06/Markdowns-in-E-Commerce-Fresh-Retail-A-Counterfactual-Prediction-and-Multi-Period-Optimization-Approach/4.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/06/06/Markdowns-in-E-Commerce-Fresh-Retail-A-Counterfactual-Prediction-and-Multi-Period-Optimization-Approach/5.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/06/06/Markdowns-in-E-Commerce-Fresh-Retail-A-Counterfactual-Prediction-and-Multi-Period-Optimization-Approach/6.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/06/06/Markdowns-in-E-Commerce-Fresh-Retail-A-Counterfactual-Prediction-and-Multi-Period-Optimization-Approach/7.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/06/06/Markdowns-in-E-Commerce-Fresh-Retail-A-Counterfactual-Prediction-and-Multi-Period-Optimization-Approach/8.jpg">
+<meta property="article:published_time" content="2021-06-06T07:32:05.000Z">
+<meta property="article:modified_time" content="2021-06-12T15:54:06.692Z">
+<meta property="article:author" content="YuyangZhangFTD">
+<meta property="article:tag" content="Machine Learning">
+<meta property="article:tag" content="Causal Inference">
+<meta property="article:tag" content="Dynamic Pricing">
+<meta property="article:tag" content="Online Marketing">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2021/06/06/Markdowns-in-E-Commerce-Fresh-Retail-A-Counterfactual-Prediction-and-Multi-Period-Optimization-Approach/1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/06/06/Markdowns-in-E-Commerce-Fresh-Retail-A-Counterfactual-Prediction-and-Multi-Period-Optimization-Approach/"/>
+
+
+
+
+
+  <title>Markdowns in E-Commerce Fresh Retail: A Counterfactual Prediction and Multi-Period Optimization Approach | Arvin's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Arvin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Poem & Algorithm</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/06/06/Markdowns-in-E-Commerce-Fresh-Retail-A-Counterfactual-Prediction-and-Multi-Period-Optimization-Approach/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arvin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Markdowns in E-Commerce Fresh Retail: A Counterfactual Prediction and Multi-Period Optimization Approach</h1>
+        
+
+        <div class="post-meta">
+          
+
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-06-06T15:32:05+08:00">
+                2021-06-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PaperNote/" itemprop="url" rel="index">
+                    <span itemprop="name">PaperNote</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="markdowns-in-e-commerce-fresh-retail-a-counterfactual-prediction-and-multi-period-optimization-approach">Markdowns in E-Commerce Fresh Retail: A Counterfactual Prediction and Multi-Period Optimization Approach</h1>
+<p>这篇文章中了KDD2021，是做阿里盒马生鲜的折扣定价问题。</p>
+<p>我个人很早之前也关注过电商商品定价的问题，之前看过比如说rue lala、一号店、zara的一些动态定价的方法，心里有些比较模糊的想法，当时想的大概是用choice-model来刻画商品互补替代效应的同时，加入价格的影响，然后在某个周期内求解最优化模型。由于种种原因，当时并没有深入思考算法细节以及针对实际问题进行实践，这类问题主要有三个比较棘手的问题：</p>
+<ol type="1">
+<li>在只有观测数据的时候，怎么构建价格弹性，现在来看这就是一个反事实推断的问题，不仅是如何做的问题，还有如何评估的问题</li>
+<li>长周期的规划决策问题怎么建模 &amp; 求解，如何在决策优化中考虑不确定性</li>
+<li>这种pricing的问题，在现实世界中如何做A/B、如何科学评估效果</li>
+</ol>
+<p>这篇文章有很多细节&amp;落地的工作，本文的几个主要贡献：</p>
+<ol type="1">
+<li>是用了一种半参数结构的模型来学习个体的价格弹性，并给出反事实的需求预测，这种模型能够同时具有非参数机器学习模型的预测能力和经济学模型的可解释性</li>
+<li>提出了一种多阶段的动态定价算法来最大化有保质期商品整个销售周期内的销售利润，与采用确定性需求的传统做法不一样的是，本文的模型中考虑了反事实销量预测的不确定性，采用了连续的定价策略，并且设计了一种两阶段的算法求解</li>
+</ol>
+<h2 id="introduction">Introduction</h2>
+<p>在生鲜零售的场景，商品的新鲜程度是消费者最关心的问题，很多有保质期的商品，比如说蔬菜、肉类、鸡蛋、面包，都是只有有限的销售周期，为了提供新鲜、高质量的商品，控制库存就变得十分重要，如果一个商品在过期之前还没有卖完，那么零售商就会有损失，生鲜零售商往往会采用促销的手段来最大化总利润，但却很难知道最优的价格折扣是什么。</p>
+<p>本文中，我们考虑有两种渠道销售商品的生鲜零售商，其中一个是正常价格销售，另一个渠道是折扣商品，其中消费者可以在购满一定销售额的基础上，以一定折扣购买商品。</p>
+<figure>
+<img src="1.jpg" alt="example for 2 channel" /><figcaption aria-hidden="true">example for 2 channel</figcaption>
+</figure>
+<p>为了最大化销售利润，零售商需要回答两个问题：</p>
+<ol type="1">
+<li>商品是否可以在过期前被卖完</li>
+<li>如果不能被卖完，那么采取促销时，使得利润最优的价格折扣应该是多少</li>
+</ol>
+<p>第一个问题是有关于销量预测，第二个问题是关于价格弹性曲线拟合以及价格优化，本文关注于第二个问题，易腐商品多个阶段的动态定价问题。这个问题中需求学习的主要挑战在大部分商品的价格并不会经常变动，甚至从未变动过。</p>
+<p>在很多文献中，这个问题被定义为反事实推断，其中商品价格就是处理/干预，最后的销量是被干预的结果，我们关注由于施加处理，对于最后结果改变的差值。零售商可以用价格实验来进行需求的学习，但是随机试验十分浪费，同时有价格歧视的风险，所以我们关注于通过观测数据进行价格需求曲线的学习。由于历史数据的限制，我们很难用单个商品的数据学习到它自己的价格需求曲线，所以利用多个商品一起进行价格弹性的学习是一个相对可行的方案。在学习需求函数时候，可以用机器学习模型来进行预测，通常将价格作为特征之一，销量作为label，然后通过最小化事实误差（观测到结果和预测结果的误差）来拟合模型。然而一个很小的事实误差并不意味着一个很小的反事实误差，价格的重要性很可能被其他特征掩盖。除此之外，大部分的机器学习模型都十分复杂，是一个黑盒，所以很难得到价格和需求的关系，也就是缺乏解释性。为了解决这些问题，我们提出一种数据驱动的半参数模型，结合了机器学习模型和经济学模型，其中机器学习模型用来作为基线需求的预测，经济学模型来解释价格和需求的关系，为了学习每个商品的价格，采用了多任务学习的方式，基于这个框架，模型学习到的价格弹性和反事实预测都更为稳健。</p>
+<p>价格优化的目的是利用反事实的预测结果来选择最优的折扣，最大化整体利润。零售商在一个区域有很多的门店，为了避免价格歧视，一个区域内的商品需要采用相同的价格折扣，因此，我们需要把区域内所有门店都考虑在内。除此之外，因为需求和库存都会随着商品的不同生命阶段而改变，所以需要的是一个动态定价策略。</p>
+<p>因为反事实的预测无法避免的会有随机的误差，为了增强算法的鲁棒性，所以我们对模型的不确定性进行进行建模，我们将商品的生命周期化为多个阶段，然后最优化整体的利润，用MDP来建模这个多阶段价格联合优化的问题，同时提出了一个两阶段求解的高效算法。</p>
+<p>在离线实验和在线AB中，都有显著的提升。</p>
+<h2 id="problem-formulation">Problem Formulation</h2>
+<ul>
+<li>零售价格折扣<span class="math inline">\(d\in[0,1]\)</span>为我们的决策变量</li>
+<li>产品<span class="math inline">\(i\)</span>在折扣<span class="math inline">\(d_i\)</span>上的平均销量<span class="math inline">\(Y_i^\text{obs}\)</span></li>
+<li>特征<span class="math inline">\(x_i\in\mathbb{R}^n\)</span></li>
+<li>类别特征<span class="math inline">\(L_i\in{0,1}^m\)</span>，假设有3级类别</li>
+</ul>
+<h2 id="counterfactual-prediction">Counterfactual Prediction</h2>
+<p>反事实预测问题的目标是在干预<span class="math inline">\(d_i\)</span>和条件<span class="math inline">\(X=x_i\)</span>下预估需求/销量的期望<span class="math inline">\(\mathbb{E}[Y_i|do(d_i),x_i]\)</span>，此处我们假设满足unconfoundness假设。</p>
+<p>因为历史上一个商品很少有多种折扣的数据，所以我们无法拟合单个商品的价格需求函数，为了解决这个问题，我们使用数据聚合的方式，我们把所有商品用类目信息进行聚合，然后联合学习多个商品的价格弹性。</p>
+<figure>
+<img src="2.jpg" alt="category" /><figcaption aria-hidden="true">category</figcaption>
+</figure>
+<p>我们假设模型结构为 <span class="math display">\[
+\mathbb{E}\big[\ln(Y_i/Y_i^\text{nor})\big]
+=g(d_i;L_i,\theta) + h(d_i^\text{o},x_i) - g(d_i^\text{o};L_i,\theta)
+\]</span> 其中：</p>
+<ul>
+<li><span class="math inline">\(Y_i^\text{o}\)</span>是常规渠道产品<span class="math inline">\(i\)</span>近期的平均销量</li>
+<li><span class="math inline">\(d_i^\text{o}\)</span>是商品<span class="math inline">\(i\)</span>近期的平均折扣</li>
+<li><span class="math inline">\(Y_i/Y_i^\text{nor}\)</span>代表了折扣价格使得销量增加的百分比，因为不同商品销量差异很大，所以比率会比绝对值更有用</li>
+<li>函数<span class="math inline">\(g(d_i;L_i,\theta)\)</span>是参数化的价格弹性模型，参数<span class="math inline">\(\theta\in\mathbb{R}^{m+1}\)</span></li>
+<li>函数<span class="math inline">\(h(d_i^\text{o},x_i)\)</span>为非参数预测模型，用于预测基础折扣<span class="math inline">\(d_i^\text{o}\)</span>的销量，如果<span class="math inline">\(d_i=d_i^\text{o}\)</span>，那么<span class="math inline">\(\mathbb{E}\big[\ln(Y_i/Y_i^\text{nor})\big|d_i^\text{o}]=h(d_i^\text{o},x_i)\)</span></li>
+</ul>
+<p>对于价格弹性，我们提出一种双log结构的nested模型 <span class="math display">\[
+g(d_i;L_i,\theta)=\mathbb{E}\big[\ln(Y_i/Y_i^\text{nor})\big]=(\theta_1+\theta_2^\mathsf{T}L_i)\ln d_i +c
+\]</span> 其中<span class="math inline">\(\theta_2\in\mathbb{R}^m\)</span>，<span class="math inline">\(\theta=[\theta_1, \theta_2^\mathsf{T}]^\mathsf{T}\)</span>，<span class="math inline">\(c\)</span>为截距参数，<span class="math inline">\(L_i\)</span>为由三级one-hot变量组成 <span class="math display">\[
+L_i=[
+\underbrace{0,\cdots,1,0}_\text{category 1},
+\underbrace{0,1,\cdots,0}_\text{category 2},
+\underbrace{0,\cdots,0,1}_\text{category 3},
+]^\mathsf{T}
+\]</span> 通过指数转换，模型可以写作 <span class="math display">\[
+Y_i=Y_i^\text{nor} e^c d_i^{\theta_1 +\theta_2^\mathsf{T}L_i},\forall i
+\]</span> 其中<span class="math inline">\(\theta_1 +\theta_2^\mathsf{T}L_i\)</span>就是价格弹性，所以每个独立SKU的价格弹性是由类别的价格弹性组成的。为了顾及价格弹性，我们用所有样本最小化均方误差来拟合模型，在现实电商场景中，一个更好的方式是在线实时更新参数： <span class="math display">\[
+\underset{\theta,c}{\min}
+\sum_{i=1}^N\sum_{j=1}^t\tau^{t-j}
+\|\ln\frac{Y_{i,j}}{Y_{i,j}^\text{nor}} - \theta^\mathsf{T}\hat{L}_i \ln d_{i,j} - c\|^2_2 +\lambda\|\theta\|^2_2
+\]</span> 其中<span class="math inline">\(\lambda&gt;0\)</span>是正则系数，<span class="math inline">\(0&lt;\tau\leq1\)</span>为忘记因子，为了避免较遥远历史数据的影响。</p>
+<p>最终的预测模型为 <span class="math display">\[
+\ln Y_{i,t}(d_i)=\hat{\theta}_t^\mathsf{T}L_i (\ln d_i -\ln d_{i,t}^\mathsf{o}) + \ln Y_{i,t}^\mathsf{o}
+\]</span> 此处只是建模了商品的价格弹性，忽略了商品之间的互补替代效应。</p>
+<h2 id="multi-period-price-optimization">Multi-Period Price Optimization</h2>
+<p>此处假设商品之间彼此独立，所以我们针对一个商品进行价格的优化。</p>
+<p>区域内存在<span class="math inline">\(|\mathcal{J}|\)</span>个零售店，每家店<span class="math inline">\(j\in\mathcal{J}\)</span>，有<span class="math inline">\(B_j\)</span>个商品在库，期望在<span class="math inline">\(T_j\)</span>天卖完，如果无法卖完，则会扔掉来保证货品的新鲜度，造成浪费。我们将每一天视作一个阶段，总阶段数为<span class="math inline">\(T_\max=\underset{j}{\arg\max} T_j\)</span>，在不同周期，商品都会有不同的需求。为了考虑所有店铺的目标，我们期望联合动态优化最优价格。</p>
+<figure>
+<img src="3.jpg" alt="excample of problem" /><figcaption aria-hidden="true">excample of problem</figcaption>
+</figure>
+商品价格为<span class="math inline">\(p_0\)</span>，这个价格是常规渠道的销售价格，且价格固定，用<span class="math inline">\(d_t\)</span>表示商品在周期<span class="math inline">\(t\)</span>时的折扣，对应的价格为<span class="math inline">\(p_t=p_0d_t\)</span>，我们对于常规渠道的销量预测为<span class="math inline">\(Z_{j,t}，\forall j,t\)</span>，反事实的销量预测为<span class="math inline">\(Y_{jt}(d_t)\)</span>，同时考虑到最后浪费的损失，优化问题为： $$
+<span class="math display">\[\begin{aligned}
+\underset{d_1,\cdots,d_T}{\max} &amp; \sum_{j\in\mathcal{J}}\bigg(
+\sum_{t=1}^{T_j} p_0d_tY_{jt}(d_t)-w_j\big[
+B_j-\sum_{t=1}^{T_J}\big(Y_{jt}(d_t)+Z_{jt}\big)
+\big]^+
+\bigg) 
+\\
+
+\text{s.t.} &amp;
+\sum_{t=1}^{T_j}\big(
+Y_{jt}(d_t)+Z_{jt}
+\big) \leq B_j
+\quad \forall j\in \mathcal{J} 
+\\
+
+&amp;lb_{jt} \leq p_t \leq ub_{jt} 
+\quad \forall t=1,\dots,T_j,j\in \mathcal{J}
+\end{aligned}\]</span>
+<p>$$</p>
+其中<span class="math inline">\(w_j\)</span>是浪费损失的权重，<span class="math inline">\([\cdot]^+\)</span>为非负运算符，<span class="math inline">\(lb_{jt}\)</span>和<span class="math inline">\(ub_{jt}\)</span>是折扣最大和最小的上下限制，因为<span class="math inline">\(Z_{jt}\)</span>和<span class="math inline">\(B_j\)</span>是独立于决策变量的，所以可以简化上述问题为： $$
+<span class="math display">\[\begin{aligned}
+\underset{d_1,\cdots,d_T}{\max} &amp; \sum_{j\in\mathcal{J}}
+\sum_{t=1}^{T_j} \bigg(
+p_0d_t+w_j
+\bigg) Y_{jt}(d_t)
+
+\\
+
+\text{s.t.} &amp;
+\sum_{t=1}^{T_j}\big(
+Y_{jt}(d_t)+Z_{jt}
+\big) \leq B_j
+\quad \forall j\in \mathcal{J} 
+\\
+
+&amp;lb_{jt} \leq p_t \leq ub_{jt} 
+\quad \forall t=1,\dots,T_j,j\in \mathcal{J}
+\end{aligned}\]</span>
+<p>$$ 对于上面这个问题，我们并不准备直接求解，考虑到可以打的折扣是是有限的，我们将这个问题转化成离散优化问题。虽然模型已经给出了<span class="math inline">\(Y_{jt}(d_t)\)</span>和<span class="math inline">\(Z_{jt}\)</span>的预估，但是仍会有随机的误差，所以我们需要考虑上述问题的不确定性，我们用MDP来建模整个决策过程。</p>
+<p>定义每个门店<span class="math inline">\(j\)</span>在常规渠道和折扣渠道的真实销量为<span class="math inline">\(a^y_{jt}\)</span>和<span class="math inline">\(a^z_{jt}\)</span>，用<span class="math inline">\(s_{jt}\)</span>表示商品<span class="math inline">\(t\)</span>时刻在门店<span class="math inline">\(j\)</span>的库存： <span class="math display">\[
+\begin{aligned}
+s_{j,1} &amp;= B_j \\
+s_{j,t+1} &amp;= s_{j,t} - a_{j,t}^y - a_{jt}^z, \quad t&lt; T_j \\
+s_{j,t+1} &amp;= 0 \quad T_j \leq t \leq T_\max 
+\end{aligned}
+\]</span> 其中<span class="math inline">\(s_{jt}\)</span>是个单调递减的序列，候选折扣集合<span class="math inline">\(\cal{D}=\{d^1,\cdots,d^M\}\)</span>。</p>
+<p>为了建模销量的不确定性，我们从历史数据中发现，大部分情况下销量服从泊松分布，期望参数为<span class="math inline">\(Y_{jt}(d_t)\)</span>和<span class="math inline">\(Z_{jt}\)</span>（此处假设<span class="math inline">\(Y_{jt}(d_t)\)</span>和<span class="math inline">\(Z_{jt}\)</span>是<span class="math inline">\(a^y_{jt}\)</span>和<span class="math inline">\(a^z_{jt}\)</span>的无偏估计）</p>
+<p>定义<span class="math inline">\(a_{jt}=a^y_{jt}+a^z_{jt}\)</span>，销量不会高于库存，所以我们定义状态转移矩阵 <span class="math display">\[
+\begin{aligned}
+P(s_{j,t+1}|s_{j,t},d_t)=
+\begin{cases}
+\text{Poi}\big(s_{j,t}-s_{j,t+1}|Y_{jt}(d,t)+Z_{jt}\big) &amp; 0&lt;s_{j,t+1} \leq s_{j,t} \\
+1-Q(s_{j,t}-1,Y_{jt}(dt)+Z_{jt}) &amp; s_{j,t+1}=0
+\end{cases}
+\end{aligned}
+\]</span> 期望状态转移后的奖励为 <span class="math display">\[
+R(s_{j,t},d_t,s_{j,t+1})=(p_0d_t,+w_j)[s_{j,t}-s_{j,t+1}-Z_{jt}]^+
+\]</span> 所以多阶段的优化问题变成一个选择策略<span class="math inline">\(\pi(\cdot)\)</span>来最大化累计奖励的问题 <span class="math display">\[
+\sum_{j\in\cal{J}}\sum_{t=1}^{T_j}R(s_{j,t},d_t,s_{j,t+1}), d_t=\pi(s_t)
+\]</span> <img src="4.jpg" alt="MDP" /></p>
+<p>为了求解这个MDP的问题，我们提出了一种两阶段的算法，分开反向求解和联合优化两步：</p>
+<ol type="1">
+<li>对于每个门店，单独进行更新</li>
+</ol>
+<p><span class="math display">\[
+Q(s_{j,t},d_t)=\sum_{s_{j,t+1}=0}^{s_{j,t}} P(s_{j,t+1}|S_{j,t},d_t)\cdot\big(
+R(s_{j,t},d_t,s_{j,t+1})+\max_{d_{t+1}\in\cal{D}}Q(s_{j,t+1},d_t)
+\big), t=2,\cdots T_j, j\in\cal{J}
+\]</span></p>
+<ol start="2" type="1">
+<li>联合优化，对于所有店铺联合优化，并在单个阶段求最优</li>
+</ol>
+<p><span class="math display">\[
+d_1^*=\underset{d_t\in\cal{D}}{\arg\max}\sum_{j\in\cal{J}} Q(s_{j,1}=B_j,_t)
+\]</span></p>
+<p>所以我们可以得到最优定价<span class="math inline">\(p_1^*=p_0d_1^*\)</span>，因为这个算法每天会重新更新训练，所以只需要每天重新计算第一阶段的最优值。</p>
+<figure>
+<img src="5.jpg" alt="algo" /><figcaption aria-hidden="true">algo</figcaption>
+</figure>
+<h2 id="experiment">Experiment</h2>
+<p>文中对比了不同模型：Xgb、DeepIV和提出的结构化的回归模型</p>
+<figure>
+<img src="6.jpg" alt="train" /><figcaption aria-hidden="true">train</figcaption>
+</figure>
+<figure>
+<img src="7.jpg" alt="price-sale curve" /><figcaption aria-hidden="true">price-sale curve</figcaption>
+</figure>
+<p>以及线上实现的结果</p>
+<figure>
+<img src="8.jpg" alt="ab" /><figcaption aria-hidden="true">ab</figcaption>
+</figure>
+<h2 id="一些想法">一些想法</h2>
+<p>论文内容部分讲完了，总体是一篇很踏实的文章，一个业务有接近20%的GMV提升，可以说是非常“有效”的解决了问题，但这篇文章仍然有些缺点，或者说没有放在论文里的点，再回顾一下最开始的三个问题：</p>
+<ol type="1">
+<li>没有直面反事实学习和评估的问题，只是通过加入对于价格弹性的人工知识先验（选择模型+类目分层的关系）来规避这个问题，文中提到的price-sales curve，虽然看着结果很好，但实际上也不能算是非常靠谱的评估。</li>
+<li>在做多阶段的优化时候，仍然是忽略了不同阶段预测模型效果的差异，T+1和T+N时候的预测，方差是逐渐变大的，如何建模这部分的不确定性，并没有细说。</li>
+<li>没有具体写AB实验怎么做的，是时间片还是分门店，还是线上用户分流，这些都没有详细写清楚，有很多容易受到challenge的点，这种业务如何科学合理的做实验仍是一个复杂且充满挑战的问题。</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          
+            <a href="/tags/Causal-Inference/" rel="tag"># Causal Inference</a>
+          
+            <a href="/tags/Dynamic-Pricing/" rel="tag"># Dynamic Pricing</a>
+          
+            <a href="/tags/Online-Marketing/" rel="tag"># Online Marketing</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/05/16/Causal-Tree-Causal-Forest-Generalized-Random-Forest-grf-algo-slides/" rel="next" title="Causal Tree & Causal Forest & Generalized Random Forest(grf algo slides)">
+                <i class="fa fa-chevron-left"></i> Causal Tree & Causal Forest & Generalized Random Forest(grf algo slides)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/06/26/%E6%97%A5%E6%8B%B1%E4%B8%80%E5%8D%92/" rel="prev" title="日拱一卒">
+                日拱一卒 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">113</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">52</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#markdowns-in-e-commerce-fresh-retail-a-counterfactual-prediction-and-multi-period-optimization-approach"><span class="nav-number">1.</span> <span class="nav-text">Markdowns in E-Commerce Fresh Retail: A Counterfactual Prediction and Multi-Period Optimization Approach</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-number">1.1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#problem-formulation"><span class="nav-number">1.2.</span> <span class="nav-text">Problem Formulation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#counterfactual-prediction"><span class="nav-number">1.3.</span> <span class="nav-text">Counterfactual Prediction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#multi-period-price-optimization"><span class="nav-number">1.4.</span> <span class="nav-text">Multi-Period Price Optimization</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#experiment"><span class="nav-number">1.5.</span> <span class="nav-text">Experiment</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E6%83%B3%E6%B3%95"><span class="nav-number">1.6.</span> <span class="nav-text">一些想法</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YuyangZhangFTD</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2140861"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.2"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Machine Learning,Optimization," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Arvin's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="最近要写几个滴滴相关的论文的笔记，顺便解读一下目前的拼车算法等策略，顺带着科普。今天这篇是KDD2017的《A Taxi Order Dispatch Model based On Combinatorial Optimization》，这篇文章是比较早时候的分单算法的文章，跟现在的算法略有差异。 简介 传统的拼车算法是一种顺序的分配策略，在乘客周围选择最近的车辆，最大化每个司机对每个订单的接受概">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dispatching-in-Didichuxing-1">
+<meta property="og:url" content="http://yoursite.com/2018/10/27/Dispatching-in-Didichuxing-1/index.html">
+<meta property="og:site_name" content="Arvin&#39;s Blog">
+<meta property="og:description" content="最近要写几个滴滴相关的论文的笔记，顺便解读一下目前的拼车算法等策略，顺带着科普。今天这篇是KDD2017的《A Taxi Order Dispatch Model based On Combinatorial Optimization》，这篇文章是比较早时候的分单算法的文章，跟现在的算法略有差异。 简介 传统的拼车算法是一种顺序的分配策略，在乘客周围选择最近的车辆，最大化每个司机对每个订单的接受概">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/2018/10/27/Dispatching-in-Didichuxing-1/1.jpg">
+<meta property="og:image" content="http://yoursite.com/2018/10/27/Dispatching-in-Didichuxing-1/2.png">
+<meta property="og:image" content="http://yoursite.com/2018/10/27/Dispatching-in-Didichuxing-1/image-20181103133110851.png">
+<meta property="og:image" content="http://yoursite.com/2018/10/27/Dispatching-in-Didichuxing-1/image-20181103141133895.png">
+<meta property="article:published_time" content="2018-10-27T12:57:04.000Z">
+<meta property="article:modified_time" content="2018-11-03T09:58:52.686Z">
+<meta property="article:author" content="YuyangZhangFTD">
+<meta property="article:tag" content="Machine Learning">
+<meta property="article:tag" content="Optimization">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2018/10/27/Dispatching-in-Didichuxing-1/1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/10/27/Dispatching-in-Didichuxing-1/"/>
+
+
+
+
+
+  <title>Dispatching-in-Didichuxing-1 | Arvin's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Arvin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Poem & Algorithm</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/27/Dispatching-in-Didichuxing-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arvin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Dispatching-in-Didichuxing-1</h1>
+        
+
+        <div class="post-meta">
+          
+
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-27T20:57:04+08:00">
+                2018-10-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PaperNote/" itemprop="url" rel="index">
+                    <span itemprop="name">PaperNote</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近要写几个滴滴相关的论文的笔记，顺便解读一下目前的拼车算法等策略，顺带着科普。今天这篇是KDD2017的《A Taxi Order Dispatch Model based On Combinatorial Optimization》，这篇文章是比较早时候的分单算法的文章，跟现在的算法略有差异。</p>
+<h2 id="简介">简介</h2>
+<p>传统的拼车算法是一种顺序的分配策略，在乘客周围选择最近的车辆，最大化每个司机对每个订单的接受概率，这样做有可能会导致一个较低的全局匹配成功率，本篇文章中提出了一种最大化全局的匹配概率的方法，改善用户体验，同时文中还提出一种基于贝叶斯框架的预测用户目的地的方法。</p>
+<h2 id="订单分配系统">订单分配系统</h2>
+<p>我们的目标是最大化匹配成功率，记为<span class="math inline">\(E_{SR}\)</span>，<span class="math inline">\(N\)</span>个订单分配给<span class="math inline">\(M\)</span>个司机，分配结果矩阵为 <span class="math display">\[
+\left\{
+   \begin{matrix}
+   a_{11} &amp; \cdots &amp; a_{1M} \\
+   \cdots &amp; a_{ij} &amp; \cdots \\
+   a_{N1} &amp; \cdots &amp; a_{NM}
+  \end{matrix}
+  \right\}
+\]</span> 期中<span class="math inline">\(1\leq i\leq N\)</span>，<span class="math inline">\(1\leq j \leq M\)</span>，当<span class="math inline">\(a_{ij}=1\)</span>的时候表示订单<span class="math inline">\(i\)</span>分配给司机<span class="math inline">\(j\)</span>，在这种场景中，每个司机最多只能接一个订单，所以<span class="math inline">\(\forall j,\sum^N_{i=1}a_{ij}\leq1\)</span>。在每轮的分配中，每个订单会分配给一些司机，每个司机根据自己的意愿决定是否接受这个订单。所以，订单分配的关键问题在于估计每个司机接受这个订单的概率，因此我们把分单模型分成两个子模型，一个模型用来估计司机接受订单的概略，另一个模型用估计的概率来最大化我们的目标<span class="math inline">\(E_{SR}\)</span>。</p>
+<h3 id="预测司机行为模型">预测司机行为模型</h3>
+<p>我们用<span class="math inline">\(0-1\)</span>变量<span class="math inline">\(y\)</span>来表示司机接受或者拒绝，假设每个司机的行为都是独立同分布的。我们用<span class="math inline">\(p_{ij}\)</span>表示订单<span class="math inline">\(o_i\)</span>被司机<span class="math inline">\(d_j\)</span>接受的概率，有很多因素都会影响这个概率，如这一单能赚的钱、行驶距离、目的地等等，这些因素记为特征向量<span class="math inline">\(\bf{x_{ij}}\)</span>，则接受概率可以表示为 <span class="math display">\[
+p_{ij}=p(y=1|\bf{x_{ij}})
+\]</span> 这个问题可以描述为一个典型的二分类问题，所以我们用历史数据进行模型训练。我们尝试了LR和GBDT，具体效果如下图所示：</p>
+<figure>
+<img src="1.jpg" alt="lr&amp;gbdt" /><figcaption aria-hidden="true">lr&amp;gbdt</figcaption>
+</figure>
+<p>实验结果表明LR的效果稍微好一点，所以我们选择LR作为预测模型，采用SGD训练模型。特征方面主要包括四方面：</p>
+<ul>
+<li>订单-司机相关的特征，接人的距离、订单通知司机数量、订单是否在司机的行驶方向上等等；</li>
+<li>订单相关特征，距离和ETA、目的地类型、路线上交通情况等等；</li>
+<li>司机相关特征，司机长期表现、司机之前接受订单概率、司机行驶偏好等等；</li>
+<li>附加特征，天气、时间、周围司机和订单数等等。</li>
+</ul>
+<h3 id="组合优化模型">组合优化模型</h3>
+<p>假设<span class="math inline">\(N\)</span>个订单需要被分配，订单<span class="math inline">\(i\)</span>被接受的概率为： <span class="math display">\[
+E_i=1-\prod_{j=1}^M(1-p_{ij})^{a_{ij}}
+\]</span> 其中<span class="math inline">\(p_{ij}\)</span>就是之前估计的骑手接受概率，所以我们可以把我们的全局目标表示出来： <span class="math display">\[
+E_{SR}=\frac{\sum^N_{i=1}[1-\prod_{j=1}^M(1-p_{ij})^{a_{ij}}]}{N}
+\]</span> 其中还有约束为： <span class="math display">\[
+\sum^N_{i=1}a_{ij}\leq 1,\forall j
+\]</span> 这样的组合优化问题往往是NP-Hard的，通常采用启发式的方式求解，如爬山法、遗传算法、模拟退火等等。为了平衡精确度和算法的性能，我们选择爬山算法来求解这个问题：</p>
+<figure>
+<img src="2.png" alt="HillClimbing" /><figcaption aria-hidden="true">HillClimbing</figcaption>
+</figure>
+<h2 id="目的地预测">目的地预测</h2>
+<p>通过长期的观察，我们发现几个有趣的现象：</p>
+<ul>
+<li>同一个乘客会在相近的时间去同一个目的地；</li>
+<li>同一个乘客会去固定几个地方；</li>
+<li>订单的位置会对目的地的预测提供很多有效的信息。</li>
+</ul>
+<p>鉴于以上几个现象，我们先将时间划分成工作日和节假日两个部门，工作日的目的地通常是家或者公司，节假日则更多的是购物中心或者娱乐场所，我们发现贝叶斯模型会更适合这样的场景。我们先做如下的标记：</p>
+<figure>
+<img src="image-20181103133110851.png" alt="notation" /><figcaption aria-hidden="true">notation</figcaption>
+</figure>
+<p>因为<span class="math inline">\(D\)</span>仅有两类，所以我们先以此把用户历史数据划分成两类，除此之外，我们根据时间对训练的历史数据进行加权，削弱历史对现在的影响。我们定义如下贝叶斯模型： <span class="math display">\[
+p(Y=y_i|X)=\frac{p(X|Y=y_j)p(Y=y_j)}{\sum^n_{j=1}p(X|Y=y_j)p(Y=y_j)}
+\]</span> 其中<span class="math inline">\(X=(T,Lng,Lat)\)</span>表示出发时间、经度和纬度。我们用乘客的历史数据估计<span class="math inline">\(p(Y=y_j)\)</span>： <span class="math display">\[
+p(Y=y_j)=\frac{\text{freq}(y_j)}{\sum^n_{j=1}\text{freq}(y_j)}
+\]</span> 剩下的问题就是如何去估计出发时间和位置的联合分布了。通过分析数据，我们发现给定<span class="math inline">\(y_j\)</span>之后，时间的分布近似正态分布，因此我们用正态分布来估计出发时间的条件概率 <span class="math display">\[
+T|Y=y_i\sim N(\mu_i,\sigma_i^2)
+\]</span> 因为时间变量是从<span class="math inline">\(0-23\)</span>变化然后重复的，所以<span class="math inline">\(\mu_i\)</span>和<span class="math inline">\(\sigma_i\)</span>并不能用传统的方式进行估计，比如如果时间是8:00，9:00，10:00，他们的均值就是9:00，但是如果是3:00，15:00，21:00，，他们的均值是21:00，而不是<span class="math inline">\((3+15+21)/3=13\)</span>。时间变量是一个循环的量，一种常用的方式是将其转化到单位向量上，计算向量的均值，然后再转换回去。给定时间<span class="math inline">\(t_1,t_2,\cdots,t_m\)</span>，他们的均值<span class="math inline">\(\mu\)</span>可以表示成： <span class="math display">\[
+\mu=\frac{24}{2\pi}\cdot\arctan[\frac{1}{m}\sum^m_{k=1}\sin(\frac{2\pi}{24}\cdot t_k), \frac{1}{m}\sum^m_{k=1}\cos(\frac{2\pi}{24}\cdot t_k)]
+\]</span> 这种方法足够简单明了，但会有略微的偏差，比如00:00:00，00:00:00，03:00:00的均值应该是01:00:00，这种方法计算出来是00:58:33。为了解决这个问题，我们提出了另一种计算出发时间均质的方法。出发时间的均值可以表示成如下二次优化问题： <span class="math display">\[
+\left\{
+\begin{aligned}
+\min_\mu &amp;&amp;&amp; \sum^m_{k=1}[\text{distance}(t_k,\mu)]^2 \\
+\text{s.t.} &amp;&amp;&amp; \mu\in[0,24)
+\end{aligned}
+\right.
+\]</span> 其中<span class="math inline">\(\text{distance}(t_1,t_2)\)</span>表示两个循环变量<span class="math inline">\(t_1\)</span>和<span class="math inline">\(t_2\)</span>之间的距离： <span class="math display">\[
+\text{distance}(t_1,t_2)=\left\{
+\begin{aligned}
+|t_1-t_2| &amp;&amp;&amp; \text{if}\quad |t_1-t_2|\leq12  \\
+24-|t_1-t_2| &amp;&amp;&amp; \text{if}\quad |t_1-t_2|&gt;12
+\end{aligned}
+\right.
+\]</span> 上面式子可以写为 <span class="math display">\[
+\text{distance}(t_1,t_2)=-|(|t_1-t_2)-12|+12
+\]</span> 则约束问题可以写成 <span class="math display">\[
+\left\{
+\begin{aligned}
+\min_\mu &amp;&amp;&amp; \sum^m_{k=1}[|(|t_1-t_2|)-12|-12]^2 \\
+\text{s.t.} &amp;&amp;&amp; \mu\in[0,24)
+\end{aligned}
+\right.
+\]</span> 通过求解上述问题我们可以得到均值<span class="math inline">\(\mu\)</span>，同样的方法也可以用来估计方差， <span class="math display">\[
+\sigma^2=\frac{1}{m-1}\sum^m_{k=1}\sum^m_{k=1}[|(|t_1-t_2|)-12|-12]^2
+\]</span> 为了找到一个近似的模型来描述三维的联合分布，我们观察了大部分用户的散点图，基本上与三维的高斯分布相同，因此我们假设对于一个给定的用户和一个预期的目的地， <span class="math display">\[
+Lat,Lng,T|Y=y_j\sim N_3(\pmb{\mu}_i,\Sigma_i)
+\]</span> 为了证实我们的假设，我们做了正态性检验。完整的计算方法如下：</p>
+<figure>
+<img src="image-20181103141133895.png" alt="algorithm" /><figcaption aria-hidden="true">algorithm</figcaption>
+</figure>
+<h2 id="实验">实验</h2>
+<p>具体细节参考论文。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          
+            <a href="/tags/Optimization/" rel="tag"># Optimization</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/13/python-class-note/" rel="next" title="python类笔记">
+                <i class="fa fa-chevron-left"></i> python类笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/03/Dispatching-in-Didichuxing-2/" rel="prev" title="Dispatching-in-Didichuxing-2">
+                Dispatching-in-Didichuxing-2 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">113</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">52</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A2%E5%8D%95%E5%88%86%E9%85%8D%E7%B3%BB%E7%BB%9F"><span class="nav-number">2.</span> <span class="nav-text">订单分配系统</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%84%E6%B5%8B%E5%8F%B8%E6%9C%BA%E8%A1%8C%E4%B8%BA%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.1.</span> <span class="nav-text">预测司机行为模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%84%E5%90%88%E4%BC%98%E5%8C%96%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.2.</span> <span class="nav-text">组合优化模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E7%9A%84%E5%9C%B0%E9%A2%84%E6%B5%8B"><span class="nav-number">3.</span> <span class="nav-text">目的地预测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C"><span class="nav-number">4.</span> <span class="nav-text">实验</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YuyangZhangFTD</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2140861"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.2"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

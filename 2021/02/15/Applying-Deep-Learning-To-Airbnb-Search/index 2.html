@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Machine Learning,Deep Learning,Best Practice," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Arvin's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="这篇文章是airbnb团队在KDD2019上的一篇文章。在当时来看，GBDT的模型已经对他们的业务有了一定的贡献，这篇文章主要是在讲，该团队在尝试使用NN模型来做进一步的迭代。相比于其他文章更关注于新的建模技巧，这篇文章描述的更多的是从树模型到NN模型这一路走来的心路历程，同时也希望给其他准备尝试NN的团队一些启示和建议。 看完这篇文章还是有很多感想的，会在结束的时候做一些讨论。  Introdu">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Applying Deep Learning To Airbnb Search">
+<meta property="og:url" content="http://yoursite.com/2021/02/15/Applying-Deep-Learning-To-Airbnb-Search/index.html">
+<meta property="og:site_name" content="Arvin&#39;s Blog">
+<meta property="og:description" content="这篇文章是airbnb团队在KDD2019上的一篇文章。在当时来看，GBDT的模型已经对他们的业务有了一定的贡献，这篇文章主要是在讲，该团队在尝试使用NN模型来做进一步的迭代。相比于其他文章更关注于新的建模技巧，这篇文章描述的更多的是从树模型到NN模型这一路走来的心路历程，同时也希望给其他准备尝试NN的团队一些启示和建议。 看完这篇文章还是有很多感想的，会在结束的时候做一些讨论。  Introdu">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/2021/02/15/Applying-Deep-Learning-To-Airbnb-Search/1.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/02/15/Applying-Deep-Learning-To-Airbnb-Search/2.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/02/15/Applying-Deep-Learning-To-Airbnb-Search/3.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/02/15/Applying-Deep-Learning-To-Airbnb-Search/5.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/02/15/Applying-Deep-Learning-To-Airbnb-Search/6.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/02/15/Applying-Deep-Learning-To-Airbnb-Search/7.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/02/15/Applying-Deep-Learning-To-Airbnb-Search/8.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/02/15/Applying-Deep-Learning-To-Airbnb-Search/9.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/02/15/Applying-Deep-Learning-To-Airbnb-Search/10.jpg">
+<meta property="article:published_time" content="2021-02-15T09:59:27.000Z">
+<meta property="article:modified_time" content="2021-02-16T01:19:06.000Z">
+<meta property="article:author" content="YuyangZhangFTD">
+<meta property="article:tag" content="Machine Learning">
+<meta property="article:tag" content="Deep Learning">
+<meta property="article:tag" content="Best Practice">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2021/02/15/Applying-Deep-Learning-To-Airbnb-Search/1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/02/15/Applying-Deep-Learning-To-Airbnb-Search/"/>
+
+
+
+
+
+  <title>Applying Deep Learning To Airbnb Search | Arvin's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Arvin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Poem & Algorithm</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/02/15/Applying-Deep-Learning-To-Airbnb-Search/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arvin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Applying Deep Learning To Airbnb Search</h1>
+        
+
+        <div class="post-meta">
+          
+
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-02-15T17:59:27+08:00">
+                2021-02-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PaperNote/" itemprop="url" rel="index">
+                    <span itemprop="name">PaperNote</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这篇文章是airbnb团队在KDD2019上的一篇文章。在当时来看，GBDT的模型已经对他们的业务有了一定的贡献，这篇文章主要是在讲，该团队在尝试使用NN模型来做进一步的迭代。相比于其他文章更关注于新的建模技巧，这篇文章描述的更多的是从树模型到NN模型这一路走来的心路历程，同时也希望给其他准备尝试NN的团队一些启示和建议。</p>
+<p>看完这篇文章还是有很多感想的，会在结束的时候做一些讨论。</p>
+<hr />
+<h1 id="introduction">Introduction</h1>
+<p>最早一版实现的搜索排序是一个人工的打分函数，用GBDT替代人工打分函数使得业务有了airbnb有史以来最大的改善，同时也伴随着许多成功有效的迭代改进。本文讨论的模型主要是用于对用户预定概率进行建模，对于一个用户，他会进行多次的搜索、点击，一个成功的session以预定一个房间作为结束。在训练时候，模型可以从当前的日志中得到之前模型推荐的列表，来学习一个打分函数，将历史日志中最易被预定的房间排在尽可能靠前的位置。训练结束后，新模型将通过AB测试，和当前模型进行比较，观察转化率是否会有显著的提高。</p>
+<p>注，airbnb的黑话：</p>
+<ul>
+<li>房间=listing</li>
+</ul>
+<h1 id="model-evolution">Model Evolution</h1>
+<p>下图展示了我们主要离线指标NDCG的相对提升以及转化率的相对提升，其中被预约的房间的相关性为1，其他为0，x轴为不同时间上线的模型。</p>
+<figure>
+<img src="1.jpg" alt="模型迭代指标变化" /><figcaption aria-hidden="true">模型迭代指标变化</figcaption>
+</figure>
+<h2 id="simple-nn">Simple NN</h2>
+<p>Andrej Karpathy对模型结构的建议：Don't be a hero. 即不要觉得模型结构很重要。然而这边不是我们开始，刚开始我们尝试了很多复杂结构，但是除了提高了复杂度，并没有什么结果。</p>
+<p>最开始上线的网络结构是一个单层的NN，32个节点，激活函数选择ReLU，这个模型在效果上已经跟GBDT差不多了，采用跟GBDT完全相同的母豹函数以及特征。</p>
+<p>这个模型的上线验证了NN pipeline是可以用于生产环境的，并且可以应对流量高峰。</p>
+<h2 id="lambda-rank-nn">Lambda Rank NN</h2>
+<p>在NN上线后我们第一个突破是将Lambda Rank的思想带入NN中，离线我们都采用NDCG作为评估指标，Lambda Rank可以让我们直接优化NDCG指标，我们在最简单的NN模型基础上做了两个改动：</p>
+<ul>
+<li>采用pairwise的训练方式，构造&lt;被预定房间，未被预定房间&gt;的训练样本，在训练中最小化交叉熵，使得被预定房间的score高于未被预定的房间</li>
+<li>根据对NDCG提升的不同，对pairwise的loss进行加权，更关注于列表中靠前位置的样本</li>
+</ul>
+<h2 id="decision-tree-factorization-machine-nn">Decision Tree / Factorization Machine NN</h2>
+<p>当NN作为rank的主力时候，我们也在对其他的模型进行调研：</p>
+<ul>
+<li>GBDT的迭代，包括构建样本的方式等等</li>
+<li>FM，通过将listing和query映射到32维的空间，预测给定query下的listing预定概率</li>
+</ul>
+<p>上述两个模型在测试集上和NN有差不多的效果，但是对于最后展示房间的排序却截然不同，所以我们尝试将三个模型结合起来，对于FM我们将最终的结果作为特征加入模型，对于GBDT我们将叶子结点作为类别特征加入模型：</p>
+<figure>
+<img src="2.jpg" alt="NN with GBDT &amp; FM" /><figcaption aria-hidden="true">NN with GBDT &amp; FM</figcaption>
+</figure>
+<h2 id="deep-nn">Deep NN</h2>
+<p>迭代到这个时候，模型的复杂度已经开始有点高了，为了解决这些问题，我们将数据量扩大了十倍，然后将网络变成2层，此时我们的模型的输入有195维的特征（包含类别的embedding），第一层是127ReLU的全连接，第二层是87ReLU的全连接。</p>
+<p>此时输入DNN模型的特征是房间的一些属性包括价格、便利设施、历史预定情况等等，经过简单的特征工程后加入模型，除了以下几个其他模型的输出作为特征：</p>
+<ul>
+<li>由Smart Pricing产生的房间价格</li>
+<li>该用户过去浏览的相似房间，通过共同浏览的embedding计算得到</li>
+</ul>
+<p>这些模型并不是直接为排序服务，但可以为DNN提供额外的信息。</p>
+<p>大概经过17亿pairs的训练后，我们能够把训练集和测试集的泛化gap降到最</p>
+<figure>
+<img src="3.jpg" alt="DNN Learning Curve" /><figcaption aria-hidden="true">DNN Learning Curve</figcaption>
+</figure>
+<h1 id="failed-models">FAILED MODELS</h1>
+<p>上面讲述的几步迭代并不是我们全部的经历，现实是残酷的，充斥着很多不成功的尝试，数量上远超过那些成功的尝试。此处我们列举几个有意思的例子，因为它们展示了有些方法在大部分场景上非常有效且流行，但是在我们的场景上并没有卵用。（读到这里疯狂打call，说出了我的心里话。）</p>
+<h2 id="listing-id">Listing ID</h2>
+<p>Airbnb上的每个房间都拥有唯一的id，采用NN模型的一个潜在机会就是能够直接将这些id作为特征代入模型，即用id做embedding，这一做法在NLP和Youtube的推荐上都被验证是十分有效的。</p>
+<p>然而在不同的尝试中，listing id往往会导致过拟合</p>
+<figure>
+<img src="5.jpg" alt="Learning curve with listing id feature" /><figcaption aria-hidden="true">Learning curve with listing id feature</figcaption>
+</figure>
+<p>我们可以看到NDCG在训练集上非常好，却在测试集上表现很差。事后分析，用id构造embedding这一想法在我们的场景上失效是因为我们特殊的市场环境：embedding需要每个物品都拥有大量数据进行训练，来挖掘他们的价值，当这个物品可以被无限重复次使用的时候，比如线上视频或者语言中的词汇，并不存在用户与它们交互次数的限制，获取大量的训练数据就相对简单了。但是在我们的场景下，房间被预定这个行为是有物理限制的，一年最多被预定365次，这样每个房间的预定数据就非常稀疏，直接导致过拟合。</p>
+<h2 id="multi-task-learning">Multi-task Learning</h2>
+<p>因为预定这个行为是有物理限制的，但是浏览行为是没有限制的，进一步，我们又发现长时间浏览详情页和预定是有相关关系的。</p>
+<p>为了解决listing id的过拟合问题，我们构建一个多任务的模型，分别用两个输出层来预测预定概率和长时间浏览的时长，同时通用底下的隐藏层，模型结构如下图所示：</p>
+<figure>
+<img src="6.jpg" alt="Multi-task model" /><figcaption aria-hidden="true">Multi-task model</figcaption>
+</figure>
+<p>其中listing id的embedding可以共享，这个模型背后的想法是可以将长时间浏览的学习到的知识迁移到预定概率预测上，同时避免过拟合。</p>
+<p>当线上测试的时候，模型对长时间浏览的预测有了一定进步，但是对于预定概率的预测却没什么差异。我们对数据进行检查，我们发现几个潜在的特性：</p>
+<ul>
+<li>高端、高价的房间</li>
+<li>拥有较多描述的房间</li>
+<li>特殊的房间</li>
+</ul>
+<p>以上这些特性都很难再模型中表达出来，同时这些也是airbnb这种场景中特有的。</p>
+<h1 id="feature-engineering">Feature Engineering</h1>
+<p>基线GBDT Pipeline我们采用了很多特征工程，包括计算比率、滑动窗口的平均等等，这些都凝聚了很多历史经验。采用NN模型的一个大的好处在于它可以自动化构建特征，给模型喂入原始数据，然后通过隐藏层自动构建特征。</p>
+<p>这一章会讲一些特征工程相关的事情，因为我们发现想让NN更高效也是需要一些对原始数据的处理，相比于做一些数学运算的传统特征工程，我们主要关注于使特征遵从特定的性质，使得NN模型能够更加有效的利用其中的信息。</p>
+<h2 id="feature-normalization">Feature Normalization</h2>
+<p>在我们刚开始尝试训练NN模型时候，我们简单的将GBDT使用的全部特征喂进模型，这样做很糟糕，最终loss会比较难收敛，我们追踪这个问题发现是因为特征没有正确的标准化。</p>
+<p>对于决策树，精确数值没有太多意义，相对的序关系更重要，NN对于数值类特征则会更加敏感。</p>
+<p>超出常规范围的数值会造成过大的梯度，这对ReLU这样的激活函数会失去作用，为了避免这个问题，我们将所有特征限制到一个相对较小范围内，保证中位数为0：</p>
+<ul>
+<li>对于正态分布的特征，采用<span class="math inline">\(\frac{\text{feature_val}-\mu}{\sigma}\)</span></li>
+<li>对于长尾分布的特征，采用<span class="math inline">\(\log\big(\frac{1+\text{feature_val}}{1+\text{median}}\big)\)</span></li>
+</ul>
+<h2 id="feature-distribution">Feature Distribution</h2>
+<p>除了将特征限制到较小的范围，我们还保证他们都拥有相对平滑的分布。这么做的原因有：</p>
+<ul>
+<li>容易发现bug，当我们拥有数亿的样本时，边界检查一般是否有用但是作用有限，我们发现分布的平滑度（smoothness）是一个检查bug的利器，因为往往错误都会产生一个违反常态的分布</li>
+<li>增强泛化，我们发现在我们的场景中，每一层的输出会逐渐把分布变得更加平滑，如下图所示，当我们用数百个特征建立一个模型的时候，特征的组合空间会非常大，在训练中只有部分特征的组合会被遍历到，来自lower layer的平滑的分布会使得upper layer在面对没有见过的取值时给出更加合理的结果，这也使得NN的泛化能力会更好。基于这个考虑，我们尽量保证输入特征有更平滑的分布</li>
+</ul>
+<figure>
+<img src="7.jpg" alt="smooth distribution" /><figcaption aria-hidden="true">smooth distribution</figcaption>
+</figure>
+<p>为了验证这个模型的泛化能力，作者姜特征值扩大任意倍数，然后观察最后NDCG指标，我们发现模型表现会相对平稳很多。大部分特征通过debug+标准化都会得到一个相对平滑的分布，然而对于一些特别的特征我们是需要一些特别的处理，比如说经纬度，原始经纬度分布如下图所示，我们通过计算其离展示给用户的地图中心的偏离值作为标准化，然后再取<span class="math inline">\(\log(\cdot)\)</span>，就会得到如下平滑的分布。</p>
+<figure>
+<img src="8.jpg" alt="lat&amp;lng" /><figcaption aria-hidden="true">lat&amp;lng</figcaption>
+</figure>
+<ul>
+<li>检查特征的完整性，通过观察特征分布，我们可以发现一些业务上的问题</li>
+</ul>
+<h2 id="high-cardinality-categorical-features">High Cardinality Categorical Features</h2>
+<p>即类id特征。listing id并不是我们尝试的唯一的id类特征，我们还尝试了其他的并取得一定业务收益。用户的对于城市区域的偏好是一个比较重要的位置信息，对于GBDT，这些信息需要很多的工程准备。</p>
+<p>NN模型可以轻易处理类id的特征，我们通过城市和s2的格子取hash构建一种新的类别特征，然后进行embeddidng，这样可以学习到位置的偏好信息。</p>
+<h1 id="system-engineering">System Engineering</h1>
+<p>工程Pipeline总结如下：</p>
+<ul>
+<li>搜索query打到一个java服务器，然后进行检索和打分</li>
+<li>服务器产生log，徐俩画的thrift实例</li>
+<li>采用Spark pipeline来构建训练数据</li>
+<li>tensorflow训练模型</li>
+<li>scala和java的工具来做模型评估以及离线评估</li>
+<li>模型通过java服务器加载</li>
+<li>所有都在aws实例上运行</li>
+</ul>
+<p>其中有若干优化点：</p>
+<ul>
+<li>Protobufs and Datasets，之前使用GBDT时候训练数据是csv，然后tensorflow通过feed_dict直接读，这样做主要时间卡点在读数据上，gpu利用率不高，后来将训练数据保存为protobufs，并且用dataset的api，读取数据快了17倍，能够使用的数据从一周变成一个月</li>
+<li>Refactoring static features，很多房间的特征都是很少改变的，但是会随着检索重复很多遍，为了降低磁盘的读写压力，把listing id作为类别特征，然后构建一个只读的embedding，直接读这些静态特征，相当于把特征换存在模型中</li>
+<li>Java NN库，做了一个tensorflow的适配java库</li>
+</ul>
+<h1 id="hyperparameter">Hyperparameter</h1>
+<ul>
+<li>采用dropout来避免过拟合</li>
+<li>初始化采用Xavier，不要用全0</li>
+<li>学习率调整没太大意义，最后采用LazyAdamOptimizer</li>
+<li>Batch size，影响不是很明显</li>
+</ul>
+<h1 id="feature-importance">Feature Importance</h1>
+<p>NN模型的特征重要性一般是很难看出来的，我们做了几种尝试来做一些解释：</p>
+<ul>
+<li>分数拆解，最开始我们尝试把分数拆解到对应的输入上，但是由于NN都是交叉的结构，这样做行不通</li>
+<li>Ablation Test，尝试每次把特征去掉一个，然后观察最后结果的不同，然后用结果指标变化量来作为特征重要性。但这样做会引入重训练带来的误差，同时由于特征之间有些相关性，模型可能也会从其他特征中学出来这些</li>
+<li>Permutation Test，对某个特征值进行随机的扰动，这样做同样假设了特征的独立性，在特征间存在某些相关性时并不可用。但是如果随机扰动某个特征并没有对最后结果产生影响，那么这个模型大概率也不会依赖这个特征</li>
+<li>TopBot Analysis，在测试集上，看不同score的房间，在特征分布上的差异（这个其实是一个日产工作中特别常用的手段，正向做法是看某一个特征上结果指标的分布差异，反向看就是不同score下，某个特征的差异）</li>
+</ul>
+<figure>
+<img src="9.jpg" alt="feature distribution" /><figcaption aria-hidden="true">feature distribution</figcaption>
+</figure>
+<h1 id="retrospective">Retrospective</h1>
+<figure>
+<img src="10.jpg" alt="anatomy of a journey" /><figcaption aria-hidden="true">anatomy of a journey</figcaption>
+</figure>
+<p>上图展现了目前为止，我们整个DL旅程，从才开始被DL其他成功的例子所激励，我们处于乐观之巅，开始考虑用DL全面替代GBDT，并且期待DL能带来惊人的提升。在一些初步尝试之后，我们保持所有东西不变然后看是否能用NN替代当前的模型，因为没有太多的提升，这使得我们走入了失望之谷。经过一段时间，我们意识到使用DL并不是一蹴而就的，而是不断改进、尝试、思考而来的。对于小规模的数据集，采用GBDT的确是一个非常容易且正确的选择，我们也会在中等的问题上继续使用这样的模型。</p>
+<p>所以还要不要推荐别人使用DL呢？答案是Yes，这不仅是因为它能够带来很高的线上业务的提升，也是因为它改变了我们的前进路线，早起我们更关注于特征工程，在采用DL之后，使得我们有精力可以从一个更高层级来看待整个问题，比如是否需要改进我们的优化目标，模型是否能代表所有用户等等，这两年采用NN来做搜索排序，我们只是一个开始。</p>
+<hr />
+<p>这篇文章到这里就结束了，我对于这篇文章真的是十分喜欢，感觉就像自己亲身经历一样，目前手头的工作也是被卡在了某个以ensemble tree为主的工作上，去年团队也有很多关于NN（也包含其他一些模型）的尝试，但都是因为过于关注模型的“外在”（稀奇古怪的结构、魔改的loss等等），而忽视了模型的“内在”驱动（模型面对的问题是什么，采用什么样的技术去解决），这导致团队之前的工作都显得有些“浮于表面”，甚至也导致我有了一种“NN并不适合我们这个业务场景”的错觉，我们常常抱怨某某顶会文章复现完了不work，华而不实，其实只是我们在面对自己的“症状”时，吃错了“药”，同时对于自己症状也没有十分详尽的去分析这个病因到底是什么，一顿生搬硬套，看似尝试了很多，却只是无用功。</p>
+<p>希望在以后的工作中，真的能一步一个脚印，做一些solid的事情，同时不轻信也不急于否定DL，要做“内在”驱动的事情，多关注于为什么做，在迭代中去找到背后原因（某某任老板以前常说要透过本质去找背后原因，现在看来还是理解不够深T_T），多思考多质疑，业务出发，技术驱动，愿与诸位共勉。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          
+            <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+          
+            <a href="/tags/Best-Practice/" rel="tag"># Best Practice</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/02/12/Price-Investment-using-Prescriptive-Analytics-and-Optimization-in-Retail/" rel="next" title="Price Investment using Prescriptive Analytics and Optimization in Retail">
+                <i class="fa fa-chevron-left"></i> Price Investment using Prescriptive Analytics and Optimization in Retail
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/02/15/Improving-Deep-Learning-For-Airbnb-Search/" rel="prev" title="Improving Deep Learning For Airbnb Search">
+                Improving Deep Learning For Airbnb Search <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">113</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">52</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#model-evolution"><span class="nav-number">2.</span> <span class="nav-text">Model Evolution</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#simple-nn"><span class="nav-number">2.1.</span> <span class="nav-text">Simple NN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lambda-rank-nn"><span class="nav-number">2.2.</span> <span class="nav-text">Lambda Rank NN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#decision-tree-factorization-machine-nn"><span class="nav-number">2.3.</span> <span class="nav-text">Decision Tree &#x2F; Factorization Machine NN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#deep-nn"><span class="nav-number">2.4.</span> <span class="nav-text">Deep NN</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#failed-models"><span class="nav-number">3.</span> <span class="nav-text">FAILED MODELS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#listing-id"><span class="nav-number">3.1.</span> <span class="nav-text">Listing ID</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#multi-task-learning"><span class="nav-number">3.2.</span> <span class="nav-text">Multi-task Learning</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#feature-engineering"><span class="nav-number">4.</span> <span class="nav-text">Feature Engineering</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#feature-normalization"><span class="nav-number">4.1.</span> <span class="nav-text">Feature Normalization</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#feature-distribution"><span class="nav-number">4.2.</span> <span class="nav-text">Feature Distribution</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#high-cardinality-categorical-features"><span class="nav-number">4.3.</span> <span class="nav-text">High Cardinality Categorical Features</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#system-engineering"><span class="nav-number">5.</span> <span class="nav-text">System Engineering</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#hyperparameter"><span class="nav-number">6.</span> <span class="nav-text">Hyperparameter</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#feature-importance"><span class="nav-number">7.</span> <span class="nav-text">Feature Importance</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#retrospective"><span class="nav-number">8.</span> <span class="nav-text">Retrospective</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YuyangZhangFTD</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2140861"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.2"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

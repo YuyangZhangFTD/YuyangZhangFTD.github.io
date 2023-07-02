@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Machine Learning,Optimization," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Arvin's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="这篇文章是用MDP方式去考虑车辆调度的分单算法，发表在KDD2018上，《Large-Scale Order Dispatch in On-Demand Ride-Hailing Platforms: A Learning and Planning Approach》。 这篇文章给我感觉真的是十分精彩，从解决方案到后面实验部分都写的很充实，而且方法朴实却又新颖，作为RL或者说是MDP的一个非游戏类">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dispatching-in-Didichuxing-2">
+<meta property="og:url" content="http://yoursite.com/2018/11/03/Dispatching-in-Didichuxing-2/index.html">
+<meta property="og:site_name" content="Arvin&#39;s Blog">
+<meta property="og:description" content="这篇文章是用MDP方式去考虑车辆调度的分单算法，发表在KDD2018上，《Large-Scale Order Dispatch in On-Demand Ride-Hailing Platforms: A Learning and Planning Approach》。 这篇文章给我感觉真的是十分精彩，从解决方案到后面实验部分都写的很充实，而且方法朴实却又新颖，作为RL或者说是MDP的一个非游戏类">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/2018/11/03/Dispatching-in-Didichuxing-2/image-20181103144955336.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/03/Dispatching-in-Didichuxing-2/image-20181103151042051.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/03/Dispatching-in-Didichuxing-2/image-20181103153441306.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/03/Dispatching-in-Didichuxing-2/image-20181103153512952.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/03/Dispatching-in-Didichuxing-2/image-20181103154003882.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/03/Dispatching-in-Didichuxing-2/image-20181103154624912.png">
+<meta property="article:published_time" content="2018-11-03T06:14:47.000Z">
+<meta property="article:modified_time" content="2018-11-03T10:04:21.499Z">
+<meta property="article:author" content="YuyangZhangFTD">
+<meta property="article:tag" content="Machine Learning">
+<meta property="article:tag" content="Optimization">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2018/11/03/Dispatching-in-Didichuxing-2/image-20181103144955336.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/03/Dispatching-in-Didichuxing-2/"/>
+
+
+
+
+
+  <title>Dispatching-in-Didichuxing-2 | Arvin's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Arvin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Poem & Algorithm</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/03/Dispatching-in-Didichuxing-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arvin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Dispatching-in-Didichuxing-2</h1>
+        
+
+        <div class="post-meta">
+          
+
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-03T14:14:47+08:00">
+                2018-11-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PaperNote/" itemprop="url" rel="index">
+                    <span itemprop="name">PaperNote</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这篇文章是用MDP方式去考虑车辆调度的分单算法，发表在KDD2018上，《Large-Scale Order Dispatch in On-Demand Ride-Hailing Platforms: A Learning and Planning Approach》。</p>
+<p>这篇文章给我感觉真的是十分精彩，从解决方案到后面实验部分都写的很充实，而且方法朴实却又新颖，作为RL或者说是MDP的一个非游戏类的应用，可以说是很成功的，advantage function的设计很漂亮，真的能体现“数学之美”了。</p>
+<h2 id="简介">简介</h2>
+<p>传统的订单分配方式往往关注于乘客当下的满意度，本文提出一种高效的方式来优化资源的利用效率和全局用户的体验，我们将订单分配作为一个序列决策问题来研究，总体来说分为两部分，第一部分是基于历史数据，我们研究了再时空维度上，供需变化的模式，这个阶段称为Learning，另一部分我们做了一个实时订单-司机对匹配的算法，同时考虑司机当前的收益和未来的收益，这个阶段称为Planning。</p>
+<figure>
+<img src="image-20181103144955336.png" alt="Learning&amp;Planning" /><figcaption aria-hidden="true">Learning&amp;Planning</figcaption>
+</figure>
+<p>根据滴滴内部的统计数据，从传统的司机选择订单的方式到中心化派单的方式，平台效率会有一个显著的提升，超过10%的订单完成率。传统的订单分配方式，不管是基于位置的局部贪婪匹配法还是基于排队策略先到先服务，这些方法都很容易实现和管理，他们优先满足当前情况下乘客的满意度，由于时空的约束，司机和乘客的供需在时间和空间上是不匹配的，这会导致这些方法在长期上只能取得次优的效果。</p>
+<p>我们的目标是在长时间的维度上来优化订单分配过程，既要满足乘客当前的需求，也要考虑未来的收益。我们将这个问题描述成一个序列决策问题，每个司机与订单的匹配决策都依赖于两部分：一部分是当前的收益，另一部分是这个决策在未来的收益。基于乘客的需求和司机的供给的历史数据，我们建立了一个通用的评估方式来评估时空状态（spatiotemporal states）来量化未来的收益，而实时的匹配则是一个组合优化问题。</p>
+<h2 id="learning">Learning</h2>
+<p>Learning阶段目标是学习乘客需求和司机供给之间的一个可量化可理解的时空关系，我们根据历史数据建立了一个MDP模型，得到的价值函数用以刻画每个时空状态下的价值。</p>
+<p>MDP通常用来建模序列决策问题，在MDP中，一个agent（翻译成智能体？）在environment（环境）中根据一个policy（策略）来进行行动，每轮次选择一个action（行为），会从当前state（状态）转移到下一个状态，并有一个gain（收益），智能体的目标是最大化长期的收益<span class="math inline">\(G_t=\sum^T_{i=t}R_{t+1}\)</span>，解决MDP通常的做法是寻找一个value function（价值函数），包括state-value function（状态价值函数）<span class="math inline">\(V_\pi(s)\)</span>和aciton-value function（行为价值函数）<span class="math inline">\(Q_\pi(s,a)\)</span>，其中<span class="math inline">\(V_\pi(s)=\mathbb{E}_{\pi}[G_t|s_t=s]\)</span>，<span class="math inline">\(Q_\pi(s,a)=\mathbb{E}_\pi[G_t|s_t=s,a_t=a]\)</span>。在我们的场景中，每一个独立的司机我们认为是一个agent，尽管这种设定会导致一个多智能体问题，但相较于把整个平台作为一个智能体，这种设定的优势在于状态的转移、行为和奖励都可以简单地简化定义出来。</p>
+<figure>
+<img src="image-20181103151042051.png" alt="MDP" /><figcaption aria-hidden="true">MDP</figcaption>
+</figure>
+<p>我们继续做以下定义：</p>
+<ul>
+<li>State，状态，每个司机的状态被定义成一个二维的向量，<span class="math inline">\(s=(t,g),t\in T,g\in G\)</span>，其中前者是时间信息，后者是位置信息；</li>
+<li>Action，行为，有两种行为，司机选择去服务一个乘客或者是空跑。司机选择接乘客会产生收益，而空跑则表明这个司机并没有匹配到订单，当司机选择空跑行为时，从一个状态转移到另一个状态，不会产生收益；</li>
+<li>Reward，奖励，定义为GMV；</li>
+<li>State transition，状态转移，定义状态转移概率为<span class="math inline">\(P_{ss&#39;}^a\)</span>；</li>
+<li>Reward distribution，奖励分布，定义奖励分布为<span class="math inline">\(R_{ss&#39;}^a\)</span>；</li>
+<li>Discount factor，折扣因子，折扣因子可以控制MDP对于未来收益的重视程度，在我们的应用中，最好使用较小的折扣因子，因为长时间周期会产生较大的价值函数的方差。定价的价值也应该被降低，对于一个长须时间为<span class="math inline">\(T\)</span>的订单，价格为<span class="math inline">\(R\)</span>，折扣因子<span class="math inline">\(\gamma\)</span>，最终的奖励为<span class="math inline">\(R_\gamma=\sum^{T-1}_{t=0}\gamma^t\frac{R}{T}\)</span>。</li>
+</ul>
+<p>做个举例，一个司机在A接到一个B到C的订单，时间为00:00，10分钟接乘客，20分钟送乘客，订单收益30元，折扣因子<span class="math inline">\(\gamma=0.9\)</span>，初始状态<span class="math inline">\(s=(A,0)\)</span>，结束状态<span class="math inline">\(s&#39;=(B,3)\)</span>，收益<span class="math inline">\(r=10+10*0.9+10*0.9^2=27.1\)</span>。</p>
+<p>MDP问题的核心就是去做策略的估计，policy evalution。我们将历史交易数据整理成<span class="math inline">\((s,a,s&#39;,r)\)</span>的形式，注意此处我们并不区分司机。我们假设online policy产生交易数据并且保持不变，因此，<span class="math inline">\(\pi\)</span>在此处为了简洁先不写。一次转移可能从行为“服务乘客”或者是“空跑”中产生，，对于空跑造成的转移，司机并不会立获得当前的奖励，更新表达式为 <span class="math display">\[
+V(s)\leftarrow V(s) +\alpha[0 + \gamma V(s&#39;)- V(s)]
+\]</span> 其中<span class="math inline">\(s&#39;=(t+1,g)\)</span>，表示下一个时刻司机空跑到的状态，如果是服务乘客，则司机会获得奖励并转移状态 <span class="math display">\[
+V(s)\leftarrow V(s) + \alpha [R_\gamma + \gamma^{\Delta t}V(s&#39;&#39;)-V(s)]
+\]</span> 其中<span class="math inline">\(s&#39;&#39;=(t+\Delta t, g_{\text{dest}})\)</span>表示结束服务这个乘客时候的司机的状态。<span class="math inline">\(\Delta t\)</span>表示接乘客、等待和送乘客的总时间，以及<span class="math inline">\(\Delta t(\text{idle})=1\)</span>。</p>
+<figure>
+<img src="image-20181103153441306.png" alt="td-rules" /><figcaption aria-hidden="true">td-rules</figcaption>
+</figure>
+<p>这种更新方式并不是sample-effcient的，特别是我们这种状态超过百万个的情况，所以我们采用一种动态规划的方式计算价值函数。</p>
+<figure>
+<img src="image-20181103153512952.png" alt="policy-evalution" /><figcaption aria-hidden="true">policy-evalution</figcaption>
+</figure>
+<h2 id="planning">Planning</h2>
+<p>在online planning的阶段，我们利用学到的价值函数作为输入，并且决定哪些司机和哪些订单进行匹配，在每轮匹配中，我们目标也可以认为是为每个司机寻找最好的动作来优化未来全局的收益。</p>
+<figure>
+<img src="image-20181103154003882.png" alt="planning1" /><figcaption aria-hidden="true">planning1</figcaption>
+</figure>
+<p>我们采用KM算法来求解上述问题。因为一个司机要么选择接单要么选择空跑，所以这个二分图时完全图，每个边都是可以存在的。为了降低计算的复杂度，我们消除了所有默认行为的边。因为在实践中，每两轮之间的间隔远远小于价值函数中考虑的时间长度，一个司机不做任何行为可以认为是保持在原状态，因此行为价值函数<span class="math inline">\(Q(i,0)\)</span>实际上等于状态函数，这使得我们可以取消掉所有司机的不作为的动作，这使得边的数量大大减少。</p>
+<p>通过上述技巧，模型变成</p>
+<figure>
+<img src="image-20181103154624912.png" alt="planning2" /><figcaption aria-hidden="true">planning2</figcaption>
+</figure>
+<p>其中<span class="math inline">\(A_\pi(i,j)\)</span>称为advantage function，这个函数可以通过计算服务乘客的期望收益得出。</p>
+<p>我们继续分析advantage function，它包含了我们需要考虑的四个因素：</p>
+<ul>
+<li>订单价格，高价格订单会更具有优势，<span class="math inline">\(R_\gamma(j)\)</span>；</li>
+<li>司机位置，司机当前的位置有一个负的影响，<span class="math inline">\(-V(s_i)\)</span>，因此，在相同的条件下，司机在更小价值的位置更容易被选择服务订单；</li>
+<li>订单目的地，选择高价值地区的目的地的订单更有优势，因为它会有一个更大的<span class="math inline">\(V(s&#39;_{ij})\)</span>；</li>
+<li>接乘客的距离，接乘客的距离也会影响advantage function，更长的距离需要更多的时间来接乘客，使得订单的未来价值降低，总体的值降低。</li>
+</ul>
+<p>除此之外，实际中还会通过一系列超参数，来平衡用户体验和平台效率，达到用户和平台的双赢。</p>
+<p>实验部分详见论文。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          
+            <a href="/tags/Optimization/" rel="tag"># Optimization</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/27/Dispatching-in-Didichuxing-1/" rel="next" title="Dispatching-in-Didichuxing-1">
+                <i class="fa fa-chevron-left"></i> Dispatching-in-Didichuxing-1
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/17/ETA-in-Didichuxing-1/" rel="prev" title="ETA-in-Didichuxing">
+                ETA-in-Didichuxing <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">113</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">52</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#learning"><span class="nav-number">2.</span> <span class="nav-text">Learning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#planning"><span class="nav-number">3.</span> <span class="nav-text">Planning</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YuyangZhangFTD</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2140861"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.2"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

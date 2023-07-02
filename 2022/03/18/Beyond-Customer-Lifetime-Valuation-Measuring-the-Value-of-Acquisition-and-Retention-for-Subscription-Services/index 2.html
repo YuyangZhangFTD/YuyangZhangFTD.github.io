@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="LTV,Causal Inference," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Arvin's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="TL;DR 这篇文章核心是在回答，如何评估营销活动期间的拉新、留存和流失召回的增量LTV。 Introduction  Understanding the incremental value of subscribers is essential to subscription services. Marketing or product investments generally aim to">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Beyond Customer Lifetime Valuation: Measuring the Value of Acquisition and Retention for Subscription Services">
+<meta property="og:url" content="http://yoursite.com/2022/03/18/Beyond-Customer-Lifetime-Valuation-Measuring-the-Value-of-Acquisition-and-Retention-for-Subscription-Services/index.html">
+<meta property="og:site_name" content="Arvin&#39;s Blog">
+<meta property="og:description" content="TL;DR 这篇文章核心是在回答，如何评估营销活动期间的拉新、留存和流失召回的增量LTV。 Introduction  Understanding the incremental value of subscribers is essential to subscription services. Marketing or product investments generally aim to">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/2022/03/18/Beyond-Customer-Lifetime-Valuation-Measuring-the-Value-of-Acquisition-and-Retention-for-Subscription-Services/fig1.png">
+<meta property="og:image" content="http://yoursite.com/2022/03/18/Beyond-Customer-Lifetime-Valuation-Measuring-the-Value-of-Acquisition-and-Retention-for-Subscription-Services/fig2.png">
+<meta property="og:image" content="http://yoursite.com/2022/03/18/Beyond-Customer-Lifetime-Valuation-Measuring-the-Value-of-Acquisition-and-Retention-for-Subscription-Services/fig3.png">
+<meta property="article:published_time" content="2022-03-17T16:01:34.000Z">
+<meta property="article:modified_time" content="2022-03-17T16:05:39.448Z">
+<meta property="article:author" content="YuyangZhangFTD">
+<meta property="article:tag" content="LTV">
+<meta property="article:tag" content="Causal Inference">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2022/03/18/Beyond-Customer-Lifetime-Valuation-Measuring-the-Value-of-Acquisition-and-Retention-for-Subscription-Services/fig1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2022/03/18/Beyond-Customer-Lifetime-Valuation-Measuring-the-Value-of-Acquisition-and-Retention-for-Subscription-Services/"/>
+
+
+
+
+
+  <title>Beyond Customer Lifetime Valuation: Measuring the Value of Acquisition and Retention for Subscription Services | Arvin's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Arvin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Poem & Algorithm</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/03/18/Beyond-Customer-Lifetime-Valuation-Measuring-the-Value-of-Acquisition-and-Retention-for-Subscription-Services/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arvin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Beyond Customer Lifetime Valuation: Measuring the Value of Acquisition and Retention for Subscription Services</h1>
+        
+
+        <div class="post-meta">
+          
+
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-03-18T00:01:34+08:00">
+                2022-03-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PaperNote/" itemprop="url" rel="index">
+                    <span itemprop="name">PaperNote</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>TL;DR</p>
+<p>这篇文章核心是在回答，如何评估营销活动期间的拉新、留存和流失召回的增量LTV。</p>
+<h1 id="introduction">Introduction</h1>
+<blockquote>
+<p>Understanding the incremental value of subscribers is essential to subscription services. Marketing or product investments generally aim to increase acquisition of new subscribers or retention of exist- ing subscribers. The evaluation of these core investments is difficult because the costs of such investments are easily measured, yet the monetary benefits are not obvious. Without the ability to evaluate investments, businesses cannot optimize towards profitable future investments leading to sub optimal business outcomes. This paper develops a methodology to accurately quantify the monetary value of acquired or retained subscribers.</p>
+</blockquote>
+<p>对于订阅服务而言，理解订阅者的增量价值是非常重要的，大多数市场营销或者产品投资都是以获取新订阅用户或者留存已有订阅用户为目标的，但是如何评估这些投资的价值却并不是显而易见的，这会导致后续的商业活动无法朝向最有价值的方向优化。</p>
+<blockquote>
+<p>By definition, subscription-based services grow by acquiring and retaining subscribers. To do so, they may launch new content or fea- tures [2], run marketing campaigns [20], or offer pricing packages that better suit subscriber needs [6]. Measuring the causal impact on acquisition or retention (in units of subscribers) from these interventions can be difficult, but approaches based on randomized control trials [22] or observational studies [16] exist.</p>
+</blockquote>
+<p>获取新订阅用户或者留存已有订阅用户都可以让公司的订阅服务得到增长，因此公司需要生产新的内容或者产品特性、做营销活动、提供更符合用户需求的订阅产品，然而衡量这些干预行为对于拉新或者留存的因果效用十分困难。</p>
+<blockquote>
+<p>However, it is not clear what monetary value to assign to an acquired or retained subscriber. Although it is common practice, we demonstrate that using LTV (or remaining LTV in the case of retention) will tend to overstate the value of acquisition or retention for a subscription business. Instead, we demonstrate that the difference between on and off-service LTV, incremental LTV, is the more appropriate quantity of interest and develop a Markov chain based estimation approach.</p>
+</blockquote>
+<p>通常的做法是采用LTV，或者剩余LTV，但是我们认为这种方式会夸大拉新或者留存对于订阅业务的价值，应该采用 增量LTV 作为衡量标准。</p>
+<blockquote>
+<p>Conceptually, acquiring a new subscriber or retaining an existing subscriber transitions (or saves from the perspective of the business) a customer from an off-service state to an on-service state. Naturally then, the value of that acquisition or retention to the business is the difference between the expected cumulative revenue from that individual in the on-service state and from that same individual if they were in the off-service state. Note crucially that the latter is positive if there is a positive probability of an individual becoming a subscriber when off-service. By using LTV to value acquisition or retention, one is implicitly assuming that the value of off-service states are zero. However, if there is positive probability of a non- subscriber joining, or rejoining, then LTV is likely upwards biased since it fails to subtract the baseline value associated with the off- service state.</p>
+</blockquote>
+<p>概念上说，获取新的订阅用户或者留存已有的订阅用户，都会让一个用户从未订阅的状态转化为订阅的状态，那么拉新或留存的商业价值 可以定义为 <strong>处于订阅状态</strong>用户期望累计收益 和 <strong>处于未订阅状态</strong>用户的期望累计收益的差异。</p>
+<p>当用户处于未订阅状态但是未来有一定概率成为订阅用户时，此时未订阅状态用户的期望累积收益可能是一个正值，如果只考虑LTV来度 量拉新或者留存的价值时，未订阅用户的未来期望累积收益会被潜在假设为零，此时会夸大拉新和留存的价值。</p>
+<h1 id="methodology">Methodology</h1>
+<p>用<span class="math inline">\(V\)</span>表示状态<span class="math inline">\(s\)</span>下的剩余累计收益（为了方便去掉下标<span class="math inline">\(s\)</span>) <span class="math display">\[
+V=\sum_{k=0}^\infty \beta^k \cdot m_k \cdot c_k
+\]</span> 其中<span class="math inline">\(m_k\)</span>表示第<span class="math inline">\(k\)</span>个周期下用户是否订阅，<span class="math inline">\(c_k\)</span>表示价格，<span class="math inline">\(\beta\)</span>表示长期的折扣系数。</p>
+<p>借鉴因果推断中的潜在结果模型，初始状态<span class="math inline">\(s\)</span>，<span class="math inline">\(m\)</span>表示用户在下一个周期是订阅用户，<span class="math inline">\(\neg m\)</span>表示用户在下一个周期不是订阅用户，<span class="math inline">\(V_m\)</span>表示用户成为订阅用户的潜在LTV，<span class="math inline">\(V_{\neg m}\)</span>表示用户未成为订阅用户的的潜在LTV，我们要么观测到一个用户成为订阅用户、要么没有成为订阅用户 <span class="math display">\[
+V=m\cdot V_m +(1-m)\cdot V_{\neg m}
+\]</span> 假设overlap和unconfoundedness假设成立，状态增量价值为 <span class="math display">\[
+\mathbb{E}[\Delta V|s] =
+\mathbb{E}[V|s,m=1] - \mathbb{E}[V|s,m=0]
+\]</span> 估计增量LTV最主要的困难是估计上面式子的后一项，因为非订阅用户的数据通常非常有限，而且大部分时候很难追踪。为了解决这个问题，我们采用了Markov chain的方式，这样就可以估计非订阅用户的LTV。</p>
+<p>假设订阅服务存在两种方案A和B，他们的价格不同，用户付费之后在一定周期内都能够访问公司的产品或者服务，在订阅期结束后，用户会选择续费、升级、降级或者取消服务，我们假设公司可以识别哪些用户曾经订阅过。</p>
+<p>方便理解，网上找了一个截图</p>
+<figure>
+<img src="fig1.png" alt="fig1" /><figcaption aria-hidden="true">fig1</figcaption>
+</figure>
+<p>基于订阅状态、订阅周期和定于计划，可以定义用户的状态为 <span class="math display">\[
+\mathbb{S}=\{
+0,A_1,B_1,\cdots,A_N,B_N,
+A_{-1},B_{-1},\cdots,,A_{-M},B_{-M}
+\}
+\]</span> 其中<span class="math inline">\(A_i\)</span>表示订阅用户处于第<span class="math inline">\(i\)</span>个连续的订阅周期并且目前处于订阅服务A中，<span class="math inline">\(A_{-j}\)</span>表示用户之前订阅服务A，已经连续不订阅<span class="math inline">\(j\)</span>周期了。状态<span class="math inline">\(0\)</span>表示新用户。<span class="math inline">\(\mathbb{S}\)</span>各个状态并不重合，同时用户同一时间只会处于其中一个状态。<span class="math inline">\(N\)</span>和<span class="math inline">\(M\)</span>是足够大的整数，使得 <span class="math display">\[
+p(A_{i+1}|A_i)\approx A(A_{j+1}|A_{j}),\forall i,j \geq M
+\]</span></p>
+<figure>
+<img src="fig2.png" alt="fig2" /><figcaption aria-hidden="true">fig2</figcaption>
+</figure>
+<p>上图描绘了订阅服务的Markov chain，状态转移概率是一个<span class="math inline">\((2N+2M+1)\times(2N+2M+1)\)</span>的矩阵，<span class="math inline">\(p(s&#39;|s)\)</span>表示从状态<span class="math inline">\(s\)</span>到状态<span class="math inline">\(s&#39;\)</span>的状态转移概率。</p>
+<p>基于此我们可以计算有限和无限周期下用户的LTV价值。定义<span class="math inline">\(V(s)\)</span>为状态<span class="math inline">\(s\)</span>下期望折扣累计收益 <span class="math display">\[
+V(s)=c(s)+\beta\cdot \sum_{s&#39;} p(s&#39;|s) \cdot V(s&#39;)
+\]</span> 其中<span class="math inline">\(c(s)\)</span>为状态<span class="math inline">\(s\)</span>下订阅价格，<span class="math inline">\(\beta\)</span>是折扣系数。上式可以写作 <span class="math display">\[
+\bf{(I-\beta P)V=c}
+\]</span> 因为<span class="math inline">\(\beta&lt;1\)</span>且<span class="math inline">\(\bf{P}\leq I\)</span>，所以<span class="math inline">\(\bf{(I-\beta P)}\)</span>是可逆矩阵，<span class="math inline">\(\bf{V}\)</span>有唯一解。</p>
+<p>同时也可以计算有限周期下的LTV。第<span class="math inline">\(k\)</span>步的状态转移概率为 <span class="math display">\[
+p(s&#39;&#39;|s;k)=\prod_{s&#39;} p(s&#39;|s;k-1)p(s&#39;&#39;|s&#39;;1) \quad \forall k &gt; 1
+\]</span> 其中<span class="math inline">\(p(s&#39;|s;1)=p(s&#39;|s)\)</span>，所以有限周期<span class="math inline">\(T\)</span>下的LTV可以简化为 <span class="math display">\[
+V_T(s)=\sum_{t=0}^T\beta ^t \sum_{s&#39;}p(s&#39;|s;t)c(s&#39;)
+\]</span> 与之相似，给定初识状态订阅用户分布<span class="math inline">\(n_0(\cdot)\)</span>，<span class="math inline">\(T\)</span>时刻后用户数为： <span class="math display">\[
+n_T(s)=\sum_{s&#39;}n_0(s&#39;)p(s|s&#39;;T)
+\]</span> 此时总订阅用户数为： <span class="math display">\[
+S_T=\sum_s n_T(s)\mathbb{I}_\text{on-service}(s)
+\]</span> 基于上述LTV的定义，我们可以定义拉新或者留存订阅用户的增量价值。</p>
+<p><strong>假设开展了一次市场营销活动，我们将拉新与留存都归因于这次活动</strong>，那么这次营销活动的商业收益是多少呢？</p>
+<p>对于上述Markov chain，我们需要考虑3个渠道，新增订阅、曾今订阅过的用户重新订阅和留存已有的订阅用户。首先我们计算这次营销活动中各个状态的LTV，这是我们考虑了流失风险和重新订阅概率之后，期望从用户身上获得的收益。更加重要的是，我们也可以计算那些没有加入过、重新加入或者流失用户的期望收益。</p>
+<p>其中：</p>
+<ul>
+<li>获取新的订阅用户，<span class="math inline">\(\Delta V_\text{acq}(i)=V(i_1)-V(0) \quad i\in\{A,B\}\)</span></li>
+<li>重新激活订阅用户，<span class="math inline">\(\Delta V_\text{reacq}(i,j,k)=V(i_1)-V\Big(j_{\min\{-M,-k-1\}}\Big) \quad \forall i,j \in\{A,B\},1\leq k\leq M\)</span></li>
+<li>留存已订阅用户，<span class="math inline">\(\Delta V_\text{ret}(i,j,k)=V\Big(i_{\max\{N,k+1\}}\Big)-V(j_{-1})\quad \forall i,j \in\{A,B\},1\leq k\leq M\)</span></li>
+</ul>
+<figure>
+<img src="fig3.png" alt="fig3" /><figcaption aria-hidden="true">fig3</figcaption>
+</figure>
+<p>这样计算可以考虑用户未来订阅服务的可能性，如果只采用LTV，不减去合适的基础值，会高估拉新和留存的价值。</p>
+<p>这种建模方式也会存在一定局限性，比如说整个过程是non-Markov的，可能存在一些历史信息并不能被简单归结成状态，或者我们在状态空间中漏掉一些状态。这些会导致增量LTV难以解释，并且存在一定Bias。可以有两种解决办法来缓解这个问题：</p>
+<ol type="1">
+<li>在原有状态的基础上，多考虑一些变量的影响，去做状态转移概率的预估</li>
+<li>考虑Propensity Score做纠偏</li>
+</ol>
+<h1 id="application">Application</h1>
+<h2 id="forecasting-transition-probabilities">Forecasting Transition Probabilities</h2>
+<p>本文提出的中间建模方式可以回答一些目前对于订阅服务而言仍是挑战的问题，具体来说，展示了如何预测未来订阅人数、估计价格变动对于业务指标的影响以及如何来平衡当前收益与未来收益来设置更优的价格。</p>
+<p>状态转移概率的预估是这个方法的核心，将整个问题分解为一个个状态之间转移概率估计的问题这样做的好处在于，通过选择部分人群，可以最小化未观测到异质性的影响。</p>
+<p>最简单的转移概率模型是假设概率在一定周期内是一个常量，然而周期很长时这样的估计方法可能会不准确，比如平台上发行了新的内容，这时潜在的转移概率就会发生改变。所以我们在原有时序模型基础上多考虑一些因素，来最小化<span class="math inline">\(k\)</span>步的预测误差 <span class="math display">\[
+p_t(\cdot|s;t)=f_{s&#39;|s}\Big(x_t,p_{t-1}(\cdot|s),\cdots,p_{t-q}(\cdot|s)\Big)
+\]</span></p>
+<h2 id="subscriber-forecasting">Subscriber Forecasting</h2>
+<p>预测市场渗透率是很有价值的应用场景之一，经典的时间序列预测方法往往缺乏对于市场结构的考虑，无法考虑一些自然约束，如市场饱和导致的增长缓慢。我们通过在一个封闭的系统内建立客户动态模型，以一种简明的方式明确地考虑这些自然约束。随着市场的增长，增长自然会放缓，因为非订阅者的数量在减少。</p>
+<p>做到准确预测的关键是选择一个足够庞大的状态集合，以充分刻画整个生命周期的转移概率。然而增加状态数会导致数据变得稀疏，通常来说会有两种解决办法：</p>
+<ol type="1">
+<li>采用降维分组的手段，将转移概率相近或者时间分桶下相邻的状态合并统计</li>
+<li>显示考虑转移矩阵的不确定性</li>
+</ol>
+<h2 id="pricing-application">Pricing Application</h2>
+<p>在基于订阅的服务中，增加收入的两个主要杠杆是涨价和增加订阅用户。在定价方面，价格的设置需要平衡短期的一届收入和用户动态变化对于收入的长期影响。此外价格弹性也会随着订阅者累积订阅时间而变化。价格弹性依赖于不同状态下用户的分布，而用户的分布也影响着价格弹性，这就使得调整价格时需要对价格弹性准确估计。</p>
+<p>一般来说，订阅服务很难通过实验来估计价格弹性，不满足SUTVA的假设，很难采用常规的因果推理的手段进行估计。所以我们采用观测数据和Markov chain的建模方式来估计价格变化对于总收入和用户增长的增量效应。</p>
+<p>假设我们想知道价格干预后<span class="math inline">\(k\)</span>个周期后的影响，此时我们已经有收益和订阅用户的数据，需要估计如果没有改变价格时的收益和用户数，根据前几节中，我们采用价格干预前的数据训练模型，并用与干预无关的变量进行预测，收益为 <span class="math display">\[
+\sum_{s\in\Omega}n_0(s)\hat{V}_k(s)=\sum_{t=0}^k\sum_{s\in\Omega} n_0(s)\beta^t\sum_{s&#39;}\hat{p}_t(s&#39;|s)c(s&#39;)
+\]</span> 反事实订阅用户数为 <span class="math display">\[
+\hat{S}_k(\Omega)=\sum_{s\in\Omega}n_0(s)\sum_{s&#39;}\hat{p}_k(s&#39;|s)\mathbb{I}_\text{on-service}(s&#39;)
+\]</span></p>
+<h2 id="optimal-policies">Optimal Policies</h2>
+<p>如果可以建模价格弹性<span class="math inline">\(\frac{\partial p(\cdot|s)}{\partial c}\)</span>和转移概率<span class="math inline">\(p(\cdot|s)\)</span>，那么就可以得到转移概率关于价格的函数<span class="math inline">\(p(\cdot|s;c)\)</span>，给定不同状态上的用户数分布<span class="math inline">\(n\)</span>，最大收益为 <span class="math display">\[
+V^*(n)=\underset{c\geq 0}{\max} \quad nc + \beta\sum_{n&#39;} V^*(n&#39;)p(n&#39;|n;c)
+\]</span> 假设用户数足够大，那么下一个周期各状态用户分布确定时，上式近似为 <span class="math display">\[
+V^*(n)=\underset{c\geq 0}{\max} \quad nc + \beta V^*(n)(P(c)n)
+\]</span> 最优定价策略为 <span class="math display">\[
+c^*(n)=\underset{c\geq 0}{\arg\max} \quad nc +\beta V^*(P(c)n)
+\]</span></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/LTV/" rel="tag"># LTV</a>
+          
+            <a href="/tags/Causal-Inference/" rel="tag"># Causal Inference</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/11/30/Personalized-Treatment-Selection-using-Causal-Heterogeneity/" rel="next" title="Personalized Treatment Selection using Causal Heterogeneity">
+                <i class="fa fa-chevron-left"></i> Personalized Treatment Selection using Causal Heterogeneity
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/04/24/ate-decomposition/" rel="prev" title="ate_decomposition">
+                ate_decomposition <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">113</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">52</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#methodology"><span class="nav-number">2.</span> <span class="nav-text">Methodology</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#application"><span class="nav-number">3.</span> <span class="nav-text">Application</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#forecasting-transition-probabilities"><span class="nav-number">3.1.</span> <span class="nav-text">Forecasting Transition Probabilities</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#subscriber-forecasting"><span class="nav-number">3.2.</span> <span class="nav-text">Subscriber Forecasting</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pricing-application"><span class="nav-number">3.3.</span> <span class="nav-text">Pricing Application</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#optimal-policies"><span class="nav-number">3.4.</span> <span class="nav-text">Optimal Policies</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YuyangZhangFTD</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2140861"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.2"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

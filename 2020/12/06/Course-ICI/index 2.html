@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Causal Inference," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Arvin's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="之前承诺朋友写一些入门的东西，刚好趁这个机会对某些方向进行一些系统化的梳理。这次主要是Brady Neal的 Introduction to Causal Inference(ICI)的课程笔记的翻译和精讲，完整课程链接奉上，同时也希望越来越多的人关注这个方向。 目录：  因果推断简介  辛普森悖论 相关性非因果性  潜在结果 因果图   因果推断简介 辛普森悖论（Simpson&#39;s Parado">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Course ICI">
+<meta property="og:url" content="http://yoursite.com/2020/12/06/Course-ICI/index.html">
+<meta property="og:site_name" content="Arvin&#39;s Blog">
+<meta property="og:description" content="之前承诺朋友写一些入门的东西，刚好趁这个机会对某些方向进行一些系统化的梳理。这次主要是Brady Neal的 Introduction to Causal Inference(ICI)的课程笔记的翻译和精讲，完整课程链接奉上，同时也希望越来越多的人关注这个方向。 目录：  因果推断简介  辛普森悖论 相关性非因果性  潜在结果 因果图   因果推断简介 辛普森悖论（Simpson&#39;s Parado">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/2020/12/06/Course-ICI/table_1.1.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/12/06/Course-ICI/figure_1.1.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/12/06/Course-ICI/figure_1.2.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/12/06/Course-ICI/figure_1.3.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/12/06/Course-ICI/figure_1.4.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/12/06/Course-ICI/figure_2.2.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/12/06/Course-ICI/figure_proof.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/12/06/Course-ICI/figure_3.2.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/12/06/Course-ICI/figure_3.6.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/12/06/Course-ICI/figure_3.9.jpg">
+<meta property="og:image" content="http://yoursite.com/2020/12/06/Course-ICI/figure_3.14.jpg">
+<meta property="article:published_time" content="2020-12-06T06:56:12.000Z">
+<meta property="article:modified_time" content="2020-12-27T15:48:07.000Z">
+<meta property="article:author" content="YuyangZhangFTD">
+<meta property="article:tag" content="Causal Inference">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2020/12/06/Course-ICI/table_1.1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/12/06/Course-ICI/"/>
+
+
+
+
+
+  <title>Course ICI | Arvin's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Arvin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Poem & Algorithm</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/12/06/Course-ICI/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arvin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Course ICI</h1>
+        
+
+        <div class="post-meta">
+          
+
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-12-06T14:56:12+08:00">
+                2020-12-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CourseNote/" itemprop="url" rel="index">
+                    <span itemprop="name">CourseNote</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>之前承诺朋友写一些入门的东西，刚好趁这个机会对某些方向进行一些系统化的梳理。这次主要是Brady Neal的 <font color='red'>I</font>ntroduction to <font color='red'>C</font>ausal <font color='red'>I</font>nference(ICI)的课程笔记的翻译和精讲，<a target="_blank" rel="noopener" href="https://www.bradyneal.com/causal-inference-course">完整课程链接奉上</a>，同时也希望越来越多的人关注这个方向。</p>
+<p>目录：</p>
+<ol type="1">
+<li>因果推断简介
+<ol type="1">
+<li>辛普森悖论</li>
+<li>相关性非因果性</li>
+</ol></li>
+<li>潜在结果</li>
+<li>因果图</li>
+</ol>
+<hr />
+<h1 id="因果推断简介">因果推断简介</h1>
+<h2 id="辛普森悖论simpsons-paradox">辛普森悖论（Simpson's Paradox）</h2>
+<p>想象这样一种场景，以后存在某种病毒，Covid-27，在人类中传播，我们对此有两种干预治疗方案（treatment，之后称之为处理），treatment A和treatment B。施加治疗方案B相比于A较少，实施的比例大概是73%和27%，现在由你来决定，为了尽量降低人群死亡率，我们到底该采用哪种治疗方案。</p>
+<p>目前你拥有之前患过Covid-27的人的治疗数据，你知道状态的人受到了怎样的治疗方案，病人的状态是一个二元的变量，重症（Severe）或者是轻症（Mild），在这份数据中，大概16%的人采用治疗方案A之后死亡，19%的人采用治疗方案B之后死亡，总的来看仿佛是治疗方案A会有更低的死亡率，但是当我们对不同状态下的病人分别统计的时候，我们会得到相反的结论，在轻症患者中，15%的人在接受治疗方案A之后死亡，10%的人在接受治疗方案B之后死亡，重症患者中，30%的人在接受治疗方案A之后死亡，20%的人在接受治疗方案B之后死亡。</p>
+<figure>
+<img src="table_1.1.jpg" alt="数据表格" /><figcaption aria-hidden="true">数据表格</figcaption>
+</figure>
+<p>由此产生了一个悖论，我们分不同条件下看时候，治疗方案A的死亡率都高于治疗方案B的死亡率，但是总体看数据时候，我们发现治疗方案A的死亡率会低于治疗方案B的死亡率。这个时候你到底该如何选择呢？</p>
+<p>选择治疗方案A或者B都会是正确答案，这取决于数据中的因果结构，换句话说，因果关系是解决辛普森悖论的关键。以下两种场景下，我们可以简单看一下是什么时候该选择治疗方案A什么时候选择治疗方案B。</p>
+<h3 id="场景1">场景1</h3>
+<figure>
+<img src="figure_1.1.jpg" alt="场景1" /><figcaption aria-hidden="true">场景1</figcaption>
+</figure>
+<p>当条件C是处理T的因（cause）时，治疗方案B时更加有效的降低死亡率Y的方案。</p>
+<p>举个例子，医生会决定对大部分轻症的患者采用治疗方案A，同时对重症患者更多地采用治疗方案B，因为重症患者的死亡率会更高，病人的症状会决定最后的死亡率<span class="math inline">\(C\rightarrow Y\)</span>，同时重症的状态也使得这个病人更容易被采用治疗方案B，<span class="math inline">\(C\rightarrow T\)</span>，所以最后造成治疗方案B在全体人群上会有更高的死亡率。换句话说，治疗方案B拥有更高的死亡率仅仅是因为病人的状态同时是受哪种治疗方案和死亡率的原因，为了纠正这样的混淆，我们必须在相同的条件下检验T和Y的关系，所以对于这样的场景，我们应你该选择的治疗方案B。</p>
+<h3 id="场景2">场景2</h3>
+<figure>
+<img src="figure_1.2.jpg" alt="场景2" /><figcaption aria-hidden="true">场景2</figcaption>
+</figure>
+<p>当我们的处理T时条件C的因的时候，治疗方案A则更加有效。比如当治疗方案B有较长的等待周期，病人在接受治疗方案B时需要等待更长的时间，而治疗方案A没有这样的问题。因为患有Covid-27的病人的病情会随时间恶化，所以治疗方案B会使得更多的病人从轻症患者变成重症患者，从而造成了更高的死亡率。因此，即使治疗方案B相比于治疗方案A更有效，<span class="math inline">\(T\rightarrow Y\)</span>，因为处理效应B造成了更坏的状态（重症患者更多），<span class="math inline">\(T\rightarrow C\rightarrow Y\)</span>，总的来说治疗方案B是低效的。（这种场景下，采用哪种治疗方案和病人的状态是相互独立的）</p>
+<h2 id="相关性并不意味着因果性">相关性并不意味着因果性</h2>
+<figure>
+<img src="figure_1.3.jpg" alt="相关性" /><figcaption aria-hidden="true">相关性</figcaption>
+</figure>
+<p>上图中的红线是每年溺死在游泳池中的人数统计，黑线似乎尼古拉斯凯奇的电影数量，我们可以发现两条线之间有很强的相关性，但他们之间真的具有因果性吗？答案肯定是否定的，他们之间的相关性是虚假的，毫无因果关系。</p>
+<figure>
+<img src="figure_1.4.jpg" alt="醉酒的因果结构" /><figcaption aria-hidden="true">醉酒的因果结构</figcaption>
+</figure>
+<p>举个例子，大概率下，当你穿着鞋子睡觉，第二天起来会发现头痛，不穿着鞋子睡觉，第二天起来并不会头痛，通常这样的现象并不会被解释成穿鞋睡觉会导致头痛，特别是存在一些原因导致大家穿鞋子睡觉，我们可以认为穿着鞋子睡觉和第二天头痛之间存在关系，但并不是穿着鞋子睡觉造成了头痛，它们可能是由一个共同的原因所导致，比如说宿醉，这样的变量被称之为混淆变量（confounder）。</p>
+<hr />
+<h1 id="潜在结果">潜在结果</h1>
+<p>在本节会阐述一些简单的因果相关的术语和概念。</p>
+<p>我们用T表示处理效应，Y表示最后感兴趣的结果变量，X表示协变量，大写字母表示随机变量，小写字母表示该随机变量的取值。大部分情形下我们先考虑T是二元变量，后续我们会讲解多元和连续的情况。</p>
+<p>潜在结果<span class="math inline">\(Y(t)\)</span>表示当一个实验单元（unit）被施加处理（treatment，干预）<span class="math inline">\(t\)</span>时的结果（outcome），潜在结果可以从观测结果<span class="math inline">\(Y\)</span>中得到，但并不是所有潜在结果都可以被观测到，因为每次我们只能受到一个处理的影响，所以依赖于施加在实验单元上的处理<span class="math inline">\(T\)</span>是什么。我们定义第<span class="math inline">\(i\)</span>个实验单元的个体处理效应(ITE，individual treatment effect)为 <span class="math display">\[
+\tau_i=Y_i(1)-Y_i(0)
+\]</span> 无法观测到给定实验单元的所有潜在结果，是因果推断的本质问题。因为我们每次无法同时观测到<span class="math inline">\(Y_i(1)\)</span>和<span class="math inline">\(Y_i(0)\)</span>，所以我们无法得知每个单元的因果效应<span class="math inline">\(Y_i(1)-Y_i(0)\)</span>。相比于机器学习，我们只用关心预测观测到的结果<span class="math inline">\(Y\)</span>。</p>
+<p>虽然我们无法得到个体处理效应，但是我们可以计算平均处理效应（ATE，average treatment effect）： <span class="math display">\[
+\tau=\mathbb{E}[Y_i(1)-Y_i(0)]=\mathbb{E}[Y(1) - Y(0)]
+\]</span> 那么我们如何计算ATE呢，一个简单的做法是直接将两个期望相减<span class="math inline">\(\mathbb{E}[Y|T=1]-\mathbb{E}[Y|T=0]\)</span>，但是实际上很多时候<span class="math inline">\(\mathbb{E}[Y|T=1]-\mathbb{E}[Y|T=0]\neq \mathbb{E}[Y(1)]-\mathbb{E}[Y(0)]\)</span>，前者是一个相关关系，而后者是一个因果关系，它们之间不想等就是因为存在混淆（confounding）。</p>
+<p>那么什么情况下，我们可以用两个期望直接相减得到ATE呢？答案是满足ignorability，假设ignorability就像是可以忽略人群差异，随机选择治疗方案，即X对T不影响</p>
+<figure>
+<img src="figure_2.2.jpg" alt="figure_2.2" /><figcaption aria-hidden="true">figure_2.2</figcaption>
+</figure>
+<p>公式化Ignorability（也叫Exchangeability）为 <span class="math display">\[
+\bigg(Y(1),Y(0)\bigg) \perp T
+\]</span> 当满足Ignorability时， <span class="math display">\[
+\begin{aligned}
+\mathbb{E}[Y(1)] - \mathbb{E}[Y(0)] 
+&amp;= \mathbb{E}[Y(1)|T=1] - \mathbb{E}[Y(0)|T=0] \\
+&amp;= \mathbb{E}[Y|T=1] - \mathbb{E}[Y|T=0]
+\end{aligned}
+\]</span></p>
+在观测数据中，一般很难满足Ignorability的假设，即我们很难假设各个组下的变量分布无差异，但是如果我们控制某些变量，在某个条件下，子群体间可能会是exchangeable，所以我们定义Conditional Exchangeability或者也叫Unconfoundedness为 <span class="math display">\[
+\bigg(Y(1),Y(0)\bigg) \perp T \quad \big| \quad X
+\]</span> 当我们施加干预和潜在结果，在整体上由于存在混淆是有联系的，但是在某个X的分层下，他们并没有联系，换句话说，在控制住X下，使得混淆不存在了，满足了Ignorability。 $$
+<span class="math display">\[\begin{aligned}
+\mathbb{E}[Y(1) - Y(0)] 
+&amp;=\mathbb{E}_X\Big[
+\mathbb{E}\big[Y(1)-Y(0)|X\big]
+\Big]\\
+
+&amp;= \mathbb{E}_X\Big[
+ \mathbb{E}\big[Y|T=1,X\big] -  \mathbb{E}\big[Y|T=0,X\big]
+\Big]
+\end{aligned}\]</span>
+<p>$$ ATE为所有X上取边际X上ATE的期望。通常来说，最好的做法就是观测并拟合尽量多的特征在X中，来保证unconfoundedness。</p>
+<p>当我们加入更多的特征来实现unconfoundedness，我们也需要考虑另一个假设positivity。Positivity（Overlap， common support）是在任意群体的上，都会有一定概率受到处理 <span class="math display">\[
+0 &lt; P(T=1|X=x) &lt;1 \quad \forall x
+\]</span> 这个假设也很重要，如果<span class="math inline">\(P(T=1|X=x)=0\)</span>或者<span class="math inline">\(P(T=0|X=x)=0\)</span>，都会使得我们无法计算ATE。</p>
+<p>在上述几个假设外，还有几个比较重要的：</p>
+<ul>
+<li>No interference，结果不受到其它干预的影响，<span class="math inline">\(Y_i(t1,\cdots,t_i,\cdots,t_n)=Y_i(t_i)\)</span></li>
+<li>Consistency，观测到的结果和潜在结果一致，<span class="math inline">\(T=t \implies Y=Y(t)\)</span></li>
+<li>SUTVA，stable unit-treatment value assumption，如果一个实验单元的结果是受到干预的函数，即consistency和no interference的结合。</li>
+</ul>
+<figure>
+<img src="figure_proof.jpg" alt="proof" /><figcaption aria-hidden="true">proof</figcaption>
+</figure>
+<p>上面的证明讲了满足以上的假设之后，我们怎么计算ATE。</p>
+<hr />
+<h1 id="因果图">因果图</h1>
+<h2 id="graph-terminology">Graph Terminology</h2>
+<figure>
+<img src="figure_3.2.jpg" alt="figure_3.2" /><figcaption aria-hidden="true">figure_3.2</figcaption>
+</figure>
+<ul>
+<li>图，graph：一系列节点的集合</li>
+<li>无项图，undirected graph，节点间的连线无方向</li>
+<li>有项图，directed graph，节点间的连线有方向</li>
+<li>父节点，子节点</li>
+<li>近邻，adjacent，两个节点被一条边相连，则两个节点为近邻</li>
+<li>路径，path，一系列近邻的节点（无需方向）</li>
+<li>有向路径，direct path，一系列有向节点</li>
+<li>有向路径的从节点X出发，到节点Y结束，X是Y的祖先，ancestor，Y是X的后代descendant</li>
+<li>有向无环图，directed acyclic graph (DAG)</li>
+</ul>
+<h2 id="bayesian-networks">Bayesian Networks</h2>
+<figure>
+<img src="figure_3.6.jpg" alt="figure_3.6" /><figcaption aria-hidden="true">figure_3.6</figcaption>
+</figure>
+<p>上图的关系，可以用联合分布表示 <span class="math display">\[
+\begin{aligned}
+P(x_1,x_2,x_3,x_4) 
+&amp;= P(x_1)P(x_2|x_1)P(x_3|x_2,x_1)P(x_4|x_3,x_2,x_1) \\
+&amp;=P(x_1)P(x_2|x_1)P(x_3|x_2,x_1)P(x_4|x_3)
+\end{aligned}
+\]</span></p>
+<h2 id="causal-graphs">Causal Graphs</h2>
+<p>“因”的定义（cause），如果变量Y随着变量X的改变而变化，那么就说变量X是变量Y的因。</p>
+<p>(Strict) Causal Edges Assumption，在一个有向图中，每一个父节点都是它全部子节点的因。</p>
+<h2 id="two-node-graphs-and-graphical-building-blocks">Two-Node Graphs and Graphical Building Blocks</h2>
+<figure>
+<img src="figure_3.9.jpg" alt="figure_3.9" /><figcaption aria-hidden="true">figure_3.9</figcaption>
+</figure>
+<p>上面简述了三种节点关系，chain、fork和immorality。</p>
+<p>如果节点A和B是条件独立的，那么给定节点C，有<span class="math inline">\(\mathbb{P}(a,b|c)=\mathbb{P}(a|c)\cdot\mathbb{P}(b|c)\)</span>，两个独立的节点在图中，是没有线相连的。相反，如果两个节点中存在一条边，这两个节点就是有关联的。</p>
+<h2 id="chains-and-forks">Chains and Forks</h2>
+<p>在chain中，X1和X3是非依赖的，因为X1造成了X2的改变，同时X2造成了X3的改变。</p>
+<p>在fork中，X1和X3是依赖的，因为X2同时决定了X1和X3，</p>
+<p>chain和fork都有相同的独立集（set of independencies），如果我们condition在X2上，它都使得X1和X3之间的联系被block住。</p>
+<figure>
+<img src="figure_3.14.jpg" alt="figure_3.14" /><figcaption aria-hidden="true">figure_3.14</figcaption>
+</figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Causal-Inference/" rel="tag"># Causal Inference</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/11/14/Robust-Recursive-Partitioning-for-Heterogeneous-Treatment-Effects-with-Uncertainty-Quantification/" rel="next" title="Robust Recursive Partitioning for Heterogeneous Treatment Effects with Uncertainty Quantification">
+                <i class="fa fa-chevron-left"></i> Robust Recursive Partitioning for Heterogeneous Treatment Effects with Uncertainty Quantification
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/02/01/Learning-Triggers-for-Heterogeneous-Treatment-Effects/" rel="prev" title="Learning Triggers for Heterogeneous Treatment Effects">
+                Learning Triggers for Heterogeneous Treatment Effects <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">113</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">52</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%A0%E6%9E%9C%E6%8E%A8%E6%96%AD%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">因果推断简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%9B%E6%99%AE%E6%A3%AE%E6%82%96%E8%AE%BAsimpsons-paradox"><span class="nav-number">1.1.</span> <span class="nav-text">辛普森悖论（Simpson&#39;s Paradox）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF1"><span class="nav-number">1.1.1.</span> <span class="nav-text">场景1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF2"><span class="nav-number">1.1.2.</span> <span class="nav-text">场景2</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E6%80%A7%E5%B9%B6%E4%B8%8D%E6%84%8F%E5%91%B3%E7%9D%80%E5%9B%A0%E6%9E%9C%E6%80%A7"><span class="nav-number">1.2.</span> <span class="nav-text">相关性并不意味着因果性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BD%9C%E5%9C%A8%E7%BB%93%E6%9E%9C"><span class="nav-number">2.</span> <span class="nav-text">潜在结果</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%A0%E6%9E%9C%E5%9B%BE"><span class="nav-number">3.</span> <span class="nav-text">因果图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#graph-terminology"><span class="nav-number">3.1.</span> <span class="nav-text">Graph Terminology</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bayesian-networks"><span class="nav-number">3.2.</span> <span class="nav-text">Bayesian Networks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#causal-graphs"><span class="nav-number">3.3.</span> <span class="nav-text">Causal Graphs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#two-node-graphs-and-graphical-building-blocks"><span class="nav-number">3.4.</span> <span class="nav-text">Two-Node Graphs and Graphical Building Blocks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#chains-and-forks"><span class="nav-number">3.5.</span> <span class="nav-text">Chains and Forks</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YuyangZhangFTD</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2140861"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.2"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

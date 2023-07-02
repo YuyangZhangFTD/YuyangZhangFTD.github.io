@@ -6,7 +6,7 @@
   <link href="http://yoursite.com/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2023-07-01T10:28:22.547Z</updated>
+  <updated>2023-07-02T02:54:46.960Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,36 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Fresh Content Needs More Attention- Multi-funnel Fresh Content Recommendation</title>
+    <link href="http://yoursite.com/2023/07/02/Fresh-Content-Needs-More-Attention-Multi-funnel-Fresh-Content-Recommendation/"/>
+    <id>http://yoursite.com/2023/07/02/Fresh-Content-Needs-More-Attention-Multi-funnel-Fresh-Content-Recommendation/</id>
+    <published>2023-07-02T02:47:37.000Z</published>
+    <updated>2023-07-02T02:54:46.960Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;摘要&quot;&gt;&lt;a href=&quot;#摘要&quot; class=&quot;headerlink&quot; title=&quot;摘要&quot;&gt;&lt;/a&gt;摘要&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;Recommendation system serves as a conduit connecting</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="Recommendation System" scheme="http://yoursite.com/tags/Recommendation-System/"/>
+    
+    <category term="Deep Learning" scheme="http://yoursite.com/tags/Deep-Learning/"/>
+    
+    <category term="Fresh Content" scheme="http://yoursite.com/tags/Fresh-Content/"/>
+    
+  </entry>
   
   <entry>
     <title>Attention is all you need</title>
@@ -573,7 +603,7 @@
     <link href="http://yoursite.com/2021/06/26/%E6%97%A5%E6%8B%B1%E4%B8%80%E5%8D%92/"/>
     <id>http://yoursite.com/2021/06/26/%E6%97%A5%E6%8B%B1%E4%B8%80%E5%8D%92/</id>
     <published>2021-06-26T07:34:40.000Z</published>
-    <updated>2023-07-01T10:43:40.420Z</updated>
+    <updated>2023-07-02T02:53:37.567Z</updated>
     
     
       
@@ -581,11 +611,7 @@
         
         
     <summary type="html">&lt;p&gt;平时的阅读列表，一般会附上下载链接和关键词。日拱一卒，与诸君共勉。&lt;/p&gt;
-&lt;h1 id=&quot;section&quot;&gt;2023&lt;/h1&gt;
-&lt;ul&gt;
-&lt;li&gt;M6
-&lt;ul&gt;
-&lt;li&gt;[Advertising, CTR, Debias, Alibaba, KDD 2023] &lt;a</summary>
+&lt;h1 id=&quot;2023&quot;&gt;&lt;a href=&quot;#2023&quot; class=&quot;headerlink&quot;</summary>
         
       
     
@@ -595,37 +621,6 @@
     
     
     <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Markdowns in E-Commerce Fresh Retail: A Counterfactual Prediction and Multi-Period Optimization Approach</title>
-    <link href="http://yoursite.com/2021/06/06/Markdowns-in-E-Commerce-Fresh-Retail-A-Counterfactual-Prediction-and-Multi-Period-Optimization-Approach/"/>
-    <id>http://yoursite.com/2021/06/06/Markdowns-in-E-Commerce-Fresh-Retail-A-Counterfactual-Prediction-and-Multi-Period-Optimization-Approach/</id>
-    <published>2021-06-06T07:32:05.000Z</published>
-    <updated>2021-06-12T15:54:06.692Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;markdowns-in-e-commerce-fresh-retail-a-counterfactual-prediction-and-multi-period-optimization-approach&quot;&gt;Markdowns in E-Commerce</summary>
-        
-      
-    
-    
-    
-    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
-    
-    
-    <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
-    
-    <category term="Causal Inference" scheme="http://yoursite.com/tags/Causal-Inference/"/>
-    
-    <category term="Dynamic Pricing" scheme="http://yoursite.com/tags/Dynamic-Pricing/"/>
-    
-    <category term="Online Marketing" scheme="http://yoursite.com/tags/Online-Marketing/"/>
     
   </entry>
   

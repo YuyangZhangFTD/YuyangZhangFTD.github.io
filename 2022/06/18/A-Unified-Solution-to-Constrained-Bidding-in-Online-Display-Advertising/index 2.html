@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Machine Learning,Advertising,Bidding,Reinforcement Learning," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Arvin's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="TL;DR 本文提出一种通用的智能出价框架，可以满足不同广告主关于竞价目标和约束的诉求，具体出价调控算法的实现为DDPG，目前该算法已经在淘宝广告平台部署使用。 Abstract  In online display advertising, advertisers usually participate in real- time bidding to acquire ad impression">
+<meta property="og:type" content="article">
+<meta property="og:title" content="A Unified Solution to Constrained Bidding in Online Display Advertising">
+<meta property="og:url" content="http://yoursite.com/2022/06/18/A-Unified-Solution-to-Constrained-Bidding-in-Online-Display-Advertising/index.html">
+<meta property="og:site_name" content="Arvin&#39;s Blog">
+<meta property="og:description" content="TL;DR 本文提出一种通用的智能出价框架，可以满足不同广告主关于竞价目标和约束的诉求，具体出价调控算法的实现为DDPG，目前该算法已经在淘宝广告平台部署使用。 Abstract  In online display advertising, advertisers usually participate in real- time bidding to acquire ad impression">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/2022/06/18/A-Unified-Solution-to-Constrained-Bidding-in-Online-Display-Advertising/1.jpg">
+<meta property="og:image" content="http://yoursite.com/2022/06/18/A-Unified-Solution-to-Constrained-Bidding-in-Online-Display-Advertising/2.jpg">
+<meta property="og:image" content="http://yoursite.com/2022/06/18/A-Unified-Solution-to-Constrained-Bidding-in-Online-Display-Advertising/3.jpg">
+<meta property="og:image" content="http://yoursite.com/2022/06/18/A-Unified-Solution-to-Constrained-Bidding-in-Online-Display-Advertising/4.jpg">
+<meta property="og:image" content="http://yoursite.com/2022/06/18/A-Unified-Solution-to-Constrained-Bidding-in-Online-Display-Advertising/5.jpg">
+<meta property="article:published_time" content="2022-06-18T03:26:45.000Z">
+<meta property="article:modified_time" content="2022-06-25T07:40:43.458Z">
+<meta property="article:author" content="YuyangZhangFTD">
+<meta property="article:tag" content="Machine Learning">
+<meta property="article:tag" content="Advertising">
+<meta property="article:tag" content="Bidding">
+<meta property="article:tag" content="Reinforcement Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2022/06/18/A-Unified-Solution-to-Constrained-Bidding-in-Online-Display-Advertising/1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2022/06/18/A-Unified-Solution-to-Constrained-Bidding-in-Online-Display-Advertising/"/>
+
+
+
+
+
+  <title>A Unified Solution to Constrained Bidding in Online Display Advertising | Arvin's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Arvin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Poem & Algorithm</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2022/06/18/A-Unified-Solution-to-Constrained-Bidding-in-Online-Display-Advertising/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arvin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">A Unified Solution to Constrained Bidding in Online Display Advertising</h1>
+        
+
+        <div class="post-meta">
+          
+
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-06-18T11:26:45+08:00">
+                2022-06-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PaperNote/" itemprop="url" rel="index">
+                    <span itemprop="name">PaperNote</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>TL;DR</p>
+<p>本文提出一种通用的智能出价框架，可以满足不同广告主关于竞价目标和约束的诉求，具体出价调控算法的实现为DDPG，目前该算法已经在淘宝广告平台部署使用。</p>
+<h1 id="abstract">Abstract</h1>
+<blockquote>
+<p>In online display advertising, advertisers usually participate in real- time bidding to acquire ad impression opportunities. In most advertising platforms, a typical impression acquiring demand of advertisers is to maximize the sum value of winning impressions under budget and some key performance indicators constraints, (e.g. maximizing clicks with the constraints of budget and cost per click upper bound). The demand can be various in value type (e.g. ad exposure/click), constraint type (e.g. cost per unit value) and con- straint number. Existing works usually focus on a specific demand or hardly achieve the optimum. In this paper, we formulate the demand as a constrained bidding problem, and deduce a unified optimal bidding function on behalf of an advertiser. The optimal bidding function facilitates an advertiser calculating bids for all impressions with only 𝑚 parameters, where 𝑚 is the constraint number. However, in real application, it is non-trivial to determine the parameters due to the non-stationary auction environment. We further propose a reinforcement learning (RL) method to dynam- ically adjust parameters to achieve the optimum, whose converging efficiency is significantly boosted by the recursive optimiza- tion property in our formulation. We name the formulation and the RL method, together, as Unified Solution to Constrained Bid- ding (USCB). USCB is verified to be effective on industrial datasets and is deployed in Alibaba display advertising platform.</p>
+</blockquote>
+<p>在在线展示广告中，广告主通常参与实时竞价来获取广告曝光机会。在大多数广告平台上，广告主获取曝光的需求是在 预算和一些关键表现指标约束下，最大化竞得曝光的总价值。例如，在预算和每次点击成本上限的约束下最大化点击量）。这些需求可以是不同的价值类型（如曝光/点击）、约束类型或者约束数量。现有的工作通常关注于一个特定的需求 或者 是几乎没有达到最优解。</p>
+<p>在本文中，我们将这些需求建模为约束下竞价问题，并且推导出对于广告主而言，最优出价的一般形式，广告主指通过<span class="math inline">\(m\)</span>个参数就可以计算最优出价，其中<span class="math inline">\(m\)</span>是约束数量。在实际应用中，由于拍卖环境的非平稳性，确定参数是不容易的。我们进一步提出了一种强化学习方法来动态调整参数以达到最优，其收敛效率因我们公式中的递归优化特性而得到显著提升。我们将整体的解决方案成为USCB，并在实际工业数据集中实验并证明是有效的，目前已经被部署在阿里巴巴展示广告平台。</p>
+<h1 id="问题背景">问题背景</h1>
+<p>近些年来，在线展示广告已经是最有影响力的商业形式之一，参与在线竞价的广告主一般会被分成两类，品牌广告和效果广告。品牌广告主寻求长期的增长以及建立用户心智，其广告计划的目标是在约束条件下，将广告展示给尽可能多的受众，约束通常是单次曝光或者点击的平均成本。效果广告主的目标一般是最大化竞得流量的价值，约束一般为单次转化的平均成本。为了满足不同广告主的诉求，广告平台通常会提供多种竞价策略。</p>
+<p>之前的工作大多是为了满足广告主的部分需求，关注特定问题形式下的最优出价，本文提出一种通用的解决方案，来满足广告主不同的需求，并且能够部署到真实的广告系统中。</p>
+<h1 id="解决方案">解决方案</h1>
+<p>假设在一定周期内（比如说一天内），假设存在<span class="math inline">\(N\)</span>次连续的竞价机会，下标为<span class="math inline">\(i\)</span>，当广告主的出价<span class="math inline">\(b_i\)</span>高于其他广告出价中的最高出价<span class="math inline">\(c_i\)</span>时，广告主可以竞得这个曝光机会，并且成本是<span class="math inline">\(c_i\)</span>。</p>
+<p>广告主的目标是最大化竞得流量的价值<span class="math inline">\(\max \sum_i v_i x_i\)</span>，其中<span class="math inline">\(v_i\)</span>是曝光的价值，<span class="math inline">\(x_i\)</span>是01决策变量，广告主是否要竞得这个曝光。除此之外，广告主通过限定预算和KPI的约束来保证广告投放效率，预算约束<span class="math inline">\(\sum_i c_i x_i\leq B\)</span>，KPI的约束可以分为两类，一类是成本相关（Cost Related，CR）约束，与广告事件相关，如CPC、CPA等等，另一类是非成本相关约束（Non Cost Related，NCR），如CTR、CPI，KP约束<span class="math inline">\(j\)</span>的通用形式可以记作 <span class="math display">\[
+\frac{\sum_i \Bbb{c}_{ij} x_i}{\sum_i \Bbb{p}_{ij} x_i} \leq \Bbb{k}_j
+\]</span> 其中<span class="math inline">\(\Bbb{k}_j\)</span>是约束<span class="math inline">\(j\)</span>的上限，<span class="math inline">\(\Bbb{p}_{i,j}\)</span>可以是效果的指示变量（是否发生转化）或者常数，<span class="math inline">\(\Bbb{c}_{ij}=c_i\cdot\Bbb{I}_{\text{CR}_j} + \Bbb{q}_{ij}\cdot(1-\Bbb{I}_{\text{CR}_j})\)</span>，其中<span class="math inline">\(\Bbb{q}_{ij}\)</span>可以是效果的指示变量或者常数，<span class="math inline">\(\Bbb{I}_{\text{CR}_j}\)</span></p>
+<p>表示这个约束<span class="math inline">\(j\)</span>是是否为成本相关约束的指示函数。常见的KPI约束如下表</p>
+<figure>
+<img src="1.jpg" alt="KPI Constraint" /><figcaption aria-hidden="true">KPI Constraint</figcaption>
+</figure>
+<p>整个问题写成线性规划问题(LP1)如下 <span class="math display">\[
+\begin{aligned}
+\max &amp;&amp; \sum_i v_i x_i \\
+\text{s.t.} &amp;&amp; \sum_i c_i x_i \leq B \\
+&amp;&amp; \frac{\sum_i \Bbb{c}_{ij} x_i}{\sum_i \Bbb{p}_{ij} x_i} \leq \Bbb{k}_j &amp;&amp; \forall j \\
+&amp;&amp; x_i \leq 1 &amp;&amp; \forall i \\
+&amp;&amp; x_i \geq 0 &amp;&amp; \forall i \\
+\end{aligned}
+\]</span> 该问题的对偶问题(LP2)为 <span class="math display">\[
+\begin{aligned}
+\min &amp;&amp; B \cdot \alpha + \sum_i r_i \\
+\text{s.t.} &amp;&amp; c_i\alpha + \sum_j (\Bbb{c}_{ij} - \Bbb{k}_j\Bbb{p}_{ij}) \cdot \beta_j + r_i \geq v_i &amp;&amp; \forall i \\
+&amp;&amp; \alpha, \beta_j, r_i \geq 0 &amp;&amp; \forall i
+\end{aligned}
+\]</span> 对于其中第一行的约束，我们可以根据<span class="math inline">\(\Bbb{c}_{ij}\)</span>的定义拆开 <span class="math display">\[
+\begin{aligned}
+&amp; c_i\alpha + \sum_j (\Bbb{c}_{ij} - \Bbb{k}_j\Bbb{p}_{ij}) \cdot \beta_j + r_i \geq v_i 
+\\
+&amp; c_i\alpha + \sum_j (c_i\cdot\Bbb{I}_{\text{CR}_j} + \Bbb{q}_{ij}\cdot(1-\Bbb{I}_{\text{CR}_j}) - \Bbb{k}_j\Bbb{p}_{ij})\cdot  \beta_j + r_i \geq v_i
+\\
+&amp;  c_i\alpha 
++ \sum_j c_i \cdot \Bbb{I}_{\text{CR}_j} \cdot \beta_j
++ \sum_j \big( \Bbb{q}_{ij}\cdot(1-\Bbb{I}_{\text{CR}_j}) - \Bbb{k}_j\Bbb{p}_{ij} \big) \cdot \beta_j +r_i - v_i \geq 0
+\\
+&amp; c_i \cdot \Big( \alpha + \sum_j \Bbb{I}_{\text{CR}_j} \cdot \beta_j \Big)
++ \Big( \sum_j \big( \Bbb{q}_{ij}\cdot(1-\Bbb{I}_{\text{CR}_j}) - \Bbb{k}_j\Bbb{p}_{ij} \big) \cdot \beta_j - v_i\Big)
++ r_i \geq 0
+\\
+&amp; \underbrace{\Big( v_i - \sum_j \big( \Bbb{q}_{ij}\cdot(1-\Bbb{I}_{\text{CR}_j}) - \Bbb{k}_j\Bbb{p}_{ij} \big) \cdot \beta_j \Big)}_{\text{P}_\text{NCR}}
+- c_i \cdot  \underbrace{\Big( \alpha + \sum_j \Bbb{I}_{\text{CR}_j} \cdot \beta_j \Big)}_{\text{P}_\text{CR}}
+- r_i \leq 0
+\end{aligned}
+\]</span> 其中<span class="math inline">\({\text{P}_\text{NCR}}\)</span>表示和成本无关的系数，<span class="math inline">\({\text{P}_\text{CR}}\)</span>表示和成本相关的系数。根据互补松弛性使得 <span class="math display">\[
+\begin{aligned}
+x_i^* \cdot({\text{P}^*_\text{NCR}} - {\text{P}^*_\text{CR}} \cdot c_i -r_i^*) &amp;=0 &amp;\forall i \\
+(x^*_i -1) \cdot r_i^* &amp;=0 &amp;\forall i\\
+\end{aligned}
+\]</span> 其中<span class="math inline">\(*\)</span>表示最优时原问题和对偶问题的解。当出价为<span class="math inline">\(b^*_i={\text{P}^*_\text{NCR}}/{\text{P}^*_\text{CR}}\)</span>时，满足 <span class="math display">\[
+\begin{aligned}
+(b_i^*-c_i)\cdot {\text{P}^*_\text{CR}} - r_i^* &amp;\leq 0 &amp;\forall i\\
+x_i^* \cdot\big((b_i^* - c_i)\cdot {\text{P}^*_\text{CR}}  -r_i^*\big) &amp;= 0 &amp; \forall i
+\end{aligned}
+\]</span> 即广告主最优竞得<span class="math inline">\(x_i=1\)</span>时，<span class="math inline">\((b_i^*-c_i)\cdot {\text{P}^*_\text{CR}} - r_i^*=0\)</span>，由于<span class="math inline">\(r_i^* \geq 0\)</span>且<span class="math inline">\({\text{P}^*_\text{CR}}\geq0\)</span>，此时<span class="math inline">\(b_i^*\geq c_i\)</span>，当<span class="math inline">\(x_i^*=0\)</span>时，此时<span class="math inline">\(r_i^*=0\)</span>，由于<span class="math inline">\({\text{P}^*_\text{CR}}\geq0\)</span>，所以<span class="math inline">\(b_i^*&lt; c_i\)</span>。</p>
+<p>综上，当我们采取该出价策略时，可以保证当前竞价策略对于广告主最优。我们将出价的公式写开 <span class="math display">\[
+\begin{aligned}
+b_i^* &amp;= \frac{\text{P}^*_\text{NCR}}{\text{P}^*_\text{CR}} 
+\\
+&amp;= \frac{
+v_i - \sum_j \big( \Bbb{q}_{ij}\cdot(1-\Bbb{I}_{\text{CR}_j}) - \Bbb{k}_j\Bbb{p}_{ij} \big) \cdot \beta_j
+}{
+\alpha + \sum_j \Bbb{I}_{\text{CR}_j} \cdot \beta_j
+}
+\\
+&amp;=\underbrace{\frac{1}{\alpha + \sum_j \Bbb{I}_{\text{CR}_j} \cdot \beta_j}}_{w_0^*} \cdot v_i 
+- \sum_j \underbrace{\frac{\beta_j}{\alpha + \sum_j \Bbb{I}_{\text{CR}_j} \cdot \beta_j} }_{w_j^*} \cdot \big( \Bbb{q}_{ij}\cdot(1-\Bbb{I}_{\text{CR}_j}) - \Bbb{k}_j\Bbb{p}_{ij} \big) \\
+&amp;= w_0^* \cdot v_i  +\sum_j w_j^*  \cdot \big( \Bbb{q}_{ij}\cdot(1-\Bbb{I}_{\text{CR}_j}) - \Bbb{k}_j\Bbb{p}_{ij} \big) 
+\end{aligned}
+\]</span> 简化至此，我们发现最优的出价策略其实由M+1个参数控制（M为约束数量）。如果我们可以收集到所有曝光竞价的数据，那么就可以离线求解出最优参数，当曝光竞价数据不完整时，也可以利用后续所有竞价数据调整参数来接近最优出价。</p>
+<p>因为不同天流量结构可能存在变化，直到当天结束我们才能获取所有竞价数据，所以我们无法离线求解出最优的竞价参数，但仍可以用历史数据计算初始值。对于实时参数调整，我们采用强化学习的方式进行建模，学习调整参数的策略。相关的定义为：</p>
+<ul>
+<li>状态<span class="math inline">\(\cal{S}\)</span>，广告计划相关特征，包含时间、预算消耗、KPI约束状态等等</li>
+<li>动作<span class="math inline">\(\cal{A}\)</span>，每个时刻<span class="math inline">\(t\)</span>，每个agent会采取M+1维的动作向量<span class="math inline">\(\overrightarrow{a_t}=(a_{0t},\cdots,a_{Mt})\)</span>，对应参数向量<span class="math inline">\(\overrightarrow{w_t}=(w_{0t},\cdots,w_{Mt})\)</span>，下一时刻参数为<span class="math inline">\(\overrightarrow{w_{t+1}}=\overrightarrow{w_{t}}\cdot(\overrightarrow{a_{t}}+1)\)</span></li>
+<li>奖励<span class="math inline">\(r_t\)</span>，定义<span class="math inline">\(r_t\)</span>为当前时刻的目标函数值，<span class="math inline">\(r_t=\sum_{i\in O_t} v_i\cdot x_i\)</span>，其中<span class="math inline">\(O_t\)</span>表示<span class="math inline">\(t\)</span>时刻流量集合</li>
+<li>折损系数<span class="math inline">\(\gamma\)</span>，设置为<span class="math inline">\(1\)</span></li>
+</ul>
+<p>我们希望学习一个策略<span class="math inline">\(\pi:\cal{S}\rightarrow \cal{A}\)</span>，最大化累计收益<span class="math inline">\(R=\sum_{t=1}^T \gamma^{t-1} r_t\)</span>。</p>
+<p>竞价请求是按时间先后顺序达到的，但我们需要在全部竞价请求上求得最优解，文中证明了对于求解每个时刻的子问题而言，最优动作序列是将当前参数<span class="math inline">\(\overrightarrow{w_t}\)</span>修正到<span class="math inline">\(\overrightarrow{w^*_t}\)</span>并保持。（关于这个证明个人觉得，既正确又废话，当我们对未来流量毫无先验知识的时候，我们只能做同质假设，然后保持现有数据所得到的最优解。）</p>
+<p>文中采用DDPG算法来实现该调节，详细如下图，同时由于问题性质以及上述证明的最优的动作序列，有</p>
+<ul>
+<li>对于时刻<span class="math inline">\(t\)</span>，agent会尝试将参数<span class="math inline">\(\overrightarrow{w_t}\)</span>修正到<span class="math inline">\(\overrightarrow{w^*_t}\)</span>并保持，而不是逐步调整，这加快了agent的学习速度</li>
+<li>评估网络<span class="math inline">\(Q\)</span>可以简化为<span class="math inline">\(\cal{G}\)</span>和<span class="math inline">\(Q(s_t,\overrightarrow{a_t})\)</span>的差异，同时<span class="math inline">\(\cal{G}\)</span>可以直接看出哪个action可以取得更好的结果，这样会使得整个算法收敛得更快</li>
+</ul>
+<figure>
+<img src="2.jpg" alt="Algo1" /><figcaption aria-hidden="true">Algo1</figcaption>
+</figure>
+<h1 id="实验分析">实验分析</h1>
+<p>在淘宝广告平台，广告主们最常见的出价产品包括：</p>
+<ul>
+<li>CB{click}，最大化点击，约束是预算，此时最优出价策略是<span class="math inline">\(b_i=w_0 \cdot \text{pCTR}_i\)</span></li>
+<li>CB{click-CPC}，最大化点击，约束是预算和CPC成本，最优出价是<span class="math inline">\(b_i=w_0\cdot \text{pCTR} +w_1\Bbb{k}_\text{CPC} \cdot \text{pCTR}\)</span></li>
+<li>CB{conversion-CPC}，最大化转化，约束是预算和CPC成本，最优出价是<span class="math inline">\(b_i=w_0\cdot \text{pCVR}_i +w_1\Bbb{k}_\text{CPC} \cdot \text{pCTR}_i\)</span></li>
+</ul>
+<p>这3个数据集都有近4K个广告计划，曝光数约30亿上下，共8天的数据，前7天90%训练，10%验证，最后一天用作测试，采用前7天训练机所有数据来生成测试集的初始参数，我们定义最优参数和初始参数的偏差为 <span class="math display">\[
+\text{Deviation}=\begin{cases}
+\sqrt{
+\frac{
+(w_0/w_0^*-1)^2 + \sum_j (w_j^*-w_j)^2
+}{M+1}
+} 
+&amp;&amp; w_0 \leq w_0^* \\
+\sqrt{
+\frac{
+(w_0^*/w_0-1)^2 + \sum_j (w_j^*-w_j)^2
+}{M+1}
+} 
+&amp;&amp; w_0 \leq w_0^* \\
+\end{cases}
+\]</span> 不同数据集上初始参数和最优参数的偏差如下图，说明我们的竞价环境非常不稳定，前7天的最优解和当天的最优解差距可能非常大</p>
+<figure>
+<img src="3.jpg" alt="Deviation" /><figcaption aria-hidden="true">Deviation</figcaption>
+</figure>
+<p>实现细节，3层50个节点的全联接来做actor网络和critic网络，batch size 128，回放数据10w，agent调节在<span class="math inline">\([-0.2,0.2]\)</span>之间连续的参数，每15min调节一次，随机数服从均值0标准差0.05的正态分布，actor网络学习率<span class="math inline">\(1e^{-6}\)</span>，critic网络学习率<span class="math inline">\(1e^{-7}\)</span>，违反约束的惩罚为20，最优解用GLPK库离线计算，评估指标为 <span class="math display">\[
+G=\min\{\frac{R}{R^*},1.0\} - \sum_j p_j
+\]</span> 其中<span class="math inline">\(R^*\)</span>为最优解下的最优目标函数值（即最优累计收益），<span class="math inline">\(p_j=\lambda^{\text{exr}_j}-1\)</span>，表示违反约束情况，违反强度参数<span class="math inline">\(\text{exr}_j=\max\{0, \Bbb{k}_j^\text{actual}/\Bbb{k}_j -1\}\)</span>。对比模型包括KDD18的DRLB、KDD19的M-PID。（都是一波人的文章，真“我干我自己”）</p>
+<p>为了降低环境变动影响，按照不同变动程度做了分层，结果如下</p>
+<figure>
+<img src="4.jpg" alt="Offline Evaluation" /><figcaption aria-hidden="true">Offline Evaluation</figcaption>
+</figure>
+<p>下图展示了某个数据集上适时调整的参数和最优解的比值</p>
+<figure>
+<img src="5.jpg" alt="Offline Evaluation 2" /><figcaption aria-hidden="true">Offline Evaluation 2</figcaption>
+</figure>
+<p>M-PID方法主要缺点在于需要先验知识设定目标，同时需要调节超参数。USCB相比DRLB主要是收敛效率所带来的稳定性优势。</p>
+<p>关于收敛效率，文中认为是由于问题形式导致critic网络的效果非常好，进而提升了actor网络学习策略的效率。</p>
+<p>违反约束罚项，更多是超参数的调整。</p>
+<h1 id="总结">总结</h1>
+<p>所提出的框架对于端内广告的出价而言，的确是非常有效且适用面很广，目前该算法在某场景21年初就已全量。</p>
+<p>个人觉得，从KDD19那篇文章开始，端内广告出价问题基本上已经算是被研究透了，本文更多是做一些修补和扩展的工作。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          
+            <a href="/tags/Advertising/" rel="tag"># Advertising</a>
+          
+            <a href="/tags/Bidding/" rel="tag"># Bidding</a>
+          
+            <a href="/tags/Reinforcement-Learning/" rel="tag"># Reinforcement Learning</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/06/10/Ads-Allocation-in-Feed-via-Constrained-Optimization/" rel="next" title="Ads Allocation in Feed via Constrained Optimization">
+                <i class="fa fa-chevron-left"></i> Ads Allocation in Feed via Constrained Optimization
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/06/18/1-Year-in-HangZhou/" rel="prev" title="1 Year in HangZhou">
+                1 Year in HangZhou <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">113</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">52</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#abstract"><span class="nav-number">1.</span> <span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E8%83%8C%E6%99%AF"><span class="nav-number">2.</span> <span class="nav-text">问题背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="nav-number">3.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E5%88%86%E6%9E%90"><span class="nav-number">4.</span> <span class="nav-text">实验分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YuyangZhangFTD</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2140861"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.2"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

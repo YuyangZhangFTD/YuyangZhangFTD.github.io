@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Machine Learning,Operation Research," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Arvin's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="这篇文章是KDD2021的一篇文章，讲的是做航空路线的资源分配的。 我发现自己好像就喜欢看这个类型的文章，偏实际的业务问题+充斥着骚操作的解决方案，对于那种well-defined问题的文章好像看的不是那么多。 最近也被若干老板diss了说写东西逻辑以及表达不好，回看了一下以前写的文章，发现在写东西的时候还是比较随意的，以后尽量按照固定的框架来写，问题背景-&gt;解决方法-&gt;试验结果-&amp;g">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Large-Scale Data-Driven Airline Market Influence Maximization">
+<meta property="og:url" content="http://yoursite.com/2021/08/21/Large-Scale-Data-Driven-Airline-Market-Influence-Maximization/index.html">
+<meta property="og:site_name" content="Arvin&#39;s Blog">
+<meta property="og:description" content="这篇文章是KDD2021的一篇文章，讲的是做航空路线的资源分配的。 我发现自己好像就喜欢看这个类型的文章，偏实际的业务问题+充斥着骚操作的解决方案，对于那种well-defined问题的文章好像看的不是那么多。 最近也被若干老板diss了说写东西逻辑以及表达不好，回看了一下以前写的文章，发现在写东西的时候还是比较随意的，以后尽量按照固定的框架来写，问题背景-&gt;解决方法-&gt;试验结果-&amp;g">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/2021/08/21/Large-Scale-Data-Driven-Airline-Market-Influence-Maximization/1.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/08/21/Large-Scale-Data-Driven-Airline-Market-Influence-Maximization/2.jpg">
+<meta property="og:image" content="http://yoursite.com/2021/08/21/Large-Scale-Data-Driven-Airline-Market-Influence-Maximization/3.jpg">
+<meta property="article:published_time" content="2021-08-21T15:33:55.000Z">
+<meta property="article:modified_time" content="2021-08-28T16:05:03.746Z">
+<meta property="article:author" content="YuyangZhangFTD">
+<meta property="article:tag" content="Machine Learning">
+<meta property="article:tag" content="Operation Research">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2021/08/21/Large-Scale-Data-Driven-Airline-Market-Influence-Maximization/1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2021/08/21/Large-Scale-Data-Driven-Airline-Market-Influence-Maximization/"/>
+
+
+
+
+
+  <title>Large-Scale Data-Driven Airline Market Influence Maximization | Arvin's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Arvin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Poem & Algorithm</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/08/21/Large-Scale-Data-Driven-Airline-Market-Influence-Maximization/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arvin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Large-Scale Data-Driven Airline Market Influence Maximization</h1>
+        
+
+        <div class="post-meta">
+          
+
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-08-21T23:33:55+08:00">
+                2021-08-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PaperNote/" itemprop="url" rel="index">
+                    <span itemprop="name">PaperNote</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这篇文章是KDD2021的一篇文章，讲的是做航空路线的资源分配的。</p>
+<p>我发现自己好像就喜欢看这个类型的文章，偏实际的业务问题+充斥着骚操作的解决方案，对于那种well-defined问题的文章好像看的不是那么多。</p>
+<p>最近也被若干老板diss了说写东西逻辑以及表达不好，回看了一下以前写的文章，发现在写东西的时候还是比较随意的，以后尽量按照固定的框架来写，问题背景-&gt;解决方法-&gt;试验结果-&gt;总结，这样一是培养思维习惯，二是能够加深对文章的理解。</p>
+<h1 id="问题背景">问题背景</h1>
+<p>美国航空行业历史悠久，具有广阔的商业前景，对于优化提升航空业服务质量，之前也存在很多研究，包括预测市场份额、票价、需求，资源的分配等等。本文提出了一种data-driven的方式来最大化航司在航空业的影响力，此处的影响力我们定义为由该航空公司运送的旅客数量，可以用总需求数乘以市场份额得到，所以整个问题变成：</p>
+<ol type="1">
+<li>如何建立市场份额的预估模型</li>
+<li>如何利用市场份额的预估模型，在预算约束下最大化航司的影响力</li>
+</ol>
+<p>对于第一个问题，传统做法是用一些历史特征来进行预估，比如平均机票价格、航班数量、准点率等等，近年来也有研究人员注意到航司的运输网络连接性也会影响市场份额，所以本文采用NN的预测模型，同时考虑了历史特征以及运输网络结构特征，来构建市场份额的预估模型。</p>
+<p>对于第二个问题，因为运力网络结构会影响单条航线的市场份额，即一条航线近邻路线的市场份额会影响该航线的市场份额，这种内在的关联关系使得整个问题比较难建模求解，为了解决这个问题，本文中提出了一种改进的梯度方法，AGA，在实验中能够更快地求解更大规模的问题，同时能够在梯度迭代中保证预算的约束被满足。</p>
+<h1 id="解决方法">解决方法</h1>
+<p>市场份额预估模型，沿用选择模型的结构，对于线路<span class="math inline">\(r\)</span>，航司<span class="math inline">\(C_k\)</span>的市场份额定义为 <span class="math display">\[
+m_{r,k}=\frac{e^{\sum_j w_{r,j}\cdot{f_{r,k,j}}}}{\sum_i e^{\sum_j w_{r,j}\cdot{f_{r,i,j}}}} = \frac{\exp(\textbf{w}_r\cdot \textbf{f}_{r,k})}{\sum_i \exp(\textbf{w}_r\cdot \textbf{f}_{r,i})}
+\]</span> 其中<span class="math inline">\(m_{r,k}\)</span>表示航司<span class="math inline">\(C_k\)</span>在路线<span class="math inline">\(r\)</span>​的市场份额，<span class="math inline">\(f_{r,k,j}\)</span>表示航司<span class="math inline">\(C_k\)</span>在路线<span class="math inline">\(r\)</span>上的第j维特征，<span class="math inline">\(w_{r,j}\)</span>为系数，可以理解为市场份额对于某个维度特征的敏感度。</p>
+<p>在美国有超过2000条线路，这可以用一个运输网络图来表示<span class="math inline">\(\mathcal{G=(V,E)}\)</span>来表示，<span class="math inline">\(\mathcal{G}_k\)</span>是航司<span class="math inline">\(C_k\)</span>的航班数量分布，<span class="math inline">\(\mathcal{G}_k\)</span>可以用矩阵<span class="math inline">\(\mathcal{A}_k\)</span>表示。</p>
+<p>网络特征，主要是4个：</p>
+<ol type="1">
+<li>Degree Centrality，度中心性，即一个节点的出度和入度的数量，越高的度中心性表明乘客有更多的选择。</li>
+<li>Ego Network Density，中心网络密度，一个节点和周边近邻节点组成的子网络，用边权重的和处以<span class="math inline">\(n(n-1)\)</span>表示密度</li>
+<li>PageRank，表明网络的连通性</li>
+</ol>
+<p>下图为这三个特征与乘客数量的关系</p>
+<figure>
+<img src="1.jpg" alt="Number of passengers vs. network features" /><figcaption aria-hidden="true">Number of passengers vs. network features</figcaption>
+</figure>
+<p>给定特征后，后面采用一个多层的网络来给出预测值，网络采用残差链接，最后一层是一个logit节点，输出市场份额大小。</p>
+<p>以上特征在tensorflow中都可以通过<span class="math inline">\(\mathcal{A}_k\)</span>​快速计算得到，通过频繁修改<span class="math inline">\(\mathcal{A}_k\)</span>，整个网络可以快速进行预测。</p>
+<figure>
+<img src="2.jpg" alt="整体结构" /><figcaption aria-hidden="true">整体结构</figcaption>
+</figure>
+<p>所以梯度可以通过预测模型传导到网络特征，最后到矩阵<span class="math inline">\(\mathcal{A}_k\)</span>，所以当固定模型系数之后，可以用同一个网络来优化矩阵<span class="math inline">\(\mathcal{A}_k\)</span>，我们用<span class="math inline">\(f_{r,k,\text{freq}}\)</span>表示航司<span class="math inline">\(C_k\)</span>在路线<span class="math inline">\(r\)</span>上的航班数量，这个特征是优化问题的决策变量。</p>
+<p>整个优化问题可以表示为 <span class="math display">\[
+\begin{aligned}
+\max_{f^\max_r\geq f_{r,k,\text{freq}\geq 0,r\in\mathcal{R}}}
+&amp; \sum_{r\in\mathcal{R}} \text{demand}_r \times m_{r,k} \\
+\text{s.t.} 
+&amp; \sum_{r\in\mathcal{R}} \text{cost}_{r,k} \times f_{r,k,\text{freq}} \leq \text{budget}_k
+\end{aligned}
+\]</span> 其中<span class="math inline">\(m_{r,k}\)</span>是预测的市场份额，<span class="math inline">\(\text{deman}_r\)</span>是线路<span class="math inline">\(r\)</span>的旅客总数，<span class="math inline">\(\text{cost}_{r,k}\)</span>是航司<span class="math inline">\(C_k\)</span>在线路<span class="math inline">\(r\)</span>的单位运营成本，<span class="math inline">\(f_r^\max\)</span>​是最大航班次数。这个问题是一个非线性优化问题，是NP-hard的整数背包问题和资源分配问题的一个特例。整个问题的解决框架可以分成两步：</p>
+<ol type="1">
+<li>训练市场份额预测模型</li>
+<li>固定预测模型和其他特征不变，利用AGA算法更新航班频数矩阵<span class="math inline">\(\mathcal{A}_k\)</span>​</li>
+</ol>
+<p>由于使用了网络特征，这使得很多经典的组合优化方法并不适合解决这个问题，因为路线间并不独立，同时由于使用的模型是多层的神经网络，所以该问题是高度非线性的，为了解决这个问题以上问题，提出并实现了AGA算法。</p>
+<p>问题中需要考虑预算的约束，所以我们设计了两种启发式方法：基于拉格朗日函数（LF）和基于ReLU。在实际中，用<code>clip_by_value</code>函数把航班频数值限制在0到<span class="math inline">\(f^\max_r\)</span>​之间，最终取结果时候向下取整避免预算超出。</p>
+基于LF的启发式方法，将超出预算的部分作为负向结果加入模型中 $$
+<span class="math display">\[\begin{aligned}
+L &amp;= o(\mathcal{A}_k) - \lambda c(\mathcal{A}_k) 
+\\
+
+o(\mathcal{A}_k) &amp;=\sum_{r\in\mathcal{R}} \text{demand}_r \times m_{r,k}
+\\
+
+c(\mathcal{A}_k) &amp;= \big(\sum_{r\in\mathcal{R}} \text{cost}_{r,k} \times f_{r,k,\text{freq}} \big) - \text{budget}_k
+\\
+\end{aligned}\]</span>
+<p><span class="math display">\[
+其中$\lambda$被称为拉格朗日乘子，我们用tensorflow来解决这个优化问题
+\]</span> <em>{f^<em>rf</em>{r,k,,r}} </em>L+^2 <span class="math display">\[
+其中$\delta$​是正则化权重，我们的方法跟原始的拉格朗日函数并不一样，内部的最小化是为了避免$\lambda$​过大。求解上面式子一个做法是交替最小化，同时它也是一个max-min game，后面我们提出了一个与之等效的优化目标。
+\]</span> _{f^<em>rf</em>{r,k,,r}}</p>
+<p>o(_k) -  $$</p>
+<p>基于ReLU的方法，ReLU经常被用来限制神经网络只取正值，这使得我们可以利用这个性质来构建预算约束 $$ _{f^<em>rf</em>{r,k,,r}}</p>
+o(_k) - R( c(_k) ) <span class="math display">\[
+我们提出的AGA算法会动态调整参数$\beta$​​来保证预算的约束。用$o&#39;$和$c&#39;$来表示目标和约束的梯度
+\]</span>
+<span class="math display">\[\begin{aligned}
+o&#39; &amp;= \nabla o(\mathcal{A}_k)\\
+c&#39; &amp;= \begin{cases}
+\nabla \frac{c(\mathcal{A}_k)^2}{2} &amp;\text{LF based method}
+\\
+\nabla R(c(\mathcal{A}_k)) &amp; \text{ReLU based method}
+\\
+\end{cases}
+\end{aligned}\]</span>
+<p>$$ <img src="3.jpg" alt="adjust beta" /></p>
+<p>如上图所示，因为约束的梯度太小，不足以降低新的解对于预算约束的违反，此时需要增加<span class="math inline">\(\beta\)</span>值，降低约束违反程度。梯度<span class="math inline">\(o&#39;\)</span>会增加市场的影响，<span class="math inline">\(-\beta c&#39;\)</span>会降低过度使用预算，所以<span class="math inline">\(\beta\)</span>需要同时降低预算超花同时增加市场影响，即最终的<span class="math inline">\(o&#39;-\beta c&#39;\)</span>需要大过<span class="math inline">\(c&#39;\)</span>，即 <span class="math display">\[
+\begin{aligned}
+&amp;c&#39;\cdot (o&#39;-\beta c&#39;) &lt;0\\
+&amp;\beta &gt; \frac{c&#39;\cdot o&#39;}{c&#39;\cdot c&#39;}
+\end{aligned}
+\]</span> 注意上式子没有等号，所以<span class="math inline">\(\beta\)</span>绝对大于右边，我们增加一个正值的超参数 <span class="math display">\[
+\begin{aligned}
+\beta = \frac{o&#39;\cdot c&#39;}{c&#39;\cdot c&#39;} +\epsilon \\
+\end{aligned}
+\]</span> 为了保证<span class="math inline">\(\beta\)</span>在趋于最优时候趋于0，我们采用 <span class="math display">\[
+\begin{aligned}
+\beta = \frac{o&#39;\cdot c&#39;}{c&#39;\cdot c&#39;} +c(\mathcal{A}_k)\epsilon \\
+\end{aligned}
+\]</span></p>
+<h1 id="实验结果">实验结果</h1>
+<p>离线实验写的很详细，大家可以看原文，美中不足好像没有实际的应用。</p>
+<h1 id="总结">总结</h1>
+<p>总的来说，本文提出了一种解决网络问题的方法，一般在做资源分配问题的时候，往往会将各个变量之间设为独立，这在很多现实问题中都是不符合的，但却由于求解困难的问题而不得不做的假设。在本文的问题中，得益于预测模型特征的构建，能够有将最开始预测问题和后面的求解问题联系起来，并通过AGA算法求解，对于有预算约束的非线性问题十分友好，思路巧妙，个人预测这种做法在后续很多实际问题中都会有所应用。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          
+            <a href="/tags/Operation-Research/" rel="tag"># Operation Research</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/07/09/Causal-Models-for-Real-Time-Bidding-with-Repeated-User-Interactions/" rel="next" title="Causal Models for Real Time Bidding with Repeated User Interactions">
+                <i class="fa fa-chevron-left"></i> Causal Models for Real Time Bidding with Repeated User Interactions
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/11/30/Personalized-Treatment-Selection-using-Causal-Heterogeneity/" rel="prev" title="Personalized Treatment Selection using Causal Heterogeneity">
+                Personalized Treatment Selection using Causal Heterogeneity <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">113</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">52</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">问题背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">解决方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C"><span class="nav-number">3.</span> <span class="nav-text">实验结果</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YuyangZhangFTD</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2140861"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.2"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>
