@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Machine Learning,Recommendation System,CTR,ODL,Steaming Learning," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Arvin's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="摘要  The Click-Through Rate (CTR) prediction task is critical in industrial recom- mender systems, where models are usually deployed on dynamic streaming data in practical applications. Such streaming">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Streaming CTR Prediction: Rethinking Recommendation Task for Real-World Streaming Data">
+<meta property="og:url" content="http://yoursite.com/2023/08/06/Streaming-CTR-Prediction-Rethinking-Recommendation-Task-for-Real-World-Streaming-Data/index.html">
+<meta property="og:site_name" content="Arvin&#39;s Blog">
+<meta property="og:description" content="摘要  The Click-Through Rate (CTR) prediction task is critical in industrial recom- mender systems, where models are usually deployed on dynamic streaming data in practical applications. Such streaming">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/2023/08/06/Streaming-CTR-Prediction-Rethinking-Recommendation-Task-for-Real-World-Streaming-Data/fig1.png">
+<meta property="og:image" content="http://yoursite.com/2023/08/06/Streaming-CTR-Prediction-Rethinking-Recommendation-Task-for-Real-World-Streaming-Data/fig2.png">
+<meta property="og:image" content="http://yoursite.com/2023/08/06/Streaming-CTR-Prediction-Rethinking-Recommendation-Task-for-Real-World-Streaming-Data/fig3.png">
+<meta property="og:image" content="http://yoursite.com/2023/08/06/Streaming-CTR-Prediction-Rethinking-Recommendation-Task-for-Real-World-Streaming-Data/fig4.png">
+<meta property="og:image" content="http://yoursite.com/2023/08/06/Streaming-CTR-Prediction-Rethinking-Recommendation-Task-for-Real-World-Streaming-Data/fig5.png">
+<meta property="article:published_time" content="2023-08-06T13:21:28.000Z">
+<meta property="article:modified_time" content="2023-08-06T13:22:51.905Z">
+<meta property="article:author" content="YuyangZhangFTD">
+<meta property="article:tag" content="Machine Learning">
+<meta property="article:tag" content="Recommendation System">
+<meta property="article:tag" content="CTR">
+<meta property="article:tag" content="ODL">
+<meta property="article:tag" content="Steaming Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2023/08/06/Streaming-CTR-Prediction-Rethinking-Recommendation-Task-for-Real-World-Streaming-Data/fig1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2023/08/06/Streaming-CTR-Prediction-Rethinking-Recommendation-Task-for-Real-World-Streaming-Data/"/>
+
+
+
+
+
+  <title>Streaming CTR Prediction: Rethinking Recommendation Task for Real-World Streaming Data | Arvin's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Arvin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Poem & Algorithm</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2023/08/06/Streaming-CTR-Prediction-Rethinking-Recommendation-Task-for-Real-World-Streaming-Data/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arvin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Streaming CTR Prediction: Rethinking Recommendation Task for Real-World Streaming Data</h1>
+        
+
+        <div class="post-meta">
+          
+
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2023-08-06T21:21:28+08:00">
+                2023-08-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PaperNote/" itemprop="url" rel="index">
+                    <span itemprop="name">PaperNote</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="摘要">摘要</h1>
+<blockquote>
+<p>The Click-Through Rate (CTR) prediction task is critical in industrial recom- mender systems, where models are usually deployed on <em>dynamic streaming data</em> in practical applications. Such streaming data in real-world recommender systems face many challenges, such as distribution shift, temporal non-stationarity, and systematic biases, which bring difficulties to the training and utilizing of recom- mendation models. However, most existing studies approach the CTR prediction as a classification task on <em>static</em> datasets, assuming that the train and test sets are independent and identically distributed (<em>a.k.a.</em>, <em>i.i.d.</em> assumption). To bridge this gap, we formulate the CTR prediction problem in streaming scenarios as a Streaming CTR Prediction task. Accordingly, we propose dedicated benchmark settings and metrics to evaluate and analyze the performance of the models in streaming data. To better understand the differences compared to traditional CTR prediction tasks, we delve into the factors that may affect the model performance, such as parameter scale, normalization, regularization, etc. The results reveal the existence of the “<em>streaming learning dilemma</em>”, whereby the same factor may have different effects on model performance in the static and streaming scenarios. Based on the findings, we propose two simple but inspiring methods (<em>i.e.</em>, tuning key parameters and exemplar replay) that significantly improve the effectiveness of the CTR models in the new streaming scenario. We hope our work will inspire further research on streaming CTR prediction and help improve the robustness and adaptability of recommender systems.</p>
+</blockquote>
+<p>CTR预测是工业推荐系统中的重要组成部分，通常CTR模型都会被部署在一个动态流式的数据环境中。在现实世界中，这种流式数据面临着许多挑战，比如分布偏移、时序非平稳性、系统造成的偏差等等，这都给训练、使用推荐模型带来困难。在当前已有的研究中，大部分认为CTR是一个在静态数据集上的分类任务，并且假设训练和测试数据是iid的。</p>
+<p>在本文中，我们将流式数据场景下的CTR预估任务定义为Streaming CTR Prediction Task，并针对这个问题构建了benchmark和相应的指标，用于评估和分析在流式数据下模型的性能，同时为了更好地理解与传统CTR任务的差异，我们研究了可能影响模型性能的因素，比如参数规模、标准化、正则化等。</p>
+<p>本文的结果表明了“流式学习困境”的存在，相同的因素在静态数据和流式数据上，对于模型效果的影响不同，基于这个发现，我们提出了两个简单有效的方法（调整关键参数、样本回放），能够有效提升流式场景上CTR模型的效果。</p>
+<p>我们希望我们的工作能促进对流式数据环境下CTR预估任务的进一步研究，并帮助提高推荐系统的鲁棒性和适应性。</p>
+<h1 id="正文">正文</h1>
+<p>工业界推荐系统的数据往往是流式的，随着时间数据的分布可能会发生显著的变化，这种分布变化可能会对模型的效果产生影响。如下图a所示，我们将数据按照时间进行切分，CTR模型的AUC逐渐降低、LogLoss逐渐升高，说明模型的效果是受时间的影响的；下图b中，每段时间周期内，label的均值会有变化，不同device_id也会出现在不同的时间，即样本在不同时间段内分布存在差异。</p>
+<figure>
+<img src="./fig1.png" alt="image-20230806125012362" /><figcaption aria-hidden="true">image-20230806125012362</figcaption>
+</figure>
+<p>一个流式数据环境下，CTR模型的预测、评估和训练的过程如下，在第<span class="math inline">\(t+1\)</span>的时间片内，会用上一时间片的模型<span class="math inline">\(M_t\)</span>进行预测，得到<span class="math inline">\(Y&#39;_{t+1}\)</span>，然后根据用户的反馈<span class="math inline">\(Y_{t+1}\)</span>进行评估，并更新得到模型<span class="math inline">\(M_{t+1}\)</span>。</p>
+<figure>
+<img src="./fig2.png" alt="image-20230806142203065" /><figcaption aria-hidden="true">image-20230806142203065</figcaption>
+</figure>
+<p>考虑到CTR模型在线更新的特点，我们提出了如下几个指标来对模型效果进行评估和分析：</p>
+<ol type="1">
+<li>pAUC（<strong>p</strong>retraining AUC），数据集随机划分下，测试集上的AUC</li>
+<li>iAUC（<strong>i</strong>ncremental AUC），最初的模型，在后续时间片测试集上的AUC</li>
+<li>bAUC（<strong>b</strong>ackward AUC），流式训练后，上一时间片内随机划分出的测试集上的AUC</li>
+<li>cAUC（<strong>c</strong>urrent AUC），流式训练后，当前时间片内随机划分出的测试集上的AUC</li>
+<li>oAUC（<strong>o</strong>nline AUC），流式训练后，下一时间片内测试集上的AUC</li>
+</ol>
+<p>其中oAUC最能反应线上预测效果的好坏，但是模型训练效果受两部分影响，最开始初始化模型时候的效果以及后续流式训练的效果（业界普遍做法是先用较长历史数据 e.g. 30days进行初始化训练，之后再持续更新追上线上的模型），所以需要结合bAUC、cAUC、pAUC、iAUC共同分析</p>
+<ol type="1">
+<li>对比bAUC和cAUC的效果，可以看作是流式学习时，训练集上效果和测试集上的效果，可以度量不同时间段内，如果样本分布发生变化后，模型效果的变化</li>
+<li>bAUC也可以用于度量模型的“遗忘”程度，bAUC越高，说明模型对于过去的知识忘记的越少</li>
+<li>pAUC可以衡量模型最开始初始化时的效果，传统意义上静态数据环境下模型的效果</li>
+<li>iAUC用于衡量初始化的模型在后续学习过程中的效果，即对于分布外样本的泛化能力</li>
+</ol>
+<p>集中不同AUC的计算方式如下图所示：</p>
+<figure>
+<img src="./fig3.png" alt="image-20230806142231215" /><figcaption aria-hidden="true">image-20230806142231215</figcaption>
+</figure>
+<p>定义清楚相关指标后，文中对比了一些常见的模型的效果，其中FM和xDeepFM的效果变化较大，这也使得我们想更深入地研究影响模型流式学习效果的原因。</p>
+<figure>
+<img src="./fig4.png" alt="image-20230806152346224" /><figcaption aria-hidden="true">image-20230806152346224</figcaption>
+</figure>
+<p>我们将影响因素分为两大类，这里直接写结论：</p>
+<ol type="1">
+<li>模型相关的因素
+<ol type="1">
+<li>参数大小。在静态数据中，增加模型参数大小会带来效果提升，但是对于流式数据，效果提升趋于饱和的现象会更明显，提升幅度也更不明显。</li>
+<li>标准化，Batch Normalization 或者 Layer Normalization。流式任务中不用标准化效果最好，BN效果最差。</li>
+<li>Dropout Rate。会降低效果。【没具体解释，单纯看图和表，drop out概率越大，效果越差。图下标还错了。】</li>
+<li>正则项，Embedding正则化会提升iAUC，但会降低pAUC和oAUC，MLP正则化会降低效果。</li>
+</ol></li>
+<li>优化算法相关的因素
+<ol type="1">
+<li>优化器，Adam相关的优化器效果表现较好。</li>
+<li>batch size，大batch size会有更好的泛化效果，不论iAUC还是oAUC都提升很多，过大的batch size（5000-&gt;10000）会让效果提升趋于饱和。</li>
+<li>training epoch。【一顿分析没看懂。写得太差了。】</li>
+</ol></li>
+</ol>
+<p>结合上述分析，我们提出两种简单有效的办法来来提升oAUC：</p>
+<ol type="1">
+<li>根据oAUC调整关键超参数。因为有些超参数对于pAUC和oAUC的提升效果不一致，所以我们建议根据oAUC来调整这些超参数。（这其实是一个比较简单能提点数的办法，目前大部分实践都是根据pAUC做模型参数的调整，并不会根据线上ODL的效果进行调参）</li>
+<li>样本回放。CTR模型仍会受到“样本遗忘”问题的影响，通过样本回放的方式可以有效提高模型效果。</li>
+</ol>
+<figure>
+<img src="./fig5.png" alt="image-20230806212018607" /><figcaption aria-hidden="true">image-20230806212018607</figcaption>
+</figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          
+            <a href="/tags/Recommendation-System/" rel="tag"># Recommendation System</a>
+          
+            <a href="/tags/CTR/" rel="tag"># CTR</a>
+          
+            <a href="/tags/ODL/" rel="tag"># ODL</a>
+          
+            <a href="/tags/Steaming-Learning/" rel="tag"># Steaming Learning</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2023/07/02/Fresh-Content-Needs-More-Attention-Multi-funnel-Fresh-Content-Recommendation/" rel="next" title="Fresh Content Needs More Attention- Multi-funnel Fresh Content Recommendation">
+                <i class="fa fa-chevron-left"></i> Fresh Content Needs More Attention- Multi-funnel Fresh Content Recommendation
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">112</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">54</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YuyangZhangFTD</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2140861"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.2"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

@@ -6,7 +6,7 @@
   <link href="http://yoursite.com/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2023-07-02T02:54:46.960Z</updated>
+  <updated>2023-08-06T13:22:51.905Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,41 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Streaming CTR Prediction: Rethinking Recommendation Task for Real-World Streaming Data</title>
+    <link href="http://yoursite.com/2023/08/06/Streaming-CTR-Prediction-Rethinking-Recommendation-Task-for-Real-World-Streaming-Data/"/>
+    <id>http://yoursite.com/2023/08/06/Streaming-CTR-Prediction-Rethinking-Recommendation-Task-for-Real-World-Streaming-Data/</id>
+    <published>2023-08-06T13:21:28.000Z</published>
+    <updated>2023-08-06T13:22:51.905Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;摘要&quot;&gt;摘要&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The Click-Through Rate (CTR) prediction task is critical in industrial recom- mender systems, where</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
+    
+    <category term="Recommendation System" scheme="http://yoursite.com/tags/Recommendation-System/"/>
+    
+    <category term="CTR" scheme="http://yoursite.com/tags/CTR/"/>
+    
+    <category term="ODL" scheme="http://yoursite.com/tags/ODL/"/>
+    
+    <category term="Steaming Learning" scheme="http://yoursite.com/tags/Steaming-Learning/"/>
+    
+  </entry>
   
   <entry>
     <title>Fresh Content Needs More Attention- Multi-funnel Fresh Content Recommendation</title>
@@ -595,32 +630,6 @@
     <category term="Causal Inference" scheme="http://yoursite.com/tags/Causal-Inference/"/>
     
     <category term="Attribution" scheme="http://yoursite.com/tags/Attribution/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>日拱一卒</title>
-    <link href="http://yoursite.com/2021/06/26/%E6%97%A5%E6%8B%B1%E4%B8%80%E5%8D%92/"/>
-    <id>http://yoursite.com/2021/06/26/%E6%97%A5%E6%8B%B1%E4%B8%80%E5%8D%92/</id>
-    <published>2021-06-26T07:34:40.000Z</published>
-    <updated>2023-07-02T02:53:37.567Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;平时的阅读列表，一般会附上下载链接和关键词。日拱一卒，与诸君共勉。&lt;/p&gt;
-&lt;h1 id=&quot;2023&quot;&gt;&lt;a href=&quot;#2023&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
-    
-    
-    <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
     
   </entry>
   
