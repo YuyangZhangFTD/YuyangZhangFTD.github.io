@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Deep Learning,Recommendation,Retrieval," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Arvin's Blog" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="摘要  Data selection bias has been a long-lasting challenge in the machine learning domain, especially in multi-stage recommendation systems, where the distribution of labeled items for model training i">
+<meta property="og:type" content="article">
+<meta property="og:title" content="An Empirical Study of Selection Bias in Pinterest Ads Retrieval">
+<meta property="og:url" content="http://yoursite.com/2023/08/20/An-Empirical-Study-of-Selection-Bias-in-Pinterest-Ads-Retrieval/index.html">
+<meta property="og:site_name" content="Arvin&#39;s Blog">
+<meta property="og:description" content="摘要  Data selection bias has been a long-lasting challenge in the machine learning domain, especially in multi-stage recommendation systems, where the distribution of labeled items for model training i">
+<meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/2023/08/20/An-Empirical-Study-of-Selection-Bias-in-Pinterest-Ads-Retrieval/fig1_pinterest_ad.png">
+<meta property="og:image" content="http://yoursite.com/2023/08/20/An-Empirical-Study-of-Selection-Bias-in-Pinterest-Ads-Retrieval/fig2_score_distribution.png">
+<meta property="og:image" content="http://yoursite.com/2023/08/20/An-Empirical-Study-of-Selection-Bias-in-Pinterest-Ads-Retrieval/fig3_offline_evaluation.png">
+<meta property="og:image" content="http://yoursite.com/2023/08/20/An-Empirical-Study-of-Selection-Bias-in-Pinterest-Ads-Retrieval/fig4_online_metric.png">
+<meta property="og:image" content="http://yoursite.com/2023/08/20/An-Empirical-Study-of-Selection-Bias-in-Pinterest-Ads-Retrieval/fig5_online_metirc_2.png">
+<meta property="og:image" content="http://yoursite.com/2023/08/20/An-Empirical-Study-of-Selection-Bias-in-Pinterest-Ads-Retrieval/fig6_online_metirc_3.png">
+<meta property="article:published_time" content="2023-08-19T17:09:03.000Z">
+<meta property="article:modified_time" content="2023-08-19T17:10:19.584Z">
+<meta property="article:author" content="YuyangZhangFTD">
+<meta property="article:tag" content="Deep Learning">
+<meta property="article:tag" content="Recommendation">
+<meta property="article:tag" content="Retrieval">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2023/08/20/An-Empirical-Study-of-Selection-Bias-in-Pinterest-Ads-Retrieval/fig1_pinterest_ad.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2023/08/20/An-Empirical-Study-of-Selection-Bias-in-Pinterest-Ads-Retrieval/"/>
+
+
+
+
+
+  <title>An Empirical Study of Selection Bias in Pinterest Ads Retrieval | Arvin's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Arvin's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Poem & Algorithm</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2023/08/20/An-Empirical-Study-of-Selection-Bias-in-Pinterest-Ads-Retrieval/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Arvin's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">An Empirical Study of Selection Bias in Pinterest Ads Retrieval</h1>
+        
+
+        <div class="post-meta">
+          
+
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2023-08-20T01:09:03+08:00">
+                2023-08-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PaperNote/" itemprop="url" rel="index">
+                    <span itemprop="name">PaperNote</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="摘要">摘要</h1>
+<blockquote>
+<p>Data selection bias has been a long-lasting challenge in the machine learning domain, especially in multi-stage recommendation systems, where the distribution of labeled items for model training is very different from that of the actual candidates during inference time. This distribution shift is even more prominent in the context of online advertising where the user base is diverse and the platform contains a wide range of contents. In this paper, we first investigate the data selection bias in the upper funnel (Ads Retrieval) of Pinterest’s multi-cascade ads ranking system. We then conduct comprehensive experiments to assess the performance of various state-of-the-art methods, including transfer learning, adversarial learning, and unsupervised domain adaptation. Moreover, we further introduce some modifications into the unsupervised domain adaptation and evaluate the performance of different variants of this modified method. Our online A/B experiments show that the modified version of unsupervised domain adaptation (MUDA) could provide the largest improvements to the performance of Pinterest’s advertisement ranking system compared with other methods and the one used in current production.</p>
+</blockquote>
+<p>数据选择偏差是机器学习领域一直以来都面临的挑战，特别是在多阶段的推荐系统中，模型训练所用到的样本分布与在线推断时候的样本分布有较大差异。在在线广告中，用户群体多样、平台包含各种各样的内容，这种分布的差异更加突出。</p>
+<p>在本文中，我们先研究了Pinterest的多级广告排序系统上所存在的数据选择偏差问题，并利用各类sota的方法进行了全面的实验，包括迁移学习、对抗学习、非监督域适应等。此外，我们在无监督域适应学习上做了一些优化，并评估了不同参数下模型的效果。在线AB实验表明，经过优化的无监督域适应模型（MUDA）对Pinterest的广告排名系统有显著的提升。</p>
+<h1 id="正文">正文</h1>
+<p>如下图所示，Pinterest平台上的广告在被展示前往往有以下四个阶段：定向（选中目标人群）、召回（文中为retrieval，可以理解为电商场景下粗排的角色，此处称之为召回）、排序和竞价，其中每阶段都会对相关的候选物品进行打分或者过滤，最终从数百万的候选集中筛选出数个内容进行展示。</p>
+<figure>
+<img src="./fig1_pinterest_ad.png" alt="image-20230819214539770" /><figcaption aria-hidden="true">image-20230819214539770</figcaption>
+</figure>
+<p>对于召回阶段的模型，我们会收集两个环节的数据用做模型训练：参与竞价的候选物品集合和最终竞得的物品集合，其中精排模型对于前者的打分会作为伪标签，最终竞得的样本以及用户发生行为的物品作为真正的样本标签。为了保证模型的时效性，模型会做天级别的更新。（下图a）</p>
+<figure>
+<img src="./fig2_score_distribution.png" alt="image-20230819215110271" /><figcaption aria-hidden="true">image-20230819215110271</figcaption>
+</figure>
+<p>然而，这种构建训练样本方式会带来样本选择偏差，预测阶段会对定向后的物品候选集进行打分，而训练阶段使用的样本来自竞价阶段，后者是前者的子集，如上图b、c、d所示，在召回候选集合（post-Targeting candidates）、竞价阶段候选集合（auction candidates）以及竞价获胜的物品集合（auction winners，即最终曝光的物品）上，不同任务上的精排的打分分布有显著差异。（选择精排打分分布，是因为训练时候会用精排打分作为label，作者认为精排模型有最好的打分能力，前链路应该向召回看齐。此处多说一句，目前主流的思路是 召回、粗排、精排应该有一致性，但是应该向什么对齐却是有待讨论的，精排受限于前链路的样本bias，候选集较大时排序能力并不强，甚至弱于粗排，召回粗排又受限于精排决定的曝光样本，如何定义出一个ground truth的label，是目前研究的重点）</p>
+<p>下面我们对这个问题做一些定义，用<span class="math inline">\((u,a,y)\)</span>分别表示用户特征、广告特征和实际label，<span class="math inline">\(F_\theta\)</span>表示参数为<span class="math inline">\(\theta\)</span>的模型，<span class="math inline">\(l\)</span>表示损失函数，我们希望能够最小化理想的目标： <span class="math display">\[
+\underset{\theta}{\min} {\cal{L}}_\text{ideal}(F_\theta)
+=\frac{1}{|\mathbb{D}|} \sum_{(u,a)\in\mathbb{D}} 
+l\Big(y, F_\theta(u,a)\Big)
+\]</span> 其中<span class="math inline">\(\mathbb{D}\)</span>表示全集的分布，也即非偏的样本集合。由于我们只能观测到全集样本子集，所以无法直接面向这个目标进行优化。下面我们会介绍我们尝试过不同的方式，对上述目标进行“近似”优化。</p>
+<ol type="1">
+<li>最基础的方式，二分类建模，<span class="math inline">\(\underset{\theta}{\min}{\cal{L}}_\text{naive}(F_\theta)=\frac{1}{|\mathbb{O}|}\sum_{(u,a)\in\mathbb{O}} l\Big(y, F_\theta(u,a)\Big)\)</span></li>
+<li>batch内负采样，在二分类建模中，用户未点击样本作为负样本，这种做法并不一定正确，用户可能会认为这些广告是有价值的，但在当前时刻并没有做任何动作，所以我们在训练的batch中，用其它请求的样本作为负样本，进行二分类模型的训练。需要注意的是，我们只保留了所用用户的正样本做训练。</li>
+<li>知识蒸馏，用精排的模型进行蒸馏，用<span class="math inline">\(R\)</span>表示精排模型，<span class="math inline">\(\underset{\theta}{\min}{\cal{L}}_\text{kd}(F_\theta)=\frac{1}{|\mathbb{O}|}\sum_{(u,a)\in\mathbb{O}} l\Big(R(u,a), F_\theta(u,a)\Big)\)</span></li>
+<li>迁移学习，其核思是用原域的数据进行训练，然后在目标域上进行fine-tune，所以我们用定向后的数据集来作为unbiased dataset进行finetune（unbiased 是因为召回模型在推断阶段打分集合如此）</li>
+<li>对抗学习作为正则化，对于bias问题的另一种观点是，模型在biased数据上学到的表征，在unbiased数据上泛化能力不足，造成效果不好，所以我们可以在学习过程中增加正则化，来矫正表征的学习。具体做法如下，用<span class="math inline">\(F_1\)</span>和<span class="math inline">\(F_2\)</span>来表示模型级联的输出，用<span class="math inline">\(H\)</span>表示一个二分类学习器，<span class="math inline">\({\cal{L}}_\text{cls}(u,a)=-\mathbb{I}_{(u,a)\in\mathbb{D}}\log H\Big(F_1(u,a)\Big)-\mathbb{I}_{(u,a)\in\mathbb{O}}\log \bigg(1 - H\Big(F_1(u,a)\Big)\bigg)\)</span>，即判断这个预测是来自unbiased样本集合还是biased样本集合，总的损失函数是<span class="math inline">\({\cal{L}}_\text{adv}={\cal{L}}_\text{target}\bigg(\Big(F_2(F_1(u,a)\Big), y\bigg)-\lambda {\cal{L}_\text{adv}}\)</span></li>
+<li>UDA（Unsupervised Domain Adaptation，非监督域适应），UDA是一类用目标域样本无监督训练、用原域样本有监督训练的算法。
+<ol type="1">
+<li>原始UDA，<span class="math inline">\(\underset{\theta}{\min}{\cal{L}}_\text{naiveUDA}(F_\theta)=\frac{1}{|\mathbb{D}|}\sum_{(u,a)\in\mathbb{D}} l\Big(R(u,a), F_\theta(u,a)\Big)\)</span>，用精排模型给unbiased样本打分，然后训练召回模型</li>
+<li>MUDA，在原始的UDA算法中，我们很难保证排序模型<span class="math inline">\(R\)</span>在unbiased集合上的效果，所以我们针对样本做一定筛选，定义上下阈值<span class="math inline">\(\delta_l\)</span>和<span class="math inline">\(\delta_h\)</span>，低于下界的为负样本，高于上界的为正样本，<span class="math inline">\(\underset{\theta}{\min}{\cal{L}}_\text{mUDA}(F_\theta)=\frac{1}{|\mathbb{D}|\cdot|\mathbb{O}|}\sum_{\{(u,a)|(u,a)\in \mathbb{D}\cup\mathbb{O},R(u,a)&lt;\delta_l||R(u,a)&gt;\delta_h\}} l\bigg(\Phi^{\delta_h}_{\delta_l}\Big(R(u,a)\Big), F_\theta(u,a)\bigg)\)</span></li>
+</ol></li>
+</ol>
+<p>离线评估，前几种方式往往会有较高的AUC，但由于样本有偏，离线AUC并不能真正反映出模型的效果。</p>
+<figure>
+<img src="./fig3_offline_evaluation.png" alt="image-20230820005834718" /><figcaption aria-hidden="true">image-20230820005834718</figcaption>
+</figure>
+<p>在线实验，mUDA模型在多目标上，都取得了较好的结果。</p>
+<figure>
+<img src="./fig4_online_metric.png" alt="image-20230820010219542" /><figcaption aria-hidden="true">image-20230820010219542</figcaption>
+</figure>
+<p>值得注意的是，样本内负采样的方式，虽然也同时带来的CTR和gCTR30的增长，但实际上是由于不同类型上广告流量变化所带来的差异，对于广告后链路转化效果而言，mUDA效果也更好。</p>
+<figure>
+<img src="./fig5_online_metirc_2.png" alt="image-20230820010510206" /><figcaption aria-hidden="true">image-20230820010510206</figcaption>
+</figure>
+<figure>
+<img src="./fig6_online_metirc_3.png" alt="image-20230820010616604" /><figcaption aria-hidden="true">image-20230820010616604</figcaption>
+</figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Deep-Learning/" rel="tag"># Deep Learning</a>
+          
+            <a href="/tags/Recommendation/" rel="tag"># Recommendation</a>
+          
+            <a href="/tags/Retrieval/" rel="tag"># Retrieval</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2023/08/06/Streaming-CTR-Prediction-Rethinking-Recommendation-Task-for-Real-World-Streaming-Data/" rel="next" title="Streaming CTR Prediction: Rethinking Recommendation Task for Real-World Streaming Data">
+                <i class="fa fa-chevron-left"></i> Streaming CTR Prediction: Rethinking Recommendation Task for Real-World Streaming Data
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar.jpg"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">113</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">56</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+          <div class="cc-license motion-element" itemprop="license">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+              <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+            </a>
+          </div>
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YuyangZhangFTD</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2140861"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/js/src/algolia-search.js?v=5.1.2"></script>
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

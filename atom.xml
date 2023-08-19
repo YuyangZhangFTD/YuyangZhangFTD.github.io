@@ -6,7 +6,7 @@
   <link href="http://yoursite.com/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2023-08-06T13:22:51.905Z</updated>
+  <updated>2023-08-19T17:10:19.584Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,37 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>An Empirical Study of Selection Bias in Pinterest Ads Retrieval</title>
+    <link href="http://yoursite.com/2023/08/20/An-Empirical-Study-of-Selection-Bias-in-Pinterest-Ads-Retrieval/"/>
+    <id>http://yoursite.com/2023/08/20/An-Empirical-Study-of-Selection-Bias-in-Pinterest-Ads-Retrieval/</id>
+    <published>2023-08-19T17:09:03.000Z</published>
+    <updated>2023-08-19T17:10:19.584Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;摘要&quot;&gt;摘要&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Data selection bias has been a long-lasting challenge in the machine learning domain, especially in</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="Deep Learning" scheme="http://yoursite.com/tags/Deep-Learning/"/>
+    
+    <category term="Recommendation" scheme="http://yoursite.com/tags/Recommendation/"/>
+    
+    <category term="Retrieval" scheme="http://yoursite.com/tags/Retrieval/"/>
+    
+  </entry>
   
   <entry>
     <title>Streaming CTR Prediction: Rethinking Recommendation Task for Real-World Streaming Data</title>
@@ -598,38 +629,6 @@
     <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
     
     <category term="Operation Research" scheme="http://yoursite.com/tags/Operation-Research/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Causal Models for Real Time Bidding with Repeated User Interactions</title>
-    <link href="http://yoursite.com/2021/07/09/Causal-Models-for-Real-Time-Bidding-with-Repeated-User-Interactions/"/>
-    <id>http://yoursite.com/2021/07/09/Causal-Models-for-Real-Time-Bidding-with-Repeated-User-Interactions/</id>
-    <published>2021-07-09T12:36:44.000Z</published>
-    <updated>2021-07-16T16:04:42.424Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;这篇文章是criteo ai lab发表在KDD2021上的一篇文章，文中的一些idea非常棒，同时跟我最近手头上做的事情比较像，拿出来详细写一下。&lt;/p&gt;
-&lt;h1</summary>
-        
-      
-    
-    
-    
-    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
-    
-    
-    <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
-    
-    <category term="Advertising" scheme="http://yoursite.com/tags/Advertising/"/>
-    
-    <category term="Causal Inference" scheme="http://yoursite.com/tags/Causal-Inference/"/>
-    
-    <category term="Attribution" scheme="http://yoursite.com/tags/Attribution/"/>
     
   </entry>
   
