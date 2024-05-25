@@ -6,7 +6,7 @@
   <link href="http://yoursite.com/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2023-08-19T17:10:19.584Z</updated>
+  <updated>2024-05-25T08:58:44.812Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>3 Years in Hangzhou</title>
+    <link href="http://yoursite.com/2024/05/25/3-Years-in-Hangzhou/"/>
+    <id>http://yoursite.com/2024/05/25/3-Years-in-Hangzhou/</id>
+    <published>2024-05-25T08:57:50.000Z</published>
+    <updated>2024-05-25T08:58:44.812Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;一转眼三年，零零散散还是要写一点，大部分摘自2023的复盘。&lt;/p&gt;
+&lt;h1 id=&quot;关于工作&quot;&gt;关于「工作」&lt;/h1&gt;
+&lt;figure&gt;
+&lt;img src=&quot;./alibaba.png&quot; alt=&quot;入职那天阿里巴巴的股价&quot; /&gt;&lt;figcaption</summary>
+        
+      
+    
+    
+    
+    <category term="Dairy" scheme="http://yoursite.com/categories/Dairy/"/>
+    
+    
+    <category term="Dairy" scheme="http://yoursite.com/tags/Dairy/"/>
+    
+  </entry>
   
   <entry>
     <title>An Empirical Study of Selection Bias in Pinterest Ads Retrieval</title>
@@ -247,7 +275,7 @@
     <link href="http://yoursite.com/2022/06/18/1-Year-in-HangZhou/"/>
     <id>http://yoursite.com/2022/06/18/1-Year-in-HangZhou/</id>
     <published>2022-06-18T14:51:20.000Z</published>
-    <updated>2022-06-19T01:21:32.359Z</updated>
+    <updated>2022-06-19T01:21:32.000Z</updated>
     
     
       
@@ -600,35 +628,6 @@
     <category term="Individual Treatment Effect" scheme="http://yoursite.com/tags/Individual-Treatment-Effect/"/>
     
     <category term="Promotion" scheme="http://yoursite.com/tags/Promotion/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Large-Scale Data-Driven Airline Market Influence Maximization</title>
-    <link href="http://yoursite.com/2021/08/21/Large-Scale-Data-Driven-Airline-Market-Influence-Maximization/"/>
-    <id>http://yoursite.com/2021/08/21/Large-Scale-Data-Driven-Airline-Market-Influence-Maximization/</id>
-    <published>2021-08-21T15:33:55.000Z</published>
-    <updated>2021-08-28T16:05:03.746Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;这篇文章是KDD2021的一篇文章，讲的是做航空路线的资源分配的。&lt;/p&gt;
-&lt;p&gt;我发现自己好像就喜欢看这个类型的文章，偏实际的业务问题+充斥着骚操作的解决方案，对于那种well-defined问题的文章好像看的不是那么多。&lt;/p&gt;
-&lt;p&gt;最近也被若干老板diss了说写东西</summary>
-        
-      
-    
-    
-    
-    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
-    
-    
-    <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
-    
-    <category term="Operation Research" scheme="http://yoursite.com/tags/Operation-Research/"/>
     
   </entry>
   
