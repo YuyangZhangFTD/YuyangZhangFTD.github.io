@@ -96,20 +96,28 @@
 
 
 
-<meta name="description" content="TL;DR 本文是LinkedIn的模型团队，写得模型迭代“年终汇报”，包含LinkedIn团队对于各类模型涨点的技巧的实践。">
+<meta name="description" content="TL;DR 本文是LinkedIn的模型团队模型迭代“年终汇报”，包含LinkedIn团队对于各类模型涨点的技巧的实践。 摘要  We present LiRank, a large-scale ranking framework at LinkedIn that brings to production state-of-the-art modeling architectures and op">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LiRank: Industrial Large Scale Ranking Models at LinkedIn">
 <meta property="og:url" content="http://yoursite.com/2024/09/08/LiRank-Industrial-Large-Scale-Ranking-Models-at-LinkedIn/index.html">
 <meta property="og:site_name" content="Arvin&#39;s Blog">
-<meta property="og:description" content="TL;DR 本文是LinkedIn的模型团队，写得模型迭代“年终汇报”，包含LinkedIn团队对于各类模型涨点的技巧的实践。">
+<meta property="og:description" content="TL;DR 本文是LinkedIn的模型团队模型迭代“年终汇报”，包含LinkedIn团队对于各类模型涨点的技巧的实践。 摘要  We present LiRank, a large-scale ranking framework at LinkedIn that brings to production state-of-the-art modeling architectures and op">
 <meta property="og:locale">
+<meta property="og:image" content="http://yoursite.com/2024/09/08/LiRank-Industrial-Large-Scale-Ranking-Models-at-LinkedIn/contribution_tower.png">
+<meta property="og:image" content="http://yoursite.com/2024/09/08/LiRank-Industrial-Large-Scale-Ranking-Models-at-LinkedIn/click_tower.png">
+<meta property="og:image" content="http://yoursite.com/2024/09/08/LiRank-Industrial-Large-Scale-Ranking-Models-at-LinkedIn/dcnv2_attention.png">
+<meta property="og:image" content="http://yoursite.com/2024/09/08/LiRank-Industrial-Large-Scale-Ranking-Models-at-LinkedIn/calibration.png">
+<meta property="og:image" content="http://yoursite.com/2024/09/08/LiRank-Industrial-Large-Scale-Ranking-Models-at-LinkedIn/RO_WideModel.png">
+<meta property="og:image" content="http://yoursite.com/2024/09/08/LiRank-Industrial-Large-Scale-Ranking-Models-at-LinkedIn/exp1.png">
+<meta property="og:image" content="http://yoursite.com/2024/09/08/LiRank-Industrial-Large-Scale-Ranking-Models-at-LinkedIn/exp2.png">
 <meta property="article:published_time" content="2024-09-08T13:51:52.000Z">
-<meta property="article:modified_time" content="2024-09-08T13:54:13.071Z">
+<meta property="article:modified_time" content="2024-09-16T12:10:28.816Z">
 <meta property="article:author" content="YuyangZhangFTD">
 <meta property="article:tag" content="Machine Learning">
 <meta property="article:tag" content="Recommendation System">
 <meta property="article:tag" content="Best Practice">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2024/09/08/LiRank-Industrial-Large-Scale-Ranking-Models-at-LinkedIn/contribution_tower.png">
 
 
 
@@ -417,7 +425,219 @@
 
       
         <p>TL;DR</p>
-<p>本文是LinkedIn的模型团队，写得模型迭代“年终汇报”，包含LinkedIn团队对于各类模型涨点的技巧的实践。</p>
+<p>本文是LinkedIn的模型团队模型迭代“年终汇报”，包含LinkedIn团队对于各类模型涨点的技巧的实践。</p>
+<h1 id="摘要">摘要</h1>
+<blockquote>
+<p>We present LiRank, a large-scale ranking framework at LinkedIn that
+brings to production state-of-the-art modeling architectures and
+optimization methods. We unveil several modeling improve- ments,
+including Residual DCN, which adds attention and residual connections to
+the famous DCNv2 architecture. We share insights into combining and
+tuning SOTA architectures to create a unified model, including Dense
+Gating, Transformers and Residual DCN. We also propose novel techniques
+for calibration and describe how we productionalized deep learning based
+explore/exploit methods.</p>
+<p>To enable effective, production-grade serving of large ranking
+models, we detail how to train and compress models using quanti- zation
+and vocabulary compression. We provide details about the deployment
+setup for large-scale use cases of Feed ranking, Jobs Recommendations,
+and Ads click-through rate (CTR) prediction.</p>
+<p>We summarize our learnings from various A/B tests by elucidating the
+most effective technical approaches. These ideas have contributed to
+relative metrics improvements across the board at LinkedIn: +0.5% member
+sessions in the Feed, +1.76% qualified job applications for Jobs search
+and recommendations, and +4.3% for Ads CTR. We hope this work can
+provide practical insights and solutions for practitioners interested in
+leveraging large-scale deep ranking systems.</p>
+</blockquote>
+<p>LiRank 是 LinkedIn
+的排序框架，将SOTA的建模架构和优化方法应用于线上生产环境中。本文中我们展示了LiRank中用到的一些模型优化方法，包括在DCNv2
+中添加注意力和残差连接，分享了一些将SOTA架构落地的见解，包括Dense
+Gating、Transformer 和 Residual
+DCN，展示了一下在校准上的新技术，以及我们如何将 Deep Learing 在
+Explore&amp;Exploit 方向上进行落地的方案。</p>
+<p>为了提供
+高效、产品化的排序服务，我们详细描述了如何训练模型，并通过量化和词表压缩的方式来压缩模型，并将排序模型应用于Feeds、Job
+Recoomendation、和广告CTR预估。</p>
+<p>最后我们总结了各类优化方法在AB实验中的经验，这些方法对LinkedIn各个场景的关键指标都有所贡献，Feeds场景中session
+member+0.5%，Jobs Serach和Recommendation场景中职位申请合格数
++1.76%，，广告点击率+4.3%。我们希望这些工作可以为相关从业人员提供实用的见解和解决方案。</p>
+<h1 id="正文">正文</h1>
+<h2 id="large-ranking-models">Large Ranking Models</h2>
+<p>Linkedin用排序模型的场景主要是Feeds的排序和广告的CTR预估。</p>
+<h3 id="feeds-ranking-models">Feeds Ranking Models</h3>
+<p>最开始的Feed排序模型是一个point-wise的排序模型，会针对每个
+会员和内容的paire（&lt;member, candidate
+post&gt;）同时预估多种行为的概率，比如评论、分享、点赞、停留时长、点击等等。</p>
+<p>一个多任务（MTL）的TF模型会通过2个塔来输出这些概率，click塔输出点击率和停留时长，contribution塔输出contribution和相关预测，这两个塔用了相同的dense
+feature，并叠加多层全链接。稀疏ID特征会转化成dense的embedding。</p>
+<p>contribution塔结构如下图所示</p>
+<figure>
+<img src="./contribution_tower.png" alt="contribution_tower" />
+<figcaption aria-hidden="true">contribution_tower</figcaption>
+</figure>
+<h3 id="ads-ctr-model">Ads CTR Model</h3>
+<p>在LinkedIn，广告的选择依赖于广告CTR的预估。广告主会自定义广告计划付费点击行为，有些会选择互动行为，比如喜欢或者评论，另一些可能会选择网站访问，等等。为了更好的捕捉用户的兴趣，CTR模型是一个基于付费行为的MTL模型，有3个head输出，分别对应3组相似的付费行为，每个head都有独立的模型层，只在底层共享embedding。模型结构如下图所示，</p>
+<figure>
+<img src="./click_tower.png" alt="click_tower" />
+<figcaption aria-hidden="true">click_tower</figcaption>
+</figure>
+<h3 id="residual-dcn">Residual DCN</h3>
+<p>为了自动做特征交叉，我们使用了DCVv2的结构。在离线实验中，我们发现2层DCNv2已经可以提供足够的特征交叉能力，额外再增加一层，对于最终受益的提升不大，同时也增加了训练时间和推理时间的成本。</p>
+<p>但即使只是用2层DCNv2，仍然会增加非常多的参数。为了解决这个问题，我们先对DCNv2做了矩阵分解，用2个更小的矩阵来近似，之后我们用embedding代替稀疏的one-hot，也节省了30%的参数。这些做法有效降低了DCNv2的参数量，让我们的模型可以部署在CPU上。（Arvin：这不就是日常操作吗？）</p>
+<p>为了进一步加强DCNv2，我们在low
+rank的矩阵中，引入attention，原来拆成2个矩阵，现在拆为3个，中间的矩阵作为注意力分，由Value子矩阵做dot-product
+self-attention得到，具体计算方式如下 <span class="math display">\[
+\begin{aligned}
+x_{l+1}^{\text{cross net}}
+&amp;= x_0 \times ( w_l \times x_l + b_l ) + x_l \\
+&amp; x_0, x_l, x_{l+1} \in \mathbb{R}^d\\
+&amp; w_l \in \mathbb{R}^{d\times d}
+\\
+x_{l+1}^{\text{dcn v2}}
+&amp;= x_0 \times (
+{\color{red}{w_l^{1} \times (w^{2}_l)^{\mathsf{T}}}}
+\times x_l + b_l ) + x_l \\
+&amp; x_0, x_l, x_{l+1}  \in \mathbb{R}^d\\
+&amp; {\color{red}{w_l^1, w_l^2}} \in \mathbb{R}^{d\times k}, k&lt;&lt;d
+\\
+x_{l+1}^{\text{dcn v2 attention}}
+&amp;= x_0 \times (
+{\color{red}{w_l^{1}}}
+\times
+\underbrace{
+{
+\color{green}{\quad\quad w^{a}_l} \quad\quad}
+}_{
+{\color{green}{\text{AttentionScore}}}
+}
+\times
+\underbrace{
+\big(
+    {\color{red}{(w^{2}_l})^{\mathsf{T}}} \times x_l
+\big)
+}_{\color{green}{\text{Value}}}
++ b_l ) + x_l
+\\
+&amp; x_0, x_l, x_{l+1}  \in \mathbb{R}^d \\
+&amp; {\color{red}{w_l^1, w_l^2}} \in \mathbb{R}^{d\times k}, k&lt;&lt;d
+\\
+&amp; {\color{green}{w_a^l}} = \text{softmax}\Big(
+\underbrace{
+{\color{red}{(w^{2}_l})^{\mathsf{T}}} \times x_l
+}_{
+{\color{green}{\text{Query}}}
+}
+\times
+\underbrace{({\color{red}{(w^{2}_l})^{\mathsf{T}}} \times x_l
+)^{\mathsf{T}}}_{\color{green}{\text{Key}}}
+\Big)
+\in \mathbb{R}^{k \times k}
+\\
+\end{aligned}
+\]</span>
+（Arvin：上图为笔者自己从图中推断，论文中没有明说计算方式，同时并没有增加跨层的连接）</p>
+<p>attention
+score计算中会引入温度系数来平衡学习交叉特征的复杂度。在极度case下，attention
+score会退化成对角为1的矩阵，这时候等价于原DCNv2的结构。</p>
+<p>实践中我们发现调节温度系数和增加跳层连接都会提高模型效果，同时让训练过程更稳定。</p>
+<figure>
+<img src="./dcnv2_attention.png" alt="dcnv2_attention" />
+<figcaption aria-hidden="true">dcnv2_attention</figcaption>
+</figure>
+<h3 id="isotonic-calibration-layer-in-dnn">Isotonic Calibration Layer in
+DNN</h3>
+<p>模型校准是为了保证预估的概率与现实世界发生的概率对齐，广告计费会依赖点击率预估，能够精确校准十分重要。传统校准方式是一种训练后的处理方式，比如Platt
+scaling和isotonic regression。</p>
+<p>我们提出了一个保序回归层（isotonic regression
+layer），可以跟NN模型一起进行训练，同时进行校准。与isotonic
+regression相同，也是采用一种分段校准的思路。它将模型预测值进行分桶，间隔<span
+class="math inline">\(v_i\)</span>，并指定一个可训练的权重<span
+class="math inline">\(w_i\)</span>来更新这个分桶内的预估值，通过限定权重<span
+class="math inline">\(w_i\)</span>非负，来达到保序的性质。为了增加在特定特征上的校准能力，<span
+class="math inline">\(w_i\)</span>可以通过特征embedding加工得到。 <span
+class="math display">\[
+\begin{aligned}
+y_{cali} &amp;= \sum_{i=0}^{i=k} Relu(e_i + w_i) \cdot v_i +b\\
+v_i &amp;= \begin{cases}
+\text{step} &amp;&amp; \text{if} \quad i &lt; k \\
+y-\text{step}\cdot k &amp;&amp; i=k
+\end{cases}\\
+k&amp;= \underset{j}{\arg\max} ( y - \text{step} \cdot j &gt; 0)
+\end{aligned}
+\]</span></p>
+<figure>
+<img src="./calibration.png" alt="calibration" />
+<figcaption aria-hidden="true">calibration</figcaption>
+</figure>
+<h3 id="dense-gating-and-large-mlp">Dense Gating and Large MLP</h3>
+<p>扩大MLP层的宽度，会提高模型效果，离线尝试了4层3500维的MLP（Large MLP
+或 LMLP），但这也带来了很多计算开销。为了解决这个问题，采用了Gate
+Net的结构，我们发现这是最高效的方式，基本无额外的计算开销，同时有显著的线上收益。</p>
+<h3 id="incremental-training">Incremental Training</h3>
+<p>推荐系统需要适应快速变化的生态，比如新的广告、内容和工作招聘。为了跟上这些变动，新模型经常会以最新的老模型为起始点，并持续用新数据训练，这个方式成为
+热启（warm
+start）。这种方式可以提高训练效率，但也会使模型忘记一些学过的信息，比如catastrophic
+forgetting的问题。在增量训练中，不仅会使用之前模型的权重，也会用将其作为正则项加入模型。</p>
+<p><span class="math inline">\(t\)</span>时刻的数据集为<span
+class="math inline">\(\cal{D}_t\)</span>，上一个时刻的权重为<span
+class="math inline">\(w_{t-1}\)</span>，对应的Hessian矩阵为<span
+class="math inline">\(\cal{H}_{t-1}\)</span>，总的loss为 <span
+class="math display">\[
+\text{loss}_{\cal{D}_t} +\lambda_f/2 \cdot  (w - w_{t-1})^\mathsf{T}
+\cal{H}_{t-1} (w-w_{t-1})
+\]</span> 其中<span
+class="math inline">\(\lambda_f\)</span>是遗忘系数，用来平衡历史样本的贡献。实践中<span
+class="math inline">\(\cal{H}_{t-1}\)</span>会非常大，相比于计算整个矩阵，我们只计算矩阵的对角元素<span
+class="math inline">\(\text{dig}(\cal{H}_{t-1})\)</span>。</p>
+<h3 id="member-history-modeling">Member History Modeling</h3>
+<p>为了建模用户和平台内容的交互行为，同样使用了transformer结构来处理序列行为特征。item的embedding、行为的embedding以及当前打分的embedding（Arvin：看起来埋了历史打分特征），通过transformer的encoder结构处理后，进行max
+pooling，为了增强信息，会把序列特征最后五个元素展开拼接在输出上，作为排序模型的输入。</p>
+<p>通过一个消融实验，我们发现学习率并不会显著影响；相比于直接pooling，增加1层transformer
+encoder会有最大提升，在3层之后没有额外的收益了；对于其中映射的维度，提升宽度会有轻微提升。为了平衡计算耗时，我们使用
+1/2的映射宽度，并限制序列长度为50。</p>
+<h3 id="explore-and-exploit">Explore and Exploit</h3>
+<p>E&amp;E是推荐系统经常需要面对的问题，传统的做法如UCB和Thompson采样，都无应用于NN的网络。</p>
+<p>为了降低后验概率的计算成本，并保留网络的表征能力，我们采用了一种Neural
+Linear方法，将Bayesian Linear Regression应用于最后一层的权重。</p>
+<h3 id="wide-popularity-features">Wide Popularity Features</h3>
+<p>模型中除了用全局模型的数十亿参数来捕捉趋势，还会用一个随机效应模型来预估单个item的流行趋势，这个模型每8个小时会训练一次，用于捕捉主模型的预测值和实际label的残差。</p>
+<figure>
+<img src="./RO_WideModel.png" alt="RO_WideModel" />
+<figcaption aria-hidden="true">RO_WideModel</figcaption>
+</figure>
+<h3 id="multi-task-learning">Multi-task Learning</h3>
+<p>在多任务学习方向上，尝试了grouping策略，将label相近的任务聚合为一组，也尝试过MMoE和PLE之类的结构，但是相比grouping策略的增幅较少，同时模型的参数量却大幅提升。</p>
+<h3 id="dwell-time-modeling">Dwell Time Modeling</h3>
+<p>停留时长通常面临以下挑战：</p>
+<ol type="1">
+<li>噪声数据使得直接预估或者对数化后预估都不稳定</li>
+<li>静态的长播阈值无法适应用户的偏好，缺少一致性和灵活性</li>
+<li>固定的阈值会产生bias，更利好时长更长的内容，与平台提升用户互动内容数的目标存在冲突</li>
+</ol>
+<p>为了解决这个问题，我们采用了后验90分位数，作为标签阈值，且分位数的统计取决于排序位置、内容的类型、平台，聚类后产出分位数阈值来加强训练。</p>
+<h3 id="model-dictionary-compression">Model Dictionary Compression</h3>
+<p>字符串类型稀疏特征做Hash后再做embedding。</p>
+<h3 id="embedding-table-quantization">Embedding Table Quantization</h3>
+<p>Embedding量化。CTR +0.9%，认为是提升了模型泛化能力。</p>
+<h2 id="training-scalability">Training scalability</h2>
+<p>训练过程相关，数据读取，prefetch等，感兴趣可以阅读原文。</p>
+<h2 id="experiments">Experiments</h2>
+<p>一些消融实验，可以看出叠加各类优化技巧的收益</p>
+<ul>
+<li>feeds场景</li>
+</ul>
+<figure>
+<img src="./exp1.png" alt="exp1" />
+<figcaption aria-hidden="true">exp1</figcaption>
+</figure>
+<ul>
+<li>广告CTR</li>
+</ul>
+<figure>
+<img src="./exp2.png" alt="exp2" />
+<figcaption aria-hidden="true">exp2</figcaption>
+</figure>
 
       
     </div>
@@ -514,8 +734,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/uploads/avatar.jpg"
@@ -590,6 +819,23 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#large-ranking-models"><span class="nav-number">2.1.</span> <span class="nav-text">Large Ranking Models</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#feeds-ranking-models"><span class="nav-number">2.1.1.</span> <span class="nav-text">Feeds Ranking Models</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ads-ctr-model"><span class="nav-number">2.1.2.</span> <span class="nav-text">Ads CTR Model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#residual-dcn"><span class="nav-number">2.1.3.</span> <span class="nav-text">Residual DCN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#isotonic-calibration-layer-in-dnn"><span class="nav-number">2.1.4.</span> <span class="nav-text">Isotonic Calibration Layer in
+DNN</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dense-gating-and-large-mlp"><span class="nav-number">2.1.5.</span> <span class="nav-text">Dense Gating and Large MLP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#incremental-training"><span class="nav-number">2.1.6.</span> <span class="nav-text">Incremental Training</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#member-history-modeling"><span class="nav-number">2.1.7.</span> <span class="nav-text">Member History Modeling</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#explore-and-exploit"><span class="nav-number">2.1.8.</span> <span class="nav-text">Explore and Exploit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#wide-popularity-features"><span class="nav-number">2.1.9.</span> <span class="nav-text">Wide Popularity Features</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#multi-task-learning"><span class="nav-number">2.1.10.</span> <span class="nav-text">Multi-task Learning</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dwell-time-modeling"><span class="nav-number">2.1.11.</span> <span class="nav-text">Dwell Time Modeling</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#model-dictionary-compression"><span class="nav-number">2.1.12.</span> <span class="nav-text">Model Dictionary Compression</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#embedding-table-quantization"><span class="nav-number">2.1.13.</span> <span class="nav-text">Embedding Table Quantization</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#training-scalability"><span class="nav-number">2.2.</span> <span class="nav-text">Training scalability</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#experiments"><span class="nav-number">2.3.</span> <span class="nav-text">Experiments</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

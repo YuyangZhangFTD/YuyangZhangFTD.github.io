@@ -6,7 +6,7 @@
   <link href="http://yoursite.com/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2024-09-08T13:54:13.071Z</updated>
+  <updated>2024-09-16T12:10:28.816Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="http://yoursite.com/2024/09/08/LiRank-Industrial-Large-Scale-Ranking-Models-at-LinkedIn/"/>
     <id>http://yoursite.com/2024/09/08/LiRank-Industrial-Large-Scale-Ranking-Models-at-LinkedIn/</id>
     <published>2024-09-08T13:51:52.000Z</published>
-    <updated>2024-09-08T13:54:13.071Z</updated>
+    <updated>2024-09-16T12:10:28.816Z</updated>
     
     
       
@@ -29,8 +29,10 @@
         
         
     <summary type="html">&lt;p&gt;TL;DR&lt;/p&gt;
-&lt;p&gt;本文是LinkedIn的模型团队，写得模型迭代“年终汇报”，包含LinkedIn团队对于各类模型涨点的技巧的实践。&lt;/p&gt;
-</summary>
+&lt;p&gt;本文是LinkedIn的模型团队模型迭代“年终汇报”，包含LinkedIn团队对于各类模型涨点的技巧的实践。&lt;/p&gt;
+&lt;h1 id=&quot;摘要&quot;&gt;摘要&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;We present LiRank, a</summary>
         
       
     
