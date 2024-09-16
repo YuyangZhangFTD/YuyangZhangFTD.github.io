@@ -6,7 +6,7 @@
   <link href="http://yoursite.com/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2024-05-25T08:58:44.812Z</updated>
+  <updated>2024-09-08T13:54:13.071Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,37 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>LiRank: Industrial Large Scale Ranking Models at LinkedIn</title>
+    <link href="http://yoursite.com/2024/09/08/LiRank-Industrial-Large-Scale-Ranking-Models-at-LinkedIn/"/>
+    <id>http://yoursite.com/2024/09/08/LiRank-Industrial-Large-Scale-Ranking-Models-at-LinkedIn/</id>
+    <published>2024-09-08T13:51:52.000Z</published>
+    <updated>2024-09-08T13:54:13.071Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;TL;DR&lt;/p&gt;
+&lt;p&gt;本文是LinkedIn的模型团队，写得模型迭代“年终汇报”，包含LinkedIn团队对于各类模型涨点的技巧的实践。&lt;/p&gt;
+</summary>
+        
+      
+    
+    
+    
+    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
+    
+    
+    <category term="Machine Learning" scheme="http://yoursite.com/tags/Machine-Learning/"/>
+    
+    <category term="Recommendation System" scheme="http://yoursite.com/tags/Recommendation-System/"/>
+    
+    <category term="Best Practice" scheme="http://yoursite.com/tags/Best-Practice/"/>
+    
+  </entry>
   
   <entry>
     <title>3 Years in Hangzhou</title>
@@ -597,37 +628,6 @@
     <category term="LTV" scheme="http://yoursite.com/tags/LTV/"/>
     
     <category term="Causal Inference" scheme="http://yoursite.com/tags/Causal-Inference/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Personalized Treatment Selection using Causal Heterogeneity</title>
-    <link href="http://yoursite.com/2021/11/30/Personalized-Treatment-Selection-using-Causal-Heterogeneity/"/>
-    <id>http://yoursite.com/2021/11/30/Personalized-Treatment-Selection-using-Causal-Heterogeneity/</id>
-    <published>2021-11-30T15:44:24.000Z</published>
-    <updated>2021-12-12T16:13:31.461Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h1</summary>
-        
-      
-    
-    
-    
-    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
-    
-    
-    <category term="Causal Inference" scheme="http://yoursite.com/tags/Causal-Inference/"/>
-    
-    <category term="Optimization" scheme="http://yoursite.com/tags/Optimization/"/>
-    
-    <category term="Individual Treatment Effect" scheme="http://yoursite.com/tags/Individual-Treatment-Effect/"/>
-    
-    <category term="Promotion" scheme="http://yoursite.com/tags/Promotion/"/>
     
   </entry>
   
