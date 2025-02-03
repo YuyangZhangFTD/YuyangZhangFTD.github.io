@@ -426,7 +426,11 @@
       
 
       
-        <p>之前承诺朋友写一些入门的东西，刚好趁这个机会对某些方向进行一些系统化的梳理。这次主要是Brady Neal的 <font color='red'>I</font>ntroduction to <font color='red'>C</font>ausal <font color='red'>I</font>nference(ICI)的课程笔记的翻译和精讲，<a target="_blank" rel="noopener" href="https://www.bradyneal.com/causal-inference-course">完整课程链接奉上</a>，同时也希望越来越多的人关注这个方向。</p>
+        <p>之前承诺朋友写一些入门的东西，刚好趁这个机会对某些方向进行一些系统化的梳理。这次主要是Brady
+Neal的 <font color='red'>I</font>ntroduction to
+<font color='red'>C</font>ausal
+<font color='red'>I</font>nference(ICI)的课程笔记的翻译和精讲，<a
+target="_blank" rel="noopener" href="https://www.bradyneal.com/causal-inference-course">完整课程链接奉上</a>，同时也希望越来越多的人关注这个方向。</p>
 <p>目录：</p>
 <ol type="1">
 <li>因果推断简介
@@ -440,88 +444,134 @@
 <hr />
 <h1 id="因果推断简介">因果推断简介</h1>
 <h2 id="辛普森悖论simpsons-paradox">辛普森悖论（Simpson's Paradox）</h2>
-<p>想象这样一种场景，以后存在某种病毒，Covid-27，在人类中传播，我们对此有两种干预治疗方案（treatment，之后称之为处理），treatment A和treatment B。施加治疗方案B相比于A较少，实施的比例大概是73%和27%，现在由你来决定，为了尽量降低人群死亡率，我们到底该采用哪种治疗方案。</p>
+<p>想象这样一种场景，以后存在某种病毒，Covid-27，在人类中传播，我们对此有两种干预治疗方案（treatment，之后称之为处理），treatment
+A和treatment
+B。施加治疗方案B相比于A较少，实施的比例大概是73%和27%，现在由你来决定，为了尽量降低人群死亡率，我们到底该采用哪种治疗方案。</p>
 <p>目前你拥有之前患过Covid-27的人的治疗数据，你知道状态的人受到了怎样的治疗方案，病人的状态是一个二元的变量，重症（Severe）或者是轻症（Mild），在这份数据中，大概16%的人采用治疗方案A之后死亡，19%的人采用治疗方案B之后死亡，总的来看仿佛是治疗方案A会有更低的死亡率，但是当我们对不同状态下的病人分别统计的时候，我们会得到相反的结论，在轻症患者中，15%的人在接受治疗方案A之后死亡，10%的人在接受治疗方案B之后死亡，重症患者中，30%的人在接受治疗方案A之后死亡，20%的人在接受治疗方案B之后死亡。</p>
 <figure>
-<img src="table_1.1.jpg" alt="数据表格" /><figcaption aria-hidden="true">数据表格</figcaption>
+<img src="table_1.1.jpg" alt="数据表格" />
+<figcaption aria-hidden="true">数据表格</figcaption>
 </figure>
 <p>由此产生了一个悖论，我们分不同条件下看时候，治疗方案A的死亡率都高于治疗方案B的死亡率，但是总体看数据时候，我们发现治疗方案A的死亡率会低于治疗方案B的死亡率。这个时候你到底该如何选择呢？</p>
 <p>选择治疗方案A或者B都会是正确答案，这取决于数据中的因果结构，换句话说，因果关系是解决辛普森悖论的关键。以下两种场景下，我们可以简单看一下是什么时候该选择治疗方案A什么时候选择治疗方案B。</p>
 <h3 id="场景1">场景1</h3>
 <figure>
-<img src="figure_1.1.jpg" alt="场景1" /><figcaption aria-hidden="true">场景1</figcaption>
+<img src="figure_1.1.jpg" alt="场景1" />
+<figcaption aria-hidden="true">场景1</figcaption>
 </figure>
 <p>当条件C是处理T的因（cause）时，治疗方案B时更加有效的降低死亡率Y的方案。</p>
-<p>举个例子，医生会决定对大部分轻症的患者采用治疗方案A，同时对重症患者更多地采用治疗方案B，因为重症患者的死亡率会更高，病人的症状会决定最后的死亡率<span class="math inline">\(C\rightarrow Y\)</span>，同时重症的状态也使得这个病人更容易被采用治疗方案B，<span class="math inline">\(C\rightarrow T\)</span>，所以最后造成治疗方案B在全体人群上会有更高的死亡率。换句话说，治疗方案B拥有更高的死亡率仅仅是因为病人的状态同时是受哪种治疗方案和死亡率的原因，为了纠正这样的混淆，我们必须在相同的条件下检验T和Y的关系，所以对于这样的场景，我们应你该选择的治疗方案B。</p>
+<p>举个例子，医生会决定对大部分轻症的患者采用治疗方案A，同时对重症患者更多地采用治疗方案B，因为重症患者的死亡率会更高，病人的症状会决定最后的死亡率<span
+class="math inline">\(C\rightarrow
+Y\)</span>，同时重症的状态也使得这个病人更容易被采用治疗方案B，<span
+class="math inline">\(C\rightarrow
+T\)</span>，所以最后造成治疗方案B在全体人群上会有更高的死亡率。换句话说，治疗方案B拥有更高的死亡率仅仅是因为病人的状态同时是受哪种治疗方案和死亡率的原因，为了纠正这样的混淆，我们必须在相同的条件下检验T和Y的关系，所以对于这样的场景，我们应你该选择的治疗方案B。</p>
 <h3 id="场景2">场景2</h3>
 <figure>
-<img src="figure_1.2.jpg" alt="场景2" /><figcaption aria-hidden="true">场景2</figcaption>
+<img src="figure_1.2.jpg" alt="场景2" />
+<figcaption aria-hidden="true">场景2</figcaption>
 </figure>
-<p>当我们的处理T时条件C的因的时候，治疗方案A则更加有效。比如当治疗方案B有较长的等待周期，病人在接受治疗方案B时需要等待更长的时间，而治疗方案A没有这样的问题。因为患有Covid-27的病人的病情会随时间恶化，所以治疗方案B会使得更多的病人从轻症患者变成重症患者，从而造成了更高的死亡率。因此，即使治疗方案B相比于治疗方案A更有效，<span class="math inline">\(T\rightarrow Y\)</span>，因为处理效应B造成了更坏的状态（重症患者更多），<span class="math inline">\(T\rightarrow C\rightarrow Y\)</span>，总的来说治疗方案B是低效的。（这种场景下，采用哪种治疗方案和病人的状态是相互独立的）</p>
+<p>当我们的处理T时条件C的因的时候，治疗方案A则更加有效。比如当治疗方案B有较长的等待周期，病人在接受治疗方案B时需要等待更长的时间，而治疗方案A没有这样的问题。因为患有Covid-27的病人的病情会随时间恶化，所以治疗方案B会使得更多的病人从轻症患者变成重症患者，从而造成了更高的死亡率。因此，即使治疗方案B相比于治疗方案A更有效，<span
+class="math inline">\(T\rightarrow
+Y\)</span>，因为处理效应B造成了更坏的状态（重症患者更多），<span
+class="math inline">\(T\rightarrow C\rightarrow
+Y\)</span>，总的来说治疗方案B是低效的。（这种场景下，采用哪种治疗方案和病人的状态是相互独立的）</p>
 <h2 id="相关性并不意味着因果性">相关性并不意味着因果性</h2>
 <figure>
-<img src="figure_1.3.jpg" alt="相关性" /><figcaption aria-hidden="true">相关性</figcaption>
+<img src="figure_1.3.jpg" alt="相关性" />
+<figcaption aria-hidden="true">相关性</figcaption>
 </figure>
 <p>上图中的红线是每年溺死在游泳池中的人数统计，黑线似乎尼古拉斯凯奇的电影数量，我们可以发现两条线之间有很强的相关性，但他们之间真的具有因果性吗？答案肯定是否定的，他们之间的相关性是虚假的，毫无因果关系。</p>
 <figure>
-<img src="figure_1.4.jpg" alt="醉酒的因果结构" /><figcaption aria-hidden="true">醉酒的因果结构</figcaption>
+<img src="figure_1.4.jpg" alt="醉酒的因果结构" />
+<figcaption aria-hidden="true">醉酒的因果结构</figcaption>
 </figure>
 <p>举个例子，大概率下，当你穿着鞋子睡觉，第二天起来会发现头痛，不穿着鞋子睡觉，第二天起来并不会头痛，通常这样的现象并不会被解释成穿鞋睡觉会导致头痛，特别是存在一些原因导致大家穿鞋子睡觉，我们可以认为穿着鞋子睡觉和第二天头痛之间存在关系，但并不是穿着鞋子睡觉造成了头痛，它们可能是由一个共同的原因所导致，比如说宿醉，这样的变量被称之为混淆变量（confounder）。</p>
 <hr />
 <h1 id="潜在结果">潜在结果</h1>
 <p>在本节会阐述一些简单的因果相关的术语和概念。</p>
 <p>我们用T表示处理效应，Y表示最后感兴趣的结果变量，X表示协变量，大写字母表示随机变量，小写字母表示该随机变量的取值。大部分情形下我们先考虑T是二元变量，后续我们会讲解多元和连续的情况。</p>
-<p>潜在结果<span class="math inline">\(Y(t)\)</span>表示当一个实验单元（unit）被施加处理（treatment，干预）<span class="math inline">\(t\)</span>时的结果（outcome），潜在结果可以从观测结果<span class="math inline">\(Y\)</span>中得到，但并不是所有潜在结果都可以被观测到，因为每次我们只能受到一个处理的影响，所以依赖于施加在实验单元上的处理<span class="math inline">\(T\)</span>是什么。我们定义第<span class="math inline">\(i\)</span>个实验单元的个体处理效应(ITE，individual treatment effect)为 <span class="math display">\[
+<p>潜在结果<span
+class="math inline">\(Y(t)\)</span>表示当一个实验单元（unit）被施加处理（treatment，干预）<span
+class="math inline">\(t\)</span>时的结果（outcome），潜在结果可以从观测结果<span
+class="math inline">\(Y\)</span>中得到，但并不是所有潜在结果都可以被观测到，因为每次我们只能受到一个处理的影响，所以依赖于施加在实验单元上的处理<span
+class="math inline">\(T\)</span>是什么。我们定义第<span
+class="math inline">\(i\)</span>个实验单元的个体处理效应(ITE，individual
+treatment effect)为 <span class="math display">\[
 \tau_i=Y_i(1)-Y_i(0)
-\]</span> 无法观测到给定实验单元的所有潜在结果，是因果推断的本质问题。因为我们每次无法同时观测到<span class="math inline">\(Y_i(1)\)</span>和<span class="math inline">\(Y_i(0)\)</span>，所以我们无法得知每个单元的因果效应<span class="math inline">\(Y_i(1)-Y_i(0)\)</span>。相比于机器学习，我们只用关心预测观测到的结果<span class="math inline">\(Y\)</span>。</p>
-<p>虽然我们无法得到个体处理效应，但是我们可以计算平均处理效应（ATE，average treatment effect）： <span class="math display">\[
+\]</span>
+无法观测到给定实验单元的所有潜在结果，是因果推断的本质问题。因为我们每次无法同时观测到<span
+class="math inline">\(Y_i(1)\)</span>和<span
+class="math inline">\(Y_i(0)\)</span>，所以我们无法得知每个单元的因果效应<span
+class="math inline">\(Y_i(1)-Y_i(0)\)</span>。相比于机器学习，我们只用关心预测观测到的结果<span
+class="math inline">\(Y\)</span>。</p>
+<p>虽然我们无法得到个体处理效应，但是我们可以计算平均处理效应（ATE，average
+treatment effect）： <span class="math display">\[
 \tau=\mathbb{E}[Y_i(1)-Y_i(0)]=\mathbb{E}[Y(1) - Y(0)]
-\]</span> 那么我们如何计算ATE呢，一个简单的做法是直接将两个期望相减<span class="math inline">\(\mathbb{E}[Y|T=1]-\mathbb{E}[Y|T=0]\)</span>，但是实际上很多时候<span class="math inline">\(\mathbb{E}[Y|T=1]-\mathbb{E}[Y|T=0]\neq \mathbb{E}[Y(1)]-\mathbb{E}[Y(0)]\)</span>，前者是一个相关关系，而后者是一个因果关系，它们之间不想等就是因为存在混淆（confounding）。</p>
+\]</span> 那么我们如何计算ATE呢，一个简单的做法是直接将两个期望相减<span
+class="math inline">\(\mathbb{E}[Y|T=1]-\mathbb{E}[Y|T=0]\)</span>，但是实际上很多时候<span
+class="math inline">\(\mathbb{E}[Y|T=1]-\mathbb{E}[Y|T=0]\neq
+\mathbb{E}[Y(1)]-\mathbb{E}[Y(0)]\)</span>，前者是一个相关关系，而后者是一个因果关系，它们之间不想等就是因为存在混淆（confounding）。</p>
 <p>那么什么情况下，我们可以用两个期望直接相减得到ATE呢？答案是满足ignorability，假设ignorability就像是可以忽略人群差异，随机选择治疗方案，即X对T不影响</p>
 <figure>
-<img src="figure_2.2.jpg" alt="figure_2.2" /><figcaption aria-hidden="true">figure_2.2</figcaption>
+<img src="figure_2.2.jpg" alt="figure_2.2" />
+<figcaption aria-hidden="true">figure_2.2</figcaption>
 </figure>
-<p>公式化Ignorability（也叫Exchangeability）为 <span class="math display">\[
+<p>公式化Ignorability（也叫Exchangeability）为 <span
+class="math display">\[
 \bigg(Y(1),Y(0)\bigg) \perp T
 \]</span> 当满足Ignorability时， <span class="math display">\[
 \begin{aligned}
-\mathbb{E}[Y(1)] - \mathbb{E}[Y(0)] 
+\mathbb{E}[Y(1)] - \mathbb{E}[Y(0)]
 &amp;= \mathbb{E}[Y(1)|T=1] - \mathbb{E}[Y(0)|T=0] \\
 &amp;= \mathbb{E}[Y|T=1] - \mathbb{E}[Y|T=0]
 \end{aligned}
 \]</span></p>
-在观测数据中，一般很难满足Ignorability的假设，即我们很难假设各个组下的变量分布无差异，但是如果我们控制某些变量，在某个条件下，子群体间可能会是exchangeable，所以我们定义Conditional Exchangeability或者也叫Unconfoundedness为 <span class="math display">\[
+在观测数据中，一般很难满足Ignorability的假设，即我们很难假设各个组下的变量分布无差异，但是如果我们控制某些变量，在某个条件下，子群体间可能会是exchangeable，所以我们定义Conditional
+Exchangeability或者也叫Unconfoundedness为 <span class="math display">\[
 \bigg(Y(1),Y(0)\bigg) \perp T \quad \big| \quad X
-\]</span> 当我们施加干预和潜在结果，在整体上由于存在混淆是有联系的，但是在某个X的分层下，他们并没有联系，换句话说，在控制住X下，使得混淆不存在了，满足了Ignorability。 $$
+\]</span>
+当我们施加干预和潜在结果，在整体上由于存在混淆是有联系的，但是在某个X的分层下，他们并没有联系，换句话说，在控制住X下，使得混淆不存在了，满足了Ignorability。
+$$
 <span class="math display">\[\begin{aligned}
-\mathbb{E}[Y(1) - Y(0)] 
+\mathbb{E}[Y(1) - Y(0)]
 &amp;=\mathbb{E}_X\Big[
 \mathbb{E}\big[Y(1)-Y(0)|X\big]
 \Big]\\
 
 &amp;= \mathbb{E}_X\Big[
- \mathbb{E}\big[Y|T=1,X\big] -  \mathbb{E}\big[Y|T=0,X\big]
+\mathbb{E}\big[Y|T=1,X\big] -  \mathbb{E}\big[Y|T=0,X\big]
 \Big]
 \end{aligned}\]</span>
-<p>$$ ATE为所有X上取边际X上ATE的期望。通常来说，最好的做法就是观测并拟合尽量多的特征在X中，来保证unconfoundedness。</p>
-<p>当我们加入更多的特征来实现unconfoundedness，我们也需要考虑另一个假设positivity。Positivity（Overlap， common support）是在任意群体的上，都会有一定概率受到处理 <span class="math display">\[
+<p>$$
+ATE为所有X上取边际X上ATE的期望。通常来说，最好的做法就是观测并拟合尽量多的特征在X中，来保证unconfoundedness。</p>
+<p>当我们加入更多的特征来实现unconfoundedness，我们也需要考虑另一个假设positivity。Positivity（Overlap，
+common support）是在任意群体的上，都会有一定概率受到处理 <span
+class="math display">\[
 0 &lt; P(T=1|X=x) &lt;1 \quad \forall x
-\]</span> 这个假设也很重要，如果<span class="math inline">\(P(T=1|X=x)=0\)</span>或者<span class="math inline">\(P(T=0|X=x)=0\)</span>，都会使得我们无法计算ATE。</p>
+\]</span> 这个假设也很重要，如果<span
+class="math inline">\(P(T=1|X=x)=0\)</span>或者<span
+class="math inline">\(P(T=0|X=x)=0\)</span>，都会使得我们无法计算ATE。</p>
 <p>在上述几个假设外，还有几个比较重要的：</p>
 <ul>
-<li>No interference，结果不受到其它干预的影响，<span class="math inline">\(Y_i(t1,\cdots,t_i,\cdots,t_n)=Y_i(t_i)\)</span></li>
-<li>Consistency，观测到的结果和潜在结果一致，<span class="math inline">\(T=t \implies Y=Y(t)\)</span></li>
-<li>SUTVA，stable unit-treatment value assumption，如果一个实验单元的结果是受到干预的函数，即consistency和no interference的结合。</li>
+<li>No interference，结果不受到其它干预的影响，<span
+class="math inline">\(Y_i(t1,\cdots,t_i,\cdots,t_n)=Y_i(t_i)\)</span></li>
+<li>Consistency，观测到的结果和潜在结果一致，<span
+class="math inline">\(T=t \implies Y=Y(t)\)</span></li>
+<li>SUTVA，stable unit-treatment value
+assumption，如果一个实验单元的结果是受到干预的函数，即consistency和no
+interference的结合。</li>
 </ul>
 <figure>
-<img src="figure_proof.jpg" alt="proof" /><figcaption aria-hidden="true">proof</figcaption>
+<img src="figure_proof.jpg" alt="proof" />
+<figcaption aria-hidden="true">proof</figcaption>
 </figure>
 <p>上面的证明讲了满足以上的假设之后，我们怎么计算ATE。</p>
 <hr />
 <h1 id="因果图">因果图</h1>
 <h2 id="graph-terminology">Graph Terminology</h2>
 <figure>
-<img src="figure_3.2.jpg" alt="figure_3.2" /><figcaption aria-hidden="true">figure_3.2</figcaption>
+<img src="figure_3.2.jpg" alt="figure_3.2" />
+<figcaption aria-hidden="true">figure_3.2</figcaption>
 </figure>
 <ul>
 <li>图，graph：一系列节点的集合</li>
@@ -536,30 +586,37 @@
 </ul>
 <h2 id="bayesian-networks">Bayesian Networks</h2>
 <figure>
-<img src="figure_3.6.jpg" alt="figure_3.6" /><figcaption aria-hidden="true">figure_3.6</figcaption>
+<img src="figure_3.6.jpg" alt="figure_3.6" />
+<figcaption aria-hidden="true">figure_3.6</figcaption>
 </figure>
 <p>上图的关系，可以用联合分布表示 <span class="math display">\[
 \begin{aligned}
-P(x_1,x_2,x_3,x_4) 
+P(x_1,x_2,x_3,x_4)
 &amp;= P(x_1)P(x_2|x_1)P(x_3|x_2,x_1)P(x_4|x_3,x_2,x_1) \\
 &amp;=P(x_1)P(x_2|x_1)P(x_3|x_2,x_1)P(x_4|x_3)
 \end{aligned}
 \]</span></p>
 <h2 id="causal-graphs">Causal Graphs</h2>
 <p>“因”的定义（cause），如果变量Y随着变量X的改变而变化，那么就说变量X是变量Y的因。</p>
-<p>(Strict) Causal Edges Assumption，在一个有向图中，每一个父节点都是它全部子节点的因。</p>
-<h2 id="two-node-graphs-and-graphical-building-blocks">Two-Node Graphs and Graphical Building Blocks</h2>
+<p>(Strict) Causal Edges
+Assumption，在一个有向图中，每一个父节点都是它全部子节点的因。</p>
+<h2 id="two-node-graphs-and-graphical-building-blocks">Two-Node Graphs
+and Graphical Building Blocks</h2>
 <figure>
-<img src="figure_3.9.jpg" alt="figure_3.9" /><figcaption aria-hidden="true">figure_3.9</figcaption>
+<img src="figure_3.9.jpg" alt="figure_3.9" />
+<figcaption aria-hidden="true">figure_3.9</figcaption>
 </figure>
 <p>上面简述了三种节点关系，chain、fork和immorality。</p>
-<p>如果节点A和B是条件独立的，那么给定节点C，有<span class="math inline">\(\mathbb{P}(a,b|c)=\mathbb{P}(a|c)\cdot\mathbb{P}(b|c)\)</span>，两个独立的节点在图中，是没有线相连的。相反，如果两个节点中存在一条边，这两个节点就是有关联的。</p>
+<p>如果节点A和B是条件独立的，那么给定节点C，有<span
+class="math inline">\(\mathbb{P}(a,b|c)=\mathbb{P}(a|c)\cdot\mathbb{P}(b|c)\)</span>，两个独立的节点在图中，是没有线相连的。相反，如果两个节点中存在一条边，这两个节点就是有关联的。</p>
 <h2 id="chains-and-forks">Chains and Forks</h2>
 <p>在chain中，X1和X3是非依赖的，因为X1造成了X2的改变，同时X2造成了X3的改变。</p>
 <p>在fork中，X1和X3是依赖的，因为X2同时决定了X1和X3，</p>
-<p>chain和fork都有相同的独立集（set of independencies），如果我们condition在X2上，它都使得X1和X3之间的联系被block住。</p>
+<p>chain和fork都有相同的独立集（set of
+independencies），如果我们condition在X2上，它都使得X1和X3之间的联系被block住。</p>
 <figure>
-<img src="figure_3.14.jpg" alt="figure_3.14" /><figcaption aria-hidden="true">figure_3.14</figcaption>
+<img src="figure_3.14.jpg" alt="figure_3.14" />
+<figcaption aria-hidden="true">figure_3.14</figcaption>
 </figure>
 
       
@@ -752,7 +809,8 @@ P(x_1,x_2,x_3,x_4)
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%A0%E6%9E%9C%E6%8E%A8%E6%96%AD%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">因果推断简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%9B%E6%99%AE%E6%A3%AE%E6%82%96%E8%AE%BAsimpsons-paradox"><span class="nav-number">1.1.</span> <span class="nav-text">辛普森悖论（Simpson&#39;s Paradox）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF1"><span class="nav-number">1.1.1.</span> <span class="nav-text">场景1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF2"><span class="nav-number">1.1.2.</span> <span class="nav-text">场景2</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E6%80%A7%E5%B9%B6%E4%B8%8D%E6%84%8F%E5%91%B3%E7%9D%80%E5%9B%A0%E6%9E%9C%E6%80%A7"><span class="nav-number">1.2.</span> <span class="nav-text">相关性并不意味着因果性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BD%9C%E5%9C%A8%E7%BB%93%E6%9E%9C"><span class="nav-number">2.</span> <span class="nav-text">潜在结果</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%A0%E6%9E%9C%E5%9B%BE"><span class="nav-number">3.</span> <span class="nav-text">因果图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#graph-terminology"><span class="nav-number">3.1.</span> <span class="nav-text">Graph Terminology</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bayesian-networks"><span class="nav-number">3.2.</span> <span class="nav-text">Bayesian Networks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#causal-graphs"><span class="nav-number">3.3.</span> <span class="nav-text">Causal Graphs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#two-node-graphs-and-graphical-building-blocks"><span class="nav-number">3.4.</span> <span class="nav-text">Two-Node Graphs and Graphical Building Blocks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#chains-and-forks"><span class="nav-number">3.5.</span> <span class="nav-text">Chains and Forks</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%A0%E6%9E%9C%E6%8E%A8%E6%96%AD%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">因果推断简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%9B%E6%99%AE%E6%A3%AE%E6%82%96%E8%AE%BAsimpsons-paradox"><span class="nav-number">1.1.</span> <span class="nav-text">辛普森悖论（Simpson&#39;s Paradox）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF1"><span class="nav-number">1.1.1.</span> <span class="nav-text">场景1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF2"><span class="nav-number">1.1.2.</span> <span class="nav-text">场景2</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E6%80%A7%E5%B9%B6%E4%B8%8D%E6%84%8F%E5%91%B3%E7%9D%80%E5%9B%A0%E6%9E%9C%E6%80%A7"><span class="nav-number">1.2.</span> <span class="nav-text">相关性并不意味着因果性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BD%9C%E5%9C%A8%E7%BB%93%E6%9E%9C"><span class="nav-number">2.</span> <span class="nav-text">潜在结果</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%A0%E6%9E%9C%E5%9B%BE"><span class="nav-number">3.</span> <span class="nav-text">因果图</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#graph-terminology"><span class="nav-number">3.1.</span> <span class="nav-text">Graph Terminology</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bayesian-networks"><span class="nav-number">3.2.</span> <span class="nav-text">Bayesian Networks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#causal-graphs"><span class="nav-number">3.3.</span> <span class="nav-text">Causal Graphs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#two-node-graphs-and-graphical-building-blocks"><span class="nav-number">3.4.</span> <span class="nav-text">Two-Node Graphs
+and Graphical Building Blocks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#chains-and-forks"><span class="nav-number">3.5.</span> <span class="nav-text">Chains and Forks</span></a></li></ol></li></ol></div>
             
 
           </div>

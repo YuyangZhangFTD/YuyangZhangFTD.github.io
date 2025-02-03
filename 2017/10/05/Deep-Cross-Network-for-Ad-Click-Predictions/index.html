@@ -395,25 +395,42 @@
       
 
       
-        <p>特征工程一直是很多预测模型效果突出的关键，人工设计等影响因素往往决定这这一环节的好坏，深度学习可以自动学习特征，却很难学到一些交叉特征。本文提出了一种交叉的网络结构的深度学习模型DCN，Deep &amp; Cross Network，可以有效的寻找交叉特征，在CTR预估方面可以取得较好的效果。</p>
+        <p>特征工程一直是很多预测模型效果突出的关键，人工设计等影响因素往往决定这这一环节的好坏，深度学习可以自动学习特征，却很难学到一些交叉特征。本文提出了一种交叉的网络结构的深度学习模型DCN，Deep
+&amp; Cross
+Network，可以有效的寻找交叉特征，在CTR预估方面可以取得较好的效果。</p>
 <p>DCN模型可以有效学习大规模的稀疏和稠密特征，并且能够有效抓住特征间的交叉关系，并且只需要较低的计算开销，本文主要有以下几点贡献：</p>
 <ul>
 <li>我们提出一种新型的交叉网络结构，可以用来提取交叉组合特征，并不需要人为设计的特征工程；</li>
-<li>这种网络结构足够简单同时也很有效，经过设计，多项式度（polynomial degree）随着网络层数增加而增加；</li>
+<li>这种网络结构足够简单同时也很有效，经过设计，多项式度（polynomial
+degree）随着网络层数增加而增加；</li>
 <li>十分节约内存，并且易于使用；</li>
 <li>实验结果表明，DCN相比于其他模型有更出色的效果，与DNN模型相比，较少的参数却取得了较好的效果。</li>
 </ul>
 <p>主要的网络结构如下图所示</p>
 <figure>
-<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
+<img src="1.png" alt="1" />
+<figcaption aria-hidden="true">1</figcaption>
 </figure>
-<p>在最开始的输入层，对非连续特征进行Embedding，然后和连续密集特征拼接 <span class="math display">\[
+<p>在最开始的输入层，对非连续特征进行Embedding，然后和连续密集特征拼接
+<span class="math display">\[
 x_0=[x_{\text{embed,1}}^T,\cdots,x_{\text{embed,k}}^T,x_{\text{dense}}^T]
 \]</span> 交叉网络结构形式如下 <span class="math display">\[
 x_{l+1}=x_0x_l^Tw_l+b_l+x_l=f(x_l,w_l,b_l)+x_l
-\]</span> 其中<span class="math inline">\(x_l,x_{l+1}\in\mathbb{R}^d\)</span> 是<span class="math inline">\(l\)</span> 层与<span class="math inline">\(l+1\)</span> 层的输出，<span class="math inline">\(w_l,b_l\)</span> 是<span class="math inline">\(l\)</span> 层的权重与偏置，每一层都是学习一个特征交叉映射<span class="math inline">\(f:\mathbb{R}^d\rightarrow\mathbb{R}^d\)</span> ，来拟合<span class="math inline">\(x_{l+1}-x_l\)</span> 的残差。第一遍看这个特别迷茫，然后我就去看了一下何凯明大神的ResNet，然后恍然大悟，一方面，每一层学习的映射<span class="math inline">\(f\)</span> 都是一个对交叉特征的非线性映射，然后通过拟合残差的方式，提高权重的敏感度，更适合稀疏的输入，同时另一方面，方便网络整体的反向传播，提高网络训练效率。</p>
+\]</span> 其中<span
+class="math inline">\(x_l,x_{l+1}\in\mathbb{R}^d\)</span> 是<span
+class="math inline">\(l\)</span> 层与<span
+class="math inline">\(l+1\)</span> 层的输出，<span
+class="math inline">\(w_l,b_l\)</span> 是<span
+class="math inline">\(l\)</span>
+层的权重与偏置，每一层都是学习一个特征交叉映射<span
+class="math inline">\(f:\mathbb{R}^d\rightarrow\mathbb{R}^d\)</span>
+，来拟合<span class="math inline">\(x_{l+1}-x_l\)</span>
+的残差。第一遍看这个特别迷茫，然后我就去看了一下何凯明大神的ResNet，然后恍然大悟，一方面，每一层学习的映射<span
+class="math inline">\(f\)</span>
+都是一个对交叉特征的非线性映射，然后通过拟合残差的方式，提高权重的敏感度，更适合稀疏的输入，同时另一方面，方便网络整体的反向传播，提高网络训练效率。</p>
 <p>右侧是一般的全连接层，是对原始输入特征的非线性映射，最后连接层是softmax。</p>
-<p>文章后面对DCN进行了一些理论分析，主要从三个角度出发：多项式近似、广义因子分解机模型和有效投影（efficient projection），我这捉急的翻译自己都看不下去了。。</p>
+<p>文章后面对DCN进行了一些理论分析，主要从三个角度出发：多项式近似、广义因子分解机模型和有效投影（efficient
+projection），我这捉急的翻译自己都看不下去了。。</p>
 <p>具体的分析思路大家可以下下来自己体会，总的来说，就是巧妙地利用ResNet来解决交叉特征的问题，网络结构设计颇为巧妙，分析也比较到位。</p>
 
       

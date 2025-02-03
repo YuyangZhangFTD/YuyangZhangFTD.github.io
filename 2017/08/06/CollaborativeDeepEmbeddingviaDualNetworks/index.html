@@ -96,12 +96,12 @@
 
 
 
-<meta name="description" content="Collaborative Deep Embedding ​ 这篇论文的模型跟DeepMatrixFactorizationModelsforRecommenderSystems 思路非常相近，所以前面的废话描述都不重复了，直接来看模型  1  作者的目的也是用非线性的神经网络结构去改进矩阵分解模型，但是作者做出几个变种，如上图的情况，最左边是基本模型，经过多层转换后，最后结果做点积；上图中间是一">
+<meta name="description" content="Collaborative Deep Embedding ​ 这篇论文的模型跟DeepMatrixFactorizationModelsforRecommenderSystems 思路非常相近，所以前面的废话描述都不重复了，直接来看模型   1  作者的目的也是用非线性的神经网络结构去改进矩阵分解模型，但是作者做出几个变种，如上图的情况，最左边是基本模型，经过多层转换后，最后结果做点积；上图中间是">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Collaborative Deep Embedding via Dual Networks">
 <meta property="og:url" content="http://yoursite.com/2017/08/06/CollaborativeDeepEmbeddingviaDualNetworks/index.html">
 <meta property="og:site_name" content="Arvin&#39;s Blog">
-<meta property="og:description" content="Collaborative Deep Embedding ​ 这篇论文的模型跟DeepMatrixFactorizationModelsforRecommenderSystems 思路非常相近，所以前面的废话描述都不重复了，直接来看模型  1  作者的目的也是用非线性的神经网络结构去改进矩阵分解模型，但是作者做出几个变种，如上图的情况，最左边是基本模型，经过多层转换后，最后结果做点积；上图中间是一">
+<meta property="og:description" content="Collaborative Deep Embedding ​ 这篇论文的模型跟DeepMatrixFactorizationModelsforRecommenderSystems 思路非常相近，所以前面的废话描述都不重复了，直接来看模型   1  作者的目的也是用非线性的神经网络结构去改进矩阵分解模型，但是作者做出几个变种，如上图的情况，最左边是基本模型，经过多层转换后，最后结果做点积；上图中间是">
 <meta property="og:locale">
 <meta property="og:image" content="http://yoursite.com/2017/08/06/CollaborativeDeepEmbeddingviaDualNetworks/1.png">
 <meta property="article:published_time" content="2017-08-05T17:14:55.000Z">
@@ -419,16 +419,22 @@
 
       
         <h3 id="collaborative-deep-embedding">Collaborative Deep Embedding</h3>
-<p>​ 这篇论文的模型跟<a target="_blank" rel="noopener" href="http://static.ijcai.org/proceedings-2017/0447.pdf">DeepMatrixFactorizationModelsforRecommenderSystems</a> 思路非常相近，所以前面的废话描述都不重复了，直接来看模型</p>
+<p>​ 这篇论文的模型跟<a
+target="_blank" rel="noopener" href="http://static.ijcai.org/proceedings-2017/0447.pdf">DeepMatrixFactorizationModelsforRecommenderSystems</a>
+思路非常相近，所以前面的废话描述都不重复了，直接来看模型</p>
 <figure>
-<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
+<img src="1.png" alt="1" />
+<figcaption aria-hidden="true">1</figcaption>
 </figure>
 <p>作者的目的也是用非线性的神经网络结构去改进矩阵分解模型，但是作者做出几个变种，如上图的情况，最左边是基本模型，经过多层转换后，最后结果做点积；上图中间是一个小的改进，线性转化的每一层都做点积，最后做求和，作为对评分的估计；上图右边是继续的改进，每层之后相当于多做一层Embedding，之后再点积求和。</p>
 <p>​ 作者定义损失函数为 <span class="math display">\[
 \min_{W_u,W_v}\sum_i\sum_jc_ij||R_{ij}-&lt;f(x_i;W_v),g(r_i;W_u)&gt;||^2
-\]</span> 总的来说就是均方误差在整个模型结构上的损失。之后作者与<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1409.2944.pdf">CDL</a>模型做了比较，列举了几个CDL的劣势，但是总的感觉就是对CDL模型单方面只对物品Encoded的改进，总体感觉改动并不大。</p>
+\]</span> 总的来说就是均方误差在整个模型结构上的损失。之后作者与<a
+target="_blank" rel="noopener" href="https://arxiv.org/pdf/1409.2944.pdf">CDL</a>模型做了比较，列举了几个CDL的劣势，但是总的感觉就是对CDL模型单方面只对物品Encoded的改进，总体感觉改动并不大。</p>
 <h3 id="summary">Summary</h3>
-<p>​ 本篇也是一篇利用神经网络的非线性来做矩阵分解的，这篇我看见的比较早，之前在arxiv上就看见了，第一次看见的时候感觉思路特别棒，看见之后觉得跟矩阵分解有异曲同工之妙，但文中作者并为这么点出，而以CDL的改进模型作为出发点，感觉被拒的原因就是如此。对于矩阵分解和这个模型，感觉可以证明一下二者之间的等价性，水一篇论文，但这个idea一直没有去实现。今天看IJCAI-17，看见一篇思路一致的论文，是南大某实验室发的，不知道这二者孰先孰后，这篇论文ICLR 上屡屡遭拒，而另一篇却被IJCAI接收，真是感慨万千。</p>
+<p>​
+本篇也是一篇利用神经网络的非线性来做矩阵分解的，这篇我看见的比较早，之前在arxiv上就看见了，第一次看见的时候感觉思路特别棒，看见之后觉得跟矩阵分解有异曲同工之妙，但文中作者并为这么点出，而以CDL的改进模型作为出发点，感觉被拒的原因就是如此。对于矩阵分解和这个模型，感觉可以证明一下二者之间的等价性，水一篇论文，但这个idea一直没有去实现。今天看IJCAI-17，看见一篇思路一致的论文，是南大某实验室发的，不知道这二者孰先孰后，这篇论文ICLR
+上屡屡遭拒，而另一篇却被IJCAI接收，真是感慨万千。</p>
 
       
     </div>

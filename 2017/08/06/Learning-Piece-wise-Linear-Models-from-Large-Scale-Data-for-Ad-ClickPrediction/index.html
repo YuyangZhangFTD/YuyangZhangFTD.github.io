@@ -419,68 +419,114 @@
 
       
         <h3 id="introduction">Introduction</h3>
-<p>CTR预估(click-through-rate prediction)是广告行业比较常见的问题，根据用户的历史行为来判断用户对广告点击的可能性。该问题的输入往往是数以万计的稀疏特征向量，在进行特征交叉后会维数会更高，比较常见的就是采用对率回归模型加一些正则化，因为对率回归模型计算开销小且容易实现并行。之前facebook的一篇论文中先用树模型做分类之后再加一个对率回归模型，最后得出效果出奇的好，应该也是工业界比较常用的方法，同时树模型的选择或者说是再构造特征的特性也逐渐被大家所关注。另一种比较有效的就是因子分解模型系列，包括FM和FFM，它们的主要思想就是构造交叉特征或者是二阶的特征来一起进行训练。</p>
-<p>这篇文章中，作者主要提出了一种piece-wise的线性模型，并且给出了其在大规模数据上的训练算法，称之为LS-PLM(Large Scale Piecewise Linear Model)，LS-PLM采用了分治的思想，先分成几个局部再用线性模型拟合，这两部都采用监督学习的方式，来优化总体的预测误差，总的来说有以下优势：</p>
+<p>CTR预估(click-through-rate
+prediction)是广告行业比较常见的问题，根据用户的历史行为来判断用户对广告点击的可能性。该问题的输入往往是数以万计的稀疏特征向量，在进行特征交叉后会维数会更高，比较常见的就是采用对率回归模型加一些正则化，因为对率回归模型计算开销小且容易实现并行。之前facebook的一篇论文中先用树模型做分类之后再加一个对率回归模型，最后得出效果出奇的好，应该也是工业界比较常用的方法，同时树模型的选择或者说是再构造特征的特性也逐渐被大家所关注。另一种比较有效的就是因子分解模型系列，包括FM和FFM，它们的主要思想就是构造交叉特征或者是二阶的特征来一起进行训练。</p>
+<p>这篇文章中，作者主要提出了一种piece-wise的线性模型，并且给出了其在大规模数据上的训练算法，称之为LS-PLM(Large
+Scale Piecewise Linear
+Model)，LS-PLM采用了分治的思想，先分成几个局部再用线性模型拟合，这两部都采用监督学习的方式，来优化总体的预测误差，总的来说有以下优势：</p>
 <ul>
 <li>非线性，通过分区来达到拟合非线性函数的效果；</li>
 <li>scalability，这个应该叫可放缩性？大概是这个意思，与对率回归模型相似，都可以很好的处理复杂的样本与高伟的特征，并且做到了分布式并行；</li>
-<li>稀疏性，对于在线学习系统，模型的稀疏性较为重要，所以采用了<span class="math inline">\(L_1\)</span> 和<span class="math inline">\(L_{2,1}\)</span> 正则化</li>
+<li>稀疏性，对于在线学习系统，模型的稀疏性较为重要，所以采用了<span
+class="math inline">\(L_1\)</span> 和<span
+class="math inline">\(L_{2,1}\)</span> 正则化</li>
 </ul>
 <h3 id="method">Method</h3>
 <h4 id="formulation">Formulation</h4>
-<p>记数据集为<span class="math inline">\(\{x_t,y_t\}|^n_{t=1}\)</span> ，其中<span class="math inline">\(y_t\in\{0,1\}\)</span> ，输入<span class="math inline">\(x_t\in\mathbb{R}^d\)</span> 通常是高维稀疏数据，我们将模型描述为 <span class="math display">\[
+<p>记数据集为<span class="math inline">\(\{x_t,y_t\}|^n_{t=1}\)</span>
+，其中<span class="math inline">\(y_t\in\{0,1\}\)</span> ，输入<span
+class="math inline">\(x_t\in\mathbb{R}^d\)</span>
+通常是高维稀疏数据，我们将模型描述为 <span class="math display">\[
 p(y=1|x)=g(
 \sum^m_{j=1}\sigma(u_j^Tx)\eta(w_j^Tx)
 )
 \]</span> 定义模型参数为 <span class="math display">\[
 \Theta=\{u_1,...,u_m,w_1,...,w_m\}
 \in\mathbb{R}^{d\times 2m}
-\]</span> 其中<span class="math inline">\(\{u_1,...,u_m\}\)</span> 是区域划分函数<span class="math inline">\(\sigma(\cdot)\)</span> 的参数，<span class="math inline">\(\{w_1,...,w_m\}\)</span> 是拟合函数<span class="math inline">\(\eta(\cdot)\)</span> 的参数。给定样本<span class="math inline">\(x\)</span> ，模型的预测<span class="math inline">\(p(y|x)\)</span> 分为两部分：首先根据<span class="math inline">\(\sigma(u_j^Tx)\)</span> 分割特征空间为<span class="math inline">\(m\)</span> 部分，其中<span class="math inline">\(m\)</span> 为给定的超参数，然后对于各部分计算<span class="math inline">\(\eta(w_j^Tx)\)</span> 作为各部分的预测。函数<span class="math inline">\(g(\cdot)\)</span> 确保了我们的模型满足概率函数的定义。</p>
-<p>当我们将softmax函数作为分割函数<span class="math inline">\(\sigma(x)\)</span> ，将sigmoid函数作为拟合函数<span class="math inline">\(\eta(x)\)</span> 的时候，该模型为 <span class="math display">\[
+\]</span> 其中<span class="math inline">\(\{u_1,...,u_m\}\)</span>
+是区域划分函数<span class="math inline">\(\sigma(\cdot)\)</span>
+的参数，<span class="math inline">\(\{w_1,...,w_m\}\)</span>
+是拟合函数<span class="math inline">\(\eta(\cdot)\)</span>
+的参数。给定样本<span class="math inline">\(x\)</span> ，模型的预测<span
+class="math inline">\(p(y|x)\)</span> 分为两部分：首先根据<span
+class="math inline">\(\sigma(u_j^Tx)\)</span> 分割特征空间为<span
+class="math inline">\(m\)</span> 部分，其中<span
+class="math inline">\(m\)</span> 为给定的超参数，然后对于各部分计算<span
+class="math inline">\(\eta(w_j^Tx)\)</span> 作为各部分的预测。函数<span
+class="math inline">\(g(\cdot)\)</span>
+确保了我们的模型满足概率函数的定义。</p>
+<p>当我们将softmax函数作为分割函数<span
+class="math inline">\(\sigma(x)\)</span>
+，将sigmoid函数作为拟合函数<span class="math inline">\(\eta(x)\)</span>
+的时候，该模型为 <span class="math display">\[
 p(y=1|x)=\sum^m_{i=1}
 \frac{\exp(u_i^Tx)}{\sum^m_{j=1}\exp(u_j^Tx)}
 \cdot\frac{1}{1+\exp(-w_i^Tx)}
-\]</span> 此时我们的混合模型可以看做一个<a href="www.dtic.mil/get-tr-doc/pdf?AD=ADA276516">FOE模型</a> <span class="math display">\[
+\]</span> 此时我们的混合模型可以看做一个<a
+href="www.dtic.mil/get-tr-doc/pdf?AD=ADA276516">FOE模型</a> <span
+class="math display">\[
 p(y=1|x)=\sum^m_{i=1}p(z=i|x)p(y|z=i,x)
 \]</span> 在理想情况下，模型会有如下图的表现</p>
 <figure>
-<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
+<img src="1.png" alt="1" />
+<figcaption aria-hidden="true">1</figcaption>
 </figure>
 <p>模型会很好的拟合数据的非线性关系。</p>
 <p>LS-PLM模型可以表述为以下形式 <span class="math display">\[
-\arg min_\Theta f(\Theta)=loss(\Theta)+\lambda||\Theta||_{2,1}+\beta||\Theta||_1
+\arg min_\Theta
+f(\Theta)=loss(\Theta)+\lambda||\Theta||_{2,1}+\beta||\Theta||_1
 \]</span></p>
 <p><span class="math display">\[
 loss(\Theta)=-\sum^n_{t=1}[
   y_t\log(p(y_t=1|x_t,\Theta)+(1-y_t)log(p(y_t=0|x_t,\Theta))
 ]
 \]</span></p>
-<p>其中<span class="math inline">\(L_{2,1}\)</span> 正则项为 <span class="math display">\[
+<p>其中<span class="math inline">\(L_{2,1}\)</span> 正则项为 <span
+class="math display">\[
 ||\Theta||{2,1}=\sum^d{i=1}\sqrt{\sum^{2m}{j=1}\Theta^2{ij}}
 \]</span></p>
 <h4 id="optimization">Optimization</h4>
-<p>作以下定义：<span class="math inline">\(\partial^+_{ij}f(\Theta)\)</span> 为右导数 <span class="math display">\[
-\partial^+_{ij}f(\Theta)=\lim_{\alpha\rightarrow0}\frac{f(\Theta+\alpha e_{ij})-f(\Theta)}{\alpha}
-\]</span> 其中<span class="math inline">\(e_{ij}\)</span> 为单位偏差向量；<span class="math inline">\(f\)</span> 在方向<span class="math inline">\(d\)</span> 上的导数为<span class="math inline">\(f&#39;(\Theta;d)\)</span><br />
+<p>作以下定义：<span
+class="math inline">\(\partial^+_{ij}f(\Theta)\)</span> 为右导数 <span
+class="math display">\[
+\partial^+_{ij}f(\Theta)=\lim_{\alpha\rightarrow0}\frac{f(\Theta+\alpha
+e_{ij})-f(\Theta)}{\alpha}
+\]</span> 其中<span class="math inline">\(e_{ij}\)</span>
+为单位偏差向量；<span class="math inline">\(f\)</span> 在方向<span
+class="math inline">\(d\)</span> 上的导数为<span
+class="math inline">\(f&#39;(\Theta;d)\)</span><br />
 <span class="math display">\[
-f&#39;(\Theta;d)=\lim_{\alpha\rightarrow0}\frac{f(\Theta+\alpha d)-f(\Theta)}{\alpha}
-\]</span> 当<span class="math inline">\(f&#39;(\Theta;d)&lt;0\)</span> 的时候<span class="math inline">\(d\)</span> 是一个下降方向之一；<span class="math inline">\(sign(\cdot)\)</span> 为取值是<span class="math inline">\(\{-1,0,1\}\)</span> 的指示函数，则映射函数为 <span class="math display">\[
+f&#39;(\Theta;d)=\lim_{\alpha\rightarrow0}\frac{f(\Theta+\alpha
+d)-f(\Theta)}{\alpha}
+\]</span> 当<span class="math inline">\(f&#39;(\Theta;d)&lt;0\)</span>
+的时候<span class="math inline">\(d\)</span> 是一个下降方向之一；<span
+class="math inline">\(sign(\cdot)\)</span> 为取值是<span
+class="math inline">\(\{-1,0,1\}\)</span> 的指示函数，则映射函数为 <span
+class="math display">\[
 \pi_{ij}(\Theta;\Omega)=\begin{cases}
 \Theta_{ij}&amp;, &amp;sign(\Theta_{ij})=sign(\Omega_{ij}) \\
 0&amp;, &amp; \text{otherwise} \end{cases}
 \]</span></p>
-<p>表示将<span class="math inline">\(\Theta\)</span> 映射到象限<span class="math inline">\(\Omega\)</span> 上。</p>
-<p>因为目标函数非凸非连续，所以整体的梯度方向很难找到，所以可以选择非正的下降方向进行迭代 <span class="math display">\[
+<p>表示将<span class="math inline">\(\Theta\)</span> 映射到象限<span
+class="math inline">\(\Omega\)</span> 上。</p>
+<p>因为目标函数非凸非连续，所以整体的梯度方向很难找到，所以可以选择非正的下降方向进行迭代
+<span class="math display">\[
 d_{ij}=\begin{cases}
 s-\beta sign(\Theta_{ij}), &amp;\Theta_{ij}\neq0\\
-\max\{|s|-\beta, 0\}sign(s), &amp; \Theta_{ij}=0,||\theta_{i\cdot}||_{2,1}\neq0\\
-\frac{max{||v||_{2,1}-\lambda,0}}{||v||_{2,1}}v, &amp;||\Theta_{i\cdot}||_{2,1}=0 
+\max\{|s|-\beta, 0\}sign(s), &amp;
+\Theta_{ij}=0,||\theta_{i\cdot}||_{2,1}\neq0\\
+\frac{max{||v||_{2,1}-\lambda,0}}{||v||_{2,1}}v,
+&amp;||\Theta_{i\cdot}||_{2,1}=0
 \end{cases}
 \]</span> 其中 <span class="math display">\[
-s=-\bigtriangledown loss(\Theta){ij}-\lambda\frac{\Theta{ij}}{||\Theta{i\cdot}||{2,1}}
+s=-\bigtriangledown
+loss(\Theta){ij}-\lambda\frac{\Theta{ij}}{||\Theta{i\cdot}||{2,1}}
 \]</span> 和 <span class="math display">\[
-v=\max\{|-\bigtriangledown loss(\Theta){ij}|-\beta,0\}sign(-\bigtriangledown loss(\Theta){ij})
-\]</span> 因为目标函数非凸，所以不能保证Hessian矩阵半正定，所以有些情况无法用LBFGS来优化，所以灵活选择，当Hessian矩阵满足条件时选择二阶优化，不满足时选择一阶优化条件 $$</p>
+v=\max\{|-\bigtriangledown
+loss(\Theta){ij}|-\beta,0\}sign(-\bigtriangledown loss(\Theta){ij})
+\]</span>
+因为目标函数非凸，所以不能保证Hessian矩阵半正定，所以有些情况无法用LBFGS来优化，所以灵活选择，当Hessian矩阵满足条件时选择二阶优化，不满足时选择一阶优化条件
+$$</p>
 <p>$$</p>
 <p><span class="math display">\[
 p_k=\begin{cases}
@@ -495,9 +541,12 @@ d^{(k)},&amp;\text{otherwise}
 sign(\Theta^{(k)}_{ij}), &amp; \Theta^{(k)}_{ij}\neq 0\\
 sign(d^{(k)}_{ij}),&amp; \Theta^{(k)}_{ij}=0\\
 \end{cases}
-\]</span> 这步应该是对象限的限制，我没看太懂，好像是参考<a href="machinelearning.wustl.edu/mlpapers/paper_files/icml2007_AndrewG07.pdf">OWLQN method</a> 。留个坑以后填。对目标函数的整体优化算法如下图所示</p>
+\]</span> 这步应该是对象限的限制，我没看太懂，好像是参考<a
+href="machinelearning.wustl.edu/mlpapers/paper_files/icml2007_AndrewG07.pdf">OWLQN
+method</a> 。留个坑以后填。对目标函数的整体优化算法如下图所示</p>
 <figure>
-<img src="2.png" alt="2" /><figcaption aria-hidden="true">2</figcaption>
+<img src="2.png" alt="2" />
+<figcaption aria-hidden="true">2</figcaption>
 </figure>
 <p>后面还有对并行训练方面的优化设计，我对这方面研究较少，就没有细细品读了。</p>
 <h3 id="summary">Summary</h3>

@@ -96,12 +96,12 @@
 
 
 
-<meta name="description" content="这篇文章发于2016年1月，也是很早期的DL做CTR的文章，感觉这几篇文章看的时候没注意顺序，看的时候经常觉得蹦出来的是比较烂大街和过时的想法。。 文中提出来的第一个模型是FNN  1  上面几层都很正常，最底下是一个FM层，就是比较经典的一个FM模型作为输入过激活函数 \[ y_{\text{FM}}&#x3D;\text{sigmoid}( w_0+\sum^n_{i&#x3D;1}w_ix_i+\sum^n_{">
+<meta name="description" content="这篇文章发于2016年1月，也是很早期的DL做CTR的文章，感觉这几篇文章看的时候没注意顺序，看的时候经常觉得蹦出来的是比较烂大街和过时的想法。。 文中提出来的第一个模型是FNN   1  上面几层都很正常，最底下是一个FM层，就是比较经典的一个FM模型作为输入过激活函数 \[ y_{\text{FM}}&#x3D;\text{sigmoid}( w_0+\sum^n_{i&#x3D;1}w_ix_i+\sum^n_">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Deep Learning over Multi-field Categorical Data">
 <meta property="og:url" content="http://yoursite.com/2017/10/13/Deep-Learning-over-Multi-field-Categorical-Data/index.html">
 <meta property="og:site_name" content="Arvin&#39;s Blog">
-<meta property="og:description" content="这篇文章发于2016年1月，也是很早期的DL做CTR的文章，感觉这几篇文章看的时候没注意顺序，看的时候经常觉得蹦出来的是比较烂大街和过时的想法。。 文中提出来的第一个模型是FNN  1  上面几层都很正常，最底下是一个FM层，就是比较经典的一个FM模型作为输入过激活函数 \[ y_{\text{FM}}&#x3D;\text{sigmoid}( w_0+\sum^n_{i&#x3D;1}w_ix_i+\sum^n_{">
+<meta property="og:description" content="这篇文章发于2016年1月，也是很早期的DL做CTR的文章，感觉这几篇文章看的时候没注意顺序，看的时候经常觉得蹦出来的是比较烂大街和过时的想法。。 文中提出来的第一个模型是FNN   1  上面几层都很正常，最底下是一个FM层，就是比较经典的一个FM模型作为输入过激活函数 \[ y_{\text{FM}}&#x3D;\text{sigmoid}( w_0+\sum^n_{i&#x3D;1}w_ix_i+\sum^n_">
 <meta property="og:locale">
 <meta property="og:image" content="http://yoursite.com/2017/10/13/Deep-Learning-over-Multi-field-Categorical-Data/1.png">
 <meta property="og:image" content="http://yoursite.com/2017/10/13/Deep-Learning-over-Multi-field-Categorical-Data/2.png">
@@ -422,17 +422,23 @@
         <p>这篇文章发于2016年1月，也是很早期的DL做CTR的文章，感觉这几篇文章看的时候没注意顺序，看的时候经常觉得蹦出来的是比较烂大街和过时的想法。。</p>
 <p>文中提出来的第一个模型是FNN</p>
 <figure>
-<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
+<img src="1.png" alt="1" />
+<figcaption aria-hidden="true">1</figcaption>
 </figure>
-<p>上面几层都很正常，最底下是一个FM层，就是比较经典的一个FM模型作为输入过激活函数 <span class="math display">\[
+<p>上面几层都很正常，最底下是一个FM层，就是比较经典的一个FM模型作为输入过激活函数
+<span class="math display">\[
 y_{\text{FM}}=\text{sigmoid}(
-w_0+\sum^n_{i=1}w_ix_i+\sum^n_{i=1}\sum^n_{j=i+1}\langle v_i,v_j\rangle x_ix_j)
+w_0+\sum^n_{i=1}w_ix_i+\sum^n_{i=1}\sum^n_{j=i+1}\langle v_i,v_j\rangle
+x_ix_j)
 \]</span> 第二个模型是SNN，sampling-based NN，结构如下图所示</p>
 <figure>
-<img src="2.png" alt="2" /><figcaption aria-hidden="true">2</figcaption>
+<img src="2.png" alt="2" />
+<figcaption aria-hidden="true">2</figcaption>
 </figure>
 <p>左边所示的就是SNN的网络结构，右边是两种预训练的方式，可以用RBM或者DAE两种模式来进行pre-train。</p>
-<p>再往下看的时候发现就是regularization和experiment了。。这篇文章看得我简直惊呆了。。可能在当年这种想法还是可以的，但放到现在，我觉得肯定是离state of art有一段距离，同时pre-train的方式也没法证明足够有效，算是一种过时的方法，不过这两种pre-train和后面的训练就有些像dropout了，应该也是模型效果好的原因之一吧。</p>
+<p>再往下看的时候发现就是regularization和experiment了。。这篇文章看得我简直惊呆了。。可能在当年这种想法还是可以的，但放到现在，我觉得肯定是离state
+of
+art有一段距离，同时pre-train的方式也没法证明足够有效，算是一种过时的方法，不过这两种pre-train和后面的训练就有些像dropout了，应该也是模型效果好的原因之一吧。</p>
 
       
     </div>

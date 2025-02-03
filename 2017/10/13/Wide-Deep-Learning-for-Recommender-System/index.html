@@ -422,9 +422,14 @@
 <p>论文中提出，一个推荐系统面临的挑战是memorization和generalization，memorization可以定义为学习共现物品或者特征的频率，并且在历史数据中探索可能出现的相关关系，generalization指的是基于相关关系，探索新的特征组合，简单来说就是，一个是抓住过去历史数据中蕴藏着的推荐偏好，另一个探索可能存在的推荐偏好，这里的推荐偏好是用特征组合-&gt;物品喜好的形式来表述的。</p>
 <p>论文中提出的模型就是为了同时去实现memorization和generalization，主题模型如下图所示</p>
 <figure>
-<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
+<img src="1.png" alt="1" />
+<figcaption aria-hidden="true">1</figcaption>
 </figure>
-<p>很简单的思路，模型的左边Wide部分，是简单的广义线性模型，来刻画特征间的组合关系，右边Deep部分，是通过embedding来刻画交叉特征的关系。两种模型的输入加权后进入最后的log odds（也就是lr）得到结果，被称为joint training。这里需要区分一下ensemble和joint training的区别，ensemble是模型在inference的阶段进行combine的，而joint learning是在训练阶段。</p>
+<p>很简单的思路，模型的左边Wide部分，是简单的广义线性模型，来刻画特征间的组合关系，右边Deep部分，是通过embedding来刻画交叉特征的关系。两种模型的输入加权后进入最后的log
+odds（也就是lr）得到结果，被称为joint
+training。这里需要区分一下ensemble和joint
+training的区别，ensemble是模型在inference的阶段进行combine的，而joint
+learning是在训练阶段。</p>
 <p>论文到这里也就基本上结束了，模型很简单，最重要的是提供了tensorflow的实现，在tensorflow的源码示例中，大家可以下载看一下。</p>
 
       

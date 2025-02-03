@@ -429,25 +429,37 @@
 \forall i,j\in I:i\neq j\rightarrow i&gt;_uj\vee j&gt;_ui\\
 \forall i,j\in I:i&gt;_uj\wedge j&gt;_ui\rightarrow i =j\\
 \forall i,j,k\in I: i&gt;_uj\wedge j&gt;_uk\rightarrow i&gt;_uk
-\]</span> 分别定义了rank的完整性，非对称性和传递性，然后对于我们已经有的打分记录，我们认为用户有implicit feedback的物品的打分为1，而无交互或者missing value则定义为0，这样我们可以根据用户对打分进行排序比较，如下图所示</p>
+\]</span>
+分别定义了rank的完整性，非对称性和传递性，然后对于我们已经有的打分记录，我们认为用户有implicit
+feedback的物品的打分为1，而无交互或者missing
+value则定义为0，这样我们可以根据用户对打分进行排序比较，如下图所示</p>
 <figure>
-<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
+<img src="1.png" alt="1" />
+<figcaption aria-hidden="true">1</figcaption>
 </figure>
 <p>然后我们就可以来构建训练数据 <span class="math display">\[
 D_S=\{(u,i,j)|i\in I^+_u\wedge j\in I/ I^+_u\}
-\]</span> 然后作者的初衷是优化rank的loss，即最大化后验概率 <span class="math display">\[
+\]</span> 然后作者的初衷是优化rank的loss，即最大化后验概率 <span
+class="math display">\[
 p(\theta|&gt;_u)\propto p(&gt;_u|\theta)p(\theta)
-\]</span> 参数<span class="math inline">\(\theta\)</span> 的先验概率与似然的乘积，我们把似然写开 <span class="math display">\[
-\prod_{u\in U}p(&gt;_u|\theta)=\prod_{(u,i,j)\in U\times I\times I}p(i&gt;_uj|\theta)^{\mathbb{I}((u,i,j)\in D_S)}\cdot (1-p(i&gt;_uj|\theta))^{\mathbb{I}(u,j,i)\notin D_S}
+\]</span> 参数<span class="math inline">\(\theta\)</span>
+的先验概率与似然的乘积，我们把似然写开 <span class="math display">\[
+\prod_{u\in U}p(&gt;_u|\theta)=\prod_{(u,i,j)\in U\times I\times
+I}p(i&gt;_uj|\theta)^{\mathbb{I}((u,i,j)\in D_S)}\cdot
+(1-p(i&gt;_uj|\theta))^{\mathbb{I}(u,j,i)\notin D_S}
 \]</span> 然后用sigmoid做概率的映射 <span class="math display">\[
 p(i&gt;_u j|\theta)=\sigma(\hat{x}_{uij}(\theta))
-\]</span> 给参数<span class="math inline">\(\theta\)</span> 一个零均值的正态分布先验，则我们的优化目标为 <span class="math display">\[
+\]</span> 给参数<span class="math inline">\(\theta\)</span>
+一个零均值的正态分布先验，则我们的优化目标为 <span
+class="math display">\[
 \begin{aligned}
 \text{BPR-OPT}&amp;=\ln p(\theta|&gt;_u)\\
 &amp;=\ln p(&gt;_u|\theta)p(\theta)\\
-&amp;=\sum_{(u,i,j)\in D_S}\ln\sigma(\hat{x}_{uij})-\lambda_\theta\|\theta\|^2
+&amp;=\sum_{(u,i,j)\in
+D_S}\ln\sigma(\hat{x}_{uij})-\lambda_\theta\|\theta\|^2
 \end{aligned}
-\]</span> 这样做可以认为是换了一种loss的AUC优化，具体解释见论文，很巧妙。</p>
+\]</span>
+这样做可以认为是换了一种loss的AUC优化，具体解释见论文，很巧妙。</p>
 <p>而BPR-Learning则是用BPR-OPT作为顶层loss，来优化底层的模型，比如说作为矩阵分解模型的loss，上层将gradient传下来后给下面进行参数迭代，看到这里不得不感叹一句，这个思想真是巧妙呀。作者结合当下几种主流的模型做了实验并进行了对比。</p>
 <p>总的来说，这篇文章是少有的让人眼前一亮的文章，看着的确过瘾，而且思路清晰，形式巧妙，效果估计也很棒，恩，打算有时间自己实现一下了。</p>
 

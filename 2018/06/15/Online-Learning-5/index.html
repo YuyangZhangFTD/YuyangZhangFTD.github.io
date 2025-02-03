@@ -96,16 +96,16 @@
 
 
 
-<meta name="description" content="Online Subgradient Descent 在线梯度下降算法如下图所示  OGD  其中，每一步迭代的时候，根据梯度（或次梯度）更新后，将新得到的权重投影到权重的可行域上。  定理1：如果\(w&#39;\in\mathcal{W}\)，\(w&#x3D;\prod_{\mathcal{W}}(w&#39;)\)，\(w^*\in\mathcal{W}\)，那么\((w&#39;-w)(w^*-w">
+<meta name="description" content="Online Subgradient Descent 在线梯度下降算法如下图所示   OGD  其中，每一步迭代的时候，根据梯度（或次梯度）更新后，将新得到的权重投影到权重的可行域上。  定理1：如果\(w&#39;\in\mathcal{W}\)，\(w&#x3D;\prod_{\mathcal{W}}(w&#39;)\)，\(w^*\in\mathcal{W}\)，那么\((w&#39;-w)(w^*-">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Online Learning 5">
 <meta property="og:url" content="http://yoursite.com/2018/06/15/Online-Learning-5/index.html">
 <meta property="og:site_name" content="Arvin&#39;s Blog">
-<meta property="og:description" content="Online Subgradient Descent 在线梯度下降算法如下图所示  OGD  其中，每一步迭代的时候，根据梯度（或次梯度）更新后，将新得到的权重投影到权重的可行域上。  定理1：如果\(w&#39;\in\mathcal{W}\)，\(w&#x3D;\prod_{\mathcal{W}}(w&#39;)\)，\(w^*\in\mathcal{W}\)，那么\((w&#39;-w)(w^*-w">
+<meta property="og:description" content="Online Subgradient Descent 在线梯度下降算法如下图所示   OGD  其中，每一步迭代的时候，根据梯度（或次梯度）更新后，将新得到的权重投影到权重的可行域上。  定理1：如果\(w&#39;\in\mathcal{W}\)，\(w&#x3D;\prod_{\mathcal{W}}(w&#39;)\)，\(w^*\in\mathcal{W}\)，那么\((w&#39;-w)(w^*-">
 <meta property="og:locale">
 <meta property="og:image" content="http://yoursite.com/2018/06/15/Online-Learning-5/1.png">
 <meta property="article:published_time" content="2018-06-15T12:21:42.000Z">
-<meta property="article:modified_time" content="2018-06-20T01:45:53.629Z">
+<meta property="article:modified_time" content="2018-06-20T01:45:53.000Z">
 <meta property="article:author" content="YuyangZhangFTD">
 <meta property="article:tag" content="Machine Learning">
 <meta property="article:tag" content="Convex Optimization">
@@ -399,21 +399,32 @@
         <h2 id="online-subgradient-descent">Online Subgradient Descent</h2>
 <p>在线梯度下降算法如下图所示</p>
 <figure>
-<img src="1.png" alt="OGD" /><figcaption aria-hidden="true">OGD</figcaption>
+<img src="1.png" alt="OGD" />
+<figcaption aria-hidden="true">OGD</figcaption>
 </figure>
 <p>其中，每一步迭代的时候，根据梯度（或次梯度）更新后，将新得到的权重投影到权重的可行域上。</p>
 <blockquote>
-<p>定理1：如果<span class="math inline">\(w&#39;\in\mathcal{W}\)</span>，<span class="math inline">\(w=\prod_{\mathcal{W}}(w&#39;)\)</span>，<span class="math inline">\(w^*\in\mathcal{W}\)</span>，那么<span class="math inline">\((w&#39;-w)(w^*-w)\leq0\)</span>。</p>
+<p>定理1：如果<span
+class="math inline">\(w&#39;\in\mathcal{W}\)</span>，<span
+class="math inline">\(w=\prod_{\mathcal{W}}(w&#39;)\)</span>，<span
+class="math inline">\(w^*\in\mathcal{W}\)</span>，那么<span
+class="math inline">\((w&#39;-w)(w^*-w)\leq0\)</span>。</p>
 </blockquote>
 <p>证明：</p>
-<p>假设存在<span class="math inline">\(\hat{w}\in\mathcal{W}\)</span>，使得<span class="math inline">\((w&#39;-\hat{w})(w^*-\hat{w})&gt;0\)</span>。定义 <span class="math display">\[
+<p>假设存在<span
+class="math inline">\(\hat{w}\in\mathcal{W}\)</span>，使得<span
+class="math inline">\((w&#39;-\hat{w})(w^*-\hat{w})&gt;0\)</span>。定义
+<span class="math display">\[
 \begin{aligned}
 Z(\lambda)
 &amp;=(1-\lambda)\hat{w}+\lambda w^*
 &amp;\lambda\in[0,1]\\
 &amp;=\hat{w}+\lambda(w^*-\hat{w})
 \end{aligned}
-\]</span> 注意，因为<span class="math inline">\(\mathcal{W}\)</span>是凸集，所以有<span class="math inline">\(Z(\lambda)\in\mathcal{W}\)</span>。 <span class="math display">\[
+\]</span> 注意，因为<span
+class="math inline">\(\mathcal{W}\)</span>是凸集，所以有<span
+class="math inline">\(Z(\lambda)\in\mathcal{W}\)</span>。 <span
+class="math display">\[
 \begin{aligned}
 \|w&#39;-Z(\lambda)\|^2
 &amp;=\|w&#39;-\hat{w}-\lambda(w^*-\hat{w})\|^2\\
@@ -421,11 +432,27 @@ Z(\lambda)
 -2\lambda(w&#39;-\hat{w})(w^*-\hat{w})
 \end{aligned}
 \]</span></p>
-<p>令<span class="math inline">\(h(\lambda)=\lambda^2\|w^*-\hat{w}\|-2\lambda(w&#39;-\hat{w})(w^*-\hat{w})\)</span>，该函数的根为<span class="math inline">\(0\)</span>和<span class="math inline">\(\frac{(w&#39;-\hat{w})(w^*-\hat{w})}{\|w^*-\hat{w}\|^2}\)</span>，当<span class="math inline">\(\lambda\in(0,\frac{(w&#39;-\hat{w})(w^*-\hat{w})}{\|w^*-\hat{w}\|^2})\)</span>时，<span class="math inline">\(h(\lambda)&lt;0\)</span>，所以有 <span class="math display">\[
+<p>令<span
+class="math inline">\(h(\lambda)=\lambda^2\|w^*-\hat{w}\|-2\lambda(w&#39;-\hat{w})(w^*-\hat{w})\)</span>，该函数的根为<span
+class="math inline">\(0\)</span>和<span
+class="math inline">\(\frac{(w&#39;-\hat{w})(w^*-\hat{w})}{\|w^*-\hat{w}\|^2}\)</span>，当<span
+class="math inline">\(\lambda\in(0,\frac{(w&#39;-\hat{w})(w^*-\hat{w})}{\|w^*-\hat{w}\|^2})\)</span>时，<span
+class="math inline">\(h(\lambda)&lt;0\)</span>，所以有 <span
+class="math display">\[
 \|w&#39;-Z(\lambda)\|^2\leq\|w&#39;-\hat{w}\|^2
-\]</span> 对于任何使得<span class="math inline">\(h(\lambda)&lt;0\)</span>的<span class="math inline">\(\lambda\)</span>，都会产生<span class="math inline">\(Z(\lambda)\in\mathcal{W}\)</span>相比于<span class="math inline">\(\hat{w}\)</span>更接近<span class="math inline">\(w&#39;\)</span>，原假设不成立，该定理得证。<span class="math inline">\(\Box\)</span></p>
+\]</span> 对于任何使得<span
+class="math inline">\(h(\lambda)&lt;0\)</span>的<span
+class="math inline">\(\lambda\)</span>，都会产生<span
+class="math inline">\(Z(\lambda)\in\mathcal{W}\)</span>相比于<span
+class="math inline">\(\hat{w}\)</span>更接近<span
+class="math inline">\(w&#39;\)</span>，原假设不成立，该定理得证。<span
+class="math inline">\(\Box\)</span></p>
 <blockquote>
-<p>定理2：<span class="math inline">\(w&#39;\notin\mathcal{W}\)</span>，<span class="math inline">\(w=\prod_{\mathcal{W}}(w&#39;)\)</span>，<span class="math inline">\(w^*\in\mathcal{W}\)</span>，那么<span class="math inline">\(\frac{1}{2}\|w&#39;-w\|^2+\frac{1}{2}\|w-w^*\|^2\leq\frac{1}{2}\|w^*-w&#39;\|^2\)</span>。</p>
+<p>定理2：<span
+class="math inline">\(w&#39;\notin\mathcal{W}\)</span>，<span
+class="math inline">\(w=\prod_{\mathcal{W}}(w&#39;)\)</span>，<span
+class="math inline">\(w^*\in\mathcal{W}\)</span>，那么<span
+class="math inline">\(\frac{1}{2}\|w&#39;-w\|^2+\frac{1}{2}\|w-w^*\|^2\leq\frac{1}{2}\|w^*-w&#39;\|^2\)</span>。</p>
 </blockquote>
 <p>证明： <span class="math display">\[
 \begin{aligned}
@@ -438,17 +465,22 @@ Z(\lambda)
 \leq&amp;0
 \end{aligned}
 \]</span> 证毕。<span class="math inline">\(\Box\)</span></p>
-<p>接下来我们来证明一下潜在函数（potential function）为<span class="math inline">\(\Phi(w,w^*)=\frac{1}{2}\|w-w^*\|^2\)</span>，选择<span class="math inline">\(w^*\in\mathcal{W}\)</span>，对于梯度下降，我们有 <span class="math display">\[
+<p>接下来我们来证明一下潜在函数（potential function）为<span
+class="math inline">\(\Phi(w,w^*)=\frac{1}{2}\|w-w^*\|^2\)</span>，选择<span
+class="math inline">\(w^*\in\mathcal{W}\)</span>，对于梯度下降，我们有
+<span class="math display">\[
 \begin{aligned}
 &amp;\Phi(w_t,w^*)-\Phi(w&#39;_{t+1},w^*)\\
 =&amp;\frac{1}{2}\|w_t-w^*\|^2-\frac{1}{2}\|w&#39;_{t+1}-w^*\|^2\\
 =&amp;\frac{1}{2}\|w_t-w^*\|^2-\frac{1}{2}\|w_t-w^*-\eta_tg_t\|^2\\
-=&amp;\frac{1}{2}\|w_t-w^*\|^2-\frac{1}{2}\|w_t-w^*\|^2+\eta_t(w_t-w^*)\cdot g_t-\frac{1}{2}\eta_t^2\|g_t\|^2\\
+=&amp;\frac{1}{2}\|w_t-w^*\|^2-\frac{1}{2}\|w_t-w^*\|^2+\eta_t(w_t-w^*)\cdot
+g_t-\frac{1}{2}\eta_t^2\|g_t\|^2\\
 =&amp;-\frac{1}{2}\eta_t^2\|g_t\|^2+\eta_t(w_t-w^*)\cdot g_t
 \end{aligned}
 \]</span> 其中后一项 <span class="math display">\[
 \begin{aligned}
-(w_t-w^*)\cdot g_t&amp;=\frac{1}{\eta_t}(\Phi(w_t,w^*)-\Phi(w&#39;_{t+1},w^*))+\frac{1}{2}\eta_t\|g_t\|^2\\
+(w_t-w^*)\cdot
+g_t&amp;=\frac{1}{\eta_t}(\Phi(w_t,w^*)-\Phi(w&#39;_{t+1},w^*))+\frac{1}{2}\eta_t\|g_t\|^2\\
 &amp;\leq\frac{1}{\eta_t}(
 \Phi(w_t,w^*)-\Phi(w&#39;_{t+1},w^*)+\Phi(w&#39;_{t+1},w^*)-\Phi(w_{t+1},w^*))+\frac{1}{2}\eta_t\|g_t\|^2\\
 \sum^T_{t=1}f_t(w_t)-f_t(w^*)
@@ -460,14 +492,22 @@ Z(\lambda)
 +\sum^T_{t=1}\frac{1}{2}\eta_t\|g_t\|^2\\
 \end{aligned}
 \]</span></p>
-<p>此处我们假设<span class="math inline">\(f_t\)</span>是G-Lipschitz的，则<span class="math inline">\(\|g_t\|^2\leq G^2\)</span>。假设<span class="math inline">\(\|w^*\|\leq R,\|w_t\|\leq R, \forall t\)</span>，则<span class="math inline">\(\frac{1}{2}\|w_t-w^*\|^2\leq2R^2\)</span>，所以上式有 <span class="math display">\[
+<p>此处我们假设<span
+class="math inline">\(f_t\)</span>是G-Lipschitz的，则<span
+class="math inline">\(\|g_t\|^2\leq G^2\)</span>。假设<span
+class="math inline">\(\|w^*\|\leq R,\|w_t\|\leq R, \forall
+t\)</span>，则<span
+class="math inline">\(\frac{1}{2}\|w_t-w^*\|^2\leq2R^2\)</span>，所以上式有
+<span class="math display">\[
 \begin{aligned}
 \sum^T_{t=1}f_t(w_t)-f_t(w^*)
 &amp;\leq\frac{2}{\eta_1}R^2-\frac{1}{\eta_T}\Phi(w_{T+1},w^*)
 +2\sum^T_{t=2}(\frac{1}{\eta_{t}}-\frac{1}{\eta_{t-1}})R^2
 +\sum^T_{t=1}\frac{1}{2}\eta_t\|g_t\|^2\\
 \end{aligned}
-\]</span> 其中<span class="math inline">\(\frac{1}{\eta_T}\Phi(w_{T+1},w^*)\geq0\)</span>，所以在计算上界的时候可以消去这一项，有 <span class="math display">\[
+\]</span> 其中<span
+class="math inline">\(\frac{1}{\eta_T}\Phi(w_{T+1},w^*)\geq0\)</span>，所以在计算上界的时候可以消去这一项，有
+<span class="math display">\[
 \begin{aligned}
 \sum^T_{t=1}f_t(w_t)-f_t(w^*)
 &amp;\leq\frac{2}{\eta_1}R^2
@@ -477,26 +517,31 @@ Z(\lambda)
 +\sum^T_{t=1}\frac{1}{2}\eta_tG^2\\
 &amp;=2R^2\frac{1}{\eta_T}+\frac{G^2}{2}\sum^T_{t=1}\frac{1}{2}\eta_t
 \end{aligned}
-\]</span> 令<span class="math inline">\(\eta_t=\eta\cdot\frac{1}{\sqrt{T}}\)</span>， <span class="math display">\[
+\]</span> 令<span
+class="math inline">\(\eta_t=\eta\cdot\frac{1}{\sqrt{T}}\)</span>，
+<span class="math display">\[
 \begin{aligned}
 \sum^T_{t=1}f_t(w_t)-f_t(w^*)
 &amp;\leq2R^2\frac{1}{\eta_T}+\frac{G^2}{2}\sum^T_{t=1}\frac{1}{2}\eta_t\\
 &amp;=\frac{2R^2\sqrt{T}}{\eta}+\frac{G^2}{2}T\eta\frac{1}{\sqrt{T}}\\
 \end{aligned}
-\]</span> 令<span class="math inline">\(\eta=\frac{2R}{G}\)</span>， <span class="math display">\[
+\]</span> 令<span class="math inline">\(\eta=\frac{2R}{G}\)</span>，
+<span class="math display">\[
 \begin{aligned}
 \sum^T_{t=1}f_t(w_t)-f_t(w^*)
 &amp;\leq\frac{2R^2\sqrt{T}}{\eta}+\frac{G^2}{2}T\eta\frac{1}{\sqrt{T}}\\
 &amp;=2RG\sqrt{T}
 \end{aligned}
-\]</span> 当<span class="math inline">\(T\)</span>不可知的时候 <span class="math display">\[
+\]</span> 当<span class="math inline">\(T\)</span>不可知的时候 <span
+class="math display">\[
 \begin{aligned}
 \text{Regret}&amp;\leq\frac{2R^2}{\eta_T}+\frac{G^2}{2}\sum^T_{t=1}\eta_t\\
 &amp;=\frac{2R^2\sqrt{T}}{\eta}+\frac{G^2}{2}\eta\sum^T_{t=1}\frac{1}{\sqrt{t}}\\
 &amp;\leq\frac{2R^2\sqrt{T}}{\eta}+\frac{G^2}{2}\eta\sqrt{T}
 \end{aligned}
 \]</span></p>
-<p>令<span class="math inline">\(\eta=\frac{\sqrt{2}R}{G}\)</span>， <span class="math display">\[
+<p>令<span class="math inline">\(\eta=\frac{\sqrt{2}R}{G}\)</span>，
+<span class="math display">\[
 \begin{aligned}
 \text{Regret}
 &amp;\leq\frac{2R^2\sqrt{T}}{\eta}+\frac{G^2}{2}\eta\sqrt{T}\\

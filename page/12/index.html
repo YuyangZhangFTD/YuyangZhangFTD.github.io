@@ -417,10 +417,12 @@
       
         
           
-          Introduction &amp; Brief System Overview
+          Introduction &amp; Brief
+System Overview
 CTR预估是这样一个问题：给定一个查询\(q\) 和根据广告商选择的关键词来匹配查询\(q\) 相关的候选广告\(a\) ，也就是计算概率 \[
 P(\text{click}|q,a)
-\] 通常系统中所用到的特征会涉及方面面，包括查询本身、广告的文本、与广告相关的各种信息等等，同时特征也会非常稀疏，往往只会有少数是
+\]
+通常系统中所用到的特征会涉及方面面，包括查询本身、广告的文本、与广告相关的各种信息等等，同时特征也会非常稀疏，往往只会有少数是
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -571,7 +573,8 @@ P(\text{click}|q,a)
         
           
           Introduction
-CTR预估(click-through-rate prediction)是广告行业比较常见的问题，根据用户的历史行为来判断用户对广告点击的可能性。该问题的输入往往是数以万计的稀疏特征向量，在进行特征交叉后会维数会更高，比较常见的就是采用对率回归模型加一些正则化，因为对率回归模型计算开销小且容易实现并行。之前facebook的一篇论文中先用树模型做分类之后再加一个对率回归模
+CTR预估(click-through-rate
+prediction)是广告行业比较常见的问题，根据用户的历史行为来判断用户对广告点击的可能性。该问题的输入往往是数以万计的稀疏特征向量，在进行特征交叉后会维数会更高，比较常见的就是采用对率回归模型加一些正则化，因为对率回归模型计算开销小且容易实现并行。之前facebook的一篇论文中先用树模型做分类之后再加一个对率回归模
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -722,11 +725,13 @@ CTR预估(click-through-rate prediction)是广告行业比较常见的问题，�
         
           
           Collaborative Deep Embedding
-​ 这篇论文的模型跟DeepMatrixFactorizationModelsforRecommenderSystems 思路非常相近，所以前面的废话描述都不重复了，直接来看模型
+​ 这篇论文的模型跟DeepMatrixFactorizationModelsforRecommenderSystems
+思路非常相近，所以前面的废话描述都不重复了，直接来看模型
+
 
 1
 
-作者的目的也是用非线性的神经网络结构去改进矩阵分解模型，但是作者做出几个变种，如上图的情况，最左边是基本模型，经过多层转换后，最后结果做点积；上图中间是一
+作者的目的也是用非线性的神经网络结构去改进矩阵分解模型，但是作者做出几个变种，如上图的情况，最左边是基本模型，经过多层转换后，最后结果做点积；上图中间是
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -877,10 +882,12 @@ CTR预估(click-through-rate prediction)是广告行业比较常见的问题，�
         
           
           Introduction
-​ 矩阵分解的方法在推荐算法中是目前效果比较好的，本篇论文用深度学习的方法去做矩阵分解，因为矩阵分解是线性的分解关系，引入激活函数做多层计算后可以有非线性的特性，分解后的矩阵可能拟合程度更好。
+​
+矩阵分解的方法在推荐算法中是目前效果比较好的，本篇论文用深度学习的方法去做矩阵分解，因为矩阵分解是线性的分解关系，引入激活函数做多层计算后可以有非线性的特性，分解后的矩阵可能拟合程度更好。
 本篇论文主要有以下几点：
 
-提出了一种基于深度学习的矩阵分解方法，不仅使用了明确打分信息(explicit ratings)，还用到了一些没有明确信息的反馈(non-prefere
+提出了一种基于深度学习的矩阵分解方法，不仅使用了明确打分信息(explicit
+ratings)，还用到了一些没有明确信息的反馈(non-prefere
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1030,7 +1037,8 @@ CTR预估(click-through-rate prediction)是广告行业比较常见的问题，�
       
         
           
-          恩大家好，我是zyy，今天就开始不在知乎上更新了，来到了这个新家。 还是贴上常用地址：Github和知乎专栏。
+          恩大家好，我是zyy，今天就开始不在知乎上更新了，来到了这个新家。
+还是贴上常用地址：Github和知乎专栏。
 
           
           <!--noindex-->

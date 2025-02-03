@@ -104,7 +104,7 @@
 <meta property="og:description" content="总结了一些常见的数学规划用到的文件格式，是cplex支持的，gurobi也支持很多，但是没写中文，也比较难查，就不列举了。 ALP 文件是包含每个变量的通用名称的 LP 文件，以每个变量的类型以及每个变量的界限来注解。 BAS 文件是数学规划系统 (MPS) 约定管理的文本文件（即，它们不是二进制）用于保存问题基础。它们记录在BAS 文件格式：高级基中。 BZ2 不是特定于 CPLEX 的文件格式">
 <meta property="og:locale">
 <meta property="article:published_time" content="2018-03-20T16:29:40.000Z">
-<meta property="article:modified_time" content="2018-03-20T16:33:40.680Z">
+<meta property="article:modified_time" content="2018-03-20T16:33:40.000Z">
 <meta property="article:author" content="YuyangZhangFTD">
 <meta property="article:tag" content="Mathematic Programming">
 <meta name="twitter:card" content="summary">
@@ -394,55 +394,127 @@
       
         <p>总结了一些常见的数学规划用到的文件格式，是cplex支持的，gurobi也支持很多，但是没写中文，也比较难查，就不列举了。</p>
 <h2 id="alp">ALP</h2>
-<p>文件是包含每个变量的通用<strong>名称</strong>的 LP 文件，以每个变量的<strong>类型</strong>以及每个变量的<strong>界限</strong>来注解。</p>
+<p>文件是包含每个变量的通用<strong>名称</strong>的 LP
+文件，以每个变量的<strong>类型</strong>以及每个变量的<strong>界限</strong>来注解。</p>
 <h2 id="bas">BAS</h2>
-<p>文件是数学规划系统 (MPS) 约定管理的文本文件（即，它们不是二进制）用于保存问题基础。它们记录在<a target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/BAS.html?view=kc">BAS 文件格式：高级基</a>中。</p>
+<p>文件是数学规划系统 (MPS)
+约定管理的文本文件（即，它们不是二进制）用于保存问题基础。它们记录在<a
+target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/BAS.html?view=kc">BAS
+文件格式：高级基</a>中。</p>
 <h2 id="bz2">BZ2</h2>
-<p>不是特定于 CPLEX 的文件格式。此文件扩展名指示文件（可能是 CPLEX 读取的格式之一）已由 BZIP2 压缩。此文件扩展名仅在与 CPLEX 已知的文件扩展名（例如，LP、MPS 或在此描述的其他格式）并置时对 CPLEX 才有意义。 在此情况下，CPLEX 可以自动解压缩此类文件，然后从在此简述的某个格式的文件读取数据。例如，CPLEX 可以读取诸如 model.lp.bz2 之类的文件，将其解压缩，然后以 LP 格式读取解压缩的数据。</p>
+<p>不是特定于 CPLEX 的文件格式。此文件扩展名指示文件（可能是 CPLEX
+读取的格式之一）已由 BZIP2 压缩。此文件扩展名仅在与 CPLEX
+已知的文件扩展名（例如，LP、MPS 或在此描述的其他格式）并置时对 CPLEX
+才有意义。 在此情况下，CPLEX
+可以自动解压缩此类文件，然后从在此简述的某个格式的文件读取数据。例如，CPLEX
+可以读取诸如 model.lp.bz2 之类的文件，将其解压缩，然后以 LP
+格式读取解压缩的数据。</p>
 <h2 id="clp">CLP</h2>
-<p>是 CPLEX 用于表示冲突优化器发现的冲突约束和界限（不可行模型的子集）的格式。</p>
+<p>是 CPLEX
+用于表示冲突优化器发现的冲突约束和界限（不可行模型的子集）的格式。</p>
 <h2 id="csv">CSV</h2>
-<p>文件包含以逗号分隔值。Concert Technology 在 CPLEX 中提供工具来读取和编写此类文件。请参阅《CPLEX C++ API 参考手册》以了解详细信息，尤其是类 IloCsvReader、IloCsvLine 和 IloCsvReader::Iterator。</p>
+<p>文件包含以逗号分隔值。Concert Technology 在 CPLEX
+中提供工具来读取和编写此类文件。请参阅《CPLEX C++ API
+参考手册》以了解详细信息，尤其是类 IloCsvReader、IloCsvLine 和
+IloCsvReader::Iterator。</p>
 <h2 id="dpe">DPE</h2>
-<p>是在问题的目标函数受扰后 CPLEX 用于在二进制 SAV 文件中写入该问题的格式。<a target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/SAV.html?view=kc">SAV 文件格式：数字上准确的二进制文件</a> 主题将该文件格式置于上下文中。</p>
+<p>是在问题的目标函数受扰后 CPLEX 用于在二进制 SAV
+文件中写入该问题的格式。<a
+target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/SAV.html?view=kc">SAV
+文件格式：数字上准确的二进制文件</a> 主题将该文件格式置于上下文中。</p>
 <h2 id="dua">DUA</h2>
-<p>格式（按 MPS 约定管理），编写当前内存中的问题的对偶公式，以便稍后可以读回 MPS 文件，随后可以显式优化对偶公式。 现在，由于您可以在 Interactive Optimizer 中使用命令 set presolve dual 来告知 CPLEX 以自动求解 LP 的对偶公式，所以此文件格式在很大程度上已陈旧。（您不再必须告知 CPLEX 将对偶公式写入 DUA 文件，然后告知 CPLEX 将文件读回并对其求解。）</p>
+<p>格式（按 MPS
+约定管理），编写当前内存中的问题的对偶公式，以便稍后可以读回 MPS
+文件，随后可以显式优化对偶公式。 现在，由于您可以在 Interactive
+Optimizer 中使用命令 set presolve dual 来告知 CPLEX 以自动求解 LP
+的对偶公式，所以此文件格式在很大程度上已陈旧。（您不再必须告知 CPLEX
+将对偶公式写入 DUA 文件，然后告知 CPLEX 将文件读回并对其求解。）</p>
 <h2 id="emb">EMB</h2>
-<p>是 CPLEX 用于保存其从问题抽取的嵌入式网络的格式。EMB 文件是以 MPS 格式编写的。</p>
+<p>是 CPLEX 用于保存其从问题抽取的嵌入式网络的格式。EMB 文件是以 MPS
+格式编写的。</p>
 <h2 id="flt">FLT</h2>
 <p>是 CPLEX 用于保存解法池的过滤器的格式。</p>
 <h2 id="gz">GZ</h2>
-<p>不是特定于 CPLEX 的文件格式。此文件扩展名指示文件（可能是 CPLEX 读取的格式之一）已由 GNU 压缩程序 gzip 压缩。此文件扩展名仅在与 CPLEX 已知的文件扩展名（例如，LP、MPS 或在此描述的其他格式）并置时对 CPLEX 才有意义。 在此情况下，CPLEX 可以自动解压缩 gzip 压缩文件，然后从在此简述的某个格式的文件读取数据。例如，CPLEX 可以读取诸如 model.lp.gz 之类的文件，将其解压缩，然后以 LP 格式读取解压缩的数据。</p>
+<p>不是特定于 CPLEX 的文件格式。此文件扩展名指示文件（可能是 CPLEX
+读取的格式之一）已由 GNU 压缩程序 gzip 压缩。此文件扩展名仅在与 CPLEX
+已知的文件扩展名（例如，LP、MPS 或在此描述的其他格式）并置时对 CPLEX
+才有意义。 在此情况下，CPLEX 可以自动解压缩 gzip
+压缩文件，然后从在此简述的某个格式的文件读取数据。例如，CPLEX
+可以读取诸如 model.lp.gz 之类的文件，将其解压缩，然后以 LP
+格式读取解压缩的数据。</p>
 <h2 id="lp线性规划">LP（线性规划）</h2>
-<p>是特定于 CPLEX 的文件，格式化来以代数、面向行形式输入问题。换言之，LP 格式允许您按其约束输入问题。您在 Interactive Optimizer 中交互地输入问题时，您隐式使用 LP 格式。CPLEX 还读取 LP 格式的文件。<a target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/LP.html?view=kc">LP 文件格式：代数表示法</a>部分描述此格式的约定和用法。</p>
+<p>是特定于 CPLEX 的文件，格式化来以代数、面向行形式输入问题。换言之，LP
+格式允许您按其约束输入问题。您在 Interactive Optimizer
+中交互地输入问题时，您隐式使用 LP 格式。CPLEX 还读取 LP 格式的文件。<a
+target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/LP.html?view=kc">LP
+文件格式：代数表示法</a>部分描述此格式的约定和用法。</p>
 <h2 id="min">MIN</h2>
-<p>用于表示最低成本网络流问题的格式，由DIMACS 在 1991 年引入。通过匿名 FTP 从以下位置获取关于 DIMACS 网络文件的更多信息：ftp://dimacs.rutgers.edu/pub/netflow/general-info/specs.tex</p>
+<p>用于表示最低成本网络流问题的格式，由DIMACS 在 1991 年引入。通过匿名
+FTP 从以下位置获取关于 DIMACS
+网络文件的更多信息：ftp://dimacs.rutgers.edu/pub/netflow/general-info/specs.tex</p>
 <h2 id="mps">MPS</h2>
-<p>是数学规划问题的业界标准 ASCII 文本文件格式。此文件格式记录在<a target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/MPS_synopsis.html?view=kc">MPS 文件格式：业界标准</a>中。除了行业约定，CPLEX 还支持针对特定于 CPLEX 的情况的此格式扩展，例如，超多八个字符的名称、空格作为列之间的定界符等。这些扩展记录在<a target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/MPS_ext_synopsis.html?view=kc">MPS 文件中的特殊记录：CPLEX 扩展</a>中。</p>
+<p>是数学规划问题的业界标准 ASCII 文本文件格式。此文件格式记录在<a
+target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/MPS_synopsis.html?view=kc">MPS
+文件格式：业界标准</a>中。除了行业约定，CPLEX 还支持针对特定于 CPLEX
+的情况的此格式扩展，例如，超多八个字符的名称、空格作为列之间的定界符等。这些扩展记录在<a
+target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/MPS_ext_synopsis.html?view=kc">MPS
+文件中的特殊记录：CPLEX 扩展</a>中。</p>
 <h2 id="mst">MST</h2>
-<p>是 CPLEX MIP 优化器提供的 XML 格式。 这是 CPLEX 用于为 MIP 输入开始解法的文本格式。<a target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/MST.html?view=kc">MST 文件格式：MIP 启动</a>记录此文件格式。</p>
+<p>是 CPLEX MIP 优化器提供的 XML 格式。 这是 CPLEX 用于为 MIP
+输入开始解法的文本格式。<a
+target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/MST.html?view=kc">MST
+文件格式：MIP 启动</a>记录此文件格式。</p>
 <h2 id="net">NET</h2>
-<p>是针对网络流问题的特定于 CPLEX 的 ASCII 格式。 它支持指定的节点和标界线。<a target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/NET.html?view=kc">NET 文件格式：网络流模型</a>提供此文件格式的更完整描述。</p>
+<p>是针对网络流问题的特定于 CPLEX 的 ASCII 格式。
+它支持指定的节点和标界线。<a
+target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/NET.html?view=kc">NET
+文件格式：网络流模型</a>提供此文件格式的更完整描述。</p>
 <h2 id="ord">ORD</h2>
-<p>是 CPLEX MIP 优化器提供的格式。 它用于输入和保存分支的优先级顺序。它可能包含单个变量的转移指令。<a target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/ORD.html?view=kc">ORD 文件格式：优先级和分支顺序</a>记录此文件格式。</p>
+<p>是 CPLEX MIP 优化器提供的格式。
+它用于输入和保存分支的优先级顺序。它可能包含单个变量的转移指令。<a
+target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/ORD.html?view=kc">ORD
+文件格式：优先级和分支顺序</a>记录此文件格式。</p>
 <h2 id="ppe">PPE</h2>
-<p>是 CPLEX 在右侧 (RHS) 已受扰后用来在二进制 SAV 文件中写入问题的格式。<a target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/SAV.html?view=kc">SAV 文件格式：数字上准确的二进制文件</a> 主题将该文件格式置于上下文中。</p>
+<p>是 CPLEX 在右侧 (RHS) 已受扰后用来在二进制 SAV
+文件中写入问题的格式。<a
+target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/SAV.html?view=kc">SAV
+文件格式：数字上准确的二进制文件</a> 主题将该文件格式置于上下文中。</p>
 <h2 id="pre">PRE</h2>
-<p>是 CPLEX 用于将预求解的已减少问题公式写入二进制 SAV 文件的格式。由于已减少预求解的问题，所以它没有对应于原始问题。<a target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/SAV.html?view=kc">SAV 文件格式：数字上准确的二进制文件</a> 主题将该文件格式置于上下文中。</p>
+<p>是 CPLEX 用于将预求解的已减少问题公式写入二进制 SAV
+文件的格式。由于已减少预求解的问题，所以它没有对应于原始问题。<a
+target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/SAV.html?view=kc">SAV
+文件格式：数字上准确的二进制文件</a> 主题将该文件格式置于上下文中。</p>
 <h2 id="prm">PRM</h2>
-<p>是 CPLEX 用于在文件中读取和编写参数的非缺省值的格式。 <a target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/PRM.html?view=kc">PRM 文件格式：参数设置</a>记录用于通过 Callable Library 读取和编写此类文件的格式和约定。</p>
+<p>是 CPLEX 用于在文件中读取和编写参数的非缺省值的格式。 <a
+target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/PRM.html?view=kc">PRM
+文件格式：参数设置</a>记录用于通过 Callable Library
+读取和编写此类文件的格式和约定。</p>
 <h2 id="rew">REW</h2>
-<p>是用于使用具有伪装的行和列名称的 MPS 格式编写问题的格式。此格式只是 MPS 文件格式，其所有变量（列）和约束（行）名称已转换为通用名称。变量重新标记为 x1 到 xn，而行重标记为 c1 到 cm。此格式可能十分有用，例如，对于您视为高度专属的问题。</p>
+<p>是用于使用具有伪装的行和列名称的 MPS 格式编写问题的格式。此格式只是
+MPS
+文件格式，其所有变量（列）和约束（行）名称已转换为通用名称。变量重新标记为
+x1 到 xn，而行重标记为 c1 到
+cm。此格式可能十分有用，例如，对于您视为高度专属的问题。</p>
 <h2 id="rlp">RLP</h2>
 <p>是在 Interactive Optimizer 中使用通用名称的 LP 格式。</p>
 <h2 id="sav">SAV</h2>
-<p>是用于读取和编写问题及其关联的基础信息的特定于 CPLEX 的二进制格式。<a target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/SAV.html?view=kc">SAV 文件格式：数字上准确的二进制文件</a> 主题进一步记录了该格式。</p>
+<p>是用于读取和编写问题及其关联的基础信息的特定于 CPLEX 的二进制格式。<a
+target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/SAV.html?view=kc">SAV
+文件格式：数字上准确的二进制文件</a> 主题进一步记录了该格式。</p>
 <h2 id="sol">SOL</h2>
-<p>文件是 XML 格式化文件，其包含解法信息；它们可能还为优化提供高级开始。</p>
+<p>文件是 XML
+格式化文件，其包含解法信息；它们可能还为优化提供高级开始。</p>
 <h2 id="vmc">VMC</h2>
-<p>文件是用于指定虚拟机配置的 XML 格式文件。它们在分布式并行优化中很有用。 <a target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/VMC.html?view=kc">VMC 文件格式：用于分布式并行优化的虚拟机配置</a> 提供了关于此类文件的更多信息以及指向其用法示例的链接。</p>
+<p>文件是用于指定虚拟机配置的 XML
+格式文件。它们在分布式并行优化中很有用。 <a
+target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/VMC.html?view=kc">VMC
+文件格式：用于分布式并行优化的虚拟机配置</a>
+提供了关于此类文件的更多信息以及指向其用法示例的链接。</p>
 <h2 id="xml">XML</h2>
-<p>作为可供 Concert Technology 的 C++ 用户序列化模型和解法（即，IloModel 和 IloSolution 的实例）的文件格式。<a target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/XML.html?view=kc">XML 文件格式：序列化模型和解法</a>说明了有关此序列化 API 的更多信息。</p>
+<p>作为可供 Concert Technology 的 C++ 用户序列化模型和解法（即，IloModel
+和 IloSolution 的实例）的文件格式。<a
+target="_blank" rel="noopener" href="https://www.ibm.com/support/knowledgecenter/zh/SSSA5P_12.6.2/ilog.odms.cplex.help/CPLEX/FileFormats/topics/XML.html?view=kc">XML
+文件格式：序列化模型和解法</a>说明了有关此序列化 API 的更多信息。</p>
 
       
     </div>

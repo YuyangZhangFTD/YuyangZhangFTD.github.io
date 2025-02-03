@@ -104,7 +104,7 @@
 <meta property="og:description" content="python类笔记 私有属性和方法 命名前加两个下划线 1from module import * 这样做无法直接调用module中的__func()方法，但直接import却是可以的 1from module import __func 抽象方法 用@abstractmethod。 __new__和__init__ __init__() 方法用于给属性赋值，不可以有返回值，__new__()多用">
 <meta property="og:locale">
 <meta property="article:published_time" content="2018-09-13T12:54:56.000Z">
-<meta property="article:modified_time" content="2018-09-13T13:42:47.330Z">
+<meta property="article:modified_time" content="2018-09-13T13:42:47.000Z">
 <meta property="article:author" content="YuyangZhangFTD">
 <meta property="article:tag" content="Python">
 <meta name="twitter:card" content="summary">
@@ -401,7 +401,9 @@
 <h2 id="抽象方法">抽象方法</h2>
 <p>用<code>@abstractmethod</code>。</p>
 <h2 id="new__和__init__">__new__和__init__</h2>
-<p><code>__init__()</code> 方法用于给属性赋值，不可以有返回值，<code>__new__()</code>多用于构造不可变对象，必须有返回值，返回实例对象。构建新实例的时候，先调用<code>__new__()</code>初始化一个实例，然后调用<code>__init__()</code> 进行属性赋值。</p>
+<p><code>__init__()</code>
+方法用于给属性赋值，不可以有返回值，<code>__new__()</code>多用于构造不可变对象，必须有返回值，返回实例对象。构建新实例的时候，先调用<code>__new__()</code>初始化一个实例，然后调用<code>__init__()</code>
+进行属性赋值。</p>
 <h2 id="super">super</h2>
 <p>当子类重写父类构造方法时，为了避免父类属性没有初始化，有两种方式，第一种直接调用父类方法</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span>(<span class="params"><span class="built_in">object</span></span>):</span></span><br><span class="line">	<span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">		<span class="built_in">print</span>(<span class="string">&quot;init attr of A&quot;</span>)</span><br><span class="line"></span><br><span class="line">        </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">B</span>(<span class="params">A</span>)</span></span><br><span class="line"><span class="class">	<span class="title">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;init attr of A&quot;</span>)</span><br><span class="line">        A.__init__(self)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;init attr of B&quot;</span>)</span><br></pre></td></tr></table></figure>

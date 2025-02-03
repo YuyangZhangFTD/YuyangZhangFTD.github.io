@@ -108,7 +108,7 @@
 <meta property="og:image" content="http://yoursite.com/2022/05/21/Smart-Pacing-for-Effective-Online-Ad-Campaign-Optimization/3.jpg">
 <meta property="og:image" content="http://yoursite.com/2022/05/21/Smart-Pacing-for-Effective-Online-Ad-Campaign-Optimization/4.jpg">
 <meta property="article:published_time" content="2022-05-21T07:04:53.000Z">
-<meta property="article:modified_time" content="2022-05-22T08:42:41.526Z">
+<meta property="article:modified_time" content="2022-05-22T08:42:41.000Z">
 <meta property="article:author" content="YuyangZhangFTD">
 <meta property="article:tag" content="BudgetControl">
 <meta property="article:tag" content="Pacing">
@@ -425,10 +425,27 @@
 <p>与之前LinkedIn那篇文章类似，这篇文章也是用概率节流的方式进行预算控制，同时这篇文章考虑有无效率保障情况下，如何平滑预算消耗。</p>
 <h1 id="摘要">摘要</h1>
 <blockquote>
-<p>In targeted online advertising, advertisers look for maximizing campaign performance under delivery constraint within budget schedule. Most of the advertisers typically prefer to impose the delivery constraint to spend budget smoothly over the time in order to reach a wider range of audiences and have a sustainable impact. Since lots of impressions are traded through public auctions for online advertising today, the liquidity makes price elasticity and bid landscape be- tween demand and supply change quite dynamically. There- fore, it is challenging to perform smooth pacing control and maximize campaign performance simultaneously. In this pa- per, we propose a smart pacing approach in which the delivery pace of each campaign is learned from both offline and online data to achieve smooth delivery and optimal perfor- mance goals. The implementation of the proposed approach in a real DSP system is also presented. Experimental evalu- ations on both real online ad campaigns and offline simula- tions show that our approach can effectively improve cam- paign performance and achieve delivery goals.</p>
+<p>In targeted online advertising, advertisers look for maximizing
+campaign performance under delivery constraint within budget schedule.
+Most of the advertisers typically prefer to impose the delivery
+constraint to spend budget smoothly over the time in order to reach a
+wider range of audiences and have a sustainable impact. Since lots of
+impressions are traded through public auctions for online advertising
+today, the liquidity makes price elasticity and bid landscape be- tween
+demand and supply change quite dynamically. There- fore, it is
+challenging to perform smooth pacing control and maximize campaign
+performance simultaneously. In this pa- per, we propose a smart pacing
+approach in which the delivery pace of each campaign is learned from
+both offline and online data to achieve smooth delivery and optimal
+perfor- mance goals. The implementation of the proposed approach in a
+real DSP system is also presented. Experimental evalu- ations on both
+real online ad campaigns and offline simula- tions show that our
+approach can effectively improve cam- paign performance and achieve
+delivery goals.</p>
 </blockquote>
 <p>在在线广告中，广告主希望在预算计划约束最大化广告效果。大多数广告主通常倾向于施加交付约束，在一段时间内平稳地花费预算，以达到更广泛的受众并产生可持续的影响。</p>
-<p>由于今天很多曝光是通过在线广告的公开拍卖进行交易的，流动性（liquidity ）使得价格弹性和供需之间的竞价格局发生了很大的变化。因此，同时进行平稳的节奏控制和最大限度地提高广告活动的性能是一个挑战。</p>
+<p>由于今天很多曝光是通过在线广告的公开拍卖进行交易的，流动性（liquidity
+）使得价格弹性和供需之间的竞价格局发生了很大的变化。因此，同时进行平稳的节奏控制和最大限度地提高广告活动的性能是一个挑战。</p>
 <p>在这篇论文中，我们提出了一种智能预算平滑的方法，其中每个活动的投放节奏都是从离线和在线数据中学习的，以实现平稳投放和更好的效果。我们还介绍了所提出的方法在一个真实的DSP系统中的实践，通过对真实的在线广告活动和离线模拟的实验的评估表明，我们的方法可以有效地改善广告活动的效果同时实现投放目标。</p>
 <h1 id="问题背景">问题背景</h1>
 <p>在线广告是价值一个数百亿美元市场，近些年来一直保有两位数的增长。广告主在平台上通常有以下几个目标：</p>
@@ -439,7 +456,8 @@
 </ul>
 <p>下图表现了两种不同的预算消耗计划，完全平稳的预算消耗和随着流量变化的投放计划。</p>
 <figure>
-<img src="1.jpg" alt="budget spending plans" /><figcaption aria-hidden="true">budget spending plans</figcaption>
+<img src="1.jpg" alt="budget spending plans" />
+<figcaption aria-hidden="true">budget spending plans</figcaption>
 </figure>
 <p>同时满足以上所有目标是一件非常有挑战的事，每个广告计划都有独立的预算投放计划、目标用户、效率目标、创意服务成本等等。本文研究了不同目标下，预算平滑控制的方式。</p>
 <h1 id="解决方案">解决方案</h1>
@@ -448,49 +466,90 @@
 <li>品牌广告，目标是花掉所有预算，同时扩大受众</li>
 <li>效率广告，在特定效率目标下，花掉预算。</li>
 </ul>
-<p><span class="math inline">\(\text{Ad}\)</span>表示广告计划，<span class="math inline">\(B\)</span>表示预算，<span class="math inline">\(G\)</span>表示效率目标，预算消耗计划<span class="math inline">\({\bf{B}}=(B^1,\cdots,B^K)\)</span>，其中每一项非负且求和为广告总预算，<span class="math inline">\(\text{Req}_i\)</span>表示第<span class="math inline">\(i\)</span>个请求，<span class="math inline">\(r_i\)</span>表示参竞概率，<span class="math inline">\(s_i～\text{Bern}(r_i)\)</span>表示是否参加竞选，<span class="math inline">\(c_i\)</span>表示扣费，<span class="math inline">\(q_i\)</span>表示是否有结果（比如CPC计费中的点击Click），<span class="math inline">\(C\)</span>为总消耗，<span class="math inline">\(P\)</span>为效率指标，等于总收入除以总响应（如CPC值），<span class="math inline">\({\bf{C}}=(C^1,\cdots,C^K)\)</span>表示消耗序列，预算消耗序序列和预算消耗计划的差异定义为 <span class="math display">\[
-\Omega({\bf{C},\bf{B}}) = \sqrt{\frac{1}{K}\sum_{t=1}^K\Big(C^t-B^t\Big)^2}
-\]</span> 没有效率约束广告计划的预算智能平滑问题定义为 <span class="math display">\[
+<p><span class="math inline">\(\text{Ad}\)</span>表示广告计划，<span
+class="math inline">\(B\)</span>表示预算，<span
+class="math inline">\(G\)</span>表示效率目标，预算消耗计划<span
+class="math inline">\({\bf{B}}=(B^1,\cdots,B^K)\)</span>，其中每一项非负且求和为广告总预算，<span
+class="math inline">\(\text{Req}_i\)</span>表示第<span
+class="math inline">\(i\)</span>个请求，<span
+class="math inline">\(r_i\)</span>表示参竞概率，<span
+class="math inline">\(s_i～\text{Bern}(r_i)\)</span>表示是否参加竞选，<span
+class="math inline">\(c_i\)</span>表示扣费，<span
+class="math inline">\(q_i\)</span>表示是否有结果（比如CPC计费中的点击Click），<span
+class="math inline">\(C\)</span>为总消耗，<span
+class="math inline">\(P\)</span>为效率指标，等于总收入除以总响应（如CPC值），<span
+class="math inline">\({\bf{C}}=(C^1,\cdots,C^K)\)</span>表示消耗序列，预算消耗序序列和预算消耗计划的差异定义为
+<span class="math display">\[
+\Omega({\bf{C},\bf{B}}) =
+\sqrt{\frac{1}{K}\sum_{t=1}^K\Big(C^t-B^t\Big)^2}
+\]</span> 没有效率约束广告计划的预算智能平滑问题定义为 <span
+class="math display">\[
 \begin{aligned}
 \min_{r_i} &amp;&amp; P \\
 \text{s.t.} &amp;&amp; C=B \\
 &amp;&amp; \Omega({\bf{C}, \bf{B}}) \leq \epsilon
 \end{aligned}
 \]</span> 可以理解为满足投放计划下，最小化单位成本（即最大化效率）。</p>
-<p>有效率约束下广告计划的预算只能平滑问题定义为： <span class="math display">\[
+<p>有效率约束下广告计划的预算只能平滑问题定义为： <span
+class="math display">\[
 \begin{aligned}
 \min_{r_i} &amp;&amp; \Omega({\bf{C}, \bf{B}})  \\
 \text{s.t.} &amp;&amp; P \leq G\\
 &amp;&amp; B -C \leq \epsilon
 \end{aligned}
-\]</span> 可以理解为，单位效果的消耗低于目标情况下，最小化与预算投放计划的差异，并保持整体消耗在一定范围内。</p>
+\]</span>
+可以理解为，单位效果的消耗低于目标情况下，最小化与预算投放计划的差异，并保持整体消耗在一定范围内。</p>
 <p>实现方案分为几步：</p>
 <ol type="1">
-<li>先用离线数据学习响应的预测，<span class="math inline">\(p_i =\mathbb{P}[r_i|\text{Req}_i, \text{Ad}]\)</span>，以区分对于不同广告而言，高效率和低效率的流量</li>
-<li>根据转化效率做分组，相同分组内的广告流量采用相同的平滑率（pacing rate，<span class="math inline">\(r_l\)</span>）</li>
+<li>先用离线数据学习响应的预测，<span class="math inline">\(p_i
+=\mathbb{P}[r_i|\text{Req}_i,
+\text{Ad}]\)</span>，以区分对于不同广告而言，高效率和低效率的流量</li>
+<li>根据转化效率做分组，相同分组内的广告流量采用相同的平滑率（pacing
+rate，<span class="math inline">\(r_l\)</span>）</li>
 <li>根据在线数据反馈学习一个控制方法，并且动态调整组的平滑率</li>
 </ol>
-<p>对于相应的预测，文中提到可以使用一些机器学习方法得到一个精准的预测<span class="math inline">\(\hat{p}_i\)</span>，然后利用用户的属性构建一个浅层决策树，每个叶子节点都标识了一部分相互互斥的请求，并在叶子结点内对预估值进行校准。</p>
+<p>对于相应的预测，文中提到可以使用一些机器学习方法得到一个精准的预测<span
+class="math inline">\(\hat{p}_i\)</span>，然后利用用户的属性构建一个浅层决策树，每个叶子节点都标识了一部分相互互斥的请求，并在叶子结点内对预估值进行校准。</p>
 <p>对于第三步的控制方法，文中提出一种启发式方法来近似求解上面的最优化问。</p>
-<p>对于每一个广告计划，维持一个分组（layer）的数据结构，包括平均响应率（效率指标，如CTR）、广告组请求优先级、平滑率、上一个时间区间内最新的广告消耗。后续做法的原则是，首先高转化效率的分组（or 分层，layer）应该有更高的优先级、同时高优先级的分组的平滑率应该不小于低优先级的平滑率。</p>
-<p>在线平滑率调整，假设我们有<span class="math inline">\(L\)</span>个分层，其预估转化率为<span class="math inline">\({\bf{p}}=(p_1,\cdots,p_L)\)</span>，<span class="math inline">\(t-1\)</span>时刻的平滑率为<span class="math inline">\({\bf{r}^{t-1}}=(r_1^{t-1},\cdots, r_L^{t-1})\)</span>，消耗为<span class="math inline">\({\bf{c}^{t-1}}=(c_1^{t-1},\cdots,c_L^{t-1})\)</span>，第<span class="math inline">\(t\)</span>时刻的平滑率为<span class="math inline">\({\bf{r}^{t}}=(r_1^{t},\cdots, r_L^{t})\)</span>。</p>
-<p>对于没有效率目标的广告计划，最基础的目标是按照广告预算计划进行投放 <span class="math display">\[
+<p>对于每一个广告计划，维持一个分组（layer）的数据结构，包括平均响应率（效率指标，如CTR）、广告组请求优先级、平滑率、上一个时间区间内最新的广告消耗。后续做法的原则是，首先高转化效率的分组（or
+分层，layer）应该有更高的优先级、同时高优先级的分组的平滑率应该不小于低优先级的平滑率。</p>
+<p>在线平滑率调整，假设我们有<span
+class="math inline">\(L\)</span>个分层，其预估转化率为<span
+class="math inline">\({\bf{p}}=(p_1,\cdots,p_L)\)</span>，<span
+class="math inline">\(t-1\)</span>时刻的平滑率为<span
+class="math inline">\({\bf{r}^{t-1}}=(r_1^{t-1},\cdots,
+r_L^{t-1})\)</span>，消耗为<span
+class="math inline">\({\bf{c}^{t-1}}=(c_1^{t-1},\cdots,c_L^{t-1})\)</span>，第<span
+class="math inline">\(t\)</span>时刻的平滑率为<span
+class="math inline">\({\bf{r}^{t}}=(r_1^{t},\cdots,
+r_L^{t})\)</span>。</p>
+<p>对于没有效率目标的广告计划，最基础的目标是按照广告预算计划进行投放
+<span class="math display">\[
 \begin{aligned}
-\underset{\hat{C}^{m+1},\cdots,\hat{C}^{K}}{\arg\min} &amp;&amp; \Omega \\
+\underset{\hat{C}^{m+1},\cdots,\hat{C}^{K}}{\arg\min} &amp;&amp; \Omega
+\\
 \text{s.t.t} &amp;&amp; \sum_{t=m+1}^K \hat{C}^t=B_m
 \end{aligned}
-\]</span> 其中<span class="math inline">\(B_m\)</span>表示剩余预算，<span class="math inline">\(\hat{C}^{m+1},\cdots,\hat{C}^{K}\)</span>为我们后续决策的每个时段的消耗，所以有最优的决策方案为 <span class="math display">\[
+\]</span> 其中<span
+class="math inline">\(B_m\)</span>表示剩余预算，<span
+class="math inline">\(\hat{C}^{m+1},\cdots,\hat{C}^{K}\)</span>为我们后续决策的每个时段的消耗，所以有最优的决策方案为
+<span class="math display">\[
 \hat{C}^t = B^t + \frac{B_m - \sum_{t=m+1}^K B^t}{K-m}
-\]</span> 记<span class="math inline">\(R=\hat{C}^t - C^{t-1}\)</span>为残差，下图展示了整个算法</p>
+\]</span> 记<span class="math inline">\(R=\hat{C}^t -
+C^{t-1}\)</span>为残差，下图展示了整个算法</p>
 <figure>
-<img src="2.jpg" alt="algo1" /><figcaption aria-hidden="true">algo1</figcaption>
+<img src="2.jpg" alt="algo1" />
+<figcaption aria-hidden="true">algo1</figcaption>
 </figure>
 <p>如果上一阶段消耗的残差为0，那么不调整消耗速率，如果有剩余，需要加速消耗预算，按照转化效率从高到低，一次调整消耗速率，反之如果消耗过多，那么按照转化效率从低到高，降低效率速率。</p>
 <figure>
-<img src="3.jpg" alt="cases" /><figcaption aria-hidden="true">cases</figcaption>
+<img src="3.jpg" alt="cases" />
+<figcaption aria-hidden="true">cases</figcaption>
 </figure>
-<p>对于有效率目标的广告计划，我们需要在调整同时考虑广告单位转化成本约束，所以需要预估调整后的效率eCPC <span class="math display">\[
-\text{ExpPerf}({\bf{c}}^{t-1}, {\bf{r}}^{t-1}, {\bf{r}}^{t}, {\bf{e}}, i)
+<p>对于有效率目标的广告计划，我们需要在调整同时考虑广告单位转化成本约束，所以需要预估调整后的效率eCPC
+<span class="math display">\[
+\text{ExpPerf}({\bf{c}}^{t-1}, {\bf{r}}^{t-1}, {\bf{r}}^{t}, {\bf{e}},
+i)
 = \frac{
 \sum_{j=i}^L \frac{c_k^{t-1}\times r_j^t}{r_j^{t-1}}
 }{

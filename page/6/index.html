@@ -579,8 +579,13 @@ regret，悔恨
       
         
           
-          Scalable Training of L1-Regularized Log-Linear Models
-最近重读了一下之前阿里的MLR，又仔细研究了一下里面的优化算法，然后发现也是对之前的一个叫Orthant- Wise Limited-memory Quasi-Newton（下文中称OWL-QN，这个owl让我想起了哈利波特的Ordinary Wizarding Level...）的方法进行
+          Scalable
+Training of L1-Regularized Log-Linear Models
+最近重读了一下之前阿里的MLR，又仔细研究了一下里面的优化算法，然后发现也是对之前的一个叫Orthant-
+Wise Limited-memory
+Quasi-Newton（下文中称OWL-QN，这个owl让我想起了哈利波特的Ordinary
+Wizarding
+Level...）的方法进行
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -730,9 +735,11 @@ regret，悔恨
       
         
           
-          这篇文章是今年年初时候发在sigkdd上的一篇关于eta的文章，《Learning to Estimate the Travel Time》。
+          这篇文章是今年年初时候发在sigkdd上的一篇关于eta的文章，《Learning to
+Estimate the Travel Time》。
 背景
-车辆行驶时间估计是重要的位置服务的之一，而且在滴滴的服务中占有比较重要的一环，这篇文章提出了一个新的ETA的模型，并应用于滴滴出行的线上服务。传统的ETA主要分为两类，第一类就是基于路径的方法，整条路径的行驶时间等于其中每一段路径时间的和： \[
+车辆行驶时间估计是重要的位置服务的之一，而且在滴滴的服务中占有比较重要的一环，这篇文章提出了一个新的ETA的模型，并应用于滴滴出行的线上服务。传统的ETA主要分为两类，第一类就是基于路径的方法，整条路径的行驶时间等于其中每一段路径时间的和：
+\[
 \
           ...
           <!--noindex-->
@@ -883,7 +890,9 @@ regret，悔恨
       
         
           
-          这篇文章是用MDP方式去考虑车辆调度的分单算法，发表在KDD2018上，《Large-Scale Order Dispatch in On-Demand Ride-Hailing Platforms: A Learning and Planning Approach》。
+          这篇文章是用MDP方式去考虑车辆调度的分单算法，发表在KDD2018上，《Large-Scale
+Order Dispatch in On-Demand Ride-Hailing Platforms: A Learning and
+Planning Approach》。
 这篇文章给我感觉真的是十分精彩，从解决方案到后面实验部分都写的很充实，而且方法朴实却又新颖，作为RL或者说是MDP的一个非游戏类
           ...
           <!--noindex-->
@@ -1034,7 +1043,9 @@ regret，悔恨
       
         
           
-          最近要写几个滴滴相关的论文的笔记，顺便解读一下目前的拼车算法等策略，顺带着科普。今天这篇是KDD2017的《A Taxi Order Dispatch Model based On Combinatorial Optimization》，这篇文章是比较早时候的分单算法的文章，跟现在的算法略有差异。
+          最近要写几个滴滴相关的论文的笔记，顺便解读一下目前的拼车算法等策略，顺带着科普。今天这篇是KDD2017的《A
+Taxi Order Dispatch Model based On Combinatorial
+Optimization》，这篇文章是比较早时候的分单算法的文章，跟现在的算法略有差异。
 简介
 传统的拼车算法是一种顺序的分配策略，在乘客周围选择最近的车辆，最大化每个司机对每个订单的接受概
           ...
@@ -1173,7 +1184,8 @@ regret，悔恨
 抽象方法
 用@abstractmethod。
 __new__和__init__
-__init__() 方法用于给属性赋值，不可以有返回值，__new__()多用
+__init__()
+方法用于给属性赋值，不可以有返回值，__new__()多用
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1304,11 +1316,12 @@ __init__() 方法用于给属性赋值，不可以有返回值，__new__()多用
           Online Subgradient Descent
 在线梯度下降算法如下图所示
 
+
 OGD
 
 其中，每一步迭代的时候，根据梯度（或次梯度）更新后，将新得到的权重投影到权重的可行域上。
 
-定理1：如果\(w&#39;\in\mathcal{W}\)，\(w=\prod_{\mathcal{W}}(w&#39;)\)，\(w^*\in\mathcal{W}\)，那么\((w&#39;-w)(w^*-w
+定理1：如果\(w&#39;\in\mathcal{W}\)，\(w=\prod_{\mathcal{W}}(w&#39;)\)，\(w^*\in\mathcal{W}\)，那么\((w&#39;-w)(w^*-
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1436,7 +1449,8 @@ OGD
       
         
           
-          Follow the Leader Against Quadratics
+          Follow the Leader Against
+Quadratics
 某些情况下，FTL是非常好的算法，比如一维的线性回归的情况，很容易推广到高维
 
 每一轮选择\(w_t\in[-1,1]\)
@@ -1707,11 +1721,12 @@ w_{t+1}&amp;=\
           The Online Optimization Game
 在线优化问题，具体指如下过程：
 
+
 The Online Optimization Game
 
 
 在每回合中，玩家（palyer）选择\(\mathbf{w}_t\in\mathcal{W}\)，其中\(\mathcal{W}\subseteq\mathbb{R}^n\)是操作的可行集合
-对手（adversary）选择一个损失函数\(f_t:
+对手（adversary）选择一个损失函数\(f_t
           ...
           <!--noindex-->
           <div class="post-button text-center">

@@ -108,7 +108,7 @@
 <meta property="og:image" content="http://yoursite.com/2022/05/29/Optimized-Cost-per-Click-in-Taobao-Display-Advertising/3.jpg">
 <meta property="og:image" content="http://yoursite.com/2022/05/29/Optimized-Cost-per-Click-in-Taobao-Display-Advertising/4.jpg">
 <meta property="article:published_time" content="2022-05-29T13:07:35.000Z">
-<meta property="article:modified_time" content="2022-05-29T13:11:43.782Z">
+<meta property="article:modified_time" content="2022-05-29T13:11:43.000Z">
 <meta property="article:author" content="YuyangZhangFTD">
 <meta property="article:tag" content="Advertising">
 <meta property="article:tag" content="Bidding">
@@ -425,7 +425,27 @@
 <p>但很多做法以及解法在今天来看都比较过时了，后续会逐渐写近几年怎么做出价问题的。</p>
 <h1 id="摘要">摘要</h1>
 <blockquote>
-<p>Taobao, as the largest online retail platform in the world, provides billions of online display advertising impressions for millions of advertisers every day. For commercial purposes, the advertisers bid for specific spots and target crowds to compete for business traf- fic. The platform chooses the most suitable ads to display in tens of milliseconds. Common pricing methods include cost per mille (CPM) and cost per click (CPC). Traditional advertising systems target certain traits of users and ad placements with fixed bids, essentially regarded as coarse-grained matching of bid and traffic quality. However, the fixed bids set by the advertisers competing for different quality requests cannot fully optimize the advertisers’ key requirements. Moreover, the platform has to be responsible for the business revenue and user experience. Thus, we proposed a bid optimizing strategy called optimized cost per click (OCPC) which automatically adjusts the bid to achieve finer matching of bid and traffic quality of page view (PV) request granularity. Our approach optimizes advertisers’ demands, platform business rev- enue and user experience and as a whole improves traffic alloca- tion efficiency. We have validated our approach in Taobao display advertising system in production. The online A/B test shows our algorithm yields substantially better results than previous fixed bid manner.</p>
+<p>Taobao, as the largest online retail platform in the world, provides
+billions of online display advertising impressions for millions of
+advertisers every day. For commercial purposes, the advertisers bid for
+specific spots and target crowds to compete for business traf- fic. The
+platform chooses the most suitable ads to display in tens of
+milliseconds. Common pricing methods include cost per mille (CPM) and
+cost per click (CPC). Traditional advertising systems target certain
+traits of users and ad placements with fixed bids, essentially regarded
+as coarse-grained matching of bid and traffic quality. However, the
+fixed bids set by the advertisers competing for different quality
+requests cannot fully optimize the advertisers’ key requirements.
+Moreover, the platform has to be responsible for the business revenue
+and user experience. Thus, we proposed a bid optimizing strategy called
+optimized cost per click (OCPC) which automatically adjusts the bid to
+achieve finer matching of bid and traffic quality of page view (PV)
+request granularity. Our approach optimizes advertisers’ demands,
+platform business rev- enue and user experience and as a whole improves
+traffic alloca- tion efficiency. We have validated our approach in
+Taobao display advertising system in production. The online A/B test
+shows our algorithm yields substantially better results than previous
+fixed bid manner.</p>
 </blockquote>
 <p>淘宝网作为世界上最大的网上零售平台，每天为数以百万计的广告主供数十亿的展示广告。出于商业目的，广告主对特定的位置和目标人群进行投标，以争夺商业流量，平台在几十毫秒内选择最合适的广告进行展示。</p>
 <p>常见的定价方法包括千展曝光成本CPM和单次点击成本CPC。传统的广告系统针对用户的某些特点和广告位置进行固定出价，本质上被视为出价和流量的粗粒度匹配。然而，用广告主设定的固定出价来竞争不同质量的流量并不能完全优化广告主所关心的核心指标。此外，平台必须对商业收入和用户体验负责。</p>
@@ -438,27 +458,47 @@
 <li>不同的广告主往往有不同的目标，曝光、点击、转化或者ROI，商家采用点击付费的方式进行竞价</li>
 <li>广告会有平台指标的要求，比如CTR、CVR或者GMV，我们以GMV为主进行分析。这样做，首先是因为我们希望商业化的流量并不会影响用户的体验，设置GMV目标对于平台和广告主是双赢的局面，其次平台会对商家采用近似固定比例抽成，提高GMV长远来看也有利于平台</li>
 </ol>
-<p>淘宝广告系统通过从用户行为数据和广告详情中挖掘用户的偏好，筛选出候选的广告集合，即matching阶段，然后用实时预测引擎RTP对候选广告进行点击率的预估<span class="math inline">\(\text{pCTR}\)</span>，并按照<span class="math inline">\(\text{bid}\cdot\text{pCTR}\)</span>进行排序，来最大化eCPM。</p>
+<p>淘宝广告系统通过从用户行为数据和广告详情中挖掘用户的偏好，筛选出候选的广告集合，即matching阶段，然后用实时预测引擎RTP对候选广告进行点击率的预估<span
+class="math inline">\(\text{pCTR}\)</span>，并按照<span
+class="math inline">\(\text{bid}\cdot\text{pCTR}\)</span>进行排序，来最大化eCPM。</p>
 <p>广告主期望通过出价来匹配流量的质量，由于技术原因，传统方式只能对特定的用户群体和广告位进行出价。对于不同价值的流量进行固定出价是效率低下的，同时最大化eCPM是追求短期商业收益，并不满足平台的长期利益诉求。</p>
 <h1 id="解决方案">解决方案</h1>
 <figure>
-<img src="1.png" alt="architecture" /><figcaption aria-hidden="true">architecture</figcaption>
+<img src="1.png" alt="architecture" />
+<figcaption aria-hidden="true">architecture</figcaption>
 </figure>
-<p>这个系统分成两个主要部分，请求打到Front Server然后转发到Merger Server，在Merger Server中线进行Match返回用户的特征，Search Node中去找相应的候选广告，再经过RTP的打分，在Strategy中进行校准和二价排序，在Data Node中寻找合适的创意素材，SCS（智能创意服务SmartCreativeServices）中选择合适素材，然后返回结果给Front Server。</p>
-<p>在出价的优化中，首先是出价范围的优化，商家希望出更高的价格来竞得高ROI的流量，对于广告<span class="math inline">\(a\)</span>和用户<span class="math inline">\(u\)</span></p>
-<p>，商家基础出价<span class="math inline">\(b_a\)</span>，笔单价<span class="math inline">\(v_a\)</span>，单条流量的ROI可以写作 <span class="math display">\[
+<p>这个系统分成两个主要部分，请求打到Front Server然后转发到Merger
+Server，在Merger Server中线进行Match返回用户的特征，Search
+Node中去找相应的候选广告，再经过RTP的打分，在Strategy中进行校准和二价排序，在Data
+Node中寻找合适的创意素材，SCS（智能创意服务SmartCreativeServices）中选择合适素材，然后返回结果给Front
+Server。</p>
+<p>在出价的优化中，首先是出价范围的优化，商家希望出更高的价格来竞得高ROI的流量，对于广告<span
+class="math inline">\(a\)</span>和用户<span
+class="math inline">\(u\)</span></p>
+<p>，商家基础出价<span class="math inline">\(b_a\)</span>，笔单价<span
+class="math inline">\(v_a\)</span>，单条流量的ROI可以写作 <span
+class="math display">\[
 \text{roi}_{u,a}=\frac{p(c|u,a)\cdot v_a}{b_a}
-\]</span> 其中<span class="math inline">\(p(c|u,a)\)</span>表示用户<span class="math inline">\(u\)</span>点击广告<span class="math inline">\(a\)</span>之后的转化率，商品的转化率为 <span class="math display">\[
-\text{roi}_a =\frac{v_a \cdot \sum_u n_u \cdot p(c|u,a)}{b_a\cdot \sum_u n_u}
+\]</span> 其中<span class="math inline">\(p(c|u,a)\)</span>表示用户<span
+class="math inline">\(u\)</span>点击广告<span
+class="math inline">\(a\)</span>之后的转化率，商品的转化率为 <span
+class="math display">\[
+\text{roi}_a =\frac{v_a \cdot \sum_u n_u \cdot p(c|u,a)}{b_a\cdot \sum_u
+n_u}
 =\frac{\mathbb{E}_u[c|u,a] \cdot v_a}{b_a}
-\]</span> 我们希望我们优化后的单次出价<span class="math inline">\(b_a^*\)</span>能够保证ROI不降低，即 <span class="math display">\[
+\]</span> 我们希望我们优化后的单次出价<span
+class="math inline">\(b_a^*\)</span>能够保证ROI不降低，即 <span
+class="math display">\[
 \begin{aligned}
 \text{roi}_{a} &amp; \leq \text{roi}_a^* \\
 \frac{\text{roi}_a }{\text{roi}_{a}^* } &amp;\leq 1 \\
-\frac{\frac{\mathbb{E}_u[c|u,a] \cdot v_a}{b_a}}{\frac{p(c|u,a)\cdot v_a}{b_a}^*} &amp;\leq 1 \\
+\frac{\frac{\mathbb{E}_u[c|u,a] \cdot v_a}{b_a}}{\frac{p(c|u,a)\cdot
+v_a}{b_a}^*} &amp;\leq 1 \\
 \frac{b_a^*}{b_a} &amp;\leq \frac{p(c|u,a)}{\mathbb{E}_u[c|u,a]}
 \end{aligned}
-\]</span> 为了保险起见，对出价范围进行限制，上下变动比例系数<span class="math inline">\(r_a\)</span>，上下界为 <span class="math display">\[
+\]</span> 为了保险起见，对出价范围进行限制，上下变动比例系数<span
+class="math inline">\(r_a\)</span>，上下界为 <span
+class="math display">\[
 \begin{aligned}
 &amp;l(b_a^*) = \begin{cases}
 b_a * (1-r_a) &amp;&amp; \frac{p(c|u,a)}{\mathbb{E}_u[c|u,a]} &lt; 1 \\
@@ -466,35 +506,57 @@ b_a  &amp;&amp; \frac{p(c|u,a)}{\mathbb{E}_u[c|u,a]} \geq 1 \\
 \end{cases}\\
 &amp;u(b_a^*) = \begin{cases}
 b_a  &amp;&amp; \frac{p(c|u,a)}{\mathbb{E}_u[c|u,a]} &lt; 1 \\
-b_a  * \min\Big(1+r_a,  \frac{p(c|u,a)}{\mathbb{E}_u[c|u,a]}\Big)&amp;&amp; \frac{p(c|u,a)}{\mathbb{E}_u[c|u,a]} \geq 1 \\
+b_a  *
+\min\Big(1+r_a,  \frac{p(c|u,a)}{\mathbb{E}_u[c|u,a]}\Big)&amp;&amp;
+\frac{p(c|u,a)}{\mathbb{E}_u[c|u,a]} \geq 1 \\
 \end{cases}
 \end{aligned}
 \]</span> 取值范围如下图所示</p>
 <figure>
-<img src="2.png" alt="bid_scope" /><figcaption aria-hidden="true">bid_scope</figcaption>
+<img src="2.png" alt="bid_scope" />
+<figcaption aria-hidden="true">bid_scope</figcaption>
 </figure>
-<p>上述这种出价的bound能够做到保证ROI不降低，在此基础上我们希望在可行区间内进行出价优化的同时，最大化平台的利益。 <span class="math display">\[
+<p>上述这种出价的bound能够做到保证ROI不降低，在此基础上我们希望在可行区间内进行出价优化的同时，最大化平台的利益。
+<span class="math display">\[
 \begin{aligned}
 \underset{b_1^*,c\dots,b_n^*}{\max} &amp;&amp; f(b_k^*) \\
-\text{s.t.} &amp;&amp; k = \underset{i}{\arg\max} \quad \text{pctr}_i \cdot b_i^* \\
+\text{s.t.} &amp;&amp; k = \underset{i}{\arg\max} \quad \text{pctr}_i
+\cdot b_i^* \\
 &amp;&amp; l(b_i^*)\leq b_i^* \leq u(b_i^*) &amp;&amp; i=1,\cdots,n
 \end{aligned}
-\]</span> 这个式子写的理解成本偏高，解读一下，最终的商品出价要满足三部分，首先是上下界，其次能够使得平台收益最大化且能在eCPM中出最高价胜出。平台收益<span class="math inline">\(f\)</span>的选择取决于我们的优化目标，最大化平台GMV时选择<span class="math inline">\(f_1(b_k^*)=\text{pctr}_k\cdot \text{pcvr}_k\cdot v_k\)</span>，如果想兼顾平台收益和商家利益时选择<span class="math inline">\(f_2(b_k^*)=\text{pctr}_k\cdot \text{pcvr}_k\cdot v_k +\alpha \cdot\text{pctr}_k \cdot b_k^*\)</span>。</p>
+\]</span>
+这个式子写的理解成本偏高，解读一下，最终的商品出价要满足三部分，首先是上下界，其次能够使得平台收益最大化且能在eCPM中出最高价胜出。平台收益<span
+class="math inline">\(f\)</span>的选择取决于我们的优化目标，最大化平台GMV时选择<span
+class="math inline">\(f_1(b_k^*)=\text{pctr}_k\cdot \text{pcvr}_k\cdot
+v_k\)</span>，如果想兼顾平台收益和商家利益时选择<span
+class="math inline">\(f_2(b_k^*)=\text{pctr}_k\cdot \text{pcvr}_k\cdot
+v_k +\alpha \cdot\text{pctr}_k \cdot b_k^*\)</span>。</p>
 <p>文中提出一种贪心算法，来决策多个商品的排序和出价问题：</p>
 <ol type="1">
-<li>将全部广告按照上界出价的平台收益<span class="math inline">\(f(u(b_i^*))\)</span>排序</li>
-<li>选择当前排序中下界最高的广告，eCPM参竞价格为<span class="math inline">\(t\)</span></li>
-<li>找到排序中第一个上界大于该价格的，<span class="math inline">\(u(s_k)\geq t\)</span>，选择这个商品</li>
+<li>将全部广告按照上界出价的平台收益<span
+class="math inline">\(f(u(b_i^*))\)</span>排序</li>
+<li>选择当前排序中下界最高的广告，eCPM参竞价格为<span
+class="math inline">\(t\)</span></li>
+<li>找到排序中第一个上界大于该价格的，<span
+class="math inline">\(u(s_k)\geq t\)</span>，选择这个商品</li>
 <li>然后排序中删除这个商品，继续2和3</li>
 </ol>
 <figure>
-<img src="3.jpg" alt="algo1" /><figcaption aria-hidden="true">algo1</figcaption>
+<img src="3.jpg" alt="algo1" />
+<figcaption aria-hidden="true">algo1</figcaption>
 </figure>
 <p>下图为一个case</p>
 <figure>
-<img src="4.jpg" alt="algo_case" /><figcaption aria-hidden="true">algo_case</figcaption>
+<img src="4.jpg" alt="algo_case" />
+<figcaption aria-hidden="true">algo_case</figcaption>
 </figure>
-<p>文中提到了对点击率和购买率的预估进行校准，但是方法比较简单，这里就不提了，以及当前这种构建区间的方式不够平滑，后续采用了<span class="math inline">\(f(k,b_k^*)=\text{pctr}_k\cdot b_k^*\cdot(1+\sigma(\frac{\text{pcvr}_k\cdot |A|}{\sum_{i\in A}\text{pcvr}_i},w)\cdot r_a)\)</span>，<span class="math inline">\(w=6\)</span>，<span class="math inline">\(r_a=0.4\)</span>，其中<span class="math inline">\(\sigma(x,w)=\frac{x^w-1}{x^w+1}\)</span>。</p>
+<p>文中提到了对点击率和购买率的预估进行校准，但是方法比较简单，这里就不提了，以及当前这种构建区间的方式不够平滑，后续采用了<span
+class="math inline">\(f(k,b_k^*)=\text{pctr}_k\cdot
+b_k^*\cdot(1+\sigma(\frac{\text{pcvr}_k\cdot |A|}{\sum_{i\in
+A}\text{pcvr}_i},w)\cdot r_a)\)</span>，<span
+class="math inline">\(w=6\)</span>，<span
+class="math inline">\(r_a=0.4\)</span>，其中<span
+class="math inline">\(\sigma(x,w)=\frac{x^w-1}{x^w+1}\)</span>。</p>
 <h1 id="实验评估">实验评估</h1>
 <p>因为文章比较久远了实验baseline比较低，同时分析性质工作并不多，就不写了，有兴趣同学可以单独研究。</p>
 

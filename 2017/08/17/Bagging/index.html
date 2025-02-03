@@ -419,44 +419,73 @@
       
 
       
-        <p>以下内容选自<a target="_blank" rel="noopener" href="http://vdisk.weibo.com/s/dBF76LzKuNQAb?sudaref=www.baidu.com">Ensemble Methods Foundations and Algorithms (Zhihua Zhou)</a> 。</p>
+        <p>以下内容选自<a
+target="_blank" rel="noopener" href="http://vdisk.weibo.com/s/dBF76LzKuNQAb?sudaref=www.baidu.com">Ensemble
+Methods Foundations and Algorithms (Zhihua Zhou)</a> 。</p>
 <h3 id="two-ensemble-paradigms">Two Ensemble Paradigms</h3>
-<p>与Boosting相对的，就是Bagging方法，Boosting属于一种串行的集成方式，而Bagging是一种并行的集成方式。集成学习方法都用到了基学习器的独立性，Boosting串行的方式是通过自助(boost)的方式来降低残差，而Bagging则是通过结合独立的弱分类器来降低误差。我们定义基分类器<span class="math inline">\(h_i(x)\)</span> 的误差为 <span class="math display">\[
+<p>与Boosting相对的，就是Bagging方法，Boosting属于一种串行的集成方式，而Bagging是一种并行的集成方式。集成学习方法都用到了基学习器的独立性，Boosting串行的方式是通过自助(boost)的方式来降低残差，而Bagging则是通过结合独立的弱分类器来降低误差。我们定义基分类器<span
+class="math inline">\(h_i(x)\)</span> 的误差为 <span
+class="math display">\[
 P(h_i(x)\neq f(x))=\epsilon
-\]</span> 结合<span class="math inline">\(T\)</span> 个基分类器 <span class="math display">\[
+\]</span> 结合<span class="math inline">\(T\)</span> 个基分类器 <span
+class="math display">\[
 H(x)=sign(\sum^T_{i=1}h_i(x))
-\]</span> 根据Hoeffding Inequality，总体的泛化误差的upper bound为 <span class="math display">\[
-P(H(x)\neq f(x))=\sum^{[T/2]}_{k=0}C^k_T(1-\epsilon)^k\epsilon^{T-k}\leq\exp(-\frac{1}{2}T(2\epsilon-1)^2)
-\]</span> 即随着<span class="math inline">\(T\)</span> 增大，泛化误差会趋近于<span class="math inline">\(0\)</span> 。但是实际中，我们并不能得到真正独立的基学习器，因为他们是通过同一个训练数据集得到的，较少独立性的基学习器可以通过随机的方式得到，这样的集成学习方式可以得到较好的泛化能力。</p>
+\]</span> 根据Hoeffding Inequality，总体的泛化误差的upper bound为 <span
+class="math display">\[
+P(H(x)\neq
+f(x))=\sum^{[T/2]}_{k=0}C^k_T(1-\epsilon)^k\epsilon^{T-k}\leq\exp(-\frac{1}{2}T(2\epsilon-1)^2)
+\]</span> 即随着<span class="math inline">\(T\)</span>
+增大，泛化误差会趋近于<span class="math inline">\(0\)</span>
+。但是实际中，我们并不能得到真正独立的基学习器，因为他们是通过同一个训练数据集得到的，较少独立性的基学习器可以通过随机的方式得到，这样的集成学习方式可以得到较好的泛化能力。</p>
 <p>Bagging的另一个优势是可以并行训练，通过多进程加速训练过程。</p>
 <h3 id="bagging">Bagging</h3>
-<p>Bagging的名字来自于Bootstrap AGGregatING，正如这个模型的名字，Bagging的两个关键在于Bootstrap和aggregation。</p>
+<p>Bagging的名字来自于Bootstrap
+AGGregatING，正如这个模型的名字，Bagging的两个关键在于Bootstrap和aggregation。</p>
 <p>Bagging采用了Bootstrap的方式来获得一定随机性的样本，同时对于聚合的方法，分类问题可以采用投票，回归问题可以采用平均。</p>
 <figure>
-<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
+<img src="1.png" alt="1" />
+<figcaption aria-hidden="true">1</figcaption>
 </figure>
-<p>因为采用了Bootstrap的方式，所以会有大于<span class="math inline">\(36.8\%\)</span> 的数据是不会被采到的，而这部分数据可以用作包外估计(out-of-bag estimation) <span class="math display">\[
-H^{oob}(x)=\underset{y\in \mathcal{Y}}{\arg\max}\sum^T_{t=1}\mathbb{I}(h_t(x)=y)\cdot\mathbb{I}(x\notin \mathcal{D}_t)
+<p>因为采用了Bootstrap的方式，所以会有大于<span
+class="math inline">\(36.8\%\)</span>
+的数据是不会被采到的，而这部分数据可以用作包外估计(out-of-bag
+estimation) <span class="math display">\[
+H^{oob}(x)=\underset{y\in
+\mathcal{Y}}{\arg\max}\sum^T_{t=1}\mathbb{I}(h_t(x)=y)\cdot\mathbb{I}(x\notin
+\mathcal{D}_t)
 \]</span></p>
 <p><span class="math display">\[
-{err}^{oob}=\frac{1}{|\mathcal{D}|}\sum_{(x,y)\in\mathcal{D}}\mathbb{I}(H^{obb}(x)\neq y)
+{err}^{oob}=\frac{1}{|\mathcal{D}|}\sum_{(x,y)\in\mathcal{D}}\mathbb{I}(H^{obb}(x)\neq
+y)
 \]</span></p>
 <h3 id="theoretical-issues">Theoretical Issues</h3>
-<p>Bagging可以有效减少方差，特别是对于不稳定的基学习器。 <span class="math display">\[
+<p>Bagging可以有效减少方差，特别是对于不稳定的基学习器。 <span
+class="math display">\[
 H(x)=\mathbb{E}_{\mathcal{D}_{bs}}[h(x)]
-\]</span> 其中<span class="math inline">\(\mathcal{D}_{bs}\)</span> 表示bootstrap的抽样分布，因为<span class="math inline">\((\mathbb{E}[X])^2\leq \mathbb{E}[X^2]\)</span> 有 <span class="math display">\[
+\]</span> 其中<span class="math inline">\(\mathcal{D}_{bs}\)</span>
+表示bootstrap的抽样分布，因为<span
+class="math inline">\((\mathbb{E}[X])^2\leq \mathbb{E}[X^2]\)</span> 有
+<span class="math display">\[
 (f(x)-H(x))^2\leq\mathbb{E}_{\mathcal{D}_{bs}}[(f(x)-h(x))^2]
-\]</span> 因此，通过对两边积分，我们可以知道<span class="math inline">\(H(x)\)</span> 的均方误差会比所有<span class="math inline">\(h(x)\)</span> 的均方误差的平均值小，而且不同的程度依赖于下面这个不等式的不等程度 <span class="math display">\[
+\]</span> 因此，通过对两边积分，我们可以知道<span
+class="math inline">\(H(x)\)</span> 的均方误差会比所有<span
+class="math inline">\(h(x)\)</span>
+的均方误差的平均值小，而且不同的程度依赖于下面这个不等式的不等程度 <span
+class="math display">\[
 (\mathbb{E}_{\mathcal{D}_{bs}}[h(x)])^2\leq\mathbb{E}_{\mathcal{D}_{bs}}[h(x)^2]
-\]</span> 这说明了基分类器的instability的重要性，如果<span class="math inline">\(h(x)\)</span> 在Bootstrap的样本上差异不够大，那么最后的结合也不会产生很好的效果，但如果差异很大的话，结合带来的改善就会变得更多，这就是为什么Bagging对于unstable的弱分类器更有效并且能降低variance。</p>
+\]</span> 这说明了基分类器的instability的重要性，如果<span
+class="math inline">\(h(x)\)</span>
+在Bootstrap的样本上差异不够大，那么最后的结合也不会产生很好的效果，但如果差异很大的话，结合带来的改善就会变得更多，这就是为什么Bagging对于unstable的弱分类器更有效并且能降低variance。</p>
 <h3 id="random-tree-ensembles">Random Tree Ensembles</h3>
 <p>随机森林算是Bagging模型的一个代表，不同点在于RF对特征也进行了随机的选择</p>
 <figure>
-<img src="2.png" alt="2" /><figcaption aria-hidden="true">2</figcaption>
+<img src="2.png" alt="2" />
+<figcaption aria-hidden="true">2</figcaption>
 </figure>
 <p>VR-Tree模型是随机森林的一个变种，它在每一步加入了一个概率选择的过程，以一定概率随机划分节点</p>
 <figure>
-<img src="3.png" alt="3" /><figcaption aria-hidden="true">3</figcaption>
+<img src="3.png" alt="3" />
+<figcaption aria-hidden="true">3</figcaption>
 </figure>
 <h3 id="further-readings">Further Readings</h3>
 <p>随机树的集成学习模型还可以做密度估计和异常检测等问题，此处不具体展开了。</p>

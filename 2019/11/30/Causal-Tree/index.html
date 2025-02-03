@@ -416,60 +416,115 @@
 
       
         <h1 id="background">Background</h1>
-<p>这次讲的是基础的causal tree和causal forest，最近几篇内容会跟因果推断的有关，关于因果的大框架在最近几篇文章中不会详细写，之后会有总结。总得来说做因果和做纯机器学习主要有以下区别：</p>
+<p>这次讲的是基础的causal tree和causal
+forest，最近几篇内容会跟因果推断的有关，关于因果的大框架在最近几篇文章中不会详细写，之后会有总结。总得来说做因果和做纯机器学习主要有以下区别：</p>
 <ol type="1">
 <li>与纯预测不同，因果推断中并没有真实目标值，ground truth</li>
 <li>机器学习往往在实际中表现很好，但却很76有一些统计性质，在因果问题上，我们又比较需要一些良好的统计性质，在很多场景下也需要对于置信区间的估计</li>
 </ol>
-<p>常见因果问题的术语详见<a target="_blank" rel="noopener" href="http://www.arvinzyy.cn/2019/11/30/Causal-Inference-Fundation/">因果推断基础</a>。</p>
-<p>对于i.i.d.的样本<span class="math inline">\(i=1,\cdots,n\)</span>，我们可以观测到<span class="math inline">\((X_i, Y_i,W_i)\)</span>，</p>
+<p>常见因果问题的术语详见<a
+target="_blank" rel="noopener" href="http://www.arvinzyy.cn/2019/11/30/Causal-Inference-Fundation/">因果推断基础</a>。</p>
+<p>对于i.i.d.的样本<span
+class="math inline">\(i=1,\cdots,n\)</span>，我们可以观测到<span
+class="math inline">\((X_i, Y_i,W_i)\)</span>，</p>
 <ul>
-<li>feture vector 特征向量，<span class="math inline">\(X_i\in\Bbb{R}^p\)</span></li>
-<li>response 响应变量（这么翻译好蠢。）， <span class="math inline">\(Y_i\in\Bbb{R}\)</span></li>
-<li>treatment assignment 是否有treatment， <span class="math inline">\(W_i\in\{0,1\}\)</span></li>
+<li>feture vector 特征向量，<span
+class="math inline">\(X_i\in\Bbb{R}^p\)</span></li>
+<li>response 响应变量（这么翻译好蠢。）， <span
+class="math inline">\(Y_i\in\Bbb{R}\)</span></li>
+<li>treatment assignment 是否有treatment， <span
+class="math inline">\(W_i\in\{0,1\}\)</span></li>
 </ul>
-<p>假设存在<span class="math inline">\(Y_i^{(0)}\)</span>和<span class="math inline">\(Y_i^{(1)}\)</span>，指第<span class="math inline">\(i\)</span>个个体有treatment影响（<span class="math inline">\(\rm{W}_i=1\)</span>）或者没有treatment影响（<span class="math inline">\(W_i=0\)</span>）时候的响应变量，我们是无法同时观测到<span class="math inline">\(Y_i^{(0)}\)</span>和<span class="math inline">\(Y_i^{(1)}\)</span>的，所以这是一个missing data problem，这也是为什么我们没有groud truth可以直接用来学习预测。</p>
-<p>我们的目标是估计条件平均处理效应（CATE，conditional average treatment effect） <span class="math display">\[
-\tau(\rm{x})=\Bbb{E}\left[ \left. Y_i^{(1)}-Y_i^{(0)} \right| \rm{X}=\rm{x} \right]
-\]</span> 在实验中，我们只能观测到<span class="math inline">\(Y_i=Y_i^{W_i}\)</span>。</p>
-<p>如果不做任何假设的情况下，估计<span class="math inline">\(\tau(\rm{x})\)</span>是不可能的，一般需要存在两个假设：</p>
+<p>假设存在<span class="math inline">\(Y_i^{(0)}\)</span>和<span
+class="math inline">\(Y_i^{(1)}\)</span>，指第<span
+class="math inline">\(i\)</span>个个体有treatment影响（<span
+class="math inline">\(\rm{W}_i=1\)</span>）或者没有treatment影响（<span
+class="math inline">\(W_i=0\)</span>）时候的响应变量，我们是无法同时观测到<span
+class="math inline">\(Y_i^{(0)}\)</span>和<span
+class="math inline">\(Y_i^{(1)}\)</span>的，所以这是一个missing data
+problem，这也是为什么我们没有groud truth可以直接用来学习预测。</p>
+<p>我们的目标是估计条件平均处理效应（CATE，conditional average treatment
+effect） <span class="math display">\[
+\tau(\rm{x})=\Bbb{E}\left[ \left. Y_i^{(1)}-Y_i^{(0)} \right|
+\rm{X}=\rm{x} \right]
+\]</span> 在实验中，我们只能观测到<span
+class="math inline">\(Y_i=Y_i^{W_i}\)</span>。</p>
+<p>如果不做任何假设的情况下，估计<span
+class="math inline">\(\tau(\rm{x})\)</span>是不可能的，一般需要存在两个假设：</p>
 <p>假设1，unconfoundedness <span class="math display">\[
-\left. \lbrace Y_i^{(1)} - Y_i^{(0)}\rbrace \perp \!\!\! \perp  W_i \,\right| \,X_i
+\left. \lbrace Y_i^{(1)} - Y_i^{(0)}\rbrace \perp \!\!\! \perp  W_i
+\,\right| \,X_i
 \]</span> 假设2，overlap <span class="math display">\[
 0&lt;e_{\min}\leq e(x)\leq e_\max &lt; 1
-\]</span> 其中<span class="math inline">\(e(x)\)</span>为propensity score。</p>
+\]</span> 其中<span class="math inline">\(e(x)\)</span>为propensity
+score。</p>
 <h1 id="causal-tree">Causal Tree</h1>
-<p>作者将传统的建模方式称为adaptive的，因为建模的时候会用训练数据来进行模型选择，这样做有可能会因为一些“伪相关性”影响了模型选择，导致模型的估计存在偏差，而这种偏差只会在样本数量足够大的情况才能消除，在某些情景中，我们会做一些额外的假设来避免这种偏差，比如说稀疏性（也就是找到真的能够影响输出的变量）。在[1]中作者提出的honest的方式，可以在不对模型的复杂度进行一些约束的情况下避免这种伪相关的影响。我们定义honest为：如果一个模型不用相同的数据进行模型结构的学习和最后的估计，我们就认为这个模型是honest的，具体的做法是将数据集分成两部分，一部分为训练集（training sample），一部分为估计集（estimation sample），构造树结构（此处只讲了树模型）时候用训练集，预测时候产出预测值则使用估计集。</p>
-<p>定义特征空间<span class="math inline">\(\Bbb{X}\)</span>上的一棵树或者说一种划分方式为<span class="math inline">\(\Pi\)</span>（其实就是指一个树模型），<span class="math inline">\(\#(\Pi)\)</span>表示划分的数量，等同于叶子结点数量，则有 <span class="math display">\[
+<p>作者将传统的建模方式称为adaptive的，因为建模的时候会用训练数据来进行模型选择，这样做有可能会因为一些“伪相关性”影响了模型选择，导致模型的估计存在偏差，而这种偏差只会在样本数量足够大的情况才能消除，在某些情景中，我们会做一些额外的假设来避免这种偏差，比如说稀疏性（也就是找到真的能够影响输出的变量）。在[1]中作者提出的honest的方式，可以在不对模型的复杂度进行一些约束的情况下避免这种伪相关的影响。我们定义honest为：如果一个模型不用相同的数据进行模型结构的学习和最后的估计，我们就认为这个模型是honest的，具体的做法是将数据集分成两部分，一部分为训练集（training
+sample），一部分为估计集（estimation
+sample），构造树结构（此处只讲了树模型）时候用训练集，预测时候产出预测值则使用估计集。</p>
+<p>定义特征空间<span
+class="math inline">\(\Bbb{X}\)</span>上的一棵树或者说一种划分方式为<span
+class="math inline">\(\Pi\)</span>（其实就是指一个树模型），<span
+class="math inline">\(\#(\Pi)\)</span>表示划分的数量，等同于叶子结点数量，则有
+<span class="math display">\[
 \Pi=\{\ell_1,\cdots,\ell_{\#(\Pi)}\}\,\text{with}\,\bigcup_{j=1}^{\#(\Pi)}\ell_j=\Bbb{X}
-\]</span> 令<span class="math inline">\(\Bbb{P}\)</span>为划分方式的空间（可以理解为模型的空间，hypothesis space），<span class="math inline">\(\ell(x;\Pi)\)</span>表示<span class="math inline">\(\ell\in\Pi\)</span>且<span class="math inline">\(x\in\ell\)</span>（样本x在叶子节点<span class="math inline">\(\ell\)</span>中），令<span class="math inline">\(\Bbb{S}\)</span>为样本空间，定义<span class="math inline">\(\pi:\Bbb{S}\mapsto\Bbb{P}\)</span>为基于样本<span class="math inline">\(S\in\Bbb{S}\)</span>训练出一个划分结构（树模型）<span class="math inline">\(P\in\Bbb{P}\)</span>，一个决策树很简单的做法就是根据某个固定的值来决定是否要划分左右叶子结点 <span class="math display">\[
+\]</span> 令<span
+class="math inline">\(\Bbb{P}\)</span>为划分方式的空间（可以理解为模型的空间，hypothesis
+space），<span class="math inline">\(\ell(x;\Pi)\)</span>表示<span
+class="math inline">\(\ell\in\Pi\)</span>且<span
+class="math inline">\(x\in\ell\)</span>（样本x在叶子节点<span
+class="math inline">\(\ell\)</span>中），令<span
+class="math inline">\(\Bbb{S}\)</span>为样本空间，定义<span
+class="math inline">\(\pi:\Bbb{S}\mapsto\Bbb{P}\)</span>为基于样本<span
+class="math inline">\(S\in\Bbb{S}\)</span>训练出一个划分结构（树模型）<span
+class="math inline">\(P\in\Bbb{P}\)</span>，一个决策树很简单的做法就是根据某个固定的值来决定是否要划分左右叶子结点
+<span class="math display">\[
 \pi(S)=\begin{cases}
 \{\{L,R\}\} &amp;&amp; \text{if } \overline{Y}_L-\overline{Y}_R\leq c \\
-\{\{L\},\{R\}\} &amp;&amp; \text{if } \overline{Y}_L-\overline{Y}_R&gt; c \\
+\{\{L\},\{R\}\} &amp;&amp; \text{if } \overline{Y}_L-\overline{Y}_R&gt;
+c \\
 \end{cases}
-\]</span> 给定一个划分结构<span class="math inline">\(\Pi\)</span>，则条件期望函数<span class="math inline">\(\mu(x;\Pi)\)</span>可以写为 <span class="math display">\[
+\]</span> 给定一个划分结构<span
+class="math inline">\(\Pi\)</span>，则条件期望函数<span
+class="math inline">\(\mu(x;\Pi)\)</span>可以写为 <span
+class="math display">\[
 \mu(x;\Pi)=\Bbb{E}[Y_i|X_i\in\ell(x;\Pi)]=\Bbb{E}[\mu(X_i)|X\in\ell(x;\Pi)]
-\]</span> 而给定样本<span class="math inline">\(S\)</span>后有 <span class="math display">\[
-\hat{\mu}(x;S,\Pi)=\frac{1}{\#(i\in S:X_i\in\ell(x;\Pi))}\sum_{i\in S:X_i\in\ell(x;\Pi)}Y_i
-\]</span> 作者提出一种基于MSE的指标，对于预测的情况，我们可以用<span class="math inline">\(\Bbb{E}[Y_i^2]\)</span>来调整MSE，因为这个值并不依赖于模型，所以并不会影响比较模型时候的评估。给定划分<span class="math inline">\(\Pi\)</span>，在测试集<span class="math inline">\(S^{\text{te}}\)</span>和估计集<span class="math inline">\(S^\text{est}\)</span>取均值可以定义 <span class="math display">\[
-\text{MSE}_\mu(S^\text{te},S^\text{est},\Pi)=\frac{1}{\#(S^\text{te})}\sum_{i\in S^\text{te}}\left\{
+\]</span> 而给定样本<span class="math inline">\(S\)</span>后有 <span
+class="math display">\[
+\hat{\mu}(x;S,\Pi)=\frac{1}{\#(i\in S:X_i\in\ell(x;\Pi))}\sum_{i\in
+S:X_i\in\ell(x;\Pi)}Y_i
+\]</span> 作者提出一种基于MSE的指标，对于预测的情况，我们可以用<span
+class="math inline">\(\Bbb{E}[Y_i^2]\)</span>来调整MSE，因为这个值并不依赖于模型，所以并不会影响比较模型时候的评估。给定划分<span
+class="math inline">\(\Pi\)</span>，在测试集<span
+class="math inline">\(S^{\text{te}}\)</span>和估计集<span
+class="math inline">\(S^\text{est}\)</span>取均值可以定义 <span
+class="math display">\[
+\text{MSE}_\mu(S^\text{te},S^\text{est},\Pi)=\frac{1}{\#(S^\text{te})}\sum_{i\in
+S^\text{te}}\left\{
 (Y_i-\hat{\mu}(X_i;S^\text{est},\Pi))^2-Y_i^2
 \right\}
 \]</span> 其期望可以写成 <span class="math display">\[
 \text{EMSE}_\mu(\Pi)=\Bbb{E}_{S^\text{te},S^\text{est}}\left[
 \text{MSE}_\mu(S^\text{te},S^\text{est},\Pi)
 \right]
-\]</span> 其中测试集和估计集相互独立。我们最终的目标就是构建并评估一个算法<span class="math inline">\(\pi(\cdot)\)</span>，来最大化honest指标 <span class="math display">\[
-\cal{Q}^\rm{H}(\pi)=-\Bbb{E}_{S^\text{te},S^\text{est},S^\text{tr}}\left[ 
+\]</span>
+其中测试集和估计集相互独立。我们最终的目标就是构建并评估一个算法<span
+class="math inline">\(\pi(\cdot)\)</span>，来最大化honest指标 <span
+class="math display">\[
+\cal{Q}^\rm{H}(\pi)=-\Bbb{E}_{S^\text{te},S^\text{est},S^\text{tr}}\left[
 \text{MSE}_\mu(S^\text{te},S^\text{est},\pi(S^\text{tr}))
 \right]
 \]</span></p>
 <h1 id="causal-tree-分裂指标推导">Causal Tree 分裂指标推导</h1>
-<p>犹豫了很久，最终还是打算完整把推导写一遍，加深一下印象，网上Ian Lundberg的<a target="_blank" rel="noopener" href="https://scholar.princeton.edu/sites/default/files/bstewart/files/lundberg_methods_tutorial_reading_group_version.pdf">slides</a>也讲得很清楚，我基本上只是搬运。 <span class="math display">\[
+<p>犹豫了很久，最终还是打算完整把推导写一遍，加深一下印象，网上Ian
+Lundberg的<a
+target="_blank" rel="noopener" href="https://scholar.princeton.edu/sites/default/files/bstewart/files/lundberg_methods_tutorial_reading_group_version.pdf">slides</a>也讲得很清楚，我基本上只是搬运。
+<span class="math display">\[
 \begin{aligned}
-\text{MSE}_\mu(S^{te},S^{est},\Pi) 
+\text{MSE}_\mu(S^{te},S^{est},\Pi)
 &amp;\equiv \frac{1}{\#(S^{te})} \sum_{i\in S^{te}} \bigg\{
-\overbrace{\big(Y_i-\hat\mu(X_i;S^{est}, \Pi)\big)^2}^{\text{MSE criterion}}
+\overbrace{\big(Y_i-\hat\mu(X_i;S^{est}, \Pi)\big)^2}^{\text{MSE
+criterion}}
 - \overbrace{Y_i^2}^\text{add a constant}
 \bigg\}\\
 \text{EMSE}_\mu(\Pi)
@@ -478,17 +533,20 @@
 \bigg]
 \end{aligned}
 \]</span> Honest criterion为最大化 <span class="math display">\[
-Q^{H}(\pi)\equiv 
+Q^{H}(\pi)\equiv
 -{\mathbb{E}}_{S^{te},S^{est},S^{tr}} \bigg[
 \text{MSE}_\mu(S^{te},S^{est},\pi(S^{tr}))
 \bigg]
 \]</span></p>
-如果我们不划分estimation set的话，我们的分裂指标为 <span class="math display">\[
-Q^{C}(\pi)\equiv 
+如果我们不划分estimation set的话，我们的分裂指标为 <span
+class="math display">\[
+Q^{C}(\pi)\equiv
 -{\mathbb{E}}_{S^{te},S^{tr},S^{tr}} \bigg[
 \text{MSE}_\mu(S^{te},S^{tr},\pi(S^{tr}))
 \bigg]
-\]</span> 因为estimation set的样本只用来做最后的预测，所以我们希望上面的MSE指标只用training set的样本进行计算。 <span class="math display">\[
+\]</span> 因为estimation
+set的样本只用来做最后的预测，所以我们希望上面的MSE指标只用training
+set的样本进行计算。 <span class="math display">\[
 \begin{aligned}
 - \text{EMSE}_\mu(\Pi)
 &amp;= {\mathbb{E}}_{S^{te},S^{est}} \Bigg[
@@ -498,13 +556,14 @@ Q^{C}(\pi)\equiv
 &amp;={\mathbb{E}}_{S^{te},S^{est}} \Bigg[
 \bigg(
 \underbrace{\color{blue}{Y_i-\mu(X_i|\Pi)}}_{\color{blue}{A}}+
-\underbrace{\color{orange}{\mu(X_i|\Pi)-\hat\mu(X_i|S^{est}, \Pi)}}_{\color{orange}{B}}
+\underbrace{\color{orange}{\mu(X_i|\Pi)-\hat\mu(X_i|S^{est},
+\Pi)}}_{\color{orange}{B}}
 \bigg)^2
 - Y_i^2
 \Bigg] &amp;&amp;(2) \\
 &amp;={\mathbb{E}}_{S^{te},S^{est}} \Bigg[
 \underbrace{\color{blue}{\bigg(Y_i-\mu(X_i|\Pi)\bigg)^2}}_{\color{blue}{A^2}}
-- Y_i^2 
+- Y_i^2
 \Bigg]\\
 &amp; \quad\quad -{\mathbb{E}}_{S^{te},S^{est}} \Bigg[
 \underbrace{
@@ -519,68 +578,80 @@ Q^{C}(\pi)\equiv
 }_{2\cdot\color{blue}{A}\cdot\color{orange}{B}}
 \Bigg]
 \end{aligned}
-\]</span> 我们在<span class="math inline">\(\text{EMSE}_\mu\)</span>中加减了一项<span class="math inline">\(\mu(X_i|\Pi)\)</span>，然后继续化简，将<span class="math inline">\((A+B)^2\)</span>拆开，因为<span class="math inline">\(\mu(X_i|\Pi)\)</span>为假设存在的true function，所以<span class="math inline">\(\mathbb{E}(A)=0\)</span>，同时<span class="math inline">\(Y_i\)</span>是test set的样本，独立于estimation set，所以<span class="math inline">\(Cov(A,B)=0\)</span>，所以有 <span class="math display">\[
+\]</span> 我们在<span
+class="math inline">\(\text{EMSE}_\mu\)</span>中加减了一项<span
+class="math inline">\(\mu(X_i|\Pi)\)</span>，然后继续化简，将<span
+class="math inline">\((A+B)^2\)</span>拆开，因为<span
+class="math inline">\(\mu(X_i|\Pi)\)</span>为假设存在的true
+function，所以<span
+class="math inline">\(\mathbb{E}(A)=0\)</span>，同时<span
+class="math inline">\(Y_i\)</span>是test set的样本，独立于estimation
+set，所以<span class="math inline">\(Cov(A,B)=0\)</span>，所以有 <span
+class="math display">\[
 \begin{aligned}
 Cov(A,B) &amp;= \mathbb{E}(AB) - \mathbb{E}(A)\mathbb{E}(A)\\
 0 &amp;= \mathbb{E}(AB) - 0
 \end{aligned}
-\]</span> 所以最后一项<span class="math inline">\(2\cdot A\cdot B=0\)</span>。 $$
+\]</span> 所以最后一项<span class="math inline">\(2\cdot A\cdot
+B=0\)</span>。 $$
 <span class="math display">\[\begin{aligned}
 - \text{EMSE}_\mu(\Pi)
 &amp;=-{\mathbb{E}}_{
 \underbrace{\color{red}{(Y_i, X_i)}}_{S^{te}=(Y_i, X_i)},S^{est}
-} 
+}
 \Bigg[
 \bigg(Y_i-\mu(X_i|\Pi)\bigg)^2
-- Y_i^2 
-\Bigg] 
+- Y_i^2
+\Bigg]
 \\ &amp;\quad \quad - {\mathbb{E}}_{
 \underbrace{\color{red}{X_i}}_{S^{te}=(Y_i, X_i)},S^{est}
-} 
+}
 \underbrace{\color{red}{
 \Bigg[
 \bigg(\mu(X_i|\Pi)-\hat\mu(X_i|S^{est}, \Pi)\bigg)^2
 \Bigg]
 }}_{\text{independent of } Y_i} &amp;&amp; (4) \\
 
-&amp;=-{\mathbb{E}}_{(Y_i, X_i),S^{est}} 
+&amp;=-{\mathbb{E}}_{(Y_i, X_i),S^{est}}
 \Bigg[
 \color{red}{Y_i^2}
 - 2\cdot Y_i\cdot \mu(X_i|\Pi)+\mu^2(X_i|\Pi)
 - \color{red}{Y_i^2}
-\Bigg] 
-\\ &amp;\quad \quad - {\mathbb{E}}_{X_i,S^{est}} 
+\Bigg]
+\\ &amp;\quad \quad - {\mathbb{E}}_{X_i,S^{est}}
 \Bigg[
 \bigg(\mu(X_i|\Pi)-\hat\mu(X_i|S^{est}, \Pi)\bigg)^2
 \Bigg] &amp;&amp; (5) \\
 
-&amp;=-{\mathbb{E}}_{(Y_i, X_i),S^{est}} 
+&amp;=-{\mathbb{E}}_{(Y_i, X_i),S^{est}}
 \Bigg[
-\mu^2(X_i|\Pi)-2\cdot\underbrace{\color{red}{Y_i}}_{\mathbb{E}(Y_i)= \mu(X_i|\Pi)}\cdot \mu(X_i|\Pi)
-\Bigg] 
-\\ &amp;\quad \quad - {\mathbb{E}}_{X_i,S^{est}} 
+\mu^2(X_i|\Pi)-2\cdot\underbrace{\color{red}{Y_i}}_{\mathbb{E}(Y_i)=
+\mu(X_i|\Pi)}\cdot \mu(X_i|\Pi)
+\Bigg]
+\\ &amp;\quad \quad - {\mathbb{E}}_{X_i,S^{est}}
 \Bigg[
 \bigg(\mu(X_i|\Pi)-\hat\mu(X_i|S^{est}, \Pi)\bigg)^2
 \Bigg] &amp;&amp; (6) \\
 
-&amp;=-{\mathbb{E}}_{\color{red}{X_i}} 
+&amp;=-{\mathbb{E}}_{\color{red}{X_i}}
 \underbrace{\color{red}{\Bigg[
 \mu^2(X_i|\Pi)-2\cdot \mu^2(X_i|\Pi)
 \Bigg]}}_{\text{independent of } Y_i \text{ and } S^{est}}
-\\ &amp;\quad \quad - {\mathbb{E}}_{X_i,S^{est}} 
+\\ &amp;\quad \quad - {\mathbb{E}}_{X_i,S^{est}}
 \Bigg[
-\underbrace{\color{red}{\bigg(\mu(X_i|\Pi)-\hat\mu(X_i|S^{est}, \Pi)\bigg)^2}}_{
+\underbrace{\color{red}{\bigg(\mu(X_i|\Pi)-\hat\mu(X_i|S^{est},
+\Pi)\bigg)^2}}_{
 \mathbb{V}(Z) = (Z-\mathbb{E}[Z])^2
 }
 \Bigg] &amp;&amp; (7) \\
 
 &amp;=\underbrace{\color{blue}{
-{\mathbb{E}}_{X_i} 
+{\mathbb{E}}_{X_i}
 \Bigg[
 \mu^2(X_i|\Pi)
 \Bigg]
 }}_{\color{blue}{C}} - \underbrace{\color{orange}{
-{\mathbb{E}}_{X_i,S^{est}} 
+{\mathbb{E}}_{X_i,S^{est}}
 \Bigg[
 \mathbb{V}
 \big(\hat\mu(X_i|S^{est}, \Pi)\big)
@@ -588,16 +659,25 @@ Cov(A,B) &amp;= \mathbb{E}(AB) - \mathbb{E}(A)\mathbb{E}(A)\\
 }}_{\color{orange}{D}} &amp;&amp; (8) \\
 \end{aligned}\]</span>
 <p>$$</p>
-第（4）步我们将<span class="math inline">\(S^{te}\)</span>写成<span class="math inline">\((Y_i,X_i)\)</span>，然后将期望中无关的量去掉，第（5）步将第一项的平方和写开约去<span class="math inline">\(Y_i^2\)</span>，第（6）步利用定义<span class="math inline">\(\mu(X_i|\Pi)\)</span>就是假设的true function，等价于<span class="math inline">\(\mathbb{E}[Y]\)</span>，第（7）步里中前项期望与<span class="math inline">\(Y_i\)</span>无关省略，后项则是一个方差的定义，最后得到<span class="math inline">\(C\)</span>和<span class="math inline">\(D\)</span>两项。我们先对<span class="math inline">\(D\)</span>项拆解 <span class="math display">\[
+第（4）步我们将<span class="math inline">\(S^{te}\)</span>写成<span
+class="math inline">\((Y_i,X_i)\)</span>，然后将期望中无关的量去掉，第（5）步将第一项的平方和写开约去<span
+class="math inline">\(Y_i^2\)</span>，第（6）步利用定义<span
+class="math inline">\(\mu(X_i|\Pi)\)</span>就是假设的true
+function，等价于<span
+class="math inline">\(\mathbb{E}[Y]\)</span>，第（7）步里中前项期望与<span
+class="math inline">\(Y_i\)</span>无关省略，后项则是一个方差的定义，最后得到<span
+class="math inline">\(C\)</span>和<span
+class="math inline">\(D\)</span>两项。我们先对<span
+class="math inline">\(D\)</span>项拆解 <span class="math display">\[
 \begin{aligned}
 \hat{\mathbb{V}}
 \bigg(\hat\mu(X_i|S^{est}, \Pi)\bigg)
- &amp;\equiv \frac{
+&amp;\equiv \frac{
 S^2_{S^{tr}}\big(\ell(x|\Pi)\big)
 }{
 N^{est}\big(\ell(x|\Pi)\big)
 } \\
-\hat{\mathbb{E}}_{X_i} 
+\hat{\mathbb{E}}_{X_i}
 \Bigg[
 \hat{\mathbb{V}}_{S^{est}}
 \bigg(\hat\mu(X_i|S^{est}, \Pi)\bigg) | i\in S^{te}
@@ -616,23 +696,26 @@ N^{est}\big(\ell\big) /\#\ell
 \end{aligned}
 \]</span> 再对<span class="math inline">\(C\)</span>项进行拆解 $$
 <span class="math display">\[\begin{aligned}
-\mathbb{V}(\hat\mu|x,\Pi) 
-&amp;= \mathbb{E}(\hat\mu^2|x,\Pi) - \bigg[ \mathbb{E}(\hat\mu|x,\Pi) \bigg]^2 \\
+\mathbb{V}(\hat\mu|x,\Pi)
+&amp;= \mathbb{E}(\hat\mu^2|x,\Pi) - \bigg[ \mathbb{E}(\hat\mu|x,\Pi)
+\bigg]^2 \\
 
-\frac{S^2_{S^{tr}}\big(\ell(x|\Pi)\big)}{N^{tr}\big(\ell(x|\Pi)\big)} 
+\frac{S^2_{S^{tr}}\big(\ell(x|\Pi)\big)}{N^{tr}\big(\ell(x|\Pi)\big)}
 &amp;\approx \hat\mu^2(x|S^{tr},\Pi) - \mu^2(x|\Pi)\\
 
 \mu^2(x|\Pi)  
-&amp;\approx \hat\mu^2(x|S^{tr},\Pi) -\frac{S^2_{S^{tr}}\big(\ell(x|\Pi)\big)}{N^{tr}\big(\ell(x|\Pi)\big)}\\
+&amp;\approx \hat\mu^2(x|S^{tr},\Pi)
+-\frac{S^2_{S^{tr}}\big(\ell(x|\Pi)\big)}{N^{tr}\big(\ell(x|\Pi)\big)}\\
 
-\hat{\mathbb{E}}_{X_i}\big(\mu^2(X_i|\Pi)\big) 
-&amp; \approx \frac{1}{N^{tr}}\sum_{i\in S^{tr}} \hat\mu^2(x_i|S^{tr},\Pi)
+\hat{\mathbb{E}}_{X_i}\big(\mu^2(X_i|\Pi)\big)
+&amp; \approx \frac{1}{N^{tr}}\sum_{i\in S^{tr}}
+\hat\mu^2(x_i|S^{tr},\Pi)
 - \sum_{\ell} \frac{1}{\#\ell} \frac{
 S^2_{S^{tr}}\big(\ell\big)
 }{
 N^{tr}\big(\ell\big) /\#\ell
 } \\
-&amp;= \frac{1}{N^{tr}}\sum_{i\in S^{tr}} \hat\mu^2(x_i|S^{tr},\Pi) - 
+&amp;= \frac{1}{N^{tr}}\sum_{i\in S^{tr}} \hat\mu^2(x_i|S^{tr},\Pi) -
 \frac{1}{N^{tr}}\sum_{\ell} S^2_{S^{tr}}\big(\ell\big)
 \end{aligned}\]</span>
 <span class="math display">\[
@@ -641,34 +724,36 @@ N^{tr}\big(\ell\big) /\#\ell
 <span class="math display">\[\begin{aligned}
 - \widehat{\text{EMSE}}_\mu(S^{tr},N^{est},\Pi)
 &amp;= \color{blue}{
- \frac{1}{N^{tr}}\sum_{i\in S^{tr}} \hat\mu^2(x_i|S^{tr},\Pi) - 
- \frac{1}{N^{tr}}\sum_{\ell} S^2_{S^{tr}}\big(\ell\big)
+\frac{1}{N^{tr}}\sum_{i\in S^{tr}} \hat\mu^2(x_i|S^{tr},\Pi) -
+\frac{1}{N^{tr}}\sum_{\ell} S^2_{S^{tr}}\big(\ell\big)
 } - \color{orange}{
- \frac{1}{N^{est}} \sum_{\ell\in \Pi} S^2_{S^{tr}}\big(\ell\big)
+\frac{1}{N^{est}} \sum_{\ell\in \Pi} S^2_{S^{tr}}\big(\ell\big)
 } \\
 &amp;= \underbrace{\color{red}{
 \frac{1}{N^{tr}}\sum_{i\in S^{tr}} \hat\mu^2(x_i|S^{tr},\Pi)
 }}_\text{Inter-Leaves Variance} - \underbrace{\color{green}{
-\bigg(\frac{1}{N^{tr}}+\frac{1}{N^{est}}\bigg)\sum_{\ell\in \Pi} S^2_{S^{tr}}\big(\ell\big)
+\bigg(\frac{1}{N^{tr}}+\frac{1}{N^{est}}\bigg)\sum_{\ell\in \Pi}
+S^2_{S^{tr}}\big(\ell\big)
 }}_\text{Intra-Leaves Variance}
 \end{aligned}\]</span>
 <span class="math display">\[
 当我们想计算TE的MSE时候
 \]</span>
 <span class="math display">\[\begin{aligned}
-\text{MSE}_\tau(S^{te},S^{est},\Pi) 
+\text{MSE}_\tau(S^{te},S^{est},\Pi)
 &amp;\equiv \frac{1}{\#(S^{te})}\sum_{i\in S^{te}} \underbrace{\Bigg\{
-\bigg(\color{red}{\tau_i}-\hat{\tau}(X_i|S^{est},\Pi) \bigg)^2 -\color{red}{\tau_i}^2 
+\bigg(\color{red}{\tau_i}-\hat{\tau}(X_i|S^{est},\Pi) \bigg)^2
+-\color{red}{\tau_i}^2
 \Bigg\}}_{\color{red}{\tau_i \text{ is never observed}} }\\
-- \widehat{\text{EMSE}}_\mu(S^{tr},N^{est},\Pi) 
+- \widehat{\text{EMSE}}_\mu(S^{tr},N^{est},\Pi)
 &amp;= \underbrace{
 \frac{1}{N^{tr}}\sum_{i\in S^{tr}} \hat\tau^2(x_i|S^{tr},\Pi)
 }_{\color{red}{\text{Variance of treatment effect across leaves}}} \\
 &amp;\quad\quad - \underbrace{
 \bigg(\frac{1}{N^{tr}}+\frac{1}{N^{est}} \bigg)
 \sum_{\ell\in \Pi} \bigg(
-\frac{S^2_{S^{tr}_{treat}}\big(\ell\big)}{p} 
-+ \frac{S^2_{S^{tr}_{control}}\big(\ell\big)}{p} 
+\frac{S^2_{S^{tr}_{treat}}\big(\ell\big)}{p}
++ \frac{S^2_{S^{tr}_{control}}\big(\ell\big)}{p}
 \bigg)
 }_{\color{red}{\text{Uncertainty about leaf treatment effects}}}
 
@@ -677,16 +762,24 @@ N^{tr}\big(\ell\big) /\#\ell
 <h2 id="总结与思考">总结与思考</h2>
 <p>causal tree的思路总结如下：</p>
 <ol type="1">
-<li>传统的方式training set同时用来构建模型、选择模型，会存在一些伪相关性，让模型“过”拟合在一些“无关紧要”的变量上，需要避免这种“过”拟合，得到真正影响结果的“因”变量；</li>
-<li>评估泛化误差与估计潜在处理效应都是没有ground truth的问题，如果我们可以通过划分训练集、测试集来评估一个模型的泛化能力，那么也可以多划出一个子集的样本构建潜在处理效应的无偏估计</li>
+<li>传统的方式training
+set同时用来构建模型、选择模型，会存在一些伪相关性，让模型“过”拟合在一些“无关紧要”的变量上，需要避免这种“过”拟合，得到真正影响结果的“因”变量；</li>
+<li>评估泛化误差与估计潜在处理效应都是没有ground
+truth的问题，如果我们可以通过划分训练集、测试集来评估一个模型的泛化能力，那么也可以多划出一个子集的样本构建潜在处理效应的无偏估计</li>
 <li>Honest方式建模，训练集构建模型，估计集构建模型预测值，测试集测试</li>
-<li>如何在构建模型时候避免引入估计集数据，使得估计集能够独立于构建模型，作者提出Honest target，EMSE指标</li>
+<li>如何在构建模型时候避免引入估计集数据，使得估计集能够独立于构建模型，作者提出Honest
+target，EMSE指标</li>
 <li>通过一些列公式推导，得到树分支指标和模型选择指标</li>
 </ol>
 <h2 id="参考">参考</h2>
 <ol type="1">
-<li>Athey, Susan, and Guido Imbens. "Recursive partitioning for heterogeneous causal effects." <em>Proceedings of the National Academy of Sciences</em> 113.27 (2016): 7353-7360.</li>
-<li>Susan Athey, Solving Heterogeneous Estimating Equations Using Forest Based Algorithms, <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=CPz0HdUM3dE">youtube vedio</a></li>
+<li>Athey, Susan, and Guido Imbens. "Recursive partitioning for
+heterogeneous causal effects." <em>Proceedings of the National Academy
+of Sciences</em> 113.27 (2016): 7353-7360.</li>
+<li>Susan Athey, Solving Heterogeneous Estimating Equations Using Forest
+Based Algorithms, <a
+target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=CPz0HdUM3dE">youtube
+vedio</a></li>
 </ol>
 
       

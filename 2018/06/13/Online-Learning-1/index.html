@@ -108,7 +108,7 @@
 <meta property="og:image" content="http://yoursite.com/2018/06/13/Online-Learning-1/2.png">
 <meta property="og:image" content="http://yoursite.com/2018/06/13/Online-Learning-1/4.png">
 <meta property="article:published_time" content="2018-06-13T03:47:47.000Z">
-<meta property="article:modified_time" content="2018-06-13T15:34:31.593Z">
+<meta property="article:modified_time" content="2018-06-13T15:34:31.000Z">
 <meta property="article:author" content="YuyangZhangFTD">
 <meta property="article:tag" content="Machine Learning">
 <meta property="article:tag" content="Convex Optimization">
@@ -400,60 +400,108 @@
 
       
         <p>最近在学习online learning相关的东西，刚好总结一下。</p>
-<h2 id="introduction-to-online-learning">Introduction to Online Learning</h2>
+<h2 id="introduction-to-online-learning">Introduction to Online
+Learning</h2>
 <p>我们以在线二分类预测问题为例，比如说，日常生活中，我们根据气温、温度等特征来试试判断是否会下雪，这就是一个在线的二分类问题。</p>
-<p>二分类分类器（二分类假设，binary classifier或者说binary hypothesis），将特征<span class="math inline">\(\mathbf{x}\in\mathbb{R}^n\)</span>的特征映射到仅有两个元素的预测集中的函数 <span class="math display">\[
+<p>二分类分类器（二分类假设，binary classifier或者说binary
+hypothesis），将特征<span
+class="math inline">\(\mathbf{x}\in\mathbb{R}^n\)</span>的特征映射到仅有两个元素的预测集中的函数
+<span class="math display">\[
 h:\mathbb{R}^n\rightarrow\{+1,-1\}
 \]</span></p>
-<p>在线二分类预测问题指，利用每一阶段<span class="math inline">\(t\)</span>的特征<span class="math inline">\(\mathbf{x}_t\)</span>来预测<span class="math inline">\(y_t\)</span>的情况，目标是最小化失败的次数。</p>
+<p>在线二分类预测问题指，利用每一阶段<span
+class="math inline">\(t\)</span>的特征<span
+class="math inline">\(\mathbf{x}_t\)</span>来预测<span
+class="math inline">\(y_t\)</span>的情况，目标是最小化失败的次数。</p>
 <figure>
-<img src="1.png" alt="Online Binary Prediction Game" /><figcaption aria-hidden="true">Online Binary Prediction Game</figcaption>
+<img src="1.png" alt="Online Binary Prediction Game" />
+<figcaption aria-hidden="true">Online Binary Prediction
+Game</figcaption>
 </figure>
 <p>需要注意的是，对于二分类预测问题：</p>
 <ul>
 <li>定义在线预测算法的时候，必须明确初始步骤和更新步骤</li>
 <li>在每次预测后会有即时的反馈</li>
-<li>并没有随机性的假设，并不需要对<span class="math inline">\(\mathbf{x}_t\)</span>的分布做假设</li>
+<li>并没有随机性的假设，并不需要对<span
+class="math inline">\(\mathbf{x}_t\)</span>的分布做假设</li>
 <li>训练集和测试集之间并没有显著的不同</li>
 </ul>
 <h2 id="mistake-bound-analysis">Mistake Bound Analysis</h2>
 <p>错误界的分析指的是对于一种算法最大犯错误数量的上届进行的分析。</p>
-<p>例1：The Halving Algorithm，（翻译成半数算法？）是一种犯错数量有界的在线预测算法，它基于以下两种假设：</p>
+<p>例1：The Halving
+Algorithm，（翻译成半数算法？）是一种犯错数量有界的在线预测算法，它基于以下两种假设：</p>
 <ul>
-<li>假设1：存在有限种假设，<span class="math inline">\(\mathcal{H}\)</span></li>
-<li>假设2：存在完美的二分类器<span class="math inline">\(h^*\in\mathcal{H}\)</span>，使得<span class="math inline">\(y_t=h^*(x_t),\forall t\)</span>，称之为可实现假设</li>
+<li>假设1：存在有限种假设，<span
+class="math inline">\(\mathcal{H}\)</span></li>
+<li>假设2：存在完美的二分类器<span
+class="math inline">\(h^*\in\mathcal{H}\)</span>，使得<span
+class="math inline">\(y_t=h^*(x_t),\forall
+t\)</span>，称之为可实现假设</li>
 </ul>
-<p>版本空间（Version Space）定义为，有限假设集合的子集，<span class="math inline">\(V_t\subseteq \mathcal{H}\)</span>，其中每个属于该版本空间的假设都有<span class="math inline">\(h(x_\tau)=y_\tau,\forall\tau\leq t,\forall h\in V_t\)</span>。简单来说，这个子集中的假设对观测的数据有一致的预测结果。</p>
-<p>半数算法是在当前版本空间中进行投票得到预测值 <span class="math display">\[
-\hat{y}_t=\text{mode}\{h_1(\mathbf{x}_t),h_2(\mathbf{x}_t),\cdots\forall h\in V_t\}
-\]</span> 在更新的时候，根据新的观测值更新当前的版本空间。初始时候，版本空间为所有假设。所以我们可以得到半数算法的错误数量上界：</p>
+<p>版本空间（Version Space）定义为，有限假设集合的子集，<span
+class="math inline">\(V_t\subseteq
+\mathcal{H}\)</span>，其中每个属于该版本空间的假设都有<span
+class="math inline">\(h(x_\tau)=y_\tau,\forall\tau\leq t,\forall h\in
+V_t\)</span>。简单来说，这个子集中的假设对观测的数据有一致的预测结果。</p>
+<p>半数算法是在当前版本空间中进行投票得到预测值 <span
+class="math display">\[
+\hat{y}_t=\text{mode}\{h_1(\mathbf{x}_t),h_2(\mathbf{x}_t),\cdots\forall
+h\in V_t\}
+\]</span>
+在更新的时候，根据新的观测值更新当前的版本空间。初始时候，版本空间为所有假设。所以我们可以得到半数算法的错误数量上界：</p>
 <blockquote>
-<p>定理1：对于任何满足假设2的序列<span class="math inline">\(\{\mathbf{x}_t, y_t\}_{t=1}^\infty\)</span>，半数算法最多犯错<span class="math inline">\(\log_2(|\mathcal{H}|)\)</span>次。</p>
+<p>定理1：对于任何满足假设2的序列<span
+class="math inline">\(\{\mathbf{x}_t,
+y_t\}_{t=1}^\infty\)</span>，半数算法最多犯错<span
+class="math inline">\(\log_2(|\mathcal{H}|)\)</span>次。</p>
 </blockquote>
 <p>证明：</p>
-<p>由于每次都是根据多数的选择进行的投票，所以每次更新的时候，都会有些错误的假设被从版本空间中移除，我们有： <span class="math display">\[
+<p>由于每次都是根据多数的选择进行的投票，所以每次更新的时候，都会有些错误的假设被从版本空间中移除，我们有：
+<span class="math display">\[
 \begin{aligned}
 h^*\in V_t &amp; \Rightarrow &amp;|V_t|\geq1,\forall t\\
 \hat{y}_t\neq y_t &amp; \Rightarrow &amp; |V_{t+1}|\leq\frac{1}{2}|V_t|
 \end{aligned}
-\]</span> 其中第一个推断是指如果满足假设2，版本空间中假设至少有一个（完美假设），第二个推断是指，当前的半数算法做出错误的预测的时候，在更新版本空间的时候，会有超过半数的假设被移除当前版本空间（因为这超过半数的假设做出了错误的预测，所以被移除版本空间）。用<span class="math inline">\(M_T\)</span>表示<span class="math inline">\(T\)</span>次之后错误的数量，则有 <span class="math display">\[
+\]</span>
+其中第一个推断是指如果满足假设2，版本空间中假设至少有一个（完美假设），第二个推断是指，当前的半数算法做出错误的预测的时候，在更新版本空间的时候，会有超过半数的假设被移除当前版本空间（因为这超过半数的假设做出了错误的预测，所以被移除版本空间）。用<span
+class="math inline">\(M_T\)</span>表示<span
+class="math inline">\(T\)</span>次之后错误的数量，则有 <span
+class="math display">\[
 \begin{aligned}
-1\leq |V_{T+1}|\leq (\frac{1}{2})^{M_T}|V_0|=(\frac{1}{2})^{M_T}|\mathcal{H|}\\
+1\leq |V_{T+1}|\leq
+(\frac{1}{2})^{M_T}|V_0|=(\frac{1}{2})^{M_T}|\mathcal{H|}\\
 M_T\leq \log_2(|\mathcal{H}|)
 \end{aligned}
-\]</span> 根据上面的第二个推断做不断的放缩，即可得到如上不等式。<span class="math inline">\(\Box\)</span></p>
+\]</span> 根据上面的第二个推断做不断的放缩，即可得到如上不等式。<span
+class="math inline">\(\Box\)</span></p>
 <p>例2：感知机算法（The Perceptron）</p>
-<p>感知机算法想必大家都不陌生了，定义一个线性二分类器，<span class="math inline">\(h_w\)</span>，和一组权重<span class="math inline">\(\mathbf{w}\in\mathbb{R}^n\)</span>，则 <span class="math display">\[
+<p>感知机算法想必大家都不陌生了，定义一个线性二分类器，<span
+class="math inline">\(h_w\)</span>，和一组权重<span
+class="math inline">\(\mathbf{w}\in\mathbb{R}^n\)</span>，则 <span
+class="math display">\[
 \hat{y}_t=h_w(\mathbf{x})=\text{sign}(\mathbf{w}\cdot\mathbf{x})=\text{sign}(\sum^n_ix_iw_i)
 \]</span> <img src="2.png" alt="The Perceptron 1" /></p>
-<p>上图中是二维下感知机算法的直观几何解释，其中划分正例与负例的超平面称之为垂直超平面（与权重向量<span class="math inline">\(\mathbf{w}\)</span>垂直）。初始时候令<span class="math inline">\(\mathbf{w}_0=(0,\cdots,0)\)</span>，<span class="math inline">\(\text{sign }0=1\)</span>，所以初始时候任意<span class="math inline">\(\mathbf{x}\)</span>都有<span class="math inline">\(\mathbf{w_0}\cdot\mathbf{x}=1\)</span>。更新时则为 <span class="math display">\[
+<p>上图中是二维下感知机算法的直观几何解释，其中划分正例与负例的超平面称之为垂直超平面（与权重向量<span
+class="math inline">\(\mathbf{w}\)</span>垂直）。初始时候令<span
+class="math inline">\(\mathbf{w}_0=(0,\cdots,0)\)</span>，<span
+class="math inline">\(\text{sign }0=1\)</span>，所以初始时候任意<span
+class="math inline">\(\mathbf{x}\)</span>都有<span
+class="math inline">\(\mathbf{w_0}\cdot\mathbf{x}=1\)</span>。更新时则为
+<span class="math display">\[
 \mathbf{w}_{t+1}=\begin{cases}
 \mathbf{w}_t &amp; \text{if} &amp; \hat{y}_t=y_t\\
 \mathbf{w}_t+y_t\mathbf{x}_t &amp; \text{if} &amp; \hat{y}_t\neq y_t\\
 \end{cases}
-\]</span> 当第<span class="math inline">\(t\)</span>步时，有一个样本是正例<span class="math inline">\(+1\)</span>被分为<span class="math inline">\(-1\)</span>的时候，<span class="math inline">\(\mathbf{w}_t\cdot\mathbf{x}&lt;0\)</span>，所以我们需要迭代使得该样本与权重向量的内积增大（大于<span class="math inline">\(0\)</span>的时候则分类正确） <span class="math display">\[
+\]</span> 当第<span
+class="math inline">\(t\)</span>步时，有一个样本是正例<span
+class="math inline">\(+1\)</span>被分为<span
+class="math inline">\(-1\)</span>的时候，<span
+class="math inline">\(\mathbf{w}_t\cdot\mathbf{x}&lt;0\)</span>，所以我们需要迭代使得该样本与权重向量的内积增大（大于<span
+class="math inline">\(0\)</span>的时候则分类正确） <span
+class="math display">\[
 \begin{aligned}
-\mathbf{w}_{t+1}\cdot\mathbf{x}_t &amp; = (\mathbf{w}_t+y_t\mathbf{x}_t)\cdot\mathbf{x}_t\\
+\mathbf{w}_{t+1}\cdot\mathbf{x}_t &amp; =
+(\mathbf{w}_t+y_t\mathbf{x}_t)\cdot\mathbf{x}_t\\
 &amp;=(\mathbf{w}_t+\mathbf{x}_t)\cdot\mathbf{x}_t\\
 &amp;=\mathbf{w}_t\cdot\mathbf{x}_t + \|\mathbf{x}_t\|^2\\
 &amp;\geq\mathbf{w}_t\cdot\mathbf{x}_t
@@ -461,33 +509,60 @@ M_T\leq \log_2(|\mathcal{H}|)
 \]</span> <img src="2.png" alt="The Perceptron 2" /></p>
 <p>如果我们想定义感知机的错误数量上界，我们还需要两个假设：</p>
 <ul>
-<li>假设3：特征向量的模长有限，<span class="math inline">\(\|\mathbf{x\|\leq\rho}\)</span></li>
-<li>假设4：<span class="math inline">\(\exist\mathbf{w}^*\in\mathbb{R}^n\)</span>，<span class="math inline">\(\|\mathbf{w}^*\|\leq1\)</span>使得<span class="math inline">\(y_t\mathbf{w}^*\cdot\mathbf{x}_t\geq\gamma&gt;0\)</span></li>
+<li>假设3：特征向量的模长有限，<span
+class="math inline">\(\|\mathbf{x\|\leq\rho}\)</span></li>
+<li>假设4：<span
+class="math inline">\(\exist\mathbf{w}^*\in\mathbb{R}^n\)</span>，<span
+class="math inline">\(\|\mathbf{w}^*\|\leq1\)</span>使得<span
+class="math inline">\(y_t\mathbf{w}^*\cdot\mathbf{x}_t\geq\gamma&gt;0\)</span></li>
 </ul>
-<p>值得注意的是，假设4与之前的假设2很相似，假设4实际上会比假设2要求更严格，当<span class="math inline">\(\gamma=0\)</span>的时候，假设4与假设2等价。<span class="math inline">\(\gamma\)</span>被称为间隔（margin）</p>
+<p>值得注意的是，假设4与之前的假设2很相似，假设4实际上会比假设2要求更严格，当<span
+class="math inline">\(\gamma=0\)</span>的时候，假设4与假设2等价。<span
+class="math inline">\(\gamma\)</span>被称为间隔（margin）</p>
 <figure>
-<img src="4.png" alt="Margin" /><figcaption aria-hidden="true">Margin</figcaption>
+<img src="4.png" alt="Margin" />
+<figcaption aria-hidden="true">Margin</figcaption>
 </figure>
 <blockquote>
-<p>定理2：对于任何满足假设3和假设4的序列<span class="math inline">\(\{\mathbf{x}_t, y_t\}_{t=1}^\infty\)</span>，感知机分类器犯错误数量最多为<span class="math inline">\((\frac{\rho}{\gamma})^2\)</span></p>
+<p>定理2：对于任何满足假设3和假设4的序列<span
+class="math inline">\(\{\mathbf{x}_t,
+y_t\}_{t=1}^\infty\)</span>，感知机分类器犯错误数量最多为<span
+class="math inline">\((\frac{\rho}{\gamma})^2\)</span></p>
 </blockquote>
 <p>证明：</p>
-<p>在每次犯错后，我们的可以发现<span class="math inline">\(\mathbf{w}_t\)</span>与<span class="math inline">\(\mathbf{w}^*\)</span>的共线性（通过计算<span class="math inline">\(\mathbf{w}_t\cdot\mathbf{w}^*\)</span>）越来越强。根据迭代过程，我们有 <span class="math display">\[
+<p>在每次犯错后，我们的可以发现<span
+class="math inline">\(\mathbf{w}_t\)</span>与<span
+class="math inline">\(\mathbf{w}^*\)</span>的共线性（通过计算<span
+class="math inline">\(\mathbf{w}_t\cdot\mathbf{w}^*\)</span>）越来越强。根据迭代过程，我们有
+<span class="math display">\[
 \begin{aligned}
-\hat{y}_t\neq y_t &amp; \Rightarrow \mathbf{w}_{t+1}=\mathbf{w}_{t}+y_t\mathbf{x}_{t}\\
+\hat{y}_t\neq y_t &amp; \Rightarrow
+\mathbf{w}_{t+1}=\mathbf{w}_{t}+y_t\mathbf{x}_{t}\\
 \mathbf{w}_{t+1}\cdot\mathbf{w}^*
 &amp;=(\mathbf{w}_{t}+y_t\mathbf{x}_{t})\cdot\mathbf{w}^*\\
 &amp;=\mathbf{w}_{t}\cdot\mathbf{w}^*+y_t\mathbf{x}_{t}\cdot\mathbf{w}_{t}\\
 &amp;\geq \mathbf{w}_{t}\cdot\mathbf{w}^*+\gamma
 \end{aligned}
-\]</span> 上述第一个等式为犯错之后权重<span class="math inline">\(\mathbf{w}_t\)</span>的迭代式，第二个为迭代后会增加<span class="math inline">\(\mathbf{w}_t\)</span>与<span class="math inline">\(\mathbf{w}^*\)</span>的共线性。上述步骤会每次迭代时候重复，当感知机算法不犯错误的时候，<span class="math inline">\(\mathbf{w}_{t+1}\cdot\mathbf{w}^*=\mathbf{w}_{t}\cdot\mathbf{w}^*\)</span>。重复上述过程<span class="math inline">\(T\)</span>次，则 <span class="math display">\[
-\mathbf{w}_{T+1}\cdot\mathbf{w}^*\geq \mathbf{w}_{0}\cdot\mathbf{x}_0+M_T\gamma\geq M_T\gamma
-\]</span> 由于模长的影响，有可能内积变大的时候，<span class="math inline">\(\mathbf{w}_t\)</span>与<span class="math inline">\(\mathbf{w}^*\)</span>的共线性没有增加，所以我们根据假设3来约束这种增长 <span class="math display">\[
-\hat{y}_t\neq y_t \Rightarrow \|\mathbf{w}_{t+1}\|^2=\|\mathbf{w}_{t}+y_t\mathbf{x}_{t}\|^2
-\]</span> 在犯错<span class="math inline">\(M_T\)</span>次后 <span class="math display">\[
-\|\mathbf{w}_{t+1}\|^2=\|\mathbf{w}_0+\sum^{M_T}_\tau y_\tau\mathbf{x}_\tau\|^2\leq\|0+M_T\rho||
+\]</span> 上述第一个等式为犯错之后权重<span
+class="math inline">\(\mathbf{w}_t\)</span>的迭代式，第二个为迭代后会增加<span
+class="math inline">\(\mathbf{w}_t\)</span>与<span
+class="math inline">\(\mathbf{w}^*\)</span>的共线性。上述步骤会每次迭代时候重复，当感知机算法不犯错误的时候，<span
+class="math inline">\(\mathbf{w}_{t+1}\cdot\mathbf{w}^*=\mathbf{w}_{t}\cdot\mathbf{w}^*\)</span>。重复上述过程<span
+class="math inline">\(T\)</span>次，则 <span class="math display">\[
+\mathbf{w}_{T+1}\cdot\mathbf{w}^*\geq
+\mathbf{w}_{0}\cdot\mathbf{x}_0+M_T\gamma\geq M_T\gamma
+\]</span> 由于模长的影响，有可能内积变大的时候，<span
+class="math inline">\(\mathbf{w}_t\)</span>与<span
+class="math inline">\(\mathbf{w}^*\)</span>的共线性没有增加，所以我们根据假设3来约束这种增长
+<span class="math display">\[
+\hat{y}_t\neq y_t \Rightarrow
+\|\mathbf{w}_{t+1}\|^2=\|\mathbf{w}_{t}+y_t\mathbf{x}_{t}\|^2
+\]</span> 在犯错<span class="math inline">\(M_T\)</span>次后 <span
+class="math display">\[
+\|\mathbf{w}_{t+1}\|^2=\|\mathbf{w}_0+\sum^{M_T}_\tau
+y_\tau\mathbf{x}_\tau\|^2\leq\|0+M_T\rho||
 \]</span> 经过简单的组合后就有 <span class="math display">\[
-M_T\gamma\leq 
+M_T\gamma\leq
 \mathbf{w}_{T+1}\cdot\mathbf{w}^*\leq
 \|\mathbf{w}_{T+1}\|\|\mathbf{w}^*\|=
 \|\mathbf{w}_{T+1}\|\cdot 1\leq
@@ -495,7 +570,9 @@ M_T\gamma\leq
 \]</span> 得 <span class="math display">\[
 M_T\gamma\leq\sqrt{M_T}\rho\Rightarrow M_T\leq(\frac{\rho}{\gamma})^2
 \]</span> 证毕。<span class="math inline">\(\Box\)</span></p>
-<p>注意感知机的错误上界并不依赖于次数<span class="math inline">\(T\)</span>，因此该不等式对于任意<span class="math inline">\(T\)</span>都成立。</p>
+<p>注意感知机的错误上界并不依赖于次数<span
+class="math inline">\(T\)</span>，因此该不等式对于任意<span
+class="math inline">\(T\)</span>都成立。</p>
 <p>注：本篇文章很依赖于可实现假设，但现实情况中可实现假设往往是不存在的。</p>
 
       
@@ -692,7 +769,8 @@ M_T\gamma\leq\sqrt{M_T}\rho\Rightarrow M_T\leq(\frac{\rho}{\gamma})^2
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction-to-online-learning"><span class="nav-number">1.</span> <span class="nav-text">Introduction to Online Learning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mistake-bound-analysis"><span class="nav-number">2.</span> <span class="nav-text">Mistake Bound Analysis</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction-to-online-learning"><span class="nav-number">1.</span> <span class="nav-text">Introduction to Online
+Learning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mistake-bound-analysis"><span class="nav-number">2.</span> <span class="nav-text">Mistake Bound Analysis</span></a></li></ol></div>
             
 
           </div>

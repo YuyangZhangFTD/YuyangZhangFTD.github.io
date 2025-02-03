@@ -433,7 +433,10 @@
 <p>现在在各大互联网平台上都存在着许多AB实验，服务每个用户所使用的机器学习模型、推荐系统参数、甚至UI界面等等，都由这些AB实验中配置的干预变量所决定的，通常我们会从众多干预中选择出表现最好的，进行全量，这种方式成为全局分配。</p>
 <p>全局分配这种方式往往会是次优的，因为不同的干预对于每个用户或者说每个用户群体的效用，可能是不同的，全量某种干预方式很可能会给某个用户群体带来较差的用户体验，个性化干预的选择，可以带来更好的用户体验以及更多的商业增长。</p>
 <figure>
-<img src="1.png" alt="Pareto Optimal Curves for Objective vs Guardrail metrics" /><figcaption aria-hidden="true">Pareto Optimal Curves for Objective vs Guardrail metrics</figcaption>
+<img src="1.png"
+alt="Pareto Optimal Curves for Objective vs Guardrail metrics" />
+<figcaption aria-hidden="true">Pareto Optimal Curves for Objective vs
+Guardrail metrics</figcaption>
 </figure>
 <p>如上图所示，通过更个性化干预的选择，可以将帕累托前沿向前推。此处需要说明，并不是所有的场景都需要个性化干预选择，比如说需要考虑用户体验的稳定性和一致性，或者是用户对于产品的心智教育，这样的场景上更加适合全局分配。</p>
 <p>本文中，我们假设我们可以进行用户粒度的随机试验，尝试多种不同的干预，并观测到用户级别的指标变化，如点击、评论、浏览等等。</p>
@@ -448,32 +451,65 @@
 </ul>
 <h1 id="解决方法">解决方法</h1>
 <h2 id="符号定义">符号定义</h2>
-<p>先做一些符号定义，一共有<span class="math inline">\(J\)</span>种干预，观测<span class="math inline">\(K+1\)</span>个指标，其中有一个主要指标和<span class="math inline">\(K\)</span>个观测指标，用<span class="math inline">\(C_1,\cdots,C_n\)</span>表示对于某种干预在<span class="math inline">\(K+1\)</span>个指标上存在异质性的用户群体，对于用户级别的场景，<span class="math inline">\(C_i\)</span>仅包含一个用户，<span class="math inline">\(n\)</span>则代表总用户数。对于每个群体<span class="math inline">\(C_i\)</span>，用<span class="math inline">\(U_{i,j}^k\)</span>表示采用干预<span class="math inline">\(j\)</span>后，在指标<span class="math inline">\(k\)</span>上的处理效应。更进一步，我们假设<span class="math inline">\(U_{i,j}^k\)</span>是搞死随机变量，均值为<span class="math inline">\(\mu_{i,j}^k\)</span>，方差为<span class="math inline">\(\sigma_{i,j}^k\)</span>，对于每个指标<span class="math inline">\(k\)</span>，用<span class="math inline">\(\mathrm{U}_k\)</span>表示向量化的<span class="math inline">\(U_{i,j}^k\)</span>，其中<span class="math inline">\(i=1,\cdots,n\)</span>，<span class="math inline">\(j=1,\cdots J\)</span>，简写为 <span class="math display">\[
-\mathrm{U}_k \sim \mathrm{N}_{n,J}\big(\mu_k,\text{Diag}(\sigma_k^2) \big)
+<p>先做一些符号定义，一共有<span
+class="math inline">\(J\)</span>种干预，观测<span
+class="math inline">\(K+1\)</span>个指标，其中有一个主要指标和<span
+class="math inline">\(K\)</span>个观测指标，用<span
+class="math inline">\(C_1,\cdots,C_n\)</span>表示对于某种干预在<span
+class="math inline">\(K+1\)</span>个指标上存在异质性的用户群体，对于用户级别的场景，<span
+class="math inline">\(C_i\)</span>仅包含一个用户，<span
+class="math inline">\(n\)</span>则代表总用户数。对于每个群体<span
+class="math inline">\(C_i\)</span>，用<span
+class="math inline">\(U_{i,j}^k\)</span>表示采用干预<span
+class="math inline">\(j\)</span>后，在指标<span
+class="math inline">\(k\)</span>上的处理效应。更进一步，我们假设<span
+class="math inline">\(U_{i,j}^k\)</span>是搞死随机变量，均值为<span
+class="math inline">\(\mu_{i,j}^k\)</span>，方差为<span
+class="math inline">\(\sigma_{i,j}^k\)</span>，对于每个指标<span
+class="math inline">\(k\)</span>，用<span
+class="math inline">\(\mathrm{U}_k\)</span>表示向量化的<span
+class="math inline">\(U_{i,j}^k\)</span>，其中<span
+class="math inline">\(i=1,\cdots,n\)</span>，<span
+class="math inline">\(j=1,\cdots J\)</span>，简写为 <span
+class="math display">\[
+\mathrm{U}_k \sim \mathrm{N}_{n,J}\big(\mu_k,\text{Diag}(\sigma_k^2)
+\big)
 \]</span></p>
 <figure>
-<img src="2.png" alt="Notations" /><figcaption aria-hidden="true">Notations</figcaption>
+<img src="2.png" alt="Notations" />
+<figcaption aria-hidden="true">Notations</figcaption>
 </figure>
-<p>我们希望保持其他贯彻指标不变条件下，最优化我们最关注的主要指标 <span class="math display">\[
+<p>我们希望保持其他贯彻指标不变条件下，最优化我们最关注的主要指标 <span
+class="math display">\[
 \begin{aligned}
 \max &amp;&amp;&amp; \mathrm{x}^\mathsf{T} \mathrm{U}_0 \\
-\text{s.t.} &amp;&amp;&amp; \mathrm{x}^\mathsf{T}  \mathrm{U}_k \leq c_k &amp; \forall k=1,\cdots K \\
+\text{s.t.} &amp;&amp;&amp; \mathrm{x}^\mathsf{T}  \mathrm{U}_k \leq c_k
+&amp; \forall k=1,\cdots K \\
 &amp;&amp;&amp; \sum_jx_{i,j} = 1   &amp; \forall i\\
 &amp;&amp;&amp; 0\leq \mathrm{x} \leq 1
 \end{aligned}
-\]</span> 其中<span class="math inline">\(c_k\)</span>是某个指标的阈值。整个问题可以整理为两步：</p>
+\]</span> 其中<span
+class="math inline">\(c_k\)</span>是某个指标的阈值。整个问题可以整理为两步：</p>
 <ol type="1">
-<li>基于随机试验来构建异质性群体，并估计处理效应<span class="math inline">\(\mathrm{U}_k\)</span></li>
-<li>求解上述最优化问题，找出最优的干预分配方式<span class="math inline">\(\mathrm{x}^*\)</span></li>
+<li>基于随机试验来构建异质性群体，并估计处理效应<span
+class="math inline">\(\mathrm{U}_k\)</span></li>
+<li>求解上述最优化问题，找出最优的干预分配方式<span
+class="math inline">\(\mathrm{x}^*\)</span></li>
 </ol>
 <h2 id="异质性估计">异质性估计</h2>
 <h3 id="群体异质性">群体异质性</h3>
-<p>为了获得群体异质性的估计，文中采用Susan Athey的Causal Tree对用户群体进行划分，落在不同叶子结点的用户划分成不同的群组，<span class="math inline">\(C_1^{j,k},\cdots,C_n^{j,k}\)</span>。</p>
-<p>如何将多个treatment和metric划分的群组进行合并组合，是一个很有挑战的问题。大部分已有的方法会将这些群体分成很小的子集，但是这样会使得估计的处理效应非常不稳定，为了避免这个问题，我们采用原有组内的异质性估计。我们采用如下算法对不同用户群体进行归并，为了简化标记，我们用<span class="math inline">\(l\)</span>表示<span class="math inline">\(j,k\)</span>的组合</p>
+<p>为了获得群体异质性的估计，文中采用Susan Athey的Causal
+Tree对用户群体进行划分，落在不同叶子结点的用户划分成不同的群组，<span
+class="math inline">\(C_1^{j,k},\cdots,C_n^{j,k}\)</span>。</p>
+<p>如何将多个treatment和metric划分的群组进行合并组合，是一个很有挑战的问题。大部分已有的方法会将这些群体分成很小的子集，但是这样会使得估计的处理效应非常不稳定，为了避免这个问题，我们采用原有组内的异质性估计。我们采用如下算法对不同用户群体进行归并，为了简化标记，我们用<span
+class="math inline">\(l\)</span>表示<span
+class="math inline">\(j,k\)</span>的组合</p>
 <figure>
-<img src="3.png" alt="Algo1" /><figcaption aria-hidden="true">Algo1</figcaption>
+<img src="3.png" alt="Algo1" />
+<figcaption aria-hidden="true">Algo1</figcaption>
 </figure>
-<p>合并的结果是不同treatment和metric分割出的群体，相交没有子集，以及每个子群体对应的treamtent和metric下的异质性估计的均值和方差 <span class="math display">\[
+<p>合并的结果是不同treatment和metric分割出的群体，相交没有子集，以及每个子群体对应的treamtent和metric下的异质性估计的均值和方差
+<span class="math display">\[
 S_\text{out}=\big\{
 \cap_{j=1}^J\cap_{k=0}^K C^{i,j}\neq \varnothing|C^{j,k}\in S_{j,k}
 \big\} \\
@@ -504,10 +540,14 @@ T_\text{out} = \big\{
 <li>Two-Model建模</li>
 </ol>
 <h2 id="优化">优化</h2>
-<p>因为目标函数和约束条件都是不确定的，包含若干随机变量，我们将该问题重写为 <span class="math display">\[
+<p>因为目标函数和约束条件都是不确定的，包含若干随机变量，我们将该问题重写为
+<span class="math display">\[
 \begin{aligned}
-\max &amp;&amp;&amp; f(\mathrm{x})=\mathbb{E}(\mathrm{x}^\mathsf{T}\mathrm{U}_0) \\
-\text{s.t.} &amp;&amp;&amp; g_k(\mathrm{x}):= \mathbb{E}(\mathrm{x}^\mathsf{T}\mathrm{U}_k-c_k) \leq 0 &amp; \forall k=1,\cdots K\\
+\max &amp;&amp;&amp;
+f(\mathrm{x})=\mathbb{E}(\mathrm{x}^\mathsf{T}\mathrm{U}_0) \\
+\text{s.t.} &amp;&amp;&amp; g_k(\mathrm{x}):=
+\mathbb{E}(\mathrm{x}^\mathsf{T}\mathrm{U}_k-c_k) \leq 0 &amp; \forall
+k=1,\cdots K\\
 &amp;&amp;&amp; \sum_j x_{i,j}=1 &amp;\forall i \\
 &amp;&amp;&amp; 0\leq \mathrm{x} \leq 1
 \end{aligned}
@@ -517,53 +557,89 @@ T_\text{out} = \big\{
 <li>可以用历史平均作为期望，将整个问题当作确定优化问题</li>
 </ol>
 <h3 id="随机优化">随机优化</h3>
-对于随机优化的求解，本文采用CSA算法（Coordinated Stochastic Approximation），问题重写为 $$
+对于随机优化的求解，本文采用CSA算法（Coordinated Stochastic
+Approximation），问题重写为 $$
 <span class="math display">\[\begin{aligned}
 \max &amp;&amp;&amp; f(\mathrm{x}):=\mathbb{E}_{\mathrm{U}_0}
 \big(F(\mathrm{x},\mathrm{U}_0)\big) \\
 \text{s.t.} &amp;&amp;&amp; g_k(\mathrm{x}):= \mathbb{E}_{\mathrm{U}_k}
-\big(G_j(\mathrm{x},\mathrm{U}_k)\big)\leq 0 &amp; \forall k=1,\cdots K\\
+\big(G_j(\mathrm{x},\mathrm{U}_k)\big)\leq 0 &amp; \forall k=1,\cdots
+K\\
 &amp;&amp;&amp; x \in \mathcal{X} \\
 
 \end{aligned}\]</span>
-<p>$$ 其中<span class="math inline">\(\mathcal{X}\)</span>表示确定性约束。</p>
-<p>CSA是一个迭代算法，需要迭代<span class="math inline">\(N\)</span>步，在第<span class="math inline">\(t\)</span>次迭代中，对约束条件进行估计 <span class="math display">\[
+<p>$$ 其中<span
+class="math inline">\(\mathcal{X}\)</span>表示确定性约束。</p>
+<p>CSA是一个迭代算法，需要迭代<span
+class="math inline">\(N\)</span>步，在第<span
+class="math inline">\(t\)</span>次迭代中，对约束条件进行估计 <span
+class="math display">\[
 \hat{G}_{k,t}=\frac{1}{L}\sum_{l=1}^L G_k(\mathrm{x}_t,\mathrm{U}_{k,l})
-\]</span> 如果所有估计的约束条件<span class="math inline">\(\hat{G}_{k,t}\)</span>都小于阈值<span class="math inline">\(\eta_{k,t}\)</span>，则选择目标函数的梯度方向<span class="math inline">\(F&#39;(\mathrm{x}_t,\mathrm{U}_{0,t})\)</span>更新，反之，从违反的约束条件集合中<span class="math inline">\(\{k:\hat{G}_{k,t}&gt;\eta_{k,t}\}\)</span>中随机选择一个<span class="math inline">\(k^*\)</span>，沿其梯度方向<span class="math inline">\(G&#39;_{k^*}(\mathrm{x}_t,\mathrm{U}_{k^*,t})\)</span>进行更新，最终最优点是这些解的加权求和。</p>
+\]</span> 如果所有估计的约束条件<span
+class="math inline">\(\hat{G}_{k,t}\)</span>都小于阈值<span
+class="math inline">\(\eta_{k,t}\)</span>，则选择目标函数的梯度方向<span
+class="math inline">\(F&#39;(\mathrm{x}_t,\mathrm{U}_{0,t})\)</span>更新，反之，从违反的约束条件集合中<span
+class="math inline">\(\{k:\hat{G}_{k,t}&gt;\eta_{k,t}\}\)</span>中随机选择一个<span
+class="math inline">\(k^*\)</span>，沿其梯度方向<span
+class="math inline">\(G&#39;_{k^*}(\mathrm{x}_t,\mathrm{U}_{k^*,t})\)</span>进行更新，最终最优点是这些解的加权求和。</p>
 <figure>
-<img src="4.png" alt="Algo2" /><figcaption aria-hidden="true">Algo2</figcaption>
+<img src="4.png" alt="Algo2" />
+<figcaption aria-hidden="true">Algo2</figcaption>
 </figure>
 <h3 id="确定优化">确定优化</h3>
-<p>确定优化的求解方式为SAA（Sample Average Approximation），即用样本期望作为随机变量的替代 <span class="math display">\[
+<p>确定优化的求解方式为SAA（Sample Average
+Approximation），即用样本期望作为随机变量的替代 <span
+class="math display">\[
 \begin{aligned}
 \max &amp;&amp;&amp; f(x)=\mathrm{x}^\mathsf{T} \hat{\mu}_0 \\
-\text{s.t.} &amp;&amp;&amp; g_k(\mathrm{x}):=\mathrm{x}^\mathsf{T}  \hat{\mu}_k - c_k \leq 0 &amp; \forall k=1,\cdots K \\
+\text{s.t.} &amp;&amp;&amp;
+g_k(\mathrm{x}):=\mathrm{x}^\mathsf{T}  \hat{\mu}_k - c_k \leq 0 &amp;
+\forall k=1,\cdots K \\
 &amp;&amp;&amp; \sum_jx_{i,j} = 1   &amp; \forall i\\
 &amp;&amp;&amp; 0\leq \mathrm{x} \leq 1
 \end{aligned}
-\]</span> 整个问题变成一个线性规划问题，有很多开源的solver都可以求解。</p>
+\]</span>
+整个问题变成一个线性规划问题，有很多开源的solver都可以求解。</p>
 <p>这种方式很简单快捷，但是无法利用随机变量方差的信息，在很多场景中，由于测量误差的存在（对于HTE估不准），会导致最终得到的解很大程度上违反了约束条件。</p>
 <h3 id="最优分配估计的偏差和方差">最优分配估计的偏差和方差</h3>
-<p>异质性的均值和方差都是未知的，在求解优化问题时，只能用样本估计的均值和方差来替代，所以这会使得估计最优分配的时候存在误差，而估计的偏差和方差可以通过bootstrap的方式得到。假设我们有<span class="math inline">\(N\)</span>个用户，通过重采样的方式，抽出<span class="math inline">\(N\)</span>个，重新求解确定优化或者随机优化问题，这些bootstrap得到的分配解，可以用来得到和原始分配的偏差以及方差。</p>
-<p>在很多应用场景中，重采样是一个非常消耗计算的方法，假设在群组<span class="math inline">\(C_i\)</span>中有<span class="math inline">\(n_{i,j,treat}\)</span>个用户被施加了干预，有<span class="math inline">\(n_{i,cont}\)</span>个用户为对照组，<span class="math inline">\(n_i=n_{i,const}+\sum_jn_{i,j,treat}\)</span>，则方差为 <span class="math display">\[
+<p>异质性的均值和方差都是未知的，在求解优化问题时，只能用样本估计的均值和方差来替代，所以这会使得估计最优分配的时候存在误差，而估计的偏差和方差可以通过bootstrap的方式得到。假设我们有<span
+class="math inline">\(N\)</span>个用户，通过重采样的方式，抽出<span
+class="math inline">\(N\)</span>个，重新求解确定优化或者随机优化问题，这些bootstrap得到的分配解，可以用来得到和原始分配的偏差以及方差。</p>
+<p>在很多应用场景中，重采样是一个非常消耗计算的方法，假设在群组<span
+class="math inline">\(C_i\)</span>中有<span
+class="math inline">\(n_{i,j,treat}\)</span>个用户被施加了干预，有<span
+class="math inline">\(n_{i,cont}\)</span>个用户为对照组，<span
+class="math inline">\(n_i=n_{i,const}+\sum_jn_{i,j,treat}\)</span>，则方差为
+<span class="math display">\[
 \Big(\hat{\sigma}_{i,j}^k\Big)
-=\Big(\hat{\sigma}_{i,j,treat}^k\Big)^2 
+=\Big(\hat{\sigma}_{i,j,treat}^k\Big)^2
 + \Big(\hat{\sigma}_{i,const}^k\Big)^2
-\]</span> 重采样的均值服从<span class="math inline">\(N\big(\hat{\mu}_{i,j}^k,(\hat{\sigma}_{i,j}^k)^2/n_i\big)\)</span>，方差服从<span class="math inline">\(\Big(\hat{\sigma}_{i,j,treat}^k\Big)^2\cdot\mathcal{X}+ \Big(\hat{\sigma}_{i,const}^k\Big)^2 \cdot \mathcal{X}^{&#39;}\)</span>，其中<span class="math inline">\(\mathcal{X}\)</span>和<span class="math inline">\(\mathcal{X}^{&#39;}\)</span>是相互独立的chi方随机变量。相比于对于用户做重采样，bootstrap估计可以在多次模拟中得到，完整算法流程如下</p>
+\]</span> 重采样的均值服从<span
+class="math inline">\(N\big(\hat{\mu}_{i,j}^k,(\hat{\sigma}_{i,j}^k)^2/n_i\big)\)</span>，方差服从<span
+class="math inline">\(\Big(\hat{\sigma}_{i,j,treat}^k\Big)^2\cdot\mathcal{X}+
+\Big(\hat{\sigma}_{i,const}^k\Big)^2 \cdot
+\mathcal{X}^{&#39;}\)</span>，其中<span
+class="math inline">\(\mathcal{X}\)</span>和<span
+class="math inline">\(\mathcal{X}^{&#39;}\)</span>是相互独立的chi方随机变量。相比于对于用户做重采样，bootstrap估计可以在多次模拟中得到，完整算法流程如下</p>
 <figure>
-<img src="5.png" alt="Algo3" /><figcaption aria-hidden="true">Algo3</figcaption>
+<img src="5.png" alt="Algo3" />
+<figcaption aria-hidden="true">Algo3</figcaption>
 </figure>
 <h2 id="整体算法">整体算法</h2>
 <figure>
-<img src="6.png" alt="Overall Algorithm" /><figcaption aria-hidden="true">Overall Algorithm</figcaption>
+<img src="6.png" alt="Overall Algorithm" />
+<figcaption aria-hidden="true">Overall Algorithm</figcaption>
 </figure>
 <p>不同异质性处理方式和不同优化模型选择的优劣见下表</p>
 <figure>
-<img src="7.png" alt="Comparison of different methods" /><figcaption aria-hidden="true">Comparison of different methods</figcaption>
+<img src="7.png" alt="Comparison of different methods" />
+<figcaption aria-hidden="true">Comparison of different
+methods</figcaption>
 </figure>
 <h2 id="系统架构">系统架构</h2>
 <figure>
-<img src="8.png" alt="System Architecture" /><figcaption aria-hidden="true">System Architecture</figcaption>
+<img src="8.png" alt="System Architecture" />
+<figcaption aria-hidden="true">System Architecture</figcaption>
 </figure>
 <p>整个架构其实还比较中规中矩，相比一般系统会多随机实验数据处理以及优化求解部分，这个在相关场景下，大家的处理方式都差不多。</p>
 <h1 id="实验结果">实验结果</h1>
@@ -578,15 +654,23 @@ T_\text{out} = \big\{
 </ul>
 <p>按照如下因果图随机生成数据，同时加入不确定性超参数来控制整个任务学习的难度</p>
 <figure>
-<img src="9.png" alt="Causal Grapha" /><figcaption aria-hidden="true">Causal Grapha</figcaption>
+<img src="9.png" alt="Causal Grapha" />
+<figcaption aria-hidden="true">Causal Grapha</figcaption>
 </figure>
-<p>在优化问题中，我们希望最大化<span class="math inline">\(Y_0\)</span>的lift，同时保证<span class="math inline">\(Y_1\)</span>和<span class="math inline">\(Y_2\)</span>的lift非负，对于HT.ST，生成了16个群组。对不不同的噪声水平（不确定性参数），计算不同方法所得到的最优解。指标<span class="math inline">\(k\)</span>下标准化后的平均ITE <span class="math display">\[
+<p>在优化问题中，我们希望最大化<span
+class="math inline">\(Y_0\)</span>的lift，同时保证<span
+class="math inline">\(Y_1\)</span>和<span
+class="math inline">\(Y_2\)</span>的lift非负，对于HT.ST，生成了16个群组。对不不同的噪声水平（不确定性参数），计算不同方法所得到的最优解。指标<span
+class="math inline">\(k\)</span>下标准化后的平均ITE <span
+class="math display">\[
 \tau(\mathrm{x}^*)_k=\frac{
 \frac1n\sum_{i=1}^n\sum_{j=1}^3 (Y_{j,i,k} - Y_{0,i,k}) z_{i,j}^*
 }{\mu_{0,k}}
-\]</span> 仿真中模拟了两个场景，分别是存在全局分配最优策略和个性化选择干预有更好结果的情形。</p>
+\]</span>
+仿真中模拟了两个场景，分别是存在全局分配最优策略和个性化选择干预有更好结果的情形。</p>
 <figure>
-<img src="10.png" alt="Simulation Result" /><figcaption aria-hidden="true">Simulation Result</figcaption>
+<img src="10.png" alt="Simulation Result" />
+<figcaption aria-hidden="true">Simulation Result</figcaption>
 </figure>
 <p>可以观察到：</p>
 <ul>
@@ -594,7 +678,8 @@ T_\text{out} = \big\{
 <li>异质性估计和个性化带来的收益，对于后三张图，baseline策略，为了满足约束，会给出很差的结果，采用CF划分的群组会比启发式划分的群组有更好的结果。对于群体级别和个体级别的决策，在低噪声情况下，个体级别的决策会表现出更好的效果，但是随着噪声增加，方差增大，群体级别的决策会更占上风，随机规划对于高方差场景的处理会更好，算法整体鲁棒性更好。</li>
 </ul>
 <h2 id="实际业务场景">实际业务场景</h2>
-<p>本文中提到实际上线应用的产品是LinkedIn的Notification System，为了避免过度打扰用户，会限制每天发送给用户的提醒数，但是不同用户会有不同偏好、广告承受度，相同的标准会导致一个次优的用户体验，所以我们希望能够个性化每个用户发放提醒的数量。</p>
+<p>本文中提到实际上线应用的产品是LinkedIn的Notification
+System，为了避免过度打扰用户，会限制每天发送给用户的提醒数，但是不同用户会有不同偏好、广告承受度，相同的标准会导致一个次优的用户体验，所以我们希望能够个性化每个用户发放提醒的数量。</p>
 <p>实际应用中，先小流量探测不同用户，收集了两周数据，特征考虑了：</p>
 <ul>
 <li>用户属性，如国家区域、语言、工作职级等</li>
@@ -611,13 +696,17 @@ T_\text{out} = \big\{
 </ul>
 <p>此处省略一下线上实验细节，在线实验结果</p>
 <figure>
-<img src="11.png" alt="Online Experiment Result" /><figcaption aria-hidden="true">Online Experiment Result</figcaption>
+<img src="11.png" alt="Online Experiment Result" />
+<figcaption aria-hidden="true">Online Experiment Result</figcaption>
 </figure>
 <h1 id="总结">总结</h1>
-<p>文章整体写的“比较”扎实，是目前业界为数不多的、在HTE方面做的比较全面的工作，本文重点并没有放在如何得到更好的ITE or ATE的估计上，而是在整体框架以及优化求解策略上（虽然按我的经验来看，随机规划并没有在广泛业务场景中拿到收益，但这也可能是我之前打开方式不对），如果是这个方向想入门的同学，这的确是一篇值得精读一下的文章。</p>
+<p>文章整体写的“比较”扎实，是目前业界为数不多的、在HTE方面做的比较全面的工作，本文重点并没有放在如何得到更好的ITE
+or
+ATE的估计上，而是在整体框架以及优化求解策略上（虽然按我的经验来看，随机规划并没有在广泛业务场景中拿到收益，但这也可能是我之前打开方式不对），如果是这个方向想入门的同学，这的确是一篇值得精读一下的文章。</p>
 <p>文中future work中也提到了一些目前业界共识的难题我也在此列出来：</p>
 <ul>
-<li>收集随机实验数据的成本非常高，设计一个cost-efficient data collection framework 或者 引入观测数据建模，是一个很重要的方向</li>
+<li>收集随机实验数据的成本非常高，设计一个cost-efficient data collection
+framework 或者 引入观测数据建模，是一个很重要的方向</li>
 <li>用户会从不同的群组里进入或离开，也即动态多周期的决策，目前并没有过多考虑</li>
 <li>如何直接面向多treatment、多metirc来生成分组，也是值得探索的</li>
 </ul>

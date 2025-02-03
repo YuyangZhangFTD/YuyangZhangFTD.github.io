@@ -415,14 +415,29 @@
 
       
         <h2 id="chap1-introduction">Chap1 Introduction</h2>
-<p>我们的目标是研究：当一个人（agent）面对很多的选择时，行为过程是如何影响最终的决策。 定义可以观测到的影响因素用<span class="math inline">\(x\)</span>表示，无法观测的影响因素用<span class="math inline">\(\epsilon\)</span>表示，则通过一个函数<span class="math inline">\(y=h(x,\epsilon)\)</span>标识用户的选择，这个函数称为行为过程，behavioral process。因为无法观测的变量<span class="math inline">\(\epsilon\)</span>所以agent的选择并不是确定的，也无法被准确预测。无法观测的影响因素我们认为它服从一定分布，概率分布为<span class="math inline">\(f(\epsilon)\)</span>，则用户behavioral process可以写为<span class="math inline">\(P(y|x)=Prob(\epsilon s.t. h(x,\epsilon)=y)\)</span>。定义指示函数<span class="math inline">\(\mathbb{I}[\cdot]\)</span>，则有 <span class="math display">\[
+<p>我们的目标是研究：当一个人（agent）面对很多的选择时，行为过程是如何影响最终的决策。
+定义可以观测到的影响因素用<span
+class="math inline">\(x\)</span>表示，无法观测的影响因素用<span
+class="math inline">\(\epsilon\)</span>表示，则通过一个函数<span
+class="math inline">\(y=h(x,\epsilon)\)</span>标识用户的选择，这个函数称为行为过程，behavioral
+process。因为无法观测的变量<span
+class="math inline">\(\epsilon\)</span>所以agent的选择并不是确定的，也无法被准确预测。无法观测的影响因素我们认为它服从一定分布，概率分布为<span
+class="math inline">\(f(\epsilon)\)</span>，则用户behavioral
+process可以写为<span class="math inline">\(P(y|x)=Prob(\epsilon s.t.
+h(x,\epsilon)=y)\)</span>。定义指示函数<span
+class="math inline">\(\mathbb{I}[\cdot]\)</span>，则有 <span
+class="math display">\[
 \begin{aligned}
 P(y|x)&amp;=Prob(\mathbb{I}[h(x,\epsilon)=y]=1)\\
 &amp;=\int\mathbb{I}[h(x,\epsilon)=y]f(\epsilon)d\epsilon
 \end{aligned}
 \]</span> 定义效用为 <span class="math display">\[
 U=\beta&#39;x+\epsilon
-\]</span> 当我们假设<span class="math inline">\(\epsilon\)</span> is distributed logistic时，<span class="math inline">\(f(\epsilon)=\frac{e^{-\epsilon}}{(1+e^{-\epsilon})^2}\)</span>，累积概率密度为<span class="math inline">\(F(\epsilon)=\frac{1}{1+e^{-\epsilon}}\)</span>，则上述概率积分为 <span class="math display">\[
+\]</span> 当我们假设<span class="math inline">\(\epsilon\)</span> is
+distributed logistic时，<span
+class="math inline">\(f(\epsilon)=\frac{e^{-\epsilon}}{(1+e^{-\epsilon})^2}\)</span>，累积概率密度为<span
+class="math inline">\(F(\epsilon)=\frac{1}{1+e^{-\epsilon}}\)</span>，则上述概率积分为
+<span class="math display">\[
 \begin{aligned}
 P&amp;=\int\mathbb{I}[\beta&#39;x+\epsilon&gt;0]f(\epsilon)d\epsilon\\
 &amp;=\int\mathbb{I}[\epsilon&gt;-\beta&#39;x]f(\epsilon)d\epsilon\\
@@ -433,66 +448,146 @@ f(\epsilon)d\epsilon\\
 &amp;=\frac{1}{1+e^{-\beta&#39;x}}
 \end{aligned}
 \]</span></p>
-<h2 id="chap2-properties-of-discrete-choice-models">Chap2 Properties of Discrete Choice Models</h2>
-<p>这张主要讨论所有离散选择模型共有的性质，从选择集（choice set）开始，之后从效用最大行为推导出选择概率，之后展示了如何将individual-level models结合，来进行market-level的预测和如何利用这些模型来对未来进行预测。</p>
+<h2 id="chap2-properties-of-discrete-choice-models">Chap2 Properties of
+Discrete Choice Models</h2>
+<p>这张主要讨论所有离散选择模型共有的性质，从选择集（choice
+set）开始，之后从效用最大行为推导出选择概率，之后展示了如何将individual-level
+models结合，来进行market-level的预测和如何利用这些模型来对未来进行预测。</p>
 <h3 id="the-choice-set">The choice set</h3>
-<p>用decision-maker表示决策者，用alternatives表示可选决策，可选决策的集合被称为choice set，alternatives必须是相互排斥的，选择一个决策就不能选择另一个，其次，决策必须是详细的，所有的可选都必须涵盖，最后决策必须是有限的。</p>
-<h3 id="derivation-of-choice-probabilities">Derivation of choice probabilities</h3>
-<p>一个decision-maker，<span class="math inline">\(n\)</span>，面对<span class="math inline">\(J\)</span>个可选决策，decision-maker会从中选择效用最大的，<span class="math inline">\(U_{nj},j=1,..,J\)</span>，但是这个效用对于decision-maker是已知的，对于研究者却是未知的，decision-maker选择alternative <span class="math inline">\(i\)</span>当且仅当<span class="math inline">\(U_{ni}&gt;U_{nj},\forall j\neq i\)</span>。 对于研究者，我们可以观测到决策的某些属性，记为<span class="math inline">\(x_{nj}\forall j\)</span>，以及decision-maker的一些属性<span class="math inline">\(s_n\)</span>，则我们定义一个代表效用（representative utility）为<span class="math inline">\(V_{nj}=V(x_{nj},s_n)\)</span>，通常函数<span class="math inline">\(V(\cdot)\)</span>由一些研究者确定的未知参数决定。 由于存在无法观测到的影响因素，所以<span class="math inline">\(U_{nj}\neq V_{nj}\)</span>，而是应该定义为<span class="math inline">\(U_{nj}=V_{nj}+\epsilon_{nj}\)</span>，其中<span class="math inline">\(\epsilon_{nj}\)</span>是为包括在<span class="math inline">\(V_{nj}\)</span>中的影响因素，因此<span class="math inline">\(\epsilon_{nj}\)</span>的属性依，如分布，依赖于研究者对于<span class="math inline">\(V_{nj}\)</span>的定义。 通常我们假设其为随机，随机向量<span class="math inline">\(\epsilon_n=\langle\epsilon_1,...,\epsilon_n\rangle\)</span>的联合概率密度为<span class="math inline">\(f(\epsilon_n)\)</span>，则decision-maker <span class="math inline">\(n\)</span>选择alternative <span class="math inline">\(i\)</span>的概率为 <span class="math display">\[
+<p>用decision-maker表示决策者，用alternatives表示可选决策，可选决策的集合被称为choice
+set，alternatives必须是相互排斥的，选择一个决策就不能选择另一个，其次，决策必须是详细的，所有的可选都必须涵盖，最后决策必须是有限的。</p>
+<h3 id="derivation-of-choice-probabilities">Derivation of choice
+probabilities</h3>
+<p>一个decision-maker，<span class="math inline">\(n\)</span>，面对<span
+class="math inline">\(J\)</span>个可选决策，decision-maker会从中选择效用最大的，<span
+class="math inline">\(U_{nj},j=1,..,J\)</span>，但是这个效用对于decision-maker是已知的，对于研究者却是未知的，decision-maker选择alternative
+<span class="math inline">\(i\)</span>当且仅当<span
+class="math inline">\(U_{ni}&gt;U_{nj},\forall j\neq i\)</span>。
+对于研究者，我们可以观测到决策的某些属性，记为<span
+class="math inline">\(x_{nj}\forall
+j\)</span>，以及decision-maker的一些属性<span
+class="math inline">\(s_n\)</span>，则我们定义一个代表效用（representative
+utility）为<span
+class="math inline">\(V_{nj}=V(x_{nj},s_n)\)</span>，通常函数<span
+class="math inline">\(V(\cdot)\)</span>由一些研究者确定的未知参数决定。
+由于存在无法观测到的影响因素，所以<span class="math inline">\(U_{nj}\neq
+V_{nj}\)</span>，而是应该定义为<span
+class="math inline">\(U_{nj}=V_{nj}+\epsilon_{nj}\)</span>，其中<span
+class="math inline">\(\epsilon_{nj}\)</span>是为包括在<span
+class="math inline">\(V_{nj}\)</span>中的影响因素，因此<span
+class="math inline">\(\epsilon_{nj}\)</span>的属性依，如分布，依赖于研究者对于<span
+class="math inline">\(V_{nj}\)</span>的定义。
+通常我们假设其为随机，随机向量<span
+class="math inline">\(\epsilon_n=\langle\epsilon_1,...,\epsilon_n\rangle\)</span>的联合概率密度为<span
+class="math inline">\(f(\epsilon_n)\)</span>，则decision-maker <span
+class="math inline">\(n\)</span>选择alternative <span
+class="math inline">\(i\)</span>的概率为 <span class="math display">\[
 \begin{aligned}
 P_{ni}&amp;=Prob(U_{ni}&gt;U_{nj},\forall j\neq i)\\
-&amp;=Prob(V_{ni}+\epsilon_{ni}&gt;V_{nj}+\epsilon_{nj},\forall j\neq i)\\
-&amp;=Prob(\epsilon_{nj}-\epsilon_{ni}&gt;V_{ni}-V_{nj},\forall j\neq i)\\
-&amp;=\int_\epsilon\mathbb{I}[\epsilon_{nj}-\epsilon_{ni}&gt;V_{ni}-V_{nj},\forall j\neq i]f(\epsilon_n)d\epsilon_n
+&amp;=Prob(V_{ni}+\epsilon_{ni}&gt;V_{nj}+\epsilon_{nj},\forall j\neq
+i)\\
+&amp;=Prob(\epsilon_{nj}-\epsilon_{ni}&gt;V_{ni}-V_{nj},\forall j\neq
+i)\\
+&amp;=\int_\epsilon\mathbb{I}[\epsilon_{nj}-\epsilon_{ni}&gt;V_{ni}-V_{nj},\forall
+j\neq i]f(\epsilon_n)d\epsilon_n
 \end{aligned}
-\]</span> 举个例子，一个人可以选择乘车（car）或者乘公交（bus）去上班，研究者观测到时间和花费是这个人会主要考虑的，然而研究者意识到还有很多因素也会影响这个人对于这两种选择的效用，因此研究者定义 <span class="math display">\[
+\]</span>
+举个例子，一个人可以选择乘车（car）或者乘公交（bus）去上班，研究者观测到时间和花费是这个人会主要考虑的，然而研究者意识到还有很多因素也会影响这个人对于这两种选择的效用，因此研究者定义
+<span class="math display">\[
 \begin{aligned}
 V_c=\alpha T_c+\beta M_c\\
 V_b=\alpha T_b+\beta M_b
 \end{aligned}
-\]</span> 其中<span class="math inline">\(T_c\)</span>和<span class="math inline">\(M_c\)</span>是这个人乘车的时间和花费，<span class="math inline">\(T_b\)</span>和<span class="math inline">\(M_b\)</span>是乘公交的，系数<span class="math inline">\(\alpha\)</span>和<span class="math inline">\(\beta\)</span>是已知的或者需要被估计的。 假设我们已知所有参数，并且得到<span class="math inline">\(V_c=4\)</span>和<span class="math inline">\(V_b=3\)</span>，则对于可观测的影响因素，对于这个人，乘车比乘公交更好，多出一个单位效用。然而这并不是说这个人一定会选择乘车，当为观测到的影响因素产生的效用大于可观测影响因素产生的效用时，就会使这个人选择乘公交，即<span class="math inline">\(\epsilon_b-\epsilon_c&gt;1\)</span>时，会选择乘公交。</p>
+\]</span> 其中<span class="math inline">\(T_c\)</span>和<span
+class="math inline">\(M_c\)</span>是这个人乘车的时间和花费，<span
+class="math inline">\(T_b\)</span>和<span
+class="math inline">\(M_b\)</span>是乘公交的，系数<span
+class="math inline">\(\alpha\)</span>和<span
+class="math inline">\(\beta\)</span>是已知的或者需要被估计的。
+假设我们已知所有参数，并且得到<span
+class="math inline">\(V_c=4\)</span>和<span
+class="math inline">\(V_b=3\)</span>，则对于可观测的影响因素，对于这个人，乘车比乘公交更好，多出一个单位效用。然而这并不是说这个人一定会选择乘车，当为观测到的影响因素产生的效用大于可观测影响因素产生的效用时，就会使这个人选择乘公交，即<span
+class="math inline">\(\epsilon_b-\epsilon_c&gt;1\)</span>时，会选择乘公交。</p>
 <h3 id="specific-models">Specific models</h3>
-<p>Logit模型是最被广泛使用的离散选择模型，当每个agent对每个alternatives的选择的无法观测的影响因素满足相互独立的假设时成立，即<span class="math inline">\(\epsilon_{ni}\)</span>是独立同分布的时候（极值分布）。这样的假设在某些情况是不恰当的，因为无法观测的影响因素往往是相关联的，比如一个人不喜欢乘坐公交往往也会对地铁有同样的偏好，这样无法观测的影响因素对于公交的影响和对于地铁的影响就有一定关联，独立同分布的假设就不成立了。 广义极值模型（GEV，Generalized Extreme Value）很大程度上可以避免这种问题，GEV有多种形式，但是共同的特点是它允许无法观测的影响因素之间有联系。 Probits模型是基于无法观测的影响因素服从联合正态分布<span class="math inline">\(\epsilon&#39;_n=\langle\epsilon_{n1},...,\epsilon_{nJ}\rangle\sim N(0,\Omega)\)</span>，用满秩的协方差矩阵<span class="math inline">\(\Omega\)</span>可以刻画变量之间的correlation and heteroskedasticity。 Mixed logit可以允许无法观测因素服从任意分布，可以分解为两部分，一部分是iid的极值分布，另一部分是有相关性的，这部分可以是任何分布。</p>
-<h3 id="identification-of-choice-models">Identification of choice models</h3>
-<p>效用的大小不重要，效用间的差异比较重要。Only differences in utility matters and the scale of utility is arbitrary.</p>
+<p>Logit模型是最被广泛使用的离散选择模型，当每个agent对每个alternatives的选择的无法观测的影响因素满足相互独立的假设时成立，即<span
+class="math inline">\(\epsilon_{ni}\)</span>是独立同分布的时候（极值分布）。这样的假设在某些情况是不恰当的，因为无法观测的影响因素往往是相关联的，比如一个人不喜欢乘坐公交往往也会对地铁有同样的偏好，这样无法观测的影响因素对于公交的影响和对于地铁的影响就有一定关联，独立同分布的假设就不成立了。
+广义极值模型（GEV，Generalized Extreme
+Value）很大程度上可以避免这种问题，GEV有多种形式，但是共同的特点是它允许无法观测的影响因素之间有联系。
+Probits模型是基于无法观测的影响因素服从联合正态分布<span
+class="math inline">\(\epsilon&#39;_n=\langle\epsilon_{n1},...,\epsilon_{nJ}\rangle\sim
+N(0,\Omega)\)</span>，用满秩的协方差矩阵<span
+class="math inline">\(\Omega\)</span>可以刻画变量之间的correlation and
+heteroskedasticity。 Mixed
+logit可以允许无法观测因素服从任意分布，可以分解为两部分，一部分是iid的极值分布，另一部分是有相关性的，这部分可以是任何分布。</p>
+<h3 id="identification-of-choice-models">Identification of choice
+models</h3>
+<p>效用的大小不重要，效用间的差异比较重要。Only differences in utility
+matters and the scale of utility is arbitrary.</p>
 <h2 id="logit">Logit</h2>
 <h3 id="choice-probabilities">choice probabilities</h3>
-<p>当我们假设每个<span class="math inline">\(\epsilon_{nj}\)</span>是独立的极值分布时，我们可以用logit model来描述选择模型。 <span class="math display">\[
+<p>当我们假设每个<span
+class="math inline">\(\epsilon_{nj}\)</span>是独立的极值分布时，我们可以用logit
+model来描述选择模型。 <span class="math display">\[
 \begin{aligned}
 f(\epsilon_{nj})=e^{-\epsilon_{nj}}e^{-e^{-\epsilon_{nj}}}\\
 F(-\epsilon_{nj})=e^{-e^{-\epsilon_{nj}}}
 \end{aligned}
-\]</span> 其方差为<span class="math inline">\(\pi/6\)</span>，均值为0。两个极值变量服从logistic分布，<span class="math inline">\(\epsilon^*_{nji}=\epsilon_{nj}-\epsilon_{ni}\)</span>， <span class="math display">\[
+\]</span> 其方差为<span
+class="math inline">\(\pi/6\)</span>，均值为0。两个极值变量服从logistic分布，<span
+class="math inline">\(\epsilon^*_{nji}=\epsilon_{nj}-\epsilon_{ni}\)</span>，
+<span class="math display">\[
 F(\epsilon^*_{nji})=\frac{\epsilon^*_{nji}}{1+\epsilon^*_{nji}}
-\]</span> decision-maker <span class="math inline">\(n\)</span>选择alternative <span class="math inline">\(j\)</span>的概率为 <span class="math display">\[
+\]</span> decision-maker <span
+class="math inline">\(n\)</span>选择alternative <span
+class="math inline">\(j\)</span>的概率为 <span class="math display">\[
 \begin{aligned}
-P_{ni}&amp;=Prob(V_{ni}+\epsilon_{ni}&gt;V_{nj}+\epsilon_{nj},\forall j\neq i)\\
+P_{ni}&amp;=Prob(V_{ni}+\epsilon_{ni}&gt;V_{nj}+\epsilon_{nj},\forall
+j\neq i)\\
 &amp;=Prob(\epsilon_{nj}&lt;V_{ni}+\epsilon_{ni}-V_{nj},\forall j\neq i)
 \end{aligned}
 \]</span> 所以有 <span class="math display">\[
 \begin{aligned}
-P_{ni}|\epsilon_{ni}&amp;=\prod_{j\neq i}e^{-e^{-(\epsilon_{ni}+V_{ni}-V_{nj})}}\\
-P_{ni}&amp;=\int(\prod_{j\neq i}e^{-e^{-(\epsilon_{ni}+V_{ni}-V_{nj})}})e^{-\epsilon_{ni}}e^{-e^{-\epsilon_{ni}}}d\epsilon_{ni}\\
-&amp;=\int^{\infty}_{-\infty}(\prod_{j\neq i}e^{-e^{-(s+V_{ni}-V_{nj})}})e^{-s}e^{-e^{-s}}ds\\
+P_{ni}|\epsilon_{ni}&amp;=\prod_{j\neq
+i}e^{-e^{-(\epsilon_{ni}+V_{ni}-V_{nj})}}\\
+P_{ni}&amp;=\int(\prod_{j\neq
+i}e^{-e^{-(\epsilon_{ni}+V_{ni}-V_{nj})}})e^{-\epsilon_{ni}}e^{-e^{-\epsilon_{ni}}}d\epsilon_{ni}\\
+&amp;=\int^{\infty}_{-\infty}(\prod_{j\neq
+i}e^{-e^{-(s+V_{ni}-V_{nj})}})e^{-s}e^{-e^{-s}}ds\\
 &amp;=\int^{\infty}_{-\infty}(\prod_{j}e^{-e^{-(s+V_{ni}-V_{nj})}})e^{-s}ds\\
-&amp;=\int^{\infty}_{-\infty}\exp(-\sum_j e^{-(s+V_{ni}-V_{nj})})e^{-s}ds\\
-&amp;=\int^{\infty}_{-\infty}\exp(-e^{-s}\sum_j e^{-(V_{ni}-V_{nj})})e^{-s}ds\\
+&amp;=\int^{\infty}_{-\infty}\exp(-\sum_j
+e^{-(s+V_{ni}-V_{nj})})e^{-s}ds\\
+&amp;=\int^{\infty}_{-\infty}\exp(-e^{-s}\sum_j
+e^{-(V_{ni}-V_{nj})})e^{-s}ds\\
 &amp;=\int^{\infty}_{-\infty}\exp(-t\sum_j e^{-(V_{ni}-V_{nj})})(-dt)\\
 &amp;=
-\left.\frac{\exp(-t\sum_j e^{-(V_{ni}-V_{nj})})}{-\sum_j e^{-(V_{ni}-V_{nj})}}\right|^{\infty}_0\\
+\left.\frac{\exp(-t\sum_j e^{-(V_{ni}-V_{nj})})}{-\sum_j
+e^{-(V_{ni}-V_{nj})}}\right|^{\infty}_0\\
 &amp;=\frac{1}{-\sum_j e^{-(V_{ni}-V_{nj})}}\\
 &amp;=\frac{ e^{V_{ni}}}{\sum_j e^{V_{nj}}}\\
 \end{aligned}
-\]</span> logit模型有以下几个优势：首先它输出的是<span class="math inline">\([0,1]\)</span>的概率，其次所有alternatives的和为1，这表示decision-maker必然会选择一个alternative。</p>
+\]</span> logit模型有以下几个优势：首先它输出的是<span
+class="math inline">\([0,1]\)</span>的概率，其次所有alternatives的和为1，这表示decision-maker必然会选择一个alternative。</p>
 <h3 id="the-scale-parameter">The scale parameter</h3>
-<p>如果无法观测的影响因素有方差<span class="math inline">\(\sigma^2*(\pi^2/6)\)</span>，则效用应该变为<span class="math inline">\(U_{nj}=V_{nj}/\sigma+\epsilon_{nj}\)</span>， <span class="math display">\[
+<p>如果无法观测的影响因素有方差<span
+class="math inline">\(\sigma^2*(\pi^2/6)\)</span>，则效用应该变为<span
+class="math inline">\(U_{nj}=V_{nj}/\sigma+\epsilon_{nj}\)</span>，
+<span class="math display">\[
 P_{ni}=\frac{e^{V_{ni}/\sigma}}{\sum_j e^{V_{nj}/\sigma}}
 \]</span></p>
-<h3 id="power-and-limitations-of-logit">Power and limitations of logit</h3>
+<h3 id="power-and-limitations-of-logit">Power and limitations of
+logit</h3>
 <ul>
-<li>Logit can represent systematic taste variation (that is, taste variation that relates to observed characteristics of the decisionmaker) but not random taste variation (differences in tastes that cannot be linked to observed characteristics)</li>
-<li>The logit model implies proportional substitution across alternatives, given the researcher’s specification of representative utility. To capture more flexible forms of substitution, other models are needed.</li>
-<li>f unobserved factors are independent over time in repeated choice situations, then logit can capture the dynamics of repeated choice, including state-dependence.</li>
+<li>Logit can represent systematic taste variation (that is, taste
+variation that relates to observed characteristics of the decisionmaker)
+but not random taste variation (differences in tastes that cannot be
+linked to observed characteristics)</li>
+<li>The logit model implies proportional substitution across
+alternatives, given the researcher’s specification of representative
+utility. To capture more flexible forms of substitution, other models
+are needed.</li>
+<li>f unobserved factors are independent over time in repeated choice
+situations, then logit can capture the dynamics of repeated choice,
+including state-dependence.</li>
 </ul>
 
       
@@ -685,7 +780,11 @@ P_{ni}=\frac{e^{V_{ni}/\sigma}}{\sum_j e^{V_{nj}/\sigma}}
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#chap1-introduction"><span class="nav-number">1.</span> <span class="nav-text">Chap1 Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#chap2-properties-of-discrete-choice-models"><span class="nav-number">2.</span> <span class="nav-text">Chap2 Properties of Discrete Choice Models</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#the-choice-set"><span class="nav-number">2.1.</span> <span class="nav-text">The choice set</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#derivation-of-choice-probabilities"><span class="nav-number">2.2.</span> <span class="nav-text">Derivation of choice probabilities</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#specific-models"><span class="nav-number">2.3.</span> <span class="nav-text">Specific models</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#identification-of-choice-models"><span class="nav-number">2.4.</span> <span class="nav-text">Identification of choice models</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#logit"><span class="nav-number">3.</span> <span class="nav-text">Logit</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#choice-probabilities"><span class="nav-number">3.1.</span> <span class="nav-text">choice probabilities</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#the-scale-parameter"><span class="nav-number">3.2.</span> <span class="nav-text">The scale parameter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#power-and-limitations-of-logit"><span class="nav-number">3.3.</span> <span class="nav-text">Power and limitations of logit</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#chap1-introduction"><span class="nav-number">1.</span> <span class="nav-text">Chap1 Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#chap2-properties-of-discrete-choice-models"><span class="nav-number">2.</span> <span class="nav-text">Chap2 Properties of
+Discrete Choice Models</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#the-choice-set"><span class="nav-number">2.1.</span> <span class="nav-text">The choice set</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#derivation-of-choice-probabilities"><span class="nav-number">2.2.</span> <span class="nav-text">Derivation of choice
+probabilities</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#specific-models"><span class="nav-number">2.3.</span> <span class="nav-text">Specific models</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#identification-of-choice-models"><span class="nav-number">2.4.</span> <span class="nav-text">Identification of choice
+models</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#logit"><span class="nav-number">3.</span> <span class="nav-text">Logit</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#choice-probabilities"><span class="nav-number">3.1.</span> <span class="nav-text">choice probabilities</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#the-scale-parameter"><span class="nav-number">3.2.</span> <span class="nav-text">The scale parameter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#power-and-limitations-of-logit"><span class="nav-number">3.3.</span> <span class="nav-text">Power and limitations of
+logit</span></a></li></ol></li></ol></div>
             
 
           </div>

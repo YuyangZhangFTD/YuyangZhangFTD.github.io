@@ -422,11 +422,22 @@
       
         <p>这篇文章仿佛是中了recsys2020，内容跟当前工作比较相关，所以拿出来写一写。</p>
 <h1 id="introduction">Introduction</h1>
-<p>现代在线旅游平台（OPT、）会提供各种产品和服务给旅行者，比如航班、住宿、地面交通等等，促销活动（promotion）如升舱、免费的午餐或者租车的折扣，都是非常常用的方式。一个促销活动应该有一个正向的平均处理效应（ATE，average treatment effect），比如说用户的增长或者满意度的提升，但是需要在一定的ROI（Return on Investment）约束下，ROI则是一个市场营销活动中常见的指标： <span class="math display">\[
-\text{ROI}=\frac{\Delta\text{Revenue} - \Delta\text{Investment}}{\Delta\text{Investment}}
-\]</span> 为了确保促销活动是可持续的，ROI会有一个下限的约束，如<span class="math inline">\(\text{ROI}\geq0\)</span>，这就产生了一个促销活动花费和目标增量之间的权衡，一个很好的例子是，预定住宿的时候，一个促销活动经常会提供一顿免费的午餐作为补贴，只有当住宿预定率可以cover住提供免费午餐这额外的费用的时候，这个促销活动才是可持续的。</p>
-<p>通过给一部分顾客提供促销活动，公司可以获得更多的价值，同时维持财务上的约束，来保证促销活动是可持续的。一个很流行的做法是选择出目标的用户群体，uplift model就是一个常用的建模方式，它可以估计出处理在产出上的期望因果效应，来辨识出哪些是自愿的买家，哪些是因为补贴行为才购买的顾客，这可以通过估计促销活动的条件平均处理效应（CATE，Conditional Average Treatment Effect）来实现，<span class="math inline">\(\text{CATE}_Y(x)\)</span>被定义为条件下，是否购买概<span class="math inline">\(\text{Pr}(Y=1)\)</span> 的增量。</p>
-<p>本文中提出了一种新的建模方式，基于Retrospective Estimation（我也没查到资料这是个啥东西。。），仅依赖于正例样本。主要贡献有以下几点：</p>
+<p>现代在线旅游平台（OPT、）会提供各种产品和服务给旅行者，比如航班、住宿、地面交通等等，促销活动（promotion）如升舱、免费的午餐或者租车的折扣，都是非常常用的方式。一个促销活动应该有一个正向的平均处理效应（ATE，average
+treatment
+effect），比如说用户的增长或者满意度的提升，但是需要在一定的ROI（Return
+on Investment）约束下，ROI则是一个市场营销活动中常见的指标： <span
+class="math display">\[
+\text{ROI}=\frac{\Delta\text{Revenue} -
+\Delta\text{Investment}}{\Delta\text{Investment}}
+\]</span> 为了确保促销活动是可持续的，ROI会有一个下限的约束，如<span
+class="math inline">\(\text{ROI}\geq0\)</span>，这就产生了一个促销活动花费和目标增量之间的权衡，一个很好的例子是，预定住宿的时候，一个促销活动经常会提供一顿免费的午餐作为补贴，只有当住宿预定率可以cover住提供免费午餐这额外的费用的时候，这个促销活动才是可持续的。</p>
+<p>通过给一部分顾客提供促销活动，公司可以获得更多的价值，同时维持财务上的约束，来保证促销活动是可持续的。一个很流行的做法是选择出目标的用户群体，uplift
+model就是一个常用的建模方式，它可以估计出处理在产出上的期望因果效应，来辨识出哪些是自愿的买家，哪些是因为补贴行为才购买的顾客，这可以通过估计促销活动的条件平均处理效应（CATE，Conditional
+Average Treatment Effect）来实现，<span
+class="math inline">\(\text{CATE}_Y(x)\)</span>被定义为条件下，是否购买概<span
+class="math inline">\(\text{Pr}(Y=1)\)</span> 的增量。</p>
+<p>本文中提出了一种新的建模方式，基于Retrospective
+Estimation（我也没查到资料这是个啥东西。。），仅依赖于正例样本。主要贡献有以下几点：</p>
 <ol type="1">
 <li>对于uplift和ROI约束的优化框架</li>
 <li>Retrospective Estimation，仅依赖于数据中的正例样本</li>
@@ -434,43 +445,97 @@
 <li>大规模的线上实验验证</li>
 </ol>
 <h1 id="problem-formulation">Problem Formulation</h1>
-<p>我们关注于最大化完成交易的用户数量，同时决定是否提供促销款，来满足全局约束<span class="math inline">\(\text{ROI}\geq 0\)</span>，<span class="math inline">\(Y\)</span>表示是否完成交易，<span class="math inline">\(R\)</span>表示完成交易的收益，<span class="math inline">\(C\)</span>表示促销活动的成本，我们假设，没有完成交易的话，就没有收益和成本。</p>
-<p>对于一个用户<span class="math inline">\(i\)</span>，<span class="math inline">\(Y_i(1)\)</span>表示当用户<span class="math inline">\(i\)</span>被给予一个促销活动<span class="math inline">\(T=1\)</span>时的潜在购买，相似的也有<span class="math inline">\(R_i(1)\)</span>和<span class="math inline">\(C_i(1)\)</span>，与之相反的有<span class="math inline">\(Y_i(0)\)</span>、<span class="math inline">\(R_i(0)\)</span>和<span class="math inline">\(C_i(0)\)</span>。我们定义每个变量上的的CATE： <span class="math display">\[
+<p>我们关注于最大化完成交易的用户数量，同时决定是否提供促销款，来满足全局约束<span
+class="math inline">\(\text{ROI}\geq 0\)</span>，<span
+class="math inline">\(Y\)</span>表示是否完成交易，<span
+class="math inline">\(R\)</span>表示完成交易的收益，<span
+class="math inline">\(C\)</span>表示促销活动的成本，我们假设，没有完成交易的话，就没有收益和成本。</p>
+<p>对于一个用户<span class="math inline">\(i\)</span>，<span
+class="math inline">\(Y_i(1)\)</span>表示当用户<span
+class="math inline">\(i\)</span>被给予一个促销活动<span
+class="math inline">\(T=1\)</span>时的潜在购买，相似的也有<span
+class="math inline">\(R_i(1)\)</span>和<span
+class="math inline">\(C_i(1)\)</span>，与之相反的有<span
+class="math inline">\(Y_i(0)\)</span>、<span
+class="math inline">\(R_i(0)\)</span>和<span
+class="math inline">\(C_i(0)\)</span>。我们定义每个变量上的的CATE：
+<span class="math display">\[
 \begin{aligned}
 \text{CATE}_Y(x)=\mathbb{E}[Y_i(1)-Y_i(0)|X_i=x]\\
 \text{CATE}_R(x)=\mathbb{E}[R_i(1)-R_i(0)|X_i=x]\\
 \text{CATE}_C(x)=\mathbb{E}[C_i(1)-C_i(0)|X_i=x]\\
 \end{aligned}
-\]</span> 我们定义利润为<span class="math inline">\(\Pi_i=R_i-C_i\)</span>，损失为<span class="math inline">\(\cal{L}=-\Pi\)</span>， <span class="math display">\[
-\text{CATE}_\Pi(x) = \text{CATE}_R(x)-\text{CATE}_C(x)=-\text{CATE}_\cal{L}(x)
-\]</span> 我们的目标就是找到一个函数<span class="math inline">\(F\)</span>，对于给定<span class="math inline">\(x\)</span>，决定是否给一个客户提供促销活动，同时最大化总的增加的交易，在ROI的约束下。</p>
-<p>我们用一个分数函数<span class="math inline">\(g\)</span>和阈值<span class="math inline">\(\theta\)</span>来建模这个函数<span class="math inline">\(F\)</span>，<span class="math inline">\(\mathbb{I}[g(x)\geq\theta]\)</span>，用<span class="math inline">\(z_i\in\{0,1\}\)</span>表示是否给用户<span class="math inline">\(i\)</span>促销活动，则有</p>
+\]</span> 我们定义利润为<span
+class="math inline">\(\Pi_i=R_i-C_i\)</span>，损失为<span
+class="math inline">\(\cal{L}=-\Pi\)</span>， <span
+class="math display">\[
+\text{CATE}_\Pi(x) =
+\text{CATE}_R(x)-\text{CATE}_C(x)=-\text{CATE}_\cal{L}(x)
+\]</span> 我们的目标就是找到一个函数<span
+class="math inline">\(F\)</span>，对于给定<span
+class="math inline">\(x\)</span>，决定是否给一个客户提供促销活动，同时最大化总的增加的交易，在ROI的约束下。</p>
+<p>我们用一个分数函数<span class="math inline">\(g\)</span>和阈值<span
+class="math inline">\(\theta\)</span>来建模这个函数<span
+class="math inline">\(F\)</span>，<span
+class="math inline">\(\mathbb{I}[g(x)\geq\theta]\)</span>，用<span
+class="math inline">\(z_i\in\{0,1\}\)</span>表示是否给用户<span
+class="math inline">\(i\)</span>促销活动，则有</p>
 <p><span class="math display">\[
 \begin{aligned}
 \max &amp;&amp; \sum_{i\in U} z_i\cdot \text{CATE}_Y(x_i) \\
-\text{s.t.} &amp;&amp; \sum_{i\in U}z_i \cdot \text{CATE}_{\cal{L}}(x_i)\leq 0
+\text{s.t.} &amp;&amp; \sum_{i\in U}z_i \cdot
+\text{CATE}_{\cal{L}}(x_i)\leq 0
 \end{aligned}
 \]</span></p>
-<p>其中目标函数为最大化总的teatment effect，约束为条件期望损失非正，等价于ROI非负。</p>
-<p>我们由上面式子可以推导出，<span class="math inline">\(\text{CATE}_Y\leq0\Rightarrow\text{CATE}_{\cal{L}}\geq0\)</span>，因为收益只可能来自于额外完成的交易。用贪婪算法可以简单的解决这个背包问题，我们可以近似的根据<span class="math inline">\(\frac{\text{CATE}^i_Y}{\text{CATE}_{\cal{L}}^i}\)</span>对用户<span class="math inline">\(U\)</span>排序，对满足ROI约束的用户群体可以增加促销活动。用<span class="math inline">\(j\)</span>表示最后一个施加促销活动的用户，我们可以定义<span class="math inline">\(g(x)=\frac{\text{CATE}_Y(x)}{\text{CATE}_{\cal{L}}(x)}\)</span>和阈值<span class="math inline">\(\theta^*=\frac{\text{CATE}_Y^j}{\text{CATE}_{\cal{L}}^j}\)</span>，我们可以用上述规则来决策以后对谁来增加促销活动。这个框架将问题简化为学习<span class="math inline">\(\frac{\text{CATE}_Y(x)}{\text{CATE}_{\cal{L}}(x)}\)</span>、<span class="math inline">\(\text{sign}[\text{CATE}_Y(x)]\)</span>和<span class="math inline">\(\text{sign}[\text{CATE}_{\cal{L}}(x)]\)</span>。</p>
-<h1 id="method-for-uplift-modeling-under-roi-constraints">Method For Uplift Modeling Under ROI Constraints</h1>
+<p>其中目标函数为最大化总的teatment
+effect，约束为条件期望损失非正，等价于ROI非负。</p>
+<p>我们由上面式子可以推导出，<span
+class="math inline">\(\text{CATE}_Y\leq0\Rightarrow\text{CATE}_{\cal{L}}\geq0\)</span>，因为收益只可能来自于额外完成的交易。用贪婪算法可以简单的解决这个背包问题，我们可以近似的根据<span
+class="math inline">\(\frac{\text{CATE}^i_Y}{\text{CATE}_{\cal{L}}^i}\)</span>对用户<span
+class="math inline">\(U\)</span>排序，对满足ROI约束的用户群体可以增加促销活动。用<span
+class="math inline">\(j\)</span>表示最后一个施加促销活动的用户，我们可以定义<span
+class="math inline">\(g(x)=\frac{\text{CATE}_Y(x)}{\text{CATE}_{\cal{L}}(x)}\)</span>和阈值<span
+class="math inline">\(\theta^*=\frac{\text{CATE}_Y^j}{\text{CATE}_{\cal{L}}^j}\)</span>，我们可以用上述规则来决策以后对谁来增加促销活动。这个框架将问题简化为学习<span
+class="math inline">\(\frac{\text{CATE}_Y(x)}{\text{CATE}_{\cal{L}}(x)}\)</span>、<span
+class="math inline">\(\text{sign}[\text{CATE}_Y(x)]\)</span>和<span
+class="math inline">\(\text{sign}[\text{CATE}_{\cal{L}}(x)]\)</span>。</p>
+<h1 id="method-for-uplift-modeling-under-roi-constraints">Method For
+Uplift Modeling Under ROI Constraints</h1>
 <p>文中主要对比了4种方式：</p>
 <ol type="1">
 <li>Two-Model，分别对有无treatment建模</li>
-<li>Transformed outcome，单个模型估计<span class="math inline">\(\text{CATE}_Y(x)\)</span></li>
-<li>Fractional Approximation，贪婪排序，依赖于Two-Models产出的<span class="math inline">\(-\frac{\text{CATE}_Y(x)}{\text{CATE}_{\cal{L}}(x)}\)</span></li>
+<li>Transformed outcome，单个模型估计<span
+class="math inline">\(\text{CATE}_Y(x)\)</span></li>
+<li>Fractional Approximation，贪婪排序，依赖于Two-Models产出的<span
+class="math inline">\(-\frac{\text{CATE}_Y(x)}{\text{CATE}_{\cal{L}}(x)}\)</span></li>
 <li>Retrospective Estimation，直接估计分数函数，只依赖于正例样本</li>
 </ol>
-<p>文中所有的建模都依赖于随机实验的数据，随机实验的数据使得<span class="math inline">\(\mathbb{E}[Y_i(1)|X_i=x]=\mathbb{E}[Y_i|T_i=1,X_i=x]\)</span>，模型都采用xgboost模型，历史数据由100millions+。</p>
-<p>定义<span class="math inline">\(\hat{C}(x)=\mathbb{E}[C|x,T=1,Y=1]\)</span>和<span class="math inline">\(\hat{R}_t(x)=\mathbb{E}[R|x, T=t, y=1]\)</span>，则<span class="math inline">\(\frac{\text{CATE}_Y(x)}{\text{CATE}_{\cal{L}}(x)}\)</span>可以写为 <span class="math display">\[
+<p>文中所有的建模都依赖于随机实验的数据，随机实验的数据使得<span
+class="math inline">\(\mathbb{E}[Y_i(1)|X_i=x]=\mathbb{E}[Y_i|T_i=1,X_i=x]\)</span>，模型都采用xgboost模型，历史数据由100millions+。</p>
+<p>定义<span
+class="math inline">\(\hat{C}(x)=\mathbb{E}[C|x,T=1,Y=1]\)</span>和<span
+class="math inline">\(\hat{R}_t(x)=\mathbb{E}[R|x, T=t,
+y=1]\)</span>，则<span
+class="math inline">\(\frac{\text{CATE}_Y(x)}{\text{CATE}_{\cal{L}}(x)}\)</span>可以写为
+<span class="math display">\[
 \frac
 {\text{Pr}(Y=1|x, T=1)-\text{Pr}(Y=1|x, T=0)}
 {\text{Pr}(Y=1|x,T=1)[\hat{C}(x)-\hat{R}_1(x)]+\text{Pr}(Y=1|x,T=0)\hat{R}_0(x)}
-\]</span> Retrospective Estimation，我们可以将下式写为 <span class="math display">\[
-\text{Pr}(Y=1|x, T=1)=\frac{\text{Pr}(T=1|x,Y=1)\text{Pr}(Y=1|x)}{\text{Pr}(T=1|x)}
-\]</span> 其中分母是treatment propensity，我们可以设置为0.5。分母并不允许我们直接估计<span class="math inline">\(\text{CATE}_Y(x)\)</span>，但是提供了<span class="math inline">\(\text{Pr}(Y=1|x,T=1)\)</span>和<span class="math inline">\(\text{Pr}(Y=1|x,T=0)\)</span>的比例的表达式 <span class="math display">\[
+\]</span> Retrospective Estimation，我们可以将下式写为 <span
+class="math display">\[
+\text{Pr}(Y=1|x,
+T=1)=\frac{\text{Pr}(T=1|x,Y=1)\text{Pr}(Y=1|x)}{\text{Pr}(T=1|x)}
+\]</span> 其中分母是treatment
+propensity，我们可以设置为0.5。分母并不允许我们直接估计<span
+class="math inline">\(\text{CATE}_Y(x)\)</span>，但是提供了<span
+class="math inline">\(\text{Pr}(Y=1|x,T=1)\)</span>和<span
+class="math inline">\(\text{Pr}(Y=1|x,T=0)\)</span>的比例的表达式 <span
+class="math display">\[
 \frac{\text{Pr}(Y=1|x,T=1)}{\text{Pr}(Y=1|x,T=0}=\frac{\text{Pr}(T=1|x,Y=1)}{1-\text{Pr}(T=1|x,Y=1)}=\frac{S(x)}{1-S(x)}
-\]</span> 此处<span class="math inline">\(S(x)=\text{Pr}(T=1|x,Y=1)\)</span>表示受到促销活动<span class="math inline">\(T=1\)</span>中的正例概率。所以有 <span class="math display">\[
+\]</span> 此处<span
+class="math inline">\(S(x)=\text{Pr}(T=1|x,Y=1)\)</span>表示受到促销活动<span
+class="math inline">\(T=1\)</span>中的正例概率。所以有 <span
+class="math display">\[
 \begin{aligned}
 \frac{\text{CATE}_Y(x)}{\text{CATE}_{\cal{L}}(x)}=&amp;\frac
 {2S(x)-1}
@@ -478,23 +543,42 @@
 \text{sign}[\text{CATE}_Y(x)]=&amp;\text{sign}[S(x)-0.5]\\
 \text{sign}[\text{CATE}_{\cal{L}}(x)]=&amp;\text{sign}[\frac{\hat{R}_1(x)}{2\hat{R}_1(x)-\hat{C}(x)}S(x)]\\
 \end{aligned}
-\]</span> 其中估计<span class="math inline">\(S(x)\)</span>、<span class="math inline">\(\hat{R}_1(x)\)</span>、<span class="math inline">\(\hat{R}_0(x)\)</span>和<span class="math inline">\(\hat{C}\)</span>都只需要正例样本，这样可以避免大部分无用数据，同时解决样本不平衡的问题。如果我们假设每次预定的成本和收益都独立于<span class="math inline">\(x\)</span>，同时每次预定的收益独立于treatment <span class="math inline">\(T\)</span>，<span class="math inline">\(\hat{R}_t(x)=\hat{R},\hat{C}(x)=\hat{C}\)</span>，那么有 <span class="math display">\[
+\]</span> 其中估计<span class="math inline">\(S(x)\)</span>、<span
+class="math inline">\(\hat{R}_1(x)\)</span>、<span
+class="math inline">\(\hat{R}_0(x)\)</span>和<span
+class="math inline">\(\hat{C}\)</span>都只需要正例样本，这样可以避免大部分无用数据，同时解决样本不平衡的问题。如果我们假设每次预定的成本和收益都独立于<span
+class="math inline">\(x\)</span>，同时每次预定的收益独立于treatment
+<span class="math inline">\(T\)</span>，<span
+class="math inline">\(\hat{R}_t(x)=\hat{R},\hat{C}(x)=\hat{C}\)</span>，那么有
+<span class="math display">\[
 \frac{\text{CATE}_Y(x)}{\text{CATE}_{\cal{L}}(x)}=\frac
 {2S(x)-1}
 {S(x)[\hat{C}-\hat{R}]+[1-S(x)]\hat{R}}
-\]</span> 那么可以推导出，当<span class="math inline">\(S(x)&lt;\frac{\hat{R}}{2\hat{R}-\hat{C}}\)</span>时，<span class="math inline">\(\text{CATE}_{\cal{L}}(x)&gt;0\)</span>，当<span class="math inline">\(S(X)&gt;0.5\)</span>时，<span class="math inline">\(\text{CATE}_Y(X)&gt;0\)</span>。这使得我们可以只对<span class="math inline">\(S(X)=\text{Pr}(T=1|x,Y=1)\)</span>建模。</p>
-<p>离线情况下，我们是可以找到<span class="math inline">\(g\)</span>和<span class="math inline">\(\theta\)</span>，但是在线环境中，<span class="math inline">\(\theta\)</span>可能会改变，文中提出了一种简单的曲线拟合的方法来解决这个问题，我们你和这个ROI曲线，来动态的修正<span class="math inline">\(\theta\)</span>。</p>
+\]</span> 那么可以推导出，当<span
+class="math inline">\(S(x)&lt;\frac{\hat{R}}{2\hat{R}-\hat{C}}\)</span>时，<span
+class="math inline">\(\text{CATE}_{\cal{L}}(x)&gt;0\)</span>，当<span
+class="math inline">\(S(X)&gt;0.5\)</span>时，<span
+class="math inline">\(\text{CATE}_Y(X)&gt;0\)</span>。这使得我们可以只对<span
+class="math inline">\(S(X)=\text{Pr}(T=1|x,Y=1)\)</span>建模。</p>
+<p>离线情况下，我们是可以找到<span
+class="math inline">\(g\)</span>和<span
+class="math inline">\(\theta\)</span>，但是在线环境中，<span
+class="math inline">\(\theta\)</span>可能会改变，文中提出了一种简单的曲线拟合的方法来解决这个问题，我们你和这个ROI曲线，来动态的修正<span
+class="math inline">\(\theta\)</span>。</p>
 <p>对于评估，文中采用Qini Curve和ROI Curve</p>
 <figure>
-<img src="eval.png" alt="eval" /><figcaption aria-hidden="true">eval</figcaption>
+<img src="eval.png" alt="eval" />
+<figcaption aria-hidden="true">eval</figcaption>
 </figure>
 <p>通过ROI Curve找到ROI=0的点，然后在Qini Curve上找到对应的ATE。</p>
 <figure>
-<img src="result.png" alt="result" /><figcaption aria-hidden="true">result</figcaption>
+<img src="result.png" alt="result" />
+<figcaption aria-hidden="true">result</figcaption>
 </figure>
 <p>实验结果暂时列这里，感兴趣的同伴看原文，也太深我也要早些休息了。</p>
 <figure>
-<img src="result2.png" alt="resutl2" /><figcaption aria-hidden="true">resutl2</figcaption>
+<img src="result2.png" alt="resutl2" />
+<figcaption aria-hidden="true">resutl2</figcaption>
 </figure>
 
       
@@ -691,7 +775,8 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#problem-formulation"><span class="nav-number">2.</span> <span class="nav-text">Problem Formulation</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#method-for-uplift-modeling-under-roi-constraints"><span class="nav-number">3.</span> <span class="nav-text">Method For Uplift Modeling Under ROI Constraints</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#problem-formulation"><span class="nav-number">2.</span> <span class="nav-text">Problem Formulation</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#method-for-uplift-modeling-under-roi-constraints"><span class="nav-number">3.</span> <span class="nav-text">Method For
+Uplift Modeling Under ROI Constraints</span></a></li></ol></div>
             
 
           </div>

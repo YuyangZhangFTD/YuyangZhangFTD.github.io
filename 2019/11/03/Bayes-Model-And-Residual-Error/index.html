@@ -415,30 +415,49 @@
 
       
         <p>这次记一个ML里的小概念，bayes model和residual error。</p>
-<p>使用算法<span class="math inline">\(\mathcal{A}\)</span>在数据集<span class="math inline">\(\mathfrak{L}\)</span>上训练得到模型<span class="math inline">\(\varphi_\mathfrak{L}\)</span>，定义期望预测误差为 <span class="math display">\[
+<p>使用算法<span class="math inline">\(\mathcal{A}\)</span>在数据集<span
+class="math inline">\(\mathfrak{L}\)</span>上训练得到模型<span
+class="math inline">\(\varphi_\mathfrak{L}\)</span>，定义期望预测误差为
+<span class="math display">\[
 \text{Err}(\mathcal{\varphi}_\mathfrak{L})=
 \mathbb{E}_{\mathcal{X},\mathcal{Y}}[
 \mathcal{L}(\mathcal{Y},\mathcal{\varphi}_\mathfrak{L}(\mathcal{X}))
 ]
-\]</span> 理论上来说，我们概率分布<span class="math inline">\(\mathbb{P}(\mathcal{X},\mathcal{Y})\)</span>可知的时候，存在最优的模型<span class="math inline">\(\mathcal{\varphi}_B\)</span>，使得期望误差最小，通过构建<span class="math inline">\(\mathcal{X}\)</span>的条件概率，我们有 <span class="math display">\[
+\]</span> 理论上来说，我们概率分布<span
+class="math inline">\(\mathbb{P}(\mathcal{X},\mathcal{Y})\)</span>可知的时候，存在最优的模型<span
+class="math inline">\(\mathcal{\varphi}_B\)</span>，使得期望误差最小，通过构建<span
+class="math inline">\(\mathcal{X}\)</span>的条件概率，我们有 <span
+class="math display">\[
 \mathbb{E}_{\mathcal{X},\mathcal{Y}}[\mathcal{L}(\mathcal{Y},\mathcal{\varphi}_B(\mathcal{X})]=
 \mathbb{E}_\mathcal{X}[\mathbb{E}_{\mathcal{Y}|\mathcal{X}}[\mathcal{L}(\mathcal{Y},\mathcal{\varphi}_B(\mathcal{X})]]
-\]</span> 在后面的形式中，可以通过最小化里面的期望来最小化整体 <span class="math display">\[
-\varphi_B=\underset{y\in\mathcal{Y}}{\arg\min} \mathbb{E}_{\mathcal{Y}|\mathcal{X}}[\mathcal{L}(\mathcal{Y},y)]
-\]</span> 此处<span class="math inline">\(\varphi_B\)</span>被称为bayes model，误差<span class="math inline">\(\text{Err}(\varphi_B)\)</span>为residual error，其表示任何监督学习算法能达到的最优的误差，该误差是由于数据随机导致的，对于任意数据集<span class="math inline">\(\mathfrak{L}\)</span>，有 <span class="math display">\[
+\]</span> 在后面的形式中，可以通过最小化里面的期望来最小化整体 <span
+class="math display">\[
+\varphi_B=\underset{y\in\mathcal{Y}}{\arg\min}
+\mathbb{E}_{\mathcal{Y}|\mathcal{X}}[\mathcal{L}(\mathcal{Y},y)]
+\]</span> 此处<span class="math inline">\(\varphi_B\)</span>被称为bayes
+model，误差<span
+class="math inline">\(\text{Err}(\varphi_B)\)</span>为residual
+error，其表示任何监督学习算法能达到的最优的误差，该误差是由于数据随机导致的，对于任意数据集<span
+class="math inline">\(\mathfrak{L}\)</span>，有 <span
+class="math display">\[
 \text{Err}(\varphi_B)\leq\text{Err}(\varphi_\mathfrak{L})
 \]</span> 对于分类问题 <span class="math display">\[
 \begin{aligned}
-\varphi_B&amp;=\underset{y\in\mathcal{Y}}{\arg\min} \mathbb{E}_{\mathcal{Y}|\mathcal{X}=x}[\mathbb{I}(\mathcal{Y},y)]\\
-&amp;=\underset{y\in\mathcal{Y}}{\arg\min}\mathbb{P}(\mathcal{Y}\neq y|\mathcal{X}=x)\\
-&amp;=\underset{y\in\mathcal{Y}}{\arg\max}\mathbb{P}(\mathcal{Y}= y|\mathcal{X}=x)\\
+\varphi_B&amp;=\underset{y\in\mathcal{Y}}{\arg\min}
+\mathbb{E}_{\mathcal{Y}|\mathcal{X}=x}[\mathbb{I}(\mathcal{Y},y)]\\
+&amp;=\underset{y\in\mathcal{Y}}{\arg\min}\mathbb{P}(\mathcal{Y}\neq
+y|\mathcal{X}=x)\\
+&amp;=\underset{y\in\mathcal{Y}}{\arg\max}\mathbb{P}(\mathcal{Y}=
+y|\mathcal{X}=x)\\
 \end{aligned}
 \]</span> 对于回归问题 <span class="math display">\[
 \begin{aligned}
-\varphi_B&amp;=\underset{y\in\mathcal{Y}}{\arg\min} \mathbb{E}_{\mathcal{Y}|\mathcal{X}=x}[(\mathcal{Y}-y)^2]\\
+\varphi_B&amp;=\underset{y\in\mathcal{Y}}{\arg\min}
+\mathbb{E}_{\mathcal{Y}|\mathcal{X}=x}[(\mathcal{Y}-y)^2]\\
 &amp;=\mathbb{E}_{\mathcal{Y}|\mathcal{X}=x}[\mathcal{Y}]\\
 \end{aligned}
-\]</span> 顺带一句题外话，Adaboost理论上可以得到bayes model，所以是一个很经典的算法。</p>
+\]</span> 顺带一句题外话，Adaboost理论上可以得到bayes
+model，所以是一个很经典的算法。</p>
 
       
     </div>

@@ -423,31 +423,49 @@
         <p>这次来回顾一下另一个经典模型，Factorization Machine。</p>
 <h1 id="factorization-machine">Factorization Machine</h1>
 <p>模型形式如下 <span class="math display">\[
-\hat{y}(x)=w_0+\sum^n_{i=1}w_ix_i+\sum^n_{i=1}\sum^n_{j=i+1}\langle v_i,v_j\rangle x_ix_j
-\]</span> 包括对一阶和二阶特征的考虑，这样做是因为我们可以证明对于足够大的<span class="math inline">\(k\)</span> 存在矩阵<span class="math inline">\(V\in\mathbb{R}^{n\times k}\)</span> 有 <span class="math display">\[
+\hat{y}(x)=w_0+\sum^n_{i=1}w_ix_i+\sum^n_{i=1}\sum^n_{j=i+1}\langle
+v_i,v_j\rangle x_ix_j
+\]</span>
+包括对一阶和二阶特征的考虑，这样做是因为我们可以证明对于足够大的<span
+class="math inline">\(k\)</span> 存在矩阵<span
+class="math inline">\(V\in\mathbb{R}^{n\times k}\)</span> 有 <span
+class="math display">\[
 W=VV^T
-\]</span> 即二阶的权重可以用矩阵分解的形式得到，并且潜在因子的数量决定了二阶权重的质量。这样做有很多好处，首先，在训练集中未出现的权重项就可以通过出现过的权重进行训练，即<span class="math inline">\(w_{ij}\)</span> 未出现过，但<span class="math inline">\(v_i\)</span> 和<span class="math inline">\(v_j\)</span> 却是可以用通过别的项训练出来。同时，可以将计算开销降低至<span class="math inline">\(O(kn)\)</span> ，证明如下 <span class="math display">\[
+\]</span>
+即二阶的权重可以用矩阵分解的形式得到，并且潜在因子的数量决定了二阶权重的质量。这样做有很多好处，首先，在训练集中未出现的权重项就可以通过出现过的权重进行训练，即<span
+class="math inline">\(w_{ij}\)</span> 未出现过，但<span
+class="math inline">\(v_i\)</span> 和<span
+class="math inline">\(v_j\)</span>
+却是可以用通过别的项训练出来。同时，可以将计算开销降低至<span
+class="math inline">\(O(kn)\)</span> ，证明如下 <span
+class="math display">\[
 \begin{aligned}
 &amp;\sum^n_{i=1}\sum^n_{j=i+1}\langle v_i,v_j\rangle x_ix_j\\
-=&amp;\frac{1}{2}\sum^n_{i=1}\sum^n_{j=1}\langle v_i,v_j\rangle x_ix_j-\frac{1}{2}\sum^n_{i=1}\langle v_i,v_i\rangle x_ix_i\\
+=&amp;\frac{1}{2}\sum^n_{i=1}\sum^n_{j=1}\langle v_i,v_j\rangle
+x_ix_j-\frac{1}{2}\sum^n_{i=1}\langle v_i,v_i\rangle x_ix_i\\
 =&amp;\frac{1}{2}(\sum^n_{i=1}\sum^n_{j=1}\sum^k_{f=1}v_{if}v_{jf}x_ix_j-\sum^n_{i=1}\sum^k_{f=1}v_{if}v_{if}x_ix_i)\\
 =&amp;\frac{1}{2}\sum^k_{f=1}(\sum^n_{i=1}\sum^n_{j=1}v_{if}v_{jf}x_ix_j-\sum^n_{i=1}v_{if}v_{if}x_ix_i)\\
 =&amp;\frac{1}{2}\sum^k_{f=1}((\sum^n_{i=1}v_{if}x_i)(\sum^n_{j=1}v_{jf}x_j)-\sum^n_{i=1}v_{if}^2x_i^2)\\
 =&amp;\frac{1}{2}\sum^k_{f=1}((\sum^n_{i=1}v_{if}x_i)^2-\sum^n_{i=1}(v_{if}x_i)^2)\\
 \end{aligned}
-\]</span> 可以看见里面变成和的平方减去平方的和的形式，大大简化了计算开销，求导更新权重也变得简单 <span class="math display">\[
+\]</span>
+可以看见里面变成和的平方减去平方的和的形式，大大简化了计算开销，求导更新权重也变得简单
+<span class="math display">\[
 \frac{\partial}{\partial\theta}\hat{y}(x)=
 \begin{cases}
 1&amp;\theta \text{ is }w_0\\
 x_i&amp; \theta \text{ is } w_i\\
 x_i\sum^n_{j=1}v_{jf}-v_{if}x_i^2&amp;\theta \text{ is } v_{if}
 \end{cases}
-\]</span> 同时FM也可以跟SVM一样用kernel的方法进行优化，文章后面作者还跟其他几个常用模型做了比较。</p>
-<h1 id="field-aware-factorization-machines">Field-aware Factorization Machines</h1>
-<p>FFM在FM的基础上提出了域(field)的概念，将不同类别的数据分入不同的field中，然后对每个field的特征作交叉，其实这么做就是为了独立latent factor的影响，论文中给出这样一个例子</p>
+\]</span>
+同时FM也可以跟SVM一样用kernel的方法进行优化，文章后面作者还跟其他几个常用模型做了比较。</p>
+<h1 id="field-aware-factorization-machines">Field-aware Factorization
+Machines</h1>
+<p>FFM在FM的基础上提出了域(field)的概念，将不同类别的数据分入不同的field中，然后对每个field的特征作交叉，其实这么做就是为了独立latent
+factor的影响，论文中给出这样一个例子</p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: center;">click number</th>
 <th style="text-align: center;">not click number</th>
 <th style="text-align: center;">Publisher</th>
@@ -455,55 +473,55 @@ x_i\sum^n_{j=1}v_{jf}-v_{if}x_i^2&amp;\theta \text{ is } v_{if}
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: center;">80</td>
 <td style="text-align: center;">20</td>
 <td style="text-align: center;">ESPN</td>
 <td style="text-align: center;">Nike</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: center;">10</td>
 <td style="text-align: center;">90</td>
 <td style="text-align: center;">ESPN</td>
 <td style="text-align: center;">Gucci</td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: center;">0</td>
 <td style="text-align: center;">1</td>
 <td style="text-align: center;">ESPN</td>
 <td style="text-align: center;">Adidas</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: center;">15</td>
 <td style="text-align: center;">85</td>
 <td style="text-align: center;">Vogue</td>
 <td style="text-align: center;">Nike</td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: center;">90</td>
 <td style="text-align: center;">10</td>
 <td style="text-align: center;">Vogue</td>
 <td style="text-align: center;">Gucci</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: center;">10</td>
 <td style="text-align: center;">90</td>
 <td style="text-align: center;">Vogue</td>
 <td style="text-align: center;">Adidas</td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: center;">85</td>
 <td style="text-align: center;">15</td>
 <td style="text-align: center;">NBC</td>
 <td style="text-align: center;">Nike</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: center;">0</td>
 <td style="text-align: center;">0</td>
 <td style="text-align: center;">NBC</td>
 <td style="text-align: center;">Gucci</td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: center;">90</td>
 <td style="text-align: center;">10</td>
 <td style="text-align: center;">NBC</td>
@@ -514,7 +532,7 @@ x_i\sum^n_{j=1}v_{jf}-v_{if}x_i^2&amp;\theta \text{ is } v_{if}
 <p>预测这样一条数据被点击的概率时</p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: center;">click</th>
 <th style="text-align: center;">Publisher(P)</th>
 <th style="text-align: center;">Advertiser(A)</th>
@@ -522,7 +540,7 @@ x_i\sum^n_{j=1}v_{jf}-v_{if}x_i^2&amp;\theta \text{ is } v_{if}
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: center;">p</td>
 <td style="text-align: center;">ESPN</td>
 <td style="text-align: center;">Nike</td>
@@ -531,11 +549,28 @@ x_i\sum^n_{j=1}v_{jf}-v_{if}x_i^2&amp;\theta \text{ is } v_{if}
 </tbody>
 </table>
 <p>对于FM模型，交叉项为 <span class="math display">\[
-w_{\text{ESPN}}\cdot w_{\text{Nike}}+w_{\text{ESPN}}\cdot w_{\text{Male}}+w_{\text{Nike}}\cdot w_{\text{Male}}
-\]</span> 我们可以看出，每个特征的latent factor vector在相互匹配交叉配对的时候都是通用的，即我们训练出Publisher项的<span class="math inline">\(w_{\text{ESPN}}\)</span> 既可以用在和Advertiser项的交叉中，又可以用在和Gender项的交叉中。而FFM做的就是，Publisher、Advertiser、Gender这三个field彼此两两交叉的时候，不共享同一个latent factor vector，所以就变成这样 <span class="math display">\[
-w_{\text{ESPN}}^{\text{PA}}\cdot w_{\text{Nike}}^{\text{PA}}+w_{\text{ESPN}}^{\text{PG}}\cdot w_{\text{Male}}^{\text{PG}}+w_{\text{Nike}}^{\text{AG}}\cdot w_{\text{Male}}^{\text{AG}}
-\]</span> 权重的上标表示权重分解所属于的field，<span class="math inline">\(w_{\text{ESPN}}^{\text{PA}}\)</span> 仅表示Publisher filed和Advertiser filed的交叉，训练出来的ESPN的latent factor vector。</p>
-<p>FM与FFM相比，FM是做所有feature的交叉，所以二次项权重矩阵<span class="math inline">\(W\in\mathbb{R}^{n\times n}\)</span> 的，其中<span class="math inline">\(n\)</span> 为特征数，可以视作所有的feature属于一个field，而FFM相当于对<span class="math inline">\(W\)</span> 的拆分，然后分别训练（自己目前的理解，不一定对，如果不对请各位看官指出） <span class="math display">\[
+w_{\text{ESPN}}\cdot w_{\text{Nike}}+w_{\text{ESPN}}\cdot
+w_{\text{Male}}+w_{\text{Nike}}\cdot w_{\text{Male}}
+\]</span> 我们可以看出，每个特征的latent factor
+vector在相互匹配交叉配对的时候都是通用的，即我们训练出Publisher项的<span
+class="math inline">\(w_{\text{ESPN}}\)</span>
+既可以用在和Advertiser项的交叉中，又可以用在和Gender项的交叉中。而FFM做的就是，Publisher、Advertiser、Gender这三个field彼此两两交叉的时候，不共享同一个latent
+factor vector，所以就变成这样 <span class="math display">\[
+w_{\text{ESPN}}^{\text{PA}}\cdot
+w_{\text{Nike}}^{\text{PA}}+w_{\text{ESPN}}^{\text{PG}}\cdot
+w_{\text{Male}}^{\text{PG}}+w_{\text{Nike}}^{\text{AG}}\cdot
+w_{\text{Male}}^{\text{AG}}
+\]</span> 权重的上标表示权重分解所属于的field，<span
+class="math inline">\(w_{\text{ESPN}}^{\text{PA}}\)</span>
+仅表示Publisher filed和Advertiser filed的交叉，训练出来的ESPN的latent
+factor vector。</p>
+<p>FM与FFM相比，FM是做所有feature的交叉，所以二次项权重矩阵<span
+class="math inline">\(W\in\mathbb{R}^{n\times n}\)</span> 的，其中<span
+class="math inline">\(n\)</span>
+为特征数，可以视作所有的feature属于一个field，而FFM相当于对<span
+class="math inline">\(W\)</span>
+的拆分，然后分别训练（自己目前的理解，不一定对，如果不对请各位看官指出）
+<span class="math display">\[
 W=
 \begin{bmatrix}
 w^{PP}&amp; w^{PA} &amp; w^{PG}\\
@@ -549,40 +584,69 @@ w_{\text{ESPN,Nike}}&amp;w_{\text{ESPN,Gucci}}&amp;w_{\text{ESPN,Adidas}}\\
 w_{\text{Vogue,ESPN}}&amp;w_{\text{Vogue,Gucci}}&amp;w_{\text{Vogue,Adidas}}\\
 w_{\text{NBC,Nike}}&amp;w_{\text{NBC,Gucci}}&amp;w_{\text{NBC,Adidas}}\\
 \end{bmatrix}
-\]</span> 其中将<span class="math inline">\(w^{PA}\)</span> 分解为矩阵相乘形式得到 <span class="math display">\[
-w_{\text{ESPN,Nike}}=w_{\text{ESPN}}^{\text{PA}}\cdot w_{\text{Nike}}^{\text{PA}}
-\]</span> 此处等号右边的<span class="math inline">\(w\)</span> 都是向量，等号左边的<span class="math inline">\(w\)</span> 为标量，上面写得正式一点应该是 <span class="math display">\[
-v_{\text{ESPN}}^{\text{PA}}\cdot v_{\text{Nike}}^{\text{PA}}+v_{\text{ESPN}}^{\text{PG}}\cdot v_{\text{Male}}^{\text{PG}}+v_{\text{Nike}}^{\text{AG}}\cdot v_{\text{Male}}^{\text{AG}}
+\]</span> 其中将<span class="math inline">\(w^{PA}\)</span>
+分解为矩阵相乘形式得到 <span class="math display">\[
+w_{\text{ESPN,Nike}}=w_{\text{ESPN}}^{\text{PA}}\cdot
+w_{\text{Nike}}^{\text{PA}}
+\]</span> 此处等号右边的<span class="math inline">\(w\)</span>
+都是向量，等号左边的<span class="math inline">\(w\)</span>
+为标量，上面写得正式一点应该是 <span class="math display">\[
+v_{\text{ESPN}}^{\text{PA}}\cdot
+v_{\text{Nike}}^{\text{PA}}+v_{\text{ESPN}}^{\text{PG}}\cdot
+v_{\text{Male}}^{\text{PG}}+v_{\text{Nike}}^{\text{AG}}\cdot
+v_{\text{Male}}^{\text{AG}}
 =w_{\text{ESPN,Nike}}^{\text{PA}}+w_{\text{ESPN,Male}}^{\text{PG}}+w_{\text{Nike,Male}}^{\text{GA}}
-\]</span> 讲清楚是什么之后我们再来看怎么算，论文里给出来的是用梯度下降进行迭代计算，计算其中非0值的梯度进行更新。此处我觉得这里依然可以按照FM的方法进行迭代更新，然后每次更新矩阵中的一部分而已。</p>
-<p>可是FFM的强大并不在于将latent factor处理为相互的做法，而是提供了一个炒鸡快的多线程实现库libffm。嗯，算得快就是可以这么为所欲为，你快你强大。</p>
-<h1 id="pairwise-interaction-tensor-factorization-for-personalized-tag-recommendation">Pairwise Interaction Tensor Factorization for Personalized Tag Recommendation</h1>
+\]</span>
+讲清楚是什么之后我们再来看怎么算，论文里给出来的是用梯度下降进行迭代计算，计算其中非0值的梯度进行更新。此处我觉得这里依然可以按照FM的方法进行迭代更新，然后每次更新矩阵中的一部分而已。</p>
+<p>可是FFM的强大并不在于将latent
+factor处理为相互的做法，而是提供了一个炒鸡快的多线程实现库libffm。嗯，算得快就是可以这么为所欲为，你快你强大。</p>
+<h1
+id="pairwise-interaction-tensor-factorization-for-personalized-tag-recommendation">Pairwise
+Interaction Tensor Factorization for Personalized Tag
+Recommendation</h1>
 <p>这里补充一下这篇文章，这篇文章是早于FFM提出来的，FFM就是根据这个思想提的，看完FFM再看这篇文章就很清楚了，这篇文章是分了3个field，user、item、tag三个维度做ffm。</p>
-<h1 id="higher-order-factorization-machines">Higher-Order Factorization Machines</h1>
-<p>这篇文章重点在于介绍如何把之前的二阶交叉特征再往高阶去提升，并引入了kernel的方法，引入ANOVA kernel来提升阶数（好像在SVM里见过？），有了高阶特征，如何训练就成了问题，作者在文中给出了多种训练方式，包括梯度下降、坐标上升等等。</p>
-<h1 id="factorization-machines-with-libfm">Factorization Machines with libFM</h1>
+<h1 id="higher-order-factorization-machines">Higher-Order Factorization
+Machines</h1>
+<p>这篇文章重点在于介绍如何把之前的二阶交叉特征再往高阶去提升，并引入了kernel的方法，引入ANOVA
+kernel来提升阶数（好像在SVM里见过？），有了高阶特征，如何训练就成了问题，作者在文中给出了多种训练方式，包括梯度下降、坐标上升等等。</p>
+<h1 id="factorization-machines-with-libfm">Factorization Machines with
+libFM</h1>
 <p>这篇文章是对libFM的一个介绍，主要libFM中对于FM的三种计算方法：SGD、ALS和MCMC。其中SGD是原文中最普遍的一种迭代算法，ALS则相对麻烦一点，不断迭代的方式得到收敛解，而MCMC则是求解FM的图模型</p>
 <figure>
-<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
+<img src="1.png" alt="1" />
+<figcaption aria-hidden="true">1</figcaption>
 </figure>
 <p>由于我还没怎么入门图模型，就不在这多解释了，不过FM的图模型相对简单很多，看着公式就可以理解。MCMC也在之前博客中讲过了，大家可以去看。</p>
-<h1 id="gradient-boosting-factorization-machines">Gradient Boosting Factorization Machines</h1>
-<p>这篇文章是GBM+FM的组合，说实话前两天我也在想，GBM这么好用，为什么没人把GBM和FM结合或者是MF结合，肯定会有一定提升的，然后今天就读到这篇文章了。这篇文章主要的idea就是对于FFM，并不是所有的field都是有用的feature，所以如选择好的交互特征就需要我们研究，这篇文章就是从这个问题出发的。主要的迭代式为 <span class="math display">\[
-\hat{y}_s(x)=\hat{y}_{s-1}(x)+\sum_{i\in\mathcal{C}_p}\sum_{j\in\mathcal{C}_q}\mathbb{I}[i,j\in x]\langle V_p^i,V_q^j\rangle
-\]</span> 其中的<span class="math inline">\(\mathcal{C}_p\)</span> 和<span class="math inline">\(\mathcal{C}_q\)</span> 为选取的交叉特征，其中如何选取好的特征则是我们模型的重点，文中采取的算法是选择尽可能使目标函数降低最快的特征，这点跟xgboost就非常相似，有兴趣的各位可以查阅一下（其实基本上完全相同的做法。。。），这里给出算法流程</p>
+<h1 id="gradient-boosting-factorization-machines">Gradient Boosting
+Factorization Machines</h1>
+<p>这篇文章是GBM+FM的组合，说实话前两天我也在想，GBM这么好用，为什么没人把GBM和FM结合或者是MF结合，肯定会有一定提升的，然后今天就读到这篇文章了。这篇文章主要的idea就是对于FFM，并不是所有的field都是有用的feature，所以如选择好的交互特征就需要我们研究，这篇文章就是从这个问题出发的。主要的迭代式为
+<span class="math display">\[
+\hat{y}_s(x)=\hat{y}_{s-1}(x)+\sum_{i\in\mathcal{C}_p}\sum_{j\in\mathcal{C}_q}\mathbb{I}[i,j\in
+x]\langle V_p^i,V_q^j\rangle
+\]</span> 其中的<span class="math inline">\(\mathcal{C}_p\)</span>
+和<span class="math inline">\(\mathcal{C}_q\)</span>
+为选取的交叉特征，其中如何选取好的特征则是我们模型的重点，文中采取的算法是选择尽可能使目标函数降低最快的特征，这点跟xgboost就非常相似，有兴趣的各位可以查阅一下（其实基本上完全相同的做法。。。），这里给出算法流程</p>
 <figure>
-<img src="2.png" alt="2" /><figcaption aria-hidden="true">2</figcaption>
+<img src="2.png" alt="2" />
+<figcaption aria-hidden="true">2</figcaption>
 </figure>
-<h1 id="neural-factorization-machines-for-sparse-predictive-analytics">Neural Factorization Machines for Sparse Predictive Analytics</h1>
-<p>这篇文章也是融合FM与DL方法的一篇文章，根据FM提出一种神似的叫Bi-Interaction Pooling的结构，用以刻画二阶特征，带入网络计算，网络结构如图所示</p>
+<h1
+id="neural-factorization-machines-for-sparse-predictive-analytics">Neural
+Factorization Machines for Sparse Predictive Analytics</h1>
+<p>这篇文章也是融合FM与DL方法的一篇文章，根据FM提出一种神似的叫Bi-Interaction
+Pooling的结构，用以刻画二阶特征，带入网络计算，网络结构如图所示</p>
 <figure>
-<img src="3.png" alt="3" /><figcaption aria-hidden="true">3</figcaption>
+<img src="3.png" alt="3" />
+<figcaption aria-hidden="true">3</figcaption>
 </figure>
-<p>而这个Bi-Interaction Pooling层的计算方式为 <span class="math display">\[
-f_{\text{BI}}(\mathcal{V}_x)=\sum^n_{i=1}\sum^n_{j=i+1}x_iv_i\odot x_jv_j
+<p>而这个Bi-Interaction Pooling层的计算方式为 <span
+class="math display">\[
+f_{\text{BI}}(\mathcal{V}_x)=\sum^n_{i=1}\sum^n_{j=i+1}x_iv_i\odot
+x_jv_j
 \]</span> 与FM相似，可以改写为 <span class="math display">\[
 f_{\text{BI}}(\mathcal{V}_x)=\frac{1}{2}[(\sum^n_{i=1}x_iv_i)^2-\sum^n_{i=1}(x_iv_i)^2]
-\]</span> 这个想法也还是挺好的，把FM当成pooling层来提取特征，感觉再深入一点应该效果会更好。</p>
+\]</span>
+这个想法也还是挺好的，把FM当成pooling层来提取特征，感觉再深入一点应该效果会更好。</p>
 
       
     </div>
@@ -778,7 +842,14 @@ f_{\text{BI}}(\mathcal{V}_x)=\frac{1}{2}[(\sum^n_{i=1}x_iv_i)^2-\sum^n_{i=1}(x_i
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#factorization-machine"><span class="nav-number">1.</span> <span class="nav-text">Factorization Machine</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#field-aware-factorization-machines"><span class="nav-number">2.</span> <span class="nav-text">Field-aware Factorization Machines</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pairwise-interaction-tensor-factorization-for-personalized-tag-recommendation"><span class="nav-number">3.</span> <span class="nav-text">Pairwise Interaction Tensor Factorization for Personalized Tag Recommendation</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#higher-order-factorization-machines"><span class="nav-number">4.</span> <span class="nav-text">Higher-Order Factorization Machines</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#factorization-machines-with-libfm"><span class="nav-number">5.</span> <span class="nav-text">Factorization Machines with libFM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#gradient-boosting-factorization-machines"><span class="nav-number">6.</span> <span class="nav-text">Gradient Boosting Factorization Machines</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#neural-factorization-machines-for-sparse-predictive-analytics"><span class="nav-number">7.</span> <span class="nav-text">Neural Factorization Machines for Sparse Predictive Analytics</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#factorization-machine"><span class="nav-number">1.</span> <span class="nav-text">Factorization Machine</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#field-aware-factorization-machines"><span class="nav-number">2.</span> <span class="nav-text">Field-aware Factorization
+Machines</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pairwise-interaction-tensor-factorization-for-personalized-tag-recommendation"><span class="nav-number">3.</span> <span class="nav-text">Pairwise
+Interaction Tensor Factorization for Personalized Tag
+Recommendation</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#higher-order-factorization-machines"><span class="nav-number">4.</span> <span class="nav-text">Higher-Order Factorization
+Machines</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#factorization-machines-with-libfm"><span class="nav-number">5.</span> <span class="nav-text">Factorization Machines with
+libFM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#gradient-boosting-factorization-machines"><span class="nav-number">6.</span> <span class="nav-text">Gradient Boosting
+Factorization Machines</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#neural-factorization-machines-for-sparse-predictive-analytics"><span class="nav-number">7.</span> <span class="nav-text">Neural
+Factorization Machines for Sparse Predictive Analytics</span></a></li></ol></div>
             
 
           </div>

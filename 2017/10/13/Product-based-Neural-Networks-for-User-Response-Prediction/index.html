@@ -96,12 +96,12 @@
 
 
 
-<meta name="description" content="这篇文章是比较早期的一篇用DNN做CTR的文章，2016年的，思路比较清晰，也很简洁，就是用embedding去学习数据类别的表示，然后用全连接层学习高阶的特征交互，模型结构如下图所示  1  其中第一层除了包含一阶信息外，还有二次项一并带入激活函数，可以看出，作者对每个类别进行不同的embedding，这样可以最大程度上抓住每个类别的特点，然后还有inner-PNN和outer-PNN两种方式，">
+<meta name="description" content="这篇文章是比较早期的一篇用DNN做CTR的文章，2016年的，思路比较清晰，也很简洁，就是用embedding去学习数据类别的表示，然后用全连接层学习高阶的特征交互，模型结构如下图所示   1  其中第一层除了包含一阶信息外，还有二次项一并带入激活函数，可以看出，作者对每个类别进行不同的embedding，这样可以最大程度上抓住每个类别的特点，然后还有inner-PNN和outer-PNN两种方式">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Product-based Neural Networks for User Response Prediction">
 <meta property="og:url" content="http://yoursite.com/2017/10/13/Product-based-Neural-Networks-for-User-Response-Prediction/index.html">
 <meta property="og:site_name" content="Arvin&#39;s Blog">
-<meta property="og:description" content="这篇文章是比较早期的一篇用DNN做CTR的文章，2016年的，思路比较清晰，也很简洁，就是用embedding去学习数据类别的表示，然后用全连接层学习高阶的特征交互，模型结构如下图所示  1  其中第一层除了包含一阶信息外，还有二次项一并带入激活函数，可以看出，作者对每个类别进行不同的embedding，这样可以最大程度上抓住每个类别的特点，然后还有inner-PNN和outer-PNN两种方式，">
+<meta property="og:description" content="这篇文章是比较早期的一篇用DNN做CTR的文章，2016年的，思路比较清晰，也很简洁，就是用embedding去学习数据类别的表示，然后用全连接层学习高阶的特征交互，模型结构如下图所示   1  其中第一层除了包含一阶信息外，还有二次项一并带入激活函数，可以看出，作者对每个类别进行不同的embedding，这样可以最大程度上抓住每个类别的特点，然后还有inner-PNN和outer-PNN两种方式">
 <meta property="og:locale">
 <meta property="og:image" content="http://yoursite.com/2017/10/13/Product-based-Neural-Networks-for-User-Response-Prediction/1.png">
 <meta property="article:published_time" content="2017-10-13T03:34:04.000Z">
@@ -420,9 +420,11 @@
       
         <p>这篇文章是比较早期的一篇用DNN做CTR的文章，2016年的，思路比较清晰，也很简洁，就是用embedding去学习数据类别的表示，然后用全连接层学习高阶的特征交互，模型结构如下图所示</p>
 <figure>
-<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
+<img src="1.png" alt="1" />
+<figcaption aria-hidden="true">1</figcaption>
 </figure>
-<p>其中第一层除了包含一阶信息外，还有二次项一并带入激活函数，可以看出，作者对每个类别进行不同的embedding，这样可以最大程度上抓住每个类别的特点，然后还有inner-PNN和outer-PNN两种方式，具体可以看论文。缺点也很明显，从图中可以看出，网络不是很深，说学习high-order的feature interactions也是有一定局限性的，同时我看见最后实验部分，感觉数据量可能会有点小，实验结果有一定局限性。</p>
+<p>其中第一层除了包含一阶信息外，还有二次项一并带入激活函数，可以看出，作者对每个类别进行不同的embedding，这样可以最大程度上抓住每个类别的特点，然后还有inner-PNN和outer-PNN两种方式，具体可以看论文。缺点也很明显，从图中可以看出，网络不是很深，说学习high-order的feature
+interactions也是有一定局限性的，同时我看见最后实验部分，感觉数据量可能会有点小，实验结果有一定局限性。</p>
 
       
     </div>

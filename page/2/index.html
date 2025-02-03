@@ -418,12 +418,13 @@
         
           
           
+
 一年香
 
 时间飞快，来杭也一年了，今天整理一下对这一年的思考与复盘。
 关于工作
 感觉在阿里（目前在淘特，可能阿里不同BU情况也不同，下简称阿里）的第一年，对当下互联网公司算法的工作职责有了更深的理解，或者说是纠正了之前的一些理解。同时，我一直认为“看见”得更多，才能“思考”得更多，当有机会跳出当前环境看见更多不一样的事情，才有机会思考是什么造成了这些差异，以及哪些是更适合自己的。
-电商平台 和 
+电商平台 和
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -577,7 +578,8 @@
 本文提出一种通用的智能出价框架，可以满足不同广告主关于竞价目标和约束的诉求，具体出价调控算法的实现为DDPG，目前该算法已经在淘宝广告平台部署使用。
 Abstract
 
-In online display advertising, advertisers usually participate in real- time bidding to acquire ad impression
+In online display advertising, advertisers usually participate in
+real- time bidding to acquire ad impression
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -729,7 +731,8 @@ In online display advertising, advertisers usually participate in real- time bid
           
           TL;DR
 LinkedIn发表在KDD2020上的文章，主要想解决在信息流中，如何将自然推荐物品和广告进行混排的问题，文中将该问题建模为带约束的优化问题，并提出了一种归并排序的方式。
-目前这种方法及其衍生版本、简化版本，在日常工作中都非常常见，基本可以作为自然推荐和广告混排问题的baseline solution了。
+目前这种方法及其衍生版本、简化版本，在日常工作中都非常常见，基本可以作为自然推荐和广告混排问题的baseline
+solution了。
 摘要
 
 Social networks and content publish
@@ -886,7 +889,9 @@ Social networks and content publish
 预算约束+效率成本约束下，最优广告出价策略，双PID在线调节超参数（对偶变量）
 摘要
 
-Real-Time Bidding (RTB) is an important paradigm in display advertising, where advertisers utilize extended information and algorithms served by Dema
+Real-Time Bidding (RTB) is an important paradigm in display
+advertising, where advertisers utilize extended information and
+algorithms served by Dema
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1041,7 +1046,8 @@ Real-Time Bidding (RTB) is an important paradigm in display advertising, where a
 但很多做法以及解法在今天来看都比较过时了，后续会逐渐写近几年怎么做出价问题的。
 摘要
 
-Taobao, as the largest online retail platform in the world, provides billions of online display advertising im
+Taobao, as the largest online retail platform in the world, provides
+billions of online display advertising im
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1195,7 +1201,8 @@ Taobao, as the largest online retail platform in the world, provides billions of
 与之前LinkedIn那篇文章类似，这篇文章也是用概率节流的方式进行预算控制，同时这篇文章考虑有无效率保障情况下，如何平滑预算消耗。
 摘要
 
-In targeted online advertising, advertisers look for maximizing campaign performance und
+In targeted online advertising, advertisers look for maximizing
+campaign performance und
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1348,7 +1355,9 @@ In targeted online advertising, advertisers look for maximizing campaign perform
           最近恶补了一波广告相关文章，本文是预算控制平滑方面很经典的文章之一，由LinkedIn团队发表在KDD2014上。
 摘要
 
-Targeted online advertising is a prime source of revenue for many Internet companies. It is a common industry practice to use a generalize
+Targeted online advertising is a prime source of revenue for many
+Internet companies. It is a common industry practice to use a
+generalize
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1498,7 +1507,8 @@ Targeted online advertising is a prime source of revenue for many Internet compa
       
         
           
-          最近要做一些和广告出价相关的工作，恶补了一下广告相关的知识，这篇文章是WWW2020 腾讯的文章，解决广告场景下的概率校准问题。
+          最近要做一些和广告出价相关的工作，恶补了一下广告相关的知识，这篇文章是WWW2020
+腾讯的文章，解决广告场景下的概率校准问题。
 问题背景
 如果一个模型的概率预测值等于真实的输出，那么就可以说这个机器学习模型是校准良好的（well-calibrated）。当模型在一个测试数据集或者其任意子集上，如果估计概率值为\(p\)，那么实际结果中\(y=1\)的样本占比也应该为\(p\)​。
 在很多场景上，
@@ -1652,11 +1662,13 @@ Targeted online advertising is a prime source of revenue for many Internet compa
         
           
           TL;DR
-提出一种新的回归Loss来建模用户的长期价值，解决LTV分布并非高斯分布，而是一部分为0和一部分服从log normal的问题。
+提出一种新的回归Loss来建模用户的长期价值，解决LTV分布并非高斯分布，而是一部分为0和一部分服从log
+normal的问题。
 正文
 先读Abstract。
 
-Accurate predictions of customers’ future lifetime value (LTV) given their attributes and past purchase behavior 
+Accurate predictions of customers’ future lifetime value (LTV) given
+their attributes and past purchase behavior 
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1807,10 +1819,11 @@ Accurate predictions of customers’ future lifetime value (LTV) given their att
         
           
           今天在公司内部技术论坛上看到一个帖子，关于用Tree方法做ATE估计的，本着一个严（zhao）谨（cha）的态度，认认真真看了一遍，发现里面一个式子长的比较奇怪，随手推了推感觉还挺有意思的。在这里记一下。
-POM框架就不多写了，这篇文章的目的是估计平均因果效应\(\tau\)，然后提到最简单的办法就是用实验组的期望减去对照组的期望，即 \[
+POM框架就不多写了，这篇文章的目的是估计平均因果效应\(\tau\)，然后提到最简单的办法就是用实验组的期望减去对照组的期望，即
+\[
 \begin{aligned}
-\hat{\tau} 
-
+\hat{\tau}
+&
           ...
           <!--noindex-->
           <div class="post-button text-center">

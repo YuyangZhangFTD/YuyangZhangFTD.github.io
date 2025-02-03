@@ -400,12 +400,14 @@
         <p>昨天看的有点多了，今天少看点，然后看点别的内容缓解一下，刚好今天看到了这篇是attention模型+FM，所以今天打算再去看看attention。</p>
 <p>回归正题，这篇文章主要思路是在FM的二阶特征上加attention layer</p>
 <p><img src="1.png" alt="1" /> <span class="math display">\[
-f_{\text{Att}}(f_{\text{PI}}(\mathcal{E}))=\sum_{(i,j)\in\mathcal{R}_x}a_{ij}(v_i\odot v_j)x_ix_j
+f_{\text{Att}}(f_{\text{PI}}(\mathcal{E}))=\sum_{(i,j)\in\mathcal{R}_x}a_{ij}(v_i\odot
+v_j)x_ix_j
 \]</span> 其中attention的计算方式如下 <span class="math display">\[
 a_{ij}&#39;=h^TReLU(W(v_i\odot v_j)x_ix_j+b)\\
 a_{ij}=\frac{\exp(a&#39;_{ij})}{\sum_{(i&#39;,j&#39;)\in\mathcal{R}_x}\exp(a&#39;_{i&#39;j&#39;})}
 \]</span> 最终的结果为 <span class="math display">\[
-\hat{y}_{\text{AFM}}(x)=w_0+\sum^n_{i=1}w_ix_i+p^T\sum^n_{i=1}\sum^n_{j=i+1}a_{ij}(v_i\odot v_j)x_ix_j
+\hat{y}_{\text{AFM}}(x)=w_0+\sum^n_{i=1}w_ix_i+p^T\sum^n_{i=1}\sum^n_{j=i+1}a_{ij}(v_i\odot
+v_j)x_ix_j
 \]</span> 最后为了避免过拟合可以加上正则项。</p>
 <p>之后有时间再好好总结一下FM。</p>
 

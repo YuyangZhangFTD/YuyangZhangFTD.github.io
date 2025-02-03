@@ -419,7 +419,8 @@
           
           A Review for Boosting
 最近看GBDT，从头到尾好好地梳理了一下。
-说到Boosting，总的思路是通过一些weak的base learner，不断累加的思想，你先学，你学的不好的我来学，我学的不好的他来学，这样来提升最后的效果，一种串行合作相互弥补的方式，相比于bagging，bagging则是一种通过不同角度来学习，最后结合提升效果的方法，一种并行分工的合作方式。今天重点来
+说到Boosting，总的思路是通过一些weak的base
+learner，不断累加的思想，你先学，你学的不好的我来学，我学的不好的他来学，这样来提升最后的效果，一种串行合作相互弥补的方式，相比于bagging，bagging则是一种通过不同角度来学习，最后结合提升效果的方法，一种并行分工的合作方式。今天重点来
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -547,7 +548,9 @@
       
         
           
-          特征工程一直是很多预测模型效果突出的关键，人工设计等影响因素往往决定这这一环节的好坏，深度学习可以自动学习特征，却很难学到一些交叉特征。本文提出了一种交叉的网络结构的深度学习模型DCN，Deep &amp; Cross Network，可以有效的寻找交叉特征，在CTR预估方面可以取得较好的效果。
+          特征工程一直是很多预测模型效果突出的关键，人工设计等影响因素往往决定这这一环节的好坏，深度学习可以自动学习特征，却很难学到一些交叉特征。本文提出了一种交叉的网络结构的深度学习模型DCN，Deep
+&amp; Cross
+Network，可以有效的寻找交叉特征，在CTR预估方面可以取得较好的效果。
 DCN模型可以有效学习大规模的稀疏和稠密特征，并且能够有效抓住特征间的交叉关系，并且只需要较低的计算开
           ...
           <!--noindex-->
@@ -698,7 +701,8 @@ DCN模型可以有效学习大规模的稀疏和稠密特征，并且能够有�
       
         
           
-          这篇文章是Airbnb的一篇文章，发在KDD2017上，介绍了一篇叫梯度提升决策表（Gradient Boosted Decision Tables）的方法。本文的motivation idea有以下几点：
+          这篇文章是Airbnb的一篇文章，发在KDD2017上，介绍了一篇叫梯度提升决策表（Gradient
+Boosted Decision Tables）的方法。本文的motivation idea有以下几点：
 
 可以更好的理解梯度提升bias和variance的权衡，在降低bias的同时，会造成variance的增加，正则化可以在一定程度上解决这些问题，如shrinkage、subsampling等
           ...
@@ -850,7 +854,8 @@ DCN模型可以有效学习大规模的稀疏和稠密特征，并且能够有�
       
         
           
-          今天来看一部南大的发在KDD2017上的推荐系统的论文，HoORaYs。传统的推荐系统，不管是基于显示反馈还是隐式反馈的模型，都是在建立在一阶评分距离原则，而本篇论文是一个高阶评分距离的探索，目标不仅是最小化同个用户同个物品的估计评分与真实评分的距离（也就是一阶评分距离），还最小化同一用户不同物品之间，估计值与评分值之间的差异（二阶评分距离），并将该问题作为一个正则优化问题，并提出了解决算法。 $
+          今天来看一部南大的发在KDD2017上的推荐系统的论文，HoORaYs。传统的推荐系统，不管是基于显示反馈还是隐式反馈的模型，都是在建立在一阶评分距离原则，而本篇论文是一个高阶评分距离的探索，目标不仅是最小化同个用户同个物品的估计评分与真实评分的距离（也就是一阶评分距离），还最小化同一用户不同物品之间，估计值与评分值之间的差异（二阶评分距离），并将该问题作为一个正则优化问题，并提出了解决算法。
+$
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1144,7 +1149,9 @@ csr_matrix
         
           
           AdaBRP
-今天这篇看的是一篇ensemble方法和推荐系统结合的文章，提出一个叫AdaBPR（Adaptive Boosting Personalized Ranking），这篇文章前面的Introduction和related work都写不错，还对我一直不太明白的point-wise、pair-wise和list-wise三种基于模型的方法做出了解释，并给出了一系列参考文献：
+今天这篇看的是一篇ensemble方法和推荐系统结合的文章，提出一个叫AdaBPR（Adaptive
+Boosting Personalized Ranking），这篇文章前面的Introduction和related
+work都写不错，还对我一直不太明白的point-wise、pair-wise和list-wise三种基于模型的方法做出了解释，并给出了一系列参考文献：
 
 point
           ...
@@ -1296,7 +1303,12 @@ point
       
         
           
-          看16年recsys的best paper，Local Item-Item Models for Top-N Recommendation 中提到的SLIM方法，最近抓着这个方法研究了一下。然后还发现了Xia Ning和George Karypis这两位，这两位一直是SLIM相关论文的主要作者，XiaNing应该是George Karypis的学生，从最早的SLIM方法开始，到后面也有两篇（好像是
+          看16年recsys的best paper，Local
+Item-Item Models for Top-N Recommendation
+中提到的SLIM方法，最近抓着这个方法研究了一下。然后还发现了Xia
+Ning和George
+Karypis这两位，这两位一直是SLIM相关论文的主要作者，XiaNing应该是George
+Karypis的学生，从最早的SLIM方法开始，到后面也有两篇（好像是
           ...
           <!--noindex-->
           <div class="post-button text-center">

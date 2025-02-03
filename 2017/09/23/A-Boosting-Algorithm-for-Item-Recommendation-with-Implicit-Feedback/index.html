@@ -394,33 +394,58 @@
 
       
         <h1 id="adabrp">AdaBRP</h1>
-<p>今天这篇看的是一篇ensemble方法和推荐系统结合的文章，提出一个叫AdaBPR（Adaptive Boosting Personalized Ranking），这篇文章前面的Introduction和related work都写不错，还对我一直不太明白的point-wise、pair-wise和list-wise三种基于模型的方法做出了解释，并给出了一系列参考文献：</p>
+<p>今天这篇看的是一篇ensemble方法和推荐系统结合的文章，提出一个叫AdaBPR（Adaptive
+Boosting Personalized Ranking），这篇文章前面的Introduction和related
+work都写不错，还对我一直不太明白的point-wise、pair-wise和list-wise三种基于模型的方法做出了解释，并给出了一系列参考文献：</p>
 <ul>
 <li>point-wise就是将所有观测到的样本作为训练的正例，将缺失的样本作为负例，也有别的评价标准，主要想法就是差别对待每一个样本；</li>
 <li>pair-wise就是相比于未交互过的物品，用户更偏好于交互过的物品，总的来说就是比较的看待有无交互过的物品；</li>
 <li>list-wise就是针对一个损失函数，如需要排序的roc、auc，来优化总体相对的排序；</li>
 </ul>
-<p>Related Work中作者还回顾了一些用ensemble做推荐系统的例子，有时间要好好读一下，先列在下面。</p>
+<p>Related
+Work中作者还回顾了一些用ensemble做推荐系统的例子，有时间要好好读一下，先列在下面。</p>
 <ul>
-<li><a href="www.jmlr.org/proceedings/papers/v29/Jiang13.pdf">Novel boosting frameworks to improve the performance of collaborative filtering</a></li>
-<li><a target="_blank" rel="noopener" href="https://pdfs.semanticscholar.org/cd57/9e1e9cc350c3f7746e6ae6911a97e21ba27c.pdf">Gradient boosting factorization machines</a></li>
-<li>Adamf: Adaptive boosting matrix factorization for recommender system</li>
+<li><a href="www.jmlr.org/proceedings/papers/v29/Jiang13.pdf">Novel
+boosting frameworks to improve the performance of collaborative
+filtering</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://pdfs.semanticscholar.org/cd57/9e1e9cc350c3f7746e6ae6911a97e21ba27c.pdf">Gradient
+boosting factorization machines</a></li>
+<li>Adamf: Adaptive boosting matrix factorization for recommender
+system</li>
 </ul>
-<p>作者本篇文章的主要思想就是去优化AUC或者是MAP <span class="math display">\[
-\text{AUC}=\frac{1}{|U|}\sum_{u\in U}\frac{1}{|V_u^+|}\sum_{i\in V_u^+}\frac{1}{V_u^-}\sum_{j\in V_u^-}\mathbb{I}(\pi_{ui}&lt;\pi_{uj})
+<p>作者本篇文章的主要思想就是去优化AUC或者是MAP <span
+class="math display">\[
+\text{AUC}=\frac{1}{|U|}\sum_{u\in U}\frac{1}{|V_u^+|}\sum_{i\in
+V_u^+}\frac{1}{V_u^-}\sum_{j\in V_u^-}\mathbb{I}(\pi_{ui}&lt;\pi_{uj})
 \]</span></p>
 <p><span class="math display">\[
-\text{MAP}=\frac{1}{|U|}\sum_{u\in U}\frac{\sum_{i\in V_u^+}\frac{\sum_{j\in V}\mathbb{I}(y_{uj}&gt;0)\mathbb{I}(\pi_{ui}&lt;\pi_{uj})}{\pi_{ui}}}{|V^+_u|}
+\text{MAP}=\frac{1}{|U|}\sum_{u\in U}\frac{\sum_{i\in
+V_u^+}\frac{\sum_{j\in
+V}\mathbb{I}(y_{uj}&gt;0)\mathbb{I}(\pi_{ui}&lt;\pi_{uj})}{\pi_{ui}}}{|V^+_u|}
 \]</span></p>
-<p>用<span class="math inline">\(E[\pi(u,i,f)]\)</span> 来表示交互样本<span class="math inline">\((u,i)\)</span> 的排序准确度，<span class="math inline">\(\pi(u,i,f)\)</span> 是排序位置，由模型<span class="math inline">\(f\)</span> 决定，令<span class="math inline">\(\beta_u=\frac{1}{|V_u^+|}\)</span> 则 <span class="math display">\[
-\frac{1}{|U|}\sum_{u\in U}\frac{1}{|V_u^+|}\sum_{i\in V_u^+}E[\pi(u,i,f)]\propto\sum_{(u,i)\in \mathcal{D}}\beta_uE[\pi(u,i,f)]
-\]</span> 为了最大化这个排序正确率，提出损失函数为： <span class="math display">\[
-\min_{f\in\mathcal{F}}\sum_{(u,i)\in \mathcal{D}}\beta_u\{1-E[\pi(u,i,f)]\}
-\]</span> 因为该损失函数不可导不可微不连续，所以我们选择一个性质好的，指数损失函数 <span class="math display">\[
-\min_{f\in\mathcal{F}}\sum_{(u,i)\in \mathcal{D}}\beta_u\exp\{-E[\pi(u,i,f)]\}
+<p>用<span class="math inline">\(E[\pi(u,i,f)]\)</span>
+来表示交互样本<span class="math inline">\((u,i)\)</span>
+的排序准确度，<span class="math inline">\(\pi(u,i,f)\)</span>
+是排序位置，由模型<span class="math inline">\(f\)</span> 决定，令<span
+class="math inline">\(\beta_u=\frac{1}{|V_u^+|}\)</span> 则 <span
+class="math display">\[
+\frac{1}{|U|}\sum_{u\in U}\frac{1}{|V_u^+|}\sum_{i\in
+V_u^+}E[\pi(u,i,f)]\propto\sum_{(u,i)\in
+\mathcal{D}}\beta_uE[\pi(u,i,f)]
+\]</span> 为了最大化这个排序正确率，提出损失函数为： <span
+class="math display">\[
+\min_{f\in\mathcal{F}}\sum_{(u,i)\in
+\mathcal{D}}\beta_u\{1-E[\pi(u,i,f)]\}
+\]</span>
+因为该损失函数不可导不可微不连续，所以我们选择一个性质好的，指数损失函数
+<span class="math display">\[
+\min_{f\in\mathcal{F}}\sum_{(u,i)\in
+\mathcal{D}}\beta_u\exp\{-E[\pi(u,i,f)]\}
 \]</span> 然后根据AdaBoost的方法，令 <span class="math display">\[
 f=\sum^T_{t=1}\alpha_th^{(t)}
-\]</span> 采用AdaBoost的方法来优化，其中每一代的基学习器都是一个矩阵分解模型，每一代根据加权的AUC来训练矩阵分解模型和生成新的数据分布。</p>
+\]</span>
+采用AdaBoost的方法来优化，其中每一代的基学习器都是一个矩阵分解模型，每一代根据加权的AUC来训练矩阵分解模型和生成新的数据分布。</p>
 <h1 id="my-view">My view</h1>
 <p>总体来说，很impressive的work，但我感觉不管是前人用的CF-based还是这次MF-based，作为基学习器，都闲得过于强大了，之后一段时间内我会在这些模型的基础上做一些自己的尝试，具体idea保密哈哈哈。</p>
 

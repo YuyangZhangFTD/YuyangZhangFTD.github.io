@@ -104,7 +104,7 @@
 <meta property="og:description" content="最近恶补了一波广告相关文章，本文是预算控制平滑方面很经典的文章之一，由LinkedIn团队发表在KDD2014上。 摘要  Targeted online advertising is a prime source of revenue for many Internet companies. It is a common industry practice to use a generalize">
 <meta property="og:locale">
 <meta property="article:published_time" content="2022-05-21T04:48:17.000Z">
-<meta property="article:modified_time" content="2022-06-10T14:30:42.901Z">
+<meta property="article:modified_time" content="2022-06-10T14:30:42.000Z">
 <meta property="article:author" content="YuyangZhangFTD">
 <meta property="article:tag" content="Advertising">
 <meta property="article:tag" content="BudgetControl">
@@ -419,10 +419,23 @@
         <p>最近恶补了一波广告相关文章，本文是预算控制平滑方面很经典的文章之一，由LinkedIn团队发表在KDD2014上。</p>
 <h1 id="摘要">摘要</h1>
 <blockquote>
-<p>Targeted online advertising is a prime source of revenue for many Internet companies. It is a common industry practice to use a generalized second price auction mechanism to rank advertisements at every opportunity of an impression. This greedy algorithm is suboptimal for both advertisers and pub- lishers when advertisers have a finite budget. In a greedy mechanism high performing advertisers tend to drop out of the auction marketplace fast and that adversely affects both the advertiser experience and the publisher revenue. We describe a method for improving such ad serving systems by including a budget pacing component that serves ads by being aware of global supply patterns. Such a system is ben- eficial for both advertisers and publishers. We demonstrate the benefits of this component using experiments we con- ducted on advertising at LinkedIn.</p>
+<p>Targeted online advertising is a prime source of revenue for many
+Internet companies. It is a common industry practice to use a
+generalized second price auction mechanism to rank advertisements at
+every opportunity of an impression. This greedy algorithm is suboptimal
+for both advertisers and pub- lishers when advertisers have a finite
+budget. In a greedy mechanism high performing advertisers tend to drop
+out of the auction marketplace fast and that adversely affects both the
+advertiser experience and the publisher revenue. We describe a method
+for improving such ad serving systems by including a budget pacing
+component that serves ads by being aware of global supply patterns. Such
+a system is ben- eficial for both advertisers and publishers. We
+demonstrate the benefits of this component using experiments we con-
+ducted on advertising at LinkedIn.</p>
 </blockquote>
 <p>在线广告是许多互联网公司的主要收入来源，目前业界的普遍做法是，针对每个曝光采用二价拍卖机制对广告进行排名。但是当广告商拥有有限的预算时，这种贪婪的算法对广告商和发布者来说都是次优的。</p>
-<p>因为高消耗（High Performing）广告主往往会迅速退出拍卖市场，这对广告主的体验和平台的收入都有负向影响。</p>
+<p>因为高消耗（High
+Performing）广告主往往会迅速退出拍卖市场，这对广告主的体验和平台的收入都有负向影响。</p>
 <p>我们描述了一种改进此类广告服务系统的方法，它包括一个通过感知全局的消耗模式来控制预算消耗的模块。这样的系统对广告商和出版商都是有益的，我们用我们在LinkedIn的广告实验来证明这个模块的收益。</p>
 <h1 id="问题背景">问题背景</h1>
 <p>一个广告计划会参与每一次有资格的（此处指广告计划覆盖人群的曝光）竞价，直到预算用完。当一个广告计划的预算用完了之后，就会在剩下的时间里退出交易市场。二价拍卖机制的目标是贪婪优化每一次曝光的价值。具体表现为：</p>
@@ -435,23 +448,40 @@
 <h1 id="解决方案">解决方案</h1>
 <p>此处简单扩展一下，一般控制预算有两种方式：</p>
 <ul>
-<li>修改竞价（Modified Biding），通过修改竞价来提升广告的消耗，这种方式优点在于可以增加整体消耗，当所有流量都参竞仍然无法消耗完预算，那么必然需要提高出价来竞争得到更多的流量，消耗上限更高，缺点在于如果想通过降低出价提升广告计划时间长度，那么大家出价都会降低，整体消耗会非常低，平台收入受损。</li>
-<li>概率截流（Probabilistic Throttling），通过参竞的概率来控制预算的消耗情况，这种方法优势在于并不会影响竞争度，平台整体收入不会受损，缺点在于上限有限，无法从高出价、高预算的广告主身上赚到更多的钱。</li>
+<li>修改竞价（Modified
+Biding），通过修改竞价来提升广告的消耗，这种方式优点在于可以增加整体消耗，当所有流量都参竞仍然无法消耗完预算，那么必然需要提高出价来竞争得到更多的流量，消耗上限更高，缺点在于如果想通过降低出价提升广告计划时间长度，那么大家出价都会降低，整体消耗会非常低，平台收入受损。</li>
+<li>概率截流（Probabilistic
+Throttling），通过参竞的概率来控制预算的消耗情况，这种方法优势在于并不会影响竞争度，平台整体收入不会受损，缺点在于上限有限，无法从高出价、高预算的广告主身上赚到更多的钱。</li>
 </ul>
-<p>本文的做法是预估未来的流量分布，并采用概率截流（Probabilistic Throttling）的方式动态控制预算。</p>
-<p>将全天分成<span class="math inline">\(T\)</span>个时间段，预估广告<span class="math inline">\(i\)</span>从0点到时间段<span class="math inline">\(t\)</span>的流量记为<span class="math inline">\(f_{i,t}\)</span>，将累积应消耗预算<span class="math inline">\(d_i\)</span>按照分配到每个时间段<span class="math inline">\(a_{i,t}=\frac{f_{i,t}}{f_{i,T}}d_i\)</span>，然后我们根据累积应消耗预算来动态调整节流概率<span class="math inline">\(p_{i,t}\)</span>： <span class="math display">\[
+<p>本文的做法是预估未来的流量分布，并采用概率截流（Probabilistic
+Throttling）的方式动态控制预算。</p>
+<p>将全天分成<span
+class="math inline">\(T\)</span>个时间段，预估广告<span
+class="math inline">\(i\)</span>从0点到时间段<span
+class="math inline">\(t\)</span>的流量记为<span
+class="math inline">\(f_{i,t}\)</span>，将累积应消耗预算<span
+class="math inline">\(d_i\)</span>按照分配到每个时间段<span
+class="math inline">\(a_{i,t}=\frac{f_{i,t}}{f_{i,T}}d_i\)</span>，然后我们根据累积应消耗预算来动态调整节流概率<span
+class="math inline">\(p_{i,t}\)</span>： <span class="math display">\[
 p_{i,t}=\begin{cases}
 \min(p_{i,t-1} \cdot (1+r_t), 1) &amp;&amp; s_{i,t} \leq a_{i,t} \\
 \max(p_{i,t-1} \cdot (1-r_t), 0) &amp;&amp; s_{i,t} &gt; a_{i,t} \\
 \end{cases}
 \]</span></p>
-<p>其中<span class="math inline">\(s_{i,t}\)</span>是截止<span class="math inline">\(t\)</span>时刻后实际使用预算，<span class="math inline">\(r_t\)</span>为<span class="math inline">\(t\)</span>时刻的调整幅度。</p>
+<p>其中<span class="math inline">\(s_{i,t}\)</span>是截止<span
+class="math inline">\(t\)</span>时刻后实际使用预算，<span
+class="math inline">\(r_t\)</span>为<span
+class="math inline">\(t\)</span>时刻的调整幅度。</p>
 <p>实现细节：</p>
 <ul>
 <li>更新频率，1min一次更新（工程实现方式后面有提到）</li>
 <li>预测，预测每个广告目前用户群体的访问量（PV），具体使用方法没细说，大概率是时间序列类的方法</li>
-<li>调整率，<span class="math inline">\(r_t=10\%\)</span>，理论上应该根据消耗率<span class="math inline">\(\partial s_{i,t}/\partial t\)</span>来调整，但是噪声比较大，未来可能会做</li>
-<li>慢启动，<span class="math inline">\(p_{i,0}=10\%\)</span>，这样做是为了让系统可以学习广告的消耗情况，有更长的时间可以调整，另一方面即使速率比较慢，25min也可以将节流概率调整到1</li>
+<li>调整率，<span
+class="math inline">\(r_t=10\%\)</span>，理论上应该根据消耗率<span
+class="math inline">\(\partial s_{i,t}/\partial
+t\)</span>来调整，但是噪声比较大，未来可能会做</li>
+<li>慢启动，<span
+class="math inline">\(p_{i,0}=10\%\)</span>，这样做是为了让系统可以学习广告的消耗情况，有更长的时间可以调整，另一方面即使速率比较慢，25min也可以将节流概率调整到1</li>
 <li>快速完成，因为流量是预估的，所以每日会留出一定时间buffer避免预算消耗不完，每天22点之后，没有消耗完的预算会被快速消耗。</li>
 </ul>
 <p>工程实现：</p>

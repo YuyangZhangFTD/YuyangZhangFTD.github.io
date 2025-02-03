@@ -96,12 +96,12 @@
 
 
 
-<meta name="description" content="今天读ESL，看到第二章中对LS(Least Square)和k-NN的bias和variance对比，突然有了些新的理解，在这里记录一下。 All we know 放一张经常可以看到的图，这张图来自机器学习中的Bias(偏差)，Error(误差)，和Variance(方差)有什么区别和联系？ 中的[@修宇亮](https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;yuliangxiu&#x2F;ans">
+<meta name="description" content="今天读ESL，看到第二章中对LS(Least Square)和k-NN的bias和variance对比，突然有了些新的理解，在这里记录一下。 All we know 放一张经常可以看到的图，这张图来自机器学习中的Bias(偏差)，Error(误差)，和Variance(方差)有什么区别和联系？ 中的@修宇亮 的回答。   1  原图应该是PRML里的图好像，记不清了。 还有之前文章中写得   2">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Understanding Bias and Variance">
 <meta property="og:url" content="http://yoursite.com/2017/08/24/Understanding-Bias-and-Variance/index.html">
 <meta property="og:site_name" content="Arvin&#39;s Blog">
-<meta property="og:description" content="今天读ESL，看到第二章中对LS(Least Square)和k-NN的bias和variance对比，突然有了些新的理解，在这里记录一下。 All we know 放一张经常可以看到的图，这张图来自机器学习中的Bias(偏差)，Error(误差)，和Variance(方差)有什么区别和联系？ 中的[@修宇亮](https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;yuliangxiu&#x2F;ans">
+<meta property="og:description" content="今天读ESL，看到第二章中对LS(Least Square)和k-NN的bias和variance对比，突然有了些新的理解，在这里记录一下。 All we know 放一张经常可以看到的图，这张图来自机器学习中的Bias(偏差)，Error(误差)，和Variance(方差)有什么区别和联系？ 中的@修宇亮 的回答。   1  原图应该是PRML里的图好像，记不清了。 还有之前文章中写得   2">
 <meta property="og:locale">
 <meta property="og:image" content="http://yoursite.com/2017/08/24/Understanding-Bias-and-Variance/1.png">
 <meta property="og:image" content="http://yoursite.com/2017/08/24/Understanding-Bias-and-Variance/2.png">
@@ -425,26 +425,42 @@
       
 
       
-        <p>今天读ESL，看到第二章中对LS(Least Square)和k-NN的bias和variance对比，突然有了些新的理解，在这里记录一下。</p>
+        <p>今天读ESL，看到第二章中对LS(Least
+Square)和k-NN的bias和variance对比，突然有了些新的理解，在这里记录一下。</p>
 <h3 id="all-we-know">All we know</h3>
-<p>放一张经常可以看到的图，这张图来自<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/27068705">机器学习中的Bias(偏差)，Error(误差)，和Variance(方差)有什么区别和联系？</a> 中的<span class="citation" data-cites="修宇亮">[@修宇亮]</span>(https://www.zhihu.com/people/yuliangxiu/answers) 的回答。</p>
+<p>放一张经常可以看到的图，这张图来自<a
+target="_blank" rel="noopener" href="https://www.zhihu.com/question/27068705">机器学习中的Bias(偏差)，Error(误差)，和Variance(方差)有什么区别和联系？</a>
+中的<a target="_blank" rel="noopener" href="https://www.zhihu.com/people/yuliangxiu/answers"><span
+class="citation" data-cites="修宇亮">@修宇亮</span></a> 的回答。</p>
 <figure>
-<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
+<img src="1.png" alt="1" />
+<figcaption aria-hidden="true">1</figcaption>
 </figure>
 <p>原图应该是PRML里的图好像，记不清了。</p>
 <p>还有之前文章中写得</p>
 <figure>
-<img src="2.png" alt="2" /><figcaption aria-hidden="true">2</figcaption>
+<img src="2.png" alt="2" />
+<figcaption aria-hidden="true">2</figcaption>
 </figure>
 <figure>
-<img src="10.png" alt="10" /><figcaption aria-hidden="true">10</figcaption>
+<img src="10.png" alt="10" />
+<figcaption aria-hidden="true">10</figcaption>
 </figure>
 <p>简单来说，bias决定假设集合中最好的假设与真实上帝函数的差别，而variance是训练中以经验风险最小化原则得到的假设与bias假设集合中最好假设的差别。</p>
 <h3 id="what-i-find-today">What I find today</h3>
 <p>简单的来说，bias就是模型对整体训练数据的把握，而variance描述每个样本扰动对模型的影响。</p>
 <p>今天看ESL时，书中说：</p>
 <blockquote>
-<p>The linear decision boundary from least squares is very smooth, and apparently stable to fit. It does appear to rely heavily on the assumption that a linear decision boundary is appropriate. In language we will develop shortly, it has low variance and potentially high bias. On the other hand, the k-nearest-neighbor procedures do not appear to rely on any stringent assumptions about the underlying data, and can adapt to any situation. However, any particular subregion of the decision boundary depends on a handful of input points and their particular positions, and is thus wiggly and unstable—high variance and low bias.</p>
+<p>The linear decision boundary from least squares is very smooth, and
+apparently stable to fit. It does appear to rely heavily on the
+assumption that a linear decision boundary is appropriate. In language
+we will develop shortly, it has low variance and potentially high bias.
+On the other hand, the k-nearest-neighbor procedures do not appear to
+rely on any stringent assumptions about the underlying data, and can
+adapt to any situation. However, any particular subregion of the
+decision boundary depends on a handful of input points and their
+particular positions, and is thus wiggly and unstable—high variance and
+low bias.</p>
 </blockquote>
 <p>LS得出的结果有较低variance和较高bias，而k-NN得出的结果有较高的variance和较低bias。</p>
 <p>看到这里的时候我觉得可以这么理解：</p>
@@ -454,37 +470,49 @@
 </ul>
 <p>画图来解释，我们的数据分布如下，底下为真实分布，圆圈为我们采到的样本。</p>
 <figure>
-<img src="4.png" alt="4" /><figcaption aria-hidden="true">4</figcaption>
+<img src="4.png" alt="4" />
+<figcaption aria-hidden="true">4</figcaption>
 </figure>
 <p>通常我们选择的模型应该是这样的</p>
 <figure>
-<img src="5.png" alt="5" /><figcaption aria-hidden="true">5</figcaption>
+<img src="5.png" alt="5" />
+<figcaption aria-hidden="true">5</figcaption>
 </figure>
 <p>足够简单，而且能够最大程度描述数据的分布。</p>
 <p>我们用简单的模型来描述数据时，特别是当我们采到的训练样本有问题时，我们就会得到一个高bias的模型</p>
 <figure>
-<img src="6.png" alt="6" /><figcaption aria-hidden="true">6</figcaption>
+<img src="6.png" alt="6" />
+<figcaption aria-hidden="true">6</figcaption>
 </figure>
 <p>此时，单个样本的正确与否不会过多地影响整体模型。</p>
 <p>当我们用复杂的模型来描述数据时</p>
 <figure>
-<img src="7.png" alt="7" /><figcaption aria-hidden="true">7</figcaption>
+<img src="7.png" alt="7" />
+<figcaption aria-hidden="true">7</figcaption>
 </figure>
 <p>尽管我们能在训练数据上表现很好，可单个数据的变动，就会很大程度影响模型</p>
 <figure>
-<img src="8.png" alt="8" /><figcaption aria-hidden="true">8</figcaption>
+<img src="8.png" alt="8" />
+<figcaption aria-hidden="true">8</figcaption>
 </figure>
 <figure>
-<img src="9.png" alt="9" /><figcaption aria-hidden="true">9</figcaption>
+<img src="9.png" alt="9" />
+<figcaption aria-hidden="true">9</figcaption>
 </figure>
 <p>样本的扰动（或者说误差）会很大程度影响模型，这样的模型具有高variance。</p>
-<h3 id="bias-and-variance-in-bagging-and-boosting">Bias and Variance in Bagging and Boosting</h3>
+<h3 id="bias-and-variance-in-bagging-and-boosting">Bias and Variance in
+Bagging and Boosting</h3>
 <p>为什么说Bagging是减少variance，而Boosting是减少bias？之前一直比较困惑，今天感觉可以说通了。Bagging是bootstrap+aggregation，对样本的不断重采样和聚合训练，不断减少了每个样本的影响，增加了总体对于各个样本的抗干扰能力，所以是降低variance。而Boosting是串行的迭代算法，不断去改进拟合每一个样本，自然对样本的依赖性强，虽然可以很好的拟合所有训练数据，但是如果训练数据有问题，则模型会很差，bias也就很高。</p>
 <h3 id="what-else">What else</h3>
 <figure>
-<img src="3.png" alt="3" /><figcaption aria-hidden="true">3</figcaption>
+<img src="3.png" alt="3" />
+<figcaption aria-hidden="true">3</figcaption>
 </figure>
-<p>这张图也来自<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/27068705">机器学习中的Bias(偏差)，Error(误差)，和Variance(方差)有什么区别和联系？</a> 中的<span class="citation" data-cites="修宇亮">[@修宇亮]</span>(https://www.zhihu.com/people/yuliangxiu/answers) 的回答。刚好看到这段，读过UML之后对这段话也是有所理解了。如果让训练误差小，则需要增加模型的capacity，模型复杂了，假设集合就大了，使训练误差和泛化误差足够接近的样本数也就多了，此时复杂的模型具有低的bias，反之，如果样本数量一定了，为了让训练误差和泛化误差足够接近则需要选择小的假设集合，也就是降低模型的capacity（某种程度上可以认为是参数数量），此时模型有较小的variance。</p>
+<p>这张图也来自<a
+target="_blank" rel="noopener" href="https://www.zhihu.com/question/27068705">机器学习中的Bias(偏差)，Error(误差)，和Variance(方差)有什么区别和联系？</a>
+中的<a target="_blank" rel="noopener" href="https://www.zhihu.com/people/yuliangxiu/answers"><span
+class="citation" data-cites="修宇亮">@修宇亮</span></a>
+的回答。刚好看到这段，读过UML之后对这段话也是有所理解了。如果让训练误差小，则需要增加模型的capacity，模型复杂了，假设集合就大了，使训练误差和泛化误差足够接近的样本数也就多了，此时复杂的模型具有低的bias，反之，如果样本数量一定了，为了让训练误差和泛化误差足够接近则需要选择小的假设集合，也就是降低模型的capacity（某种程度上可以认为是参数数量），此时模型有较小的variance。</p>
 
       
     </div>
@@ -676,7 +704,8 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#all-we-know"><span class="nav-number">1.</span> <span class="nav-text">All we know</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#what-i-find-today"><span class="nav-number">2.</span> <span class="nav-text">What I find today</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bias-and-variance-in-bagging-and-boosting"><span class="nav-number">3.</span> <span class="nav-text">Bias and Variance in Bagging and Boosting</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#what-else"><span class="nav-number">4.</span> <span class="nav-text">What else</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#all-we-know"><span class="nav-number">1.</span> <span class="nav-text">All we know</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#what-i-find-today"><span class="nav-number">2.</span> <span class="nav-text">What I find today</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bias-and-variance-in-bagging-and-boosting"><span class="nav-number">3.</span> <span class="nav-text">Bias and Variance in
+Bagging and Boosting</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#what-else"><span class="nav-number">4.</span> <span class="nav-text">What else</span></a></li></ol></div>
             
 
           </div>

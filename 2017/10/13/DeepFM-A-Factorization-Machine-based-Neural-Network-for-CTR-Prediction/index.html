@@ -96,12 +96,12 @@
 
 
 
-<meta name="description" content="再来看一篇。。有点累了都。。这篇文章是一篇FM和DL的结合，2017年的文章，这篇文章读起来就给人感觉比较符合当前的主流想法了。 模型的主要结构如下图所示  1  与谷歌之前wide &amp; deep的model不同的是，DeepFM的输入层共享同样的embedding，模型也分为两部分，FM和Deep。 FM部分的结构如下图所示  2  就是一个FM模型 \[ y_{\text{FM}}&#x3D;\">
+<meta name="description" content="再来看一篇。。有点累了都。。这篇文章是一篇FM和DL的结合，2017年的文章，这篇文章读起来就给人感觉比较符合当前的主流想法了。 模型的主要结构如下图所示   1  与谷歌之前wide &amp; deep的model不同的是，DeepFM的输入层共享同样的embedding，模型也分为两部分，FM和Deep。 FM部分的结构如下图所示   2  就是一个FM模型 \[ y_{\text{FM}}">
 <meta property="og:type" content="article">
 <meta property="og:title" content="DeepFM- A Factorization-Machine based Neural Network for CTR Prediction">
 <meta property="og:url" content="http://yoursite.com/2017/10/13/DeepFM-A-Factorization-Machine-based-Neural-Network-for-CTR-Prediction/index.html">
 <meta property="og:site_name" content="Arvin&#39;s Blog">
-<meta property="og:description" content="再来看一篇。。有点累了都。。这篇文章是一篇FM和DL的结合，2017年的文章，这篇文章读起来就给人感觉比较符合当前的主流想法了。 模型的主要结构如下图所示  1  与谷歌之前wide &amp; deep的model不同的是，DeepFM的输入层共享同样的embedding，模型也分为两部分，FM和Deep。 FM部分的结构如下图所示  2  就是一个FM模型 \[ y_{\text{FM}}&#x3D;\">
+<meta property="og:description" content="再来看一篇。。有点累了都。。这篇文章是一篇FM和DL的结合，2017年的文章，这篇文章读起来就给人感觉比较符合当前的主流想法了。 模型的主要结构如下图所示   1  与谷歌之前wide &amp; deep的model不同的是，DeepFM的输入层共享同样的embedding，模型也分为两部分，FM和Deep。 FM部分的结构如下图所示   2  就是一个FM模型 \[ y_{\text{FM}}">
 <meta property="og:locale">
 <meta property="og:image" content="http://yoursite.com/2017/10/13/DeepFM-A-Factorization-Machine-based-Neural-Network-for-CTR-Prediction/1.png">
 <meta property="og:image" content="http://yoursite.com/2017/10/13/DeepFM-A-Factorization-Machine-based-Neural-Network-for-CTR-Prediction/2.png">
@@ -403,27 +403,34 @@
         <p>再来看一篇。。有点累了都。。这篇文章是一篇FM和DL的结合，2017年的文章，这篇文章读起来就给人感觉比较符合当前的主流想法了。</p>
 <p>模型的主要结构如下图所示</p>
 <figure>
-<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
+<img src="1.png" alt="1" />
+<figcaption aria-hidden="true">1</figcaption>
 </figure>
-<p>与谷歌之前wide &amp; deep的model不同的是，DeepFM的输入层共享同样的embedding，模型也分为两部分，FM和Deep。</p>
+<p>与谷歌之前wide &amp;
+deep的model不同的是，DeepFM的输入层共享同样的embedding，模型也分为两部分，FM和Deep。</p>
 <p>FM部分的结构如下图所示</p>
 <figure>
-<img src="2.png" alt="2" /><figcaption aria-hidden="true">2</figcaption>
+<img src="2.png" alt="2" />
+<figcaption aria-hidden="true">2</figcaption>
 </figure>
 <p>就是一个FM模型 <span class="math display">\[
-y_{\text{FM}}=\langle w,x\rangle+\sum^d_{i=1}\sum^d_{j=i+1}\langle V_i,V_j\rangle x_i\cdot x_j
+y_{\text{FM}}=\langle w,x\rangle+\sum^d_{i=1}\sum^d_{j=i+1}\langle
+V_i,V_j\rangle x_i\cdot x_j
 \]</span> 用来抓住一阶和二阶的特征。</p>
 <p>Deep部分如图所示</p>
 <figure>
-<img src="3.png" alt="3" /><figcaption aria-hidden="true">3</figcaption>
+<img src="3.png" alt="3" />
+<figcaption aria-hidden="true">3</figcaption>
 </figure>
 <p>总的来说就是去用NN学习非线性特征，并做了embedding。</p>
 <p>作者在后面还做了和其他几种基于DL的模型的对比</p>
 <figure>
-<img src="4.png" alt="4" /><figcaption aria-hidden="true">4</figcaption>
+<img src="4.png" alt="4" />
+<figcaption aria-hidden="true">4</figcaption>
 </figure>
 <figure>
-<img src="5.png" alt="5" /><figcaption aria-hidden="true">5</figcaption>
+<img src="5.png" alt="5" />
+<figcaption aria-hidden="true">5</figcaption>
 </figure>
 
       

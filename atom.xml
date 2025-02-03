@@ -64,7 +64,8 @@
     <summary type="html">&lt;p&gt;一转眼三年，零零散散还是要写一点，大部分摘自2023的复盘。&lt;/p&gt;
 &lt;h1 id=&quot;关于工作&quot;&gt;关于「工作」&lt;/h1&gt;
 &lt;figure&gt;
-&lt;img src=&quot;./alibaba.png&quot; alt=&quot;入职那天阿里巴巴的股价&quot; /&gt;&lt;figcaption</summary>
+&lt;img src=&quot;./alibaba.png&quot; alt=&quot;入职那天阿里巴巴的股价&quot; /&gt;
+&lt;figcaption</summary>
         
       
     
@@ -91,7 +92,8 @@
         
     <summary type="html">&lt;h1 id=&quot;摘要&quot;&gt;摘要&lt;/h1&gt;
 &lt;blockquote&gt;
-&lt;p&gt;Data selection bias has been a long-lasting challenge in the machine learning domain, especially in</summary>
+&lt;p&gt;Data selection bias has been a long-lasting challenge in the machine
+learning domain, especially in</summary>
         
       
     
@@ -122,7 +124,8 @@
         
     <summary type="html">&lt;h1 id=&quot;摘要&quot;&gt;摘要&lt;/h1&gt;
 &lt;blockquote&gt;
-&lt;p&gt;The Click-Through Rate (CTR) prediction task is critical in industrial recom- mender systems, where</summary>
+&lt;p&gt;The Click-Through Rate (CTR) prediction task is critical in
+industrial recom- mender systems, where</summary>
         
       
     
@@ -155,8 +158,10 @@
       
         
         
-    <summary type="html">&lt;h1 id=&quot;摘要&quot;&gt;&lt;a href=&quot;#摘要&quot; class=&quot;headerlink&quot; title=&quot;摘要&quot;&gt;&lt;/a&gt;摘要&lt;/h1&gt;&lt;blockquote&gt;
-&lt;p&gt;Recommendation system serves as a conduit connecting</summary>
+    <summary type="html">&lt;h1 id=&quot;摘要&quot;&gt;摘要&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Recommendation system serves as a conduit connecting users to an
+incredibly large, diverse and ever</summary>
         
       
     
@@ -187,7 +192,8 @@
         
     <summary type="html">&lt;h1 id=&quot;摘要&quot;&gt;摘要&lt;/h1&gt;
 &lt;blockquote&gt;
-&lt;p&gt;The dominant sequence transduction models are based on complex recurrent or convolutional neural</summary>
+&lt;p&gt;The dominant sequence transduction models are based on complex
+recurrent or convolutional neural</summary>
         
       
     
@@ -251,7 +257,8 @@
         
         
     <summary type="html">&lt;p&gt;TL;DR&lt;/p&gt;
-&lt;p&gt;本文是LinkedIn发表在CIKM 2020上的文章，主要内容是基于曝光行为来做Pacing，控制预算消耗，帮助广告主触达更广泛的人群。&lt;/p&gt;
+&lt;p&gt;本文是LinkedIn发表在CIKM
+2020上的文章，主要内容是基于曝光行为来做Pacing，控制预算消耗，帮助广告主触达更广泛的人群。&lt;/p&gt;
 &lt;h1</summary>
         
       
@@ -284,7 +291,10 @@
         
         
     <summary type="html">&lt;p&gt;TL;DR,&lt;/p&gt;
-&lt;p&gt;本文感觉像是一篇大作业文章，应该还不是终稿，有很多typo而且写得不那么易懂，但Stefan Wager是作者之一。主要讨论两个常见的用于估计“异质处理效应”（HTE）的forest模型，causal forest和model-based</summary>
+&lt;p&gt;本文感觉像是一篇大作业文章，应该还不是终稿，有很多typo而且写得不那么易懂，但Stefan
+Wager是作者之一。主要讨论两个常见的用于估计“异质处理效应”（HTE）的forest模型，causal
+forest和model-based
+for</summary>
         
       
     
@@ -316,7 +326,8 @@
         
         
     <summary type="html">&lt;figure&gt;
-&lt;img src=&quot;1year.jpeg&quot; alt=&quot;一年香&quot; /&gt;&lt;figcaption</summary>
+&lt;img src=&quot;1year.jpeg&quot; alt=&quot;一年香&quot; /&gt;
+&lt;figcaption</summary>
         
       
     
@@ -334,7 +345,7 @@
     <link href="http://yoursite.com/2022/06/18/A-Unified-Solution-to-Constrained-Bidding-in-Online-Display-Advertising/"/>
     <id>http://yoursite.com/2022/06/18/A-Unified-Solution-to-Constrained-Bidding-in-Online-Display-Advertising/</id>
     <published>2022-06-18T03:26:45.000Z</published>
-    <updated>2022-06-25T07:40:43.458Z</updated>
+    <updated>2022-06-25T07:40:43.000Z</updated>
     
     
       
@@ -367,7 +378,7 @@
     <link href="http://yoursite.com/2022/06/10/Ads-Allocation-in-Feed-via-Constrained-Optimization/"/>
     <id>http://yoursite.com/2022/06/10/Ads-Allocation-in-Feed-via-Constrained-Optimization/</id>
     <published>2022-06-10T14:38:43.000Z</published>
-    <updated>2022-06-11T10:55:54.057Z</updated>
+    <updated>2022-06-11T10:55:54.000Z</updated>
     
     
       
@@ -427,7 +438,7 @@
     <link href="http://yoursite.com/2022/05/29/Optimized-Cost-per-Click-in-Taobao-Display-Advertising/"/>
     <id>http://yoursite.com/2022/05/29/Optimized-Cost-per-Click-in-Taobao-Display-Advertising/</id>
     <published>2022-05-29T13:07:35.000Z</published>
-    <updated>2022-05-29T13:11:43.782Z</updated>
+    <updated>2022-05-29T13:11:43.000Z</updated>
     
     
       
@@ -457,7 +468,7 @@
     <link href="http://yoursite.com/2022/05/21/Smart-Pacing-for-Effective-Online-Ad-Campaign-Optimization/"/>
     <id>http://yoursite.com/2022/05/21/Smart-Pacing-for-Effective-Online-Ad-Campaign-Optimization/</id>
     <published>2022-05-21T07:04:53.000Z</published>
-    <updated>2022-05-22T08:42:41.526Z</updated>
+    <updated>2022-05-22T08:42:41.000Z</updated>
     
     
       
@@ -488,7 +499,7 @@
     <link href="http://yoursite.com/2022/05/21/Budget-Pacing-for-Targeted-Online-Advertisements-at-LinkedIn/"/>
     <id>http://yoursite.com/2022/05/21/Budget-Pacing-for-Targeted-Online-Advertisements-at-LinkedIn/</id>
     <published>2022-05-21T04:48:17.000Z</published>
-    <updated>2022-06-10T14:30:42.901Z</updated>
+    <updated>2022-06-10T14:30:42.000Z</updated>
     
     
       
@@ -520,14 +531,15 @@
     <link href="http://yoursite.com/2022/05/08/Field-aware-Calibration-A-Simple-and-Empirically-Strong-Method-for-Reliable-Probabilistic-Predictions/"/>
     <id>http://yoursite.com/2022/05/08/Field-aware-Calibration-A-Simple-and-Empirically-Strong-Method-for-Reliable-Probabilistic-Predictions/</id>
     <published>2022-05-08T05:19:30.000Z</published>
-    <updated>2022-06-10T13:40:10.925Z</updated>
+    <updated>2022-06-10T13:40:10.000Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;p&gt;最近要做一些和广告出价相关的工作，恶补了一下广告相关的知识，这篇文章是WWW2020 腾讯的文章，解决广告场景下的概率校准问题。&lt;/p&gt;
+    <summary type="html">&lt;p&gt;最近要做一些和广告出价相关的工作，恶补了一下广告相关的知识，这篇文章是WWW2020
+腾讯的文章，解决广告场景下的概率校准问题。&lt;/p&gt;
 &lt;h1</summary>
         
       
@@ -558,7 +570,8 @@
         
         
     <summary type="html">&lt;p&gt;TL;DR&lt;/p&gt;
-&lt;p&gt;提出一种新的回归Loss来建模用户的长期价值，解决LTV分布并非高斯分布，而是一部分为0和一部分服从log normal的问题。&lt;/p&gt;
+&lt;p&gt;提出一种新的回归Loss来建模用户的长期价值，解决LTV分布并非高斯分布，而是一部分为0和一部分服从log
+normal的问题。&lt;/p&gt;
 &lt;h1</summary>
         
       
@@ -607,7 +620,7 @@
     <link href="http://yoursite.com/2022/03/18/Beyond-Customer-Lifetime-Valuation-Measuring-the-Value-of-Acquisition-and-Retention-for-Subscription-Services/"/>
     <id>http://yoursite.com/2022/03/18/Beyond-Customer-Lifetime-Valuation-Measuring-the-Value-of-Acquisition-and-Retention-for-Subscription-Services/</id>
     <published>2022-03-17T16:01:34.000Z</published>
-    <updated>2022-03-17T16:05:39.448Z</updated>
+    <updated>2022-03-17T16:05:39.000Z</updated>
     
     
       

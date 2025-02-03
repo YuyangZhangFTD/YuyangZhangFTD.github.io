@@ -571,7 +571,8 @@
         
           
           这篇文章发在IJCAI2017上，是一篇音乐推荐的文章，简单解读一下。
-用户在听歌的时候会留下很多数字信息，不仅可以反映出用户的喜好，还能够反映出歌曲之间的相似度，这在之前的音乐推荐中是不被重视的。本文提出了一种个性化的音乐推荐算法，能够有效地刻画出用户的喜好，作者先用word embedding方法估计歌曲之间的相似度，之后再将学习到的相似度嵌入矩阵分解模型中，来提升潜在特征的辨识度，一般选取\
+用户在听歌的时候会留下很多数字信息，不仅可以反映出用户的喜好，还能够反映出歌曲之间的相似度，这在之前的音乐推荐中是不被重视的。本文提出了一种个性化的音乐推荐算法，能够有效地刻画出用户的喜好，作者先用word
+embedding方法估计歌曲之间的相似度，之后再将学习到的相似度嵌入矩阵分解模型中，来提升潜在特征的辨识度，一般选取\
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -723,7 +724,8 @@
           
           Pytorch note 09.09
 求导机制
-每个变量的requires_grad 表明这个变量是否需要计算导数，在创建变量的时候进行设定
+每个变量的requires_grad
+表明这个变量是否需要计算导数，在创建变量的时候进行设定
 z = Variable(torch.randn(5, 5), requires_grad=True)
 这个参数可以让我们动态的调整每个变量是否需要梯度和是否更新。
 volatile 是干什么的暂时没有看懂，先留个坑。
@@ -880,7 +882,8 @@ pytorch的基本包to
           
           这篇论文核心思想是利用评论去解决冷启动问题同时增加预测的准确性，发表在IJCAI上，给我感觉稍微有点水的意味，文章中具体训练步骤说的不是很清楚，可能是我之前没有接触过，先挖个坑，以后填
 TLFM
-文中的主要思想是利用矩阵分解探究潜在影响因素，文中作者提出加入评论的个人因素作为补充： \[
+文中的主要思想是利用矩阵分解探究潜在影响因素，文中作者提出加入评论的个人因素作为补充：
+\[
 \hat{y}_{ui}=g(base+(\sum_{w\in W(r_{ui})}\alpha_wv_w^T
           ...
           <!--noindex-->
@@ -1032,7 +1035,8 @@ TLFM
         
           
           这篇论文应该是最早用SVD做推荐系统的文章，观点早已烂大街，前面篇幅的推荐方法分析也不是很适用现在的情况，本篇就记录一下算法细节。
-Existing Recommender Systems Approaches and their Limitations
+Existing
+Recommender Systems Approaches and their Limitations
 大部分协同过滤算法都是通过构造近似的近邻来达到推荐的目的，推荐算法分为：
 
 预测用户对物品的打分
@@ -1188,9 +1192,21 @@ Existing Recommender Systems Approaches and their Limitations
       
         
           
-          今天读ESL，看到第二章中对LS(Least Square)和k-NN的bias和variance对比，突然有了些新的理解，在这里记录一下。
+          今天读ESL，看到第二章中对LS(Least
+Square)和k-NN的bias和variance对比，突然有了些新的理解，在这里记录一下。
 All we know
-放一张经常可以看到的图，这张图来自机器学习中的Bias(偏差)，Error(误差)，和Variance(方差)有什么区别和联系？ 中的[@修宇亮](https://www.zhihu.com/people/yuliangxiu/ans
+放一张经常可以看到的图，这张图来自机器学习中的Bias(偏差)，Error(误差)，和Variance(方差)有什么区别和联系？
+中的@修宇亮 的回答。
+
+
+1
+
+原图应该是PRML里的图好像，记不清了。
+还有之前文章中写得
+
+
+2
+
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1343,7 +1359,8 @@ All we know
           Benefits of Combination
 当我们能够生成一堆基学习器后，与其尝试寻找最好的单个学习器，集成方法通过结合的方式产生更好的泛化性能，其中结合的方式是非常重要的一环。通过结合我们有以下的几个好处
 
-statistical issue：当我们的假设空间过大，而数据量受限的时候，会有多种不同的假设能够达到相同的准确度，如果学习算法选择了其中之一，就会有一定风险在真实数据上犯错，而通过结
+statistical
+issue：当我们的假设空间过大，而数据量受限的时候，会有多种不同的假设能够达到相同的准确度，如果学习算法选择了其中之一，就会有一定风险在真实数据上犯错，而通过结
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1493,7 +1510,8 @@ statistical issue：当我们的假设空间过大，而数据量受限的时候
       
         
           
-          以下内容选自Ensemble Methods Foundations and Algorithms (Zhihua Zhou) 。
+          以下内容选自Ensemble
+Methods Foundations and Algorithms (Zhihua Zhou) 。
 Two Ensemble Paradigms
 与Boosting相对的，就是Bagging方法，Boosting属于一种串行的集成方式，而Bagging是一种并行的集成方式。集成学习方法都用到了基学习器的独立性，Boosting串行的方式是通过自助(boost)的方式
           ...
@@ -1645,9 +1663,12 @@ Two Ensemble Paradigms
       
         
           
-          以下内容选自Ensemble Methods Foundations and Algorithms (Zhihua Zhou) 。
+          以下内容选自Ensemble
+Methods Foundations and Algorithms (Zhihua Zhou) 。
 A General Boosting Procedure
-总的来说Boosting是一种将多个弱分类器(仅比随机猜测好)进行组合，通过对弱分类器的boosted变成强的分类器。一个广义的自助过程(the general boosting procedure)非常简单，
+总的来说Boosting是一种将多个弱分类器(仅比随机猜测好)进行组合，通过对弱分类器的boosted变成强的分类器。一个广义的自助过程(the
+general boosting
+procedure)非常简单，
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1800,10 +1821,13 @@ A General Boosting Procedure
           Purpose
 采样(Sampling)是统计学底下一个比较热门的分支，采样的目的主要有两个：
 
-生成服从某个概率分布\(P(x)\) 的样本\(\{x^{(r)}\}^R_{r=1}\)
+生成服从某个概率分布\(P(x)\)
+的样本\(\{x^{(r)}\}^R_{r=1}\)
 估计某个分布\(P(x)\) 的期望
 
-其中概率分布\(P(x)\) 被称为目标密度(target density)，我们假设我们已知分布的概率密度，记为 \[
+其中概率分布\(P(x)\)
+被称为目标密度(target density)，我们假设我们已知分布的概率密度，记为
+\[
 P(x)=\frac{P^*(x)}{Z}
 \]
           ...

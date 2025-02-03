@@ -422,30 +422,45 @@
       
         <p>今天这篇是阿里的一篇文章，几个实习生做的，主要解决的是图片广告的推荐问题。这篇论文主要有以下几点：</p>
 <ul>
-<li>用DNN模型解决推荐问题，并没有直接采用高维稀疏特征和图片直接作为输入，仍做到了end to end的训练；</li>
+<li>用DNN模型解决推荐问题，并没有直接采用高维稀疏特征和图片直接作为输入，仍做到了end
+to end的训练；</li>
 <li>可以高效处理高维海量数据；</li>
 <li>在真实海量数据上进行实验，并取得了较好的结果；</li>
 </ul>
-<p>下面来看模型，用户对一个广告的行为被称为一次impression，用<span class="math inline">\(x\)</span> 表示，图片<span class="math inline">\(u\)</span> 的尺寸为<span class="math inline">\(120\times 200\)</span> ，同时用户的特征<span class="math inline">\(v\in\mathbb{R}^d\)</span> ，用对率回归来映射输出值 <span class="math display">\[
+<p>下面来看模型，用户对一个广告的行为被称为一次impression，用<span
+class="math inline">\(x\)</span> 表示，图片<span
+class="math inline">\(u\)</span> 的尺寸为<span
+class="math inline">\(120\times 200\)</span> ，同时用户的特征<span
+class="math inline">\(v\in\mathbb{R}^d\)</span> ，用对率回归来映射输出值
+<span class="math display">\[
 \hat{y}=\frac{1}{1+e^{-z}}\\
 z=f(x)
 \]</span> loss函数为 <span class="math display">\[
 \mathcal{L}=-\frac{1}{N}\sum_i(y_i\log\hat{y}_i+(1-y_i)\log(1-\hat{y}_i))+\lambda\|W\|^2
-\]</span> 在这个模型中，重点在于如何去学习embedding 函数<span class="math inline">\(f(\cdot)\)</span> ，模型的结构如下图所示</p>
+\]</span> 在这个模型中，重点在于如何去学习embedding 函数<span
+class="math inline">\(f(\cdot)\)</span> ，模型的结构如下图所示</p>
 <figure>
-<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
+<img src="1.png" alt="1" />
+<figcaption aria-hidden="true">1</figcaption>
 </figure>
 <p>左侧的卷积方法可以提取图片的特征，与右侧基本特征一起经过非线性的激活函数得到输出，卷积部分用了17层卷机网络</p>
 <figure>
-<img src="2.png" alt="2" /><figcaption aria-hidden="true">2</figcaption>
+<img src="2.png" alt="2" />
+<figcaption aria-hidden="true">2</figcaption>
 </figure>
 <p>模型看上去也很简单，并不出彩，那么我们来看看细节：</p>
 <ul>
-<li>稀疏全连接层，训练集中有接近200000个基本特征（毕竟我阿里。。）如果简单的全连接会产生6千万的参数，所以如何降低参数存储和计算就成了重点，模型中采用CSR格式来代表一个batch的基本特征<span class="math inline">\(V\)</span> ，所以前向传播时<span class="math inline">\(Y_{fc1}=VW\)</span> ，反向传播时，我们只需要更新非0元素的权重<span class="math inline">\(\nabla W =V\)</span> ，这就很大程度上减少了计算开销；</li>
+<li>稀疏全连接层，训练集中有接近200000个基本特征（毕竟我阿里。。）如果简单的全连接会产生6千万的参数，所以如何降低参数存储和计算就成了重点，模型中采用CSR格式来代表一个batch的基本特征<span
+class="math inline">\(V\)</span> ，所以前向传播时<span
+class="math inline">\(Y_{fc1}=VW\)</span>
+，反向传播时，我们只需要更新非0元素的权重<span
+class="math inline">\(\nabla W =V\)</span>
+，这就很大程度上减少了计算开销；</li>
 <li>数据采样，采用SGD训练时，一般会用很小的batch和较多的iterations，对于这样数据集时，却很难收敛，所以作者提出了一个简单高效的训练方式，很多图片广告点击行为都共用了一个图片，所以相比之下，不同的图片就比较少了，因此一些好的特征可以在稀疏的网络结构中迅速传播，所以我们采用大batch对于特征，小的batch用于图片，具体算法如下图所示。</li>
 </ul>
 <figure>
-<img src="3.png" alt="3" /><figcaption aria-hidden="true">3</figcaption>
+<img src="3.png" alt="3" />
+<figcaption aria-hidden="true">3</figcaption>
 </figure>
 <p>论文后面还对实验部分进行一些分析，感兴趣的同学可以下下来看看，总帖来说文章还不错，一些优化也比较出彩，更重要的是给阿里打了广告。。手动微笑。</p>
 

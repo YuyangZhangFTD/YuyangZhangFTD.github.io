@@ -110,7 +110,7 @@
 <meta property="og:image" content="http://yoursite.com/2018/11/03/Dispatching-in-Didichuxing-2/image-20181103154003882.png">
 <meta property="og:image" content="http://yoursite.com/2018/11/03/Dispatching-in-Didichuxing-2/image-20181103154624912.png">
 <meta property="article:published_time" content="2018-11-03T06:14:47.000Z">
-<meta property="article:modified_time" content="2018-11-03T10:04:21.499Z">
+<meta property="article:modified_time" content="2018-11-03T10:04:21.000Z">
 <meta property="article:author" content="YuyangZhangFTD">
 <meta property="article:tag" content="Machine Learning">
 <meta property="article:tag" content="Optimization">
@@ -422,60 +422,109 @@
       
 
       
-        <p>这篇文章是用MDP方式去考虑车辆调度的分单算法，发表在KDD2018上，《Large-Scale Order Dispatch in On-Demand Ride-Hailing Platforms: A Learning and Planning Approach》。</p>
-<p>这篇文章给我感觉真的是十分精彩，从解决方案到后面实验部分都写的很充实，而且方法朴实却又新颖，作为RL或者说是MDP的一个非游戏类的应用，可以说是很成功的，advantage function的设计很漂亮，真的能体现“数学之美”了。</p>
+        <p>这篇文章是用MDP方式去考虑车辆调度的分单算法，发表在KDD2018上，《Large-Scale
+Order Dispatch in On-Demand Ride-Hailing Platforms: A Learning and
+Planning Approach》。</p>
+<p>这篇文章给我感觉真的是十分精彩，从解决方案到后面实验部分都写的很充实，而且方法朴实却又新颖，作为RL或者说是MDP的一个非游戏类的应用，可以说是很成功的，advantage
+function的设计很漂亮，真的能体现“数学之美”了。</p>
 <h2 id="简介">简介</h2>
 <p>传统的订单分配方式往往关注于乘客当下的满意度，本文提出一种高效的方式来优化资源的利用效率和全局用户的体验，我们将订单分配作为一个序列决策问题来研究，总体来说分为两部分，第一部分是基于历史数据，我们研究了再时空维度上，供需变化的模式，这个阶段称为Learning，另一部分我们做了一个实时订单-司机对匹配的算法，同时考虑司机当前的收益和未来的收益，这个阶段称为Planning。</p>
 <figure>
-<img src="image-20181103144955336.png" alt="Learning&amp;Planning" /><figcaption aria-hidden="true">Learning&amp;Planning</figcaption>
+<img src="image-20181103144955336.png" alt="Learning&amp;Planning" />
+<figcaption aria-hidden="true">Learning&amp;Planning</figcaption>
 </figure>
 <p>根据滴滴内部的统计数据，从传统的司机选择订单的方式到中心化派单的方式，平台效率会有一个显著的提升，超过10%的订单完成率。传统的订单分配方式，不管是基于位置的局部贪婪匹配法还是基于排队策略先到先服务，这些方法都很容易实现和管理，他们优先满足当前情况下乘客的满意度，由于时空的约束，司机和乘客的供需在时间和空间上是不匹配的，这会导致这些方法在长期上只能取得次优的效果。</p>
-<p>我们的目标是在长时间的维度上来优化订单分配过程，既要满足乘客当前的需求，也要考虑未来的收益。我们将这个问题描述成一个序列决策问题，每个司机与订单的匹配决策都依赖于两部分：一部分是当前的收益，另一部分是这个决策在未来的收益。基于乘客的需求和司机的供给的历史数据，我们建立了一个通用的评估方式来评估时空状态（spatiotemporal states）来量化未来的收益，而实时的匹配则是一个组合优化问题。</p>
+<p>我们的目标是在长时间的维度上来优化订单分配过程，既要满足乘客当前的需求，也要考虑未来的收益。我们将这个问题描述成一个序列决策问题，每个司机与订单的匹配决策都依赖于两部分：一部分是当前的收益，另一部分是这个决策在未来的收益。基于乘客的需求和司机的供给的历史数据，我们建立了一个通用的评估方式来评估时空状态（spatiotemporal
+states）来量化未来的收益，而实时的匹配则是一个组合优化问题。</p>
 <h2 id="learning">Learning</h2>
 <p>Learning阶段目标是学习乘客需求和司机供给之间的一个可量化可理解的时空关系，我们根据历史数据建立了一个MDP模型，得到的价值函数用以刻画每个时空状态下的价值。</p>
-<p>MDP通常用来建模序列决策问题，在MDP中，一个agent（翻译成智能体？）在environment（环境）中根据一个policy（策略）来进行行动，每轮次选择一个action（行为），会从当前state（状态）转移到下一个状态，并有一个gain（收益），智能体的目标是最大化长期的收益<span class="math inline">\(G_t=\sum^T_{i=t}R_{t+1}\)</span>，解决MDP通常的做法是寻找一个value function（价值函数），包括state-value function（状态价值函数）<span class="math inline">\(V_\pi(s)\)</span>和aciton-value function（行为价值函数）<span class="math inline">\(Q_\pi(s,a)\)</span>，其中<span class="math inline">\(V_\pi(s)=\mathbb{E}_{\pi}[G_t|s_t=s]\)</span>，<span class="math inline">\(Q_\pi(s,a)=\mathbb{E}_\pi[G_t|s_t=s,a_t=a]\)</span>。在我们的场景中，每一个独立的司机我们认为是一个agent，尽管这种设定会导致一个多智能体问题，但相较于把整个平台作为一个智能体，这种设定的优势在于状态的转移、行为和奖励都可以简单地简化定义出来。</p>
+<p>MDP通常用来建模序列决策问题，在MDP中，一个agent（翻译成智能体？）在environment（环境）中根据一个policy（策略）来进行行动，每轮次选择一个action（行为），会从当前state（状态）转移到下一个状态，并有一个gain（收益），智能体的目标是最大化长期的收益<span
+class="math inline">\(G_t=\sum^T_{i=t}R_{t+1}\)</span>，解决MDP通常的做法是寻找一个value
+function（价值函数），包括state-value function（状态价值函数）<span
+class="math inline">\(V_\pi(s)\)</span>和aciton-value
+function（行为价值函数）<span
+class="math inline">\(Q_\pi(s,a)\)</span>，其中<span
+class="math inline">\(V_\pi(s)=\mathbb{E}_{\pi}[G_t|s_t=s]\)</span>，<span
+class="math inline">\(Q_\pi(s,a)=\mathbb{E}_\pi[G_t|s_t=s,a_t=a]\)</span>。在我们的场景中，每一个独立的司机我们认为是一个agent，尽管这种设定会导致一个多智能体问题，但相较于把整个平台作为一个智能体，这种设定的优势在于状态的转移、行为和奖励都可以简单地简化定义出来。</p>
 <figure>
-<img src="image-20181103151042051.png" alt="MDP" /><figcaption aria-hidden="true">MDP</figcaption>
+<img src="image-20181103151042051.png" alt="MDP" />
+<figcaption aria-hidden="true">MDP</figcaption>
 </figure>
 <p>我们继续做以下定义：</p>
 <ul>
-<li>State，状态，每个司机的状态被定义成一个二维的向量，<span class="math inline">\(s=(t,g),t\in T,g\in G\)</span>，其中前者是时间信息，后者是位置信息；</li>
+<li>State，状态，每个司机的状态被定义成一个二维的向量，<span
+class="math inline">\(s=(t,g),t\in T,g\in
+G\)</span>，其中前者是时间信息，后者是位置信息；</li>
 <li>Action，行为，有两种行为，司机选择去服务一个乘客或者是空跑。司机选择接乘客会产生收益，而空跑则表明这个司机并没有匹配到订单，当司机选择空跑行为时，从一个状态转移到另一个状态，不会产生收益；</li>
 <li>Reward，奖励，定义为GMV；</li>
-<li>State transition，状态转移，定义状态转移概率为<span class="math inline">\(P_{ss&#39;}^a\)</span>；</li>
-<li>Reward distribution，奖励分布，定义奖励分布为<span class="math inline">\(R_{ss&#39;}^a\)</span>；</li>
-<li>Discount factor，折扣因子，折扣因子可以控制MDP对于未来收益的重视程度，在我们的应用中，最好使用较小的折扣因子，因为长时间周期会产生较大的价值函数的方差。定价的价值也应该被降低，对于一个长须时间为<span class="math inline">\(T\)</span>的订单，价格为<span class="math inline">\(R\)</span>，折扣因子<span class="math inline">\(\gamma\)</span>，最终的奖励为<span class="math inline">\(R_\gamma=\sum^{T-1}_{t=0}\gamma^t\frac{R}{T}\)</span>。</li>
+<li>State transition，状态转移，定义状态转移概率为<span
+class="math inline">\(P_{ss&#39;}^a\)</span>；</li>
+<li>Reward distribution，奖励分布，定义奖励分布为<span
+class="math inline">\(R_{ss&#39;}^a\)</span>；</li>
+<li>Discount
+factor，折扣因子，折扣因子可以控制MDP对于未来收益的重视程度，在我们的应用中，最好使用较小的折扣因子，因为长时间周期会产生较大的价值函数的方差。定价的价值也应该被降低，对于一个长须时间为<span
+class="math inline">\(T\)</span>的订单，价格为<span
+class="math inline">\(R\)</span>，折扣因子<span
+class="math inline">\(\gamma\)</span>，最终的奖励为<span
+class="math inline">\(R_\gamma=\sum^{T-1}_{t=0}\gamma^t\frac{R}{T}\)</span>。</li>
 </ul>
-<p>做个举例，一个司机在A接到一个B到C的订单，时间为00:00，10分钟接乘客，20分钟送乘客，订单收益30元，折扣因子<span class="math inline">\(\gamma=0.9\)</span>，初始状态<span class="math inline">\(s=(A,0)\)</span>，结束状态<span class="math inline">\(s&#39;=(B,3)\)</span>，收益<span class="math inline">\(r=10+10*0.9+10*0.9^2=27.1\)</span>。</p>
-<p>MDP问题的核心就是去做策略的估计，policy evalution。我们将历史交易数据整理成<span class="math inline">\((s,a,s&#39;,r)\)</span>的形式，注意此处我们并不区分司机。我们假设online policy产生交易数据并且保持不变，因此，<span class="math inline">\(\pi\)</span>在此处为了简洁先不写。一次转移可能从行为“服务乘客”或者是“空跑”中产生，，对于空跑造成的转移，司机并不会立获得当前的奖励，更新表达式为 <span class="math display">\[
+<p>做个举例，一个司机在A接到一个B到C的订单，时间为00:00，10分钟接乘客，20分钟送乘客，订单收益30元，折扣因子<span
+class="math inline">\(\gamma=0.9\)</span>，初始状态<span
+class="math inline">\(s=(A,0)\)</span>，结束状态<span
+class="math inline">\(s&#39;=(B,3)\)</span>，收益<span
+class="math inline">\(r=10+10*0.9+10*0.9^2=27.1\)</span>。</p>
+<p>MDP问题的核心就是去做策略的估计，policy
+evalution。我们将历史交易数据整理成<span
+class="math inline">\((s,a,s&#39;,r)\)</span>的形式，注意此处我们并不区分司机。我们假设online
+policy产生交易数据并且保持不变，因此，<span
+class="math inline">\(\pi\)</span>在此处为了简洁先不写。一次转移可能从行为“服务乘客”或者是“空跑”中产生，，对于空跑造成的转移，司机并不会立获得当前的奖励，更新表达式为
+<span class="math display">\[
 V(s)\leftarrow V(s) +\alpha[0 + \gamma V(s&#39;)- V(s)]
-\]</span> 其中<span class="math inline">\(s&#39;=(t+1,g)\)</span>，表示下一个时刻司机空跑到的状态，如果是服务乘客，则司机会获得奖励并转移状态 <span class="math display">\[
-V(s)\leftarrow V(s) + \alpha [R_\gamma + \gamma^{\Delta t}V(s&#39;&#39;)-V(s)]
-\]</span> 其中<span class="math inline">\(s&#39;&#39;=(t+\Delta t, g_{\text{dest}})\)</span>表示结束服务这个乘客时候的司机的状态。<span class="math inline">\(\Delta t\)</span>表示接乘客、等待和送乘客的总时间，以及<span class="math inline">\(\Delta t(\text{idle})=1\)</span>。</p>
+\]</span> 其中<span
+class="math inline">\(s&#39;=(t+1,g)\)</span>，表示下一个时刻司机空跑到的状态，如果是服务乘客，则司机会获得奖励并转移状态
+<span class="math display">\[
+V(s)\leftarrow V(s) + \alpha [R_\gamma + \gamma^{\Delta
+t}V(s&#39;&#39;)-V(s)]
+\]</span> 其中<span class="math inline">\(s&#39;&#39;=(t+\Delta t,
+g_{\text{dest}})\)</span>表示结束服务这个乘客时候的司机的状态。<span
+class="math inline">\(\Delta
+t\)</span>表示接乘客、等待和送乘客的总时间，以及<span
+class="math inline">\(\Delta t(\text{idle})=1\)</span>。</p>
 <figure>
-<img src="image-20181103153441306.png" alt="td-rules" /><figcaption aria-hidden="true">td-rules</figcaption>
+<img src="image-20181103153441306.png" alt="td-rules" />
+<figcaption aria-hidden="true">td-rules</figcaption>
 </figure>
 <p>这种更新方式并不是sample-effcient的，特别是我们这种状态超过百万个的情况，所以我们采用一种动态规划的方式计算价值函数。</p>
 <figure>
-<img src="image-20181103153512952.png" alt="policy-evalution" /><figcaption aria-hidden="true">policy-evalution</figcaption>
+<img src="image-20181103153512952.png" alt="policy-evalution" />
+<figcaption aria-hidden="true">policy-evalution</figcaption>
 </figure>
 <h2 id="planning">Planning</h2>
-<p>在online planning的阶段，我们利用学到的价值函数作为输入，并且决定哪些司机和哪些订单进行匹配，在每轮匹配中，我们目标也可以认为是为每个司机寻找最好的动作来优化未来全局的收益。</p>
+<p>在online
+planning的阶段，我们利用学到的价值函数作为输入，并且决定哪些司机和哪些订单进行匹配，在每轮匹配中，我们目标也可以认为是为每个司机寻找最好的动作来优化未来全局的收益。</p>
 <figure>
-<img src="image-20181103154003882.png" alt="planning1" /><figcaption aria-hidden="true">planning1</figcaption>
+<img src="image-20181103154003882.png" alt="planning1" />
+<figcaption aria-hidden="true">planning1</figcaption>
 </figure>
-<p>我们采用KM算法来求解上述问题。因为一个司机要么选择接单要么选择空跑，所以这个二分图时完全图，每个边都是可以存在的。为了降低计算的复杂度，我们消除了所有默认行为的边。因为在实践中，每两轮之间的间隔远远小于价值函数中考虑的时间长度，一个司机不做任何行为可以认为是保持在原状态，因此行为价值函数<span class="math inline">\(Q(i,0)\)</span>实际上等于状态函数，这使得我们可以取消掉所有司机的不作为的动作，这使得边的数量大大减少。</p>
+<p>我们采用KM算法来求解上述问题。因为一个司机要么选择接单要么选择空跑，所以这个二分图时完全图，每个边都是可以存在的。为了降低计算的复杂度，我们消除了所有默认行为的边。因为在实践中，每两轮之间的间隔远远小于价值函数中考虑的时间长度，一个司机不做任何行为可以认为是保持在原状态，因此行为价值函数<span
+class="math inline">\(Q(i,0)\)</span>实际上等于状态函数，这使得我们可以取消掉所有司机的不作为的动作，这使得边的数量大大减少。</p>
 <p>通过上述技巧，模型变成</p>
 <figure>
-<img src="image-20181103154624912.png" alt="planning2" /><figcaption aria-hidden="true">planning2</figcaption>
+<img src="image-20181103154624912.png" alt="planning2" />
+<figcaption aria-hidden="true">planning2</figcaption>
 </figure>
-<p>其中<span class="math inline">\(A_\pi(i,j)\)</span>称为advantage function，这个函数可以通过计算服务乘客的期望收益得出。</p>
+<p>其中<span class="math inline">\(A_\pi(i,j)\)</span>称为advantage
+function，这个函数可以通过计算服务乘客的期望收益得出。</p>
 <p>我们继续分析advantage function，它包含了我们需要考虑的四个因素：</p>
 <ul>
-<li>订单价格，高价格订单会更具有优势，<span class="math inline">\(R_\gamma(j)\)</span>；</li>
-<li>司机位置，司机当前的位置有一个负的影响，<span class="math inline">\(-V(s_i)\)</span>，因此，在相同的条件下，司机在更小价值的位置更容易被选择服务订单；</li>
-<li>订单目的地，选择高价值地区的目的地的订单更有优势，因为它会有一个更大的<span class="math inline">\(V(s&#39;_{ij})\)</span>；</li>
-<li>接乘客的距离，接乘客的距离也会影响advantage function，更长的距离需要更多的时间来接乘客，使得订单的未来价值降低，总体的值降低。</li>
+<li>订单价格，高价格订单会更具有优势，<span
+class="math inline">\(R_\gamma(j)\)</span>；</li>
+<li>司机位置，司机当前的位置有一个负的影响，<span
+class="math inline">\(-V(s_i)\)</span>，因此，在相同的条件下，司机在更小价值的位置更容易被选择服务订单；</li>
+<li>订单目的地，选择高价值地区的目的地的订单更有优势，因为它会有一个更大的<span
+class="math inline">\(V(s&#39;_{ij})\)</span>；</li>
+<li>接乘客的距离，接乘客的距离也会影响advantage
+function，更长的距离需要更多的时间来接乘客，使得订单的未来价值降低，总体的值降低。</li>
 </ul>
 <p>除此之外，实际中还会通过一系列超参数，来平衡用户体验和平台效率，达到用户和平台的双赢。</p>
 <p>实验部分详见论文。</p>

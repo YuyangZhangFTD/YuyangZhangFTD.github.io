@@ -417,32 +417,53 @@
       
         <p>这篇论文核心思想是利用评论去解决冷启动问题同时增加预测的准确性，发表在IJCAI上，给我感觉稍微有点水的意味，文章中具体训练步骤说的不是很清楚，可能是我之前没有接触过，先挖个坑，以后填</p>
 <h3 id="tlfm">TLFM</h3>
-<p>文中的主要思想是利用矩阵分解探究潜在影响因素，文中作者提出加入评论的个人因素作为补充： <span class="math display">\[
+<p>文中的主要思想是利用矩阵分解探究潜在影响因素，文中作者提出加入评论的个人因素作为补充：
+<span class="math display">\[
 \hat{y}_{ui}=g(base+(\sum_{w\in W(r_{ui})}\alpha_wv_w^T)(p_u+q_i))
 \]</span> 其中 <span class="math display">\[
 base=\mu+b_u+b_i+sum_{w\in W(r_{ui})}\alpha_wb_w
-\]</span> 为基模型，考虑了评论用词的整体bias影响，<span class="math inline">\(p_u\)</span> 和<span class="math inline">\(q_i\)</span> 分别代表词对于个人和物品的bias影响，文中将其表述为<span class="math inline">\(v_w^Tp_u\)</span> can capture user u's preference on word w，同理对于<span class="math inline">\(q_i\)</span> ，但是文中也没有写清楚具体这个embedding向量是怎么求的，所以先留个坑，回头看一下引用的参考文献再具体解释。</p>
-<p>上式中的<span class="math inline">\(g(\cdot)\)</span> 为作者所设计的隐射函数 <span class="math display">\[
+\]</span> 为基模型，考虑了评论用词的整体bias影响，<span
+class="math inline">\(p_u\)</span> 和<span
+class="math inline">\(q_i\)</span>
+分别代表词对于个人和物品的bias影响，文中将其表述为<span
+class="math inline">\(v_w^Tp_u\)</span> can capture user u's preference
+on word w，同理对于<span class="math inline">\(q_i\)</span>
+，但是文中也没有写清楚具体这个embedding向量是怎么求的，所以先留个坑，回头看一下引用的参考文献再具体解释。</p>
+<p>上式中的<span class="math inline">\(g(\cdot)\)</span>
+为作者所设计的隐射函数 <span class="math display">\[
 g(x)=1+\frac{C-1}{1+e^{-x}}
-\]</span> 这样就可以将输入<span class="math inline">\(x\)</span> 映射到评分的<span class="math inline">\([1,C]\)</span> 的区间内了。</p>
-<h3 id="pairwise-rating-comparison-strategy">Pairwise Rating Comparison Strategy</h3>
-<p>可能大家看到刚才那会跟我一样觉得这篇文章挺水的，但我感觉本文的亮点在这里，作者为了解决冷启动问题，提出了一种成对打分比较的策略，对于用户<span class="math inline">\(u\)</span> 和<span class="math inline">\(v\)</span> 和物品<span class="math inline">\(i\)</span> ，定义真实差异为<span class="math inline">\(y_{ui}-y_{vi}\)</span> ，期望差异为<span class="math inline">\(\hat{y}_{ui}-y_{vi}\)</span> ，这样就可以使期望差异尽可能的小，从而达到优化整体损失的目的，所以定义目标函数为: <span class="math display">\[
+\]</span> 这样就可以将输入<span class="math inline">\(x\)</span>
+映射到评分的<span class="math inline">\([1,C]\)</span> 的区间内了。</p>
+<h3 id="pairwise-rating-comparison-strategy">Pairwise Rating Comparison
+Strategy</h3>
+<p>可能大家看到刚才那会跟我一样觉得这篇文章挺水的，但我感觉本文的亮点在这里，作者为了解决冷启动问题，提出了一种成对打分比较的策略，对于用户<span
+class="math inline">\(u\)</span> 和<span
+class="math inline">\(v\)</span> 和物品<span
+class="math inline">\(i\)</span> ，定义真实差异为<span
+class="math inline">\(y_{ui}-y_{vi}\)</span> ，期望差异为<span
+class="math inline">\(\hat{y}_{ui}-y_{vi}\)</span>
+，这样就可以使期望差异尽可能的小，从而达到优化整体损失的目的，所以定义目标函数为:
+<span class="math display">\[
 \begin{aligned}
 \mathcal{O}&amp;=\frac{1}{\mathcal{N}_{\mathcal{I}}}\sum_{y_{ui}}\sum_{y_{vi}}((y_{ui}-y_{vi})-(\hat{y}_{ui}-y_{vi}))^2+\frac{\mathcal{L}}{\mathcal{N}_{\mathcal{I}}}\\
 &amp;=\frac{1}{\mathcal{N}_{\mathcal{I}}}\sum_{y_{ui}}\sum_{y_{vi}}(y_{ui}-\hat{y}_{ui})^2+\frac{1}{\mathcal{N}_{\mathcal{I}}}\sum_{y_{ui}}(y_{ui}-\hat{y}_{ui})^2\\
 &amp;=\sum_{y_{ui}}\frac{|\mathcal{T}_i|}{\mathcal{N}_{\mathcal{I}}}(y_{ui}-\hat{y}_{ui})^2
 \end{aligned}
-\]</span> 上式可以看作是对原目标的一个加权，同样的，对于用户我们有 <span class="math display">\[
+\]</span> 上式可以看作是对原目标的一个加权，同样的，对于用户我们有 <span
+class="math display">\[
 \mathcal{O}=\sum_{y_{ui}}\frac{|\mathcal{T}_u|}{\mathcal{N}_{\mathcal{U}}}(y_{ui}-\hat{y}_{ui})^2
 \]</span> 我们可以得到最终的目标函数为 <span class="math display">\[
 \begin{aligned}
-\mathcal{G}=&amp;\sum_{y_{ui}\in \mathcal{T}}(\sigma(\frac{|\mathcal{T}_u|}{\mathcal{N}_{\mathcal{U}}})+\sigma(\frac{|\mathcal{T}_i|}{\mathcal{N}_{\mathcal{I}}})
+\mathcal{G}=&amp;\sum_{y_{ui}\in
+\mathcal{T}}(\sigma(\frac{|\mathcal{T}_u|}{\mathcal{N}_{\mathcal{U}}})+\sigma(\frac{|\mathcal{T}_i|}{\mathcal{N}_{\mathcal{I}}})
 )(y_{ui}-\hat{y}_{ui})^2+\\
-&amp;\lambda(b_u^2+b_i^2+\sum_{w\in W(r_{ui})}(b_w^2+\|v_w\|^2)+\|p_u\|^2+\|q_i\|^2)
+&amp;\lambda(b_u^2+b_i^2+\sum_{w\in
+W(r_{ui})}(b_w^2+\|v_w\|^2)+\|p_u\|^2+\|q_i\|^2)
 \end{aligned}
 \]</span> 后面作者则给出了具体的SGD迭代方式。</p>
 <h3 id="summary">Summary</h3>
-<p>思路什么的都还好，作者提出Pairwise Rating Comparison这种方式，相当于对传统目标函数加权，然后训练得到较好的结果。</p>
+<p>思路什么的都还好，作者提出Pairwise Rating
+Comparison这种方式，相当于对传统目标函数加权，然后训练得到较好的结果。</p>
 
       
     </div>
@@ -636,7 +657,8 @@ g(x)=1+\frac{C-1}{1+e^{-x}}
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#tlfm"><span class="nav-number">1.</span> <span class="nav-text">TLFM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pairwise-rating-comparison-strategy"><span class="nav-number">2.</span> <span class="nav-text">Pairwise Rating Comparison Strategy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#summary"><span class="nav-number">3.</span> <span class="nav-text">Summary</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#tlfm"><span class="nav-number">1.</span> <span class="nav-text">TLFM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pairwise-rating-comparison-strategy"><span class="nav-number">2.</span> <span class="nav-text">Pairwise Rating Comparison
+Strategy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#summary"><span class="nav-number">3.</span> <span class="nav-text">Summary</span></a></li></ol></div>
             
 
           </div>

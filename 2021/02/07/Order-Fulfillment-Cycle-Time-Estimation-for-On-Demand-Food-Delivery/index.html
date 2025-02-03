@@ -106,7 +106,6 @@
 <meta property="og:image" content="http://yoursite.com/2021/02/07/Order-Fulfillment-Cycle-Time-Estimation-for-On-Demand-Food-Delivery/1.jpg">
 <meta property="og:image" content="http://yoursite.com/2021/02/07/Order-Fulfillment-Cycle-Time-Estimation-for-On-Demand-Food-Delivery/2.jpg">
 <meta property="og:image" content="http://yoursite.com/2021/02/07/Order-Fulfillment-Cycle-Time-Estimation-for-On-Demand-Food-Delivery/3.jpg">
-<meta property="og:image" content="http://yoursite.com/2021/02/07/Order-Fulfillment-Cycle-Time-Estimation-for-On-Demand-Food-Delivery/4.jpg">
 <meta property="og:image" content="http://yoursite.com/2021/02/07/Order-Fulfillment-Cycle-Time-Estimation-for-On-Demand-Food-Delivery/5.jpg">
 <meta property="og:image" content="http://yoursite.com/2021/02/07/Order-Fulfillment-Cycle-Time-Estimation-for-On-Demand-Food-Delivery/6.jpg">
 <meta property="og:image" content="http://yoursite.com/2021/02/07/Order-Fulfillment-Cycle-Time-Estimation-for-On-Demand-Food-Delivery/7.jpg">
@@ -431,8 +430,11 @@
       
         <p>今天来换换口味，看一篇阿里饿了么ETA相关的文章，这篇文章中了KDD2020，里面有很多真实的实践，包括特征构建、深度模型调优等等，总体看来下来还是含金量比较高的文章。</p>
 <h1 id="introduction-related-work">Introduction &amp; Related Work</h1>
-<p>即时订餐配送平台上一个很重要的机器学习应用场景就是订单履约周期预测（Order Fulfillment Cycle Time prediction），OFCT的预估一般会在用户下单前展示出来，其准确性对于用户感知的确定性十分重要，同时也会影响平台对于分配订单的的决策。在这篇文章中，我们提出一种OFCT的预测模型，每日服务国内200+城市1000w+订单的配送。</p>
-<p>OFCT预测可以看作是一种ETA预测的变种，广义的看，ETA是对起终点（Origin-Destination pair，OD对）的旅行时常的预估，一般分成两种方式：route-based和OD-based。前者是通过对不同子段的预估值进行聚合得到整段路程的预估值，后者则是通过od的起终点位置以及相应的时间作为输入。与一般的ETA问题相比，OFCT具有不同的挑战：</p>
+<p>即时订餐配送平台上一个很重要的机器学习应用场景就是订单履约周期预测（Order
+Fulfillment Cycle Time
+prediction），OFCT的预估一般会在用户下单前展示出来，其准确性对于用户感知的确定性十分重要，同时也会影响平台对于分配订单的的决策。在这篇文章中，我们提出一种OFCT的预测模型，每日服务国内200+城市1000w+订单的配送。</p>
+<p>OFCT预测可以看作是一种ETA预测的变种，广义的看，ETA是对起终点（Origin-Destination
+pair，OD对）的旅行时常的预估，一般分成两种方式：route-based和OD-based。前者是通过对不同子段的预估值进行聚合得到整段路程的预估值，后者则是通过od的起终点位置以及相应的时间作为输入。与一般的ETA问题相比，OFCT具有不同的挑战：</p>
 <ol type="1">
 <li>受到更多的影响，在广义的ETA问题中，一般只有考虑天气、交通条件，OD对的时间、地理信息，在OFTC中，还收到餐馆属性、位置、以及出餐时间、骑手分配的影响。</li>
 <li>部分关键信息不可用，OFCT的预测必须在订单创建前告知用户，这就使得很多关键信息在这时是未知的，包括骑手以及具体送餐路径的信息。</li>
@@ -440,7 +442,8 @@
 <p>由于这些问题，标准的ETA方法并不能应用于我们的场景。</p>
 <h1 id="background">Background</h1>
 <figure>
-<img src="1.jpg" alt="订单履约周期的构成" /><figcaption aria-hidden="true">订单履约周期的构成</figcaption>
+<img src="1.jpg" alt="订单履约周期的构成" />
+<figcaption aria-hidden="true">订单履约周期的构成</figcaption>
 </figure>
 <p>上图是订单履约周期的构成。</p>
 <ol type="1">
@@ -450,29 +453,44 @@
 </ol>
 <p><img src="2.jpg" alt="符号定义" /> <span class="math display">\[
 \text{OFCT}_o=t_o^\text{receival} -t_o^\text{creation}
-\]</span> 为了方便讨论，我们把OFCT拆成两部分，取餐时间和送餐时间，分为别 <span class="math display">\[
+\]</span> 为了方便讨论，我们把OFCT拆成两部分，取餐时间和送餐时间，分为别
+<span class="math display">\[
 \text{PT}_o=t_o^\text{departure} -t_o^\text{creation}\\
 \text{DT}_o=t_o^\text{receival} -t_o^\text{departure}
-\]</span> 其中，商家备餐时间为<span class="math inline">\(\text{CT}_o=t_o^\text{ready} -t_o^\text{creation}\)</span></p>
+\]</span> 其中，商家备餐时间为<span
+class="math inline">\(\text{CT}_o=t_o^\text{ready}
+-t_o^\text{creation}\)</span></p>
 <h1 id="feature-extraction">Feature Extraction</h1>
 <h2 id="订单信息order-information">订单信息（Order Information）</h2>
 <ol type="1">
 <li>空间特征，起点、终点的格子id、经纬度</li>
-<li>时间特征，一天中的小事，是否为工作日<img src="3.jpg" alt="时间上OFCT分布" /></li>
-<li>订单大小特征，一个大的订单会需要更多的备餐时间，同时对于配送难度也会增加，此处采用sku数量<span class="math inline">\(\text{sku_num}_o\)</span>和价格<span class="math inline">\(\text{price}_o\)</span>来刻画订单的大小，sku数量是一个较为直观反应订单大小的指标，同时，因为会存在套餐的情况，多个sku会被当成一个单独的sku，同时存在好多相同sku的订单，所以在sku数量基础上增加价格作为补充<img src="4.jpg" alt="订单大小特征" /></li>
+<li>时间特征，一天中的小事，是否为工作日<img src="3.jpg"
+alt="时间上OFCT分布" /></li>
+<li>订单大小特征，一个大的订单会需要更多的备餐时间，同时对于配送难度也会增加，此处采用sku数量<span
+class="math inline">\(\text{sku_num}_o\)</span>和价格<span
+class="math inline">\(\text{price}_o\)</span>来刻画订单的大小，sku数量是一个较为直观反应订单大小的指标，同时，因为会存在套餐的情况，多个sku会被当成一个单独的sku，同时存在好多相同sku的订单，所以在sku数量基础上增加价格作为补充<img
+src="4.jpg" alt="订单大小特征" /></li>
 </ol>
-<h2 id="聚合特征aggregation-features">聚合特征（Aggregation Features）</h2>
+<h2 id="聚合特征aggregation-features">聚合特征（Aggregation
+Features）</h2>
 <p>聚合的方式一般会用20分位数、均值、标准差和80分位数，我们首先根据一些特定的规则选择一些订单，然后根据这些订单计算出聚合特征，不同特征会采用不同的筛选方式，比如说相同的城市、格子、餐馆、小时的订单，或者是当前时间前，不同时长度完成的订单。</p>
 <h2 id="餐品特征dish-features">餐品特征（Dish Features）</h2>
 <p>餐品特征，id类做embedding，此处用的是一个中文的BERT。</p>
-<h2 id="备餐时间特征cooking-time-features">备餐时间特征（Cooking Time Features）</h2>
+<h2 id="备餐时间特征cooking-time-features">备餐时间特征（Cooking Time
+Features）</h2>
 <p>备餐时间对于OFCT的估计十分重要，但是我们往往又没有这个值的真实值，因为餐馆一般没有人力来记录这样的信息，为了改进模型，我们尝试通过历史订单数据来构建备餐时间。基于经验，我们做了以下假设，一个骑手进入餐馆取餐时，会有以下三种情况：</p>
 <ol type="1">
 <li>骑手来的太早，必须等到餐品准备好</li>
 <li>骑手需要多取几单，需要等到最晚的订单的餐品准备好</li>
 <li>骑手在餐品准备好之后来到餐馆，拿了就走</li>
 </ol>
-<p>基于以上假设，对于<span class="math inline">\(\forall \tilde{o}\in\mathcal{O}^\mathbb{H}_o\)</span>，用<span class="math inline">\(\mathcal{O}^r_\tilde{o}\)</span>表示骑手<span class="math inline">\(c_\tilde{o}\)</span>从<span class="math inline">\(r_\tilde{o}\)</span>取的和<span class="math inline">\(\tilde{o}\)</span>一起的订单的集合，我们把离店时间近似表示为 <span class="math display">\[
+<p>基于以上假设，对于<span class="math inline">\(\forall
+\tilde{o}\in\mathcal{O}^\mathbb{H}_o\)</span>，用<span
+class="math inline">\(\mathcal{O}^r_\tilde{o}\)</span>表示骑手<span
+class="math inline">\(c_\tilde{o}\)</span>从<span
+class="math inline">\(r_\tilde{o}\)</span>取的和<span
+class="math inline">\(\tilde{o}\)</span>一起的订单的集合，我们把离店时间近似表示为
+<span class="math display">\[
 \Bigg|
 t_\tilde{o}^\text{departure} - \max\Big\{
 t_\tilde{o}^\text{arrival},
@@ -480,22 +498,31 @@ t_\tilde{o}^\text{arrival},
 \big\{t_\hat{o}^\text{ready}\big\}
 \Big\}
 \Bigg| &lt; \alpha
-\]</span> 一个骑手，在这家店，取得若干个订单中，里面准备好最晚的时刻，和骑手到达时间取max，用离店时间减去这个值，其中<span class="math inline">\(\alpha\)</span>是预先定义的超参数，用来衡量这种近似的潜在误差。这里<span class="math inline">\(\alpha\)</span>应该是指骑手到店、找餐品的时间。定义在备餐的订单为 <span class="math display">\[
+\]</span>
+一个骑手，在这家店，取得若干个订单中，里面准备好最晚的时刻，和骑手到达时间取max，用离店时间减去这个值，其中<span
+class="math inline">\(\alpha\)</span>是预先定义的超参数，用来衡量这种近似的潜在误差。这里<span
+class="math inline">\(\alpha\)</span>应该是指骑手到店、找餐品的时间。定义在备餐的订单为
+<span class="math display">\[
 \mathcal{O}^\text{CT}_o=\bigg\{
 \tilde{o}\in\mathcal{O}^\mathbb{H}_o
 \bigg|
-t_\tilde{o}^\text{departure} - 
+t_\tilde{o}^\text{departure} -
 t_\tilde{o}^\text{arrival} &gt; \alpha,
 \mathcal{O}^r_\tilde{o}=\{\tilde{o}\}
 \bigg\}
-\]</span> 即骑手要取的订单，如果骑手在常规到店、找餐还付出额外的等待时间，那么这就是在等待商家备餐。对于备餐的订单，满足 <span class="math display">\[
+\]</span>
+即骑手要取的订单，如果骑手在常规到店、找餐还付出额外的等待时间，那么这就是在等待商家备餐。对于备餐的订单，满足
+<span class="math display">\[
 \max\Big\{
 t_\tilde{o}^\text{arrival},
 \underset{\tilde{o}\in\mathcal{O}^r_\tilde{o}}{\max}
 \big\{t_\hat{o}^\text{ready}\big\}
-\Big\} &gt; t_\tilde{o}^\text{departure} - \alpha 
+\Big\} &gt; t_\tilde{o}^\text{departure} - \alpha
 &gt;t_\tilde{o}^\text{arrival}
-\]</span> 可以推出<span class="math inline">\(\underset{\tilde{o}\in\mathcal{O}^r_\tilde{o}}{\max} \big\{t_\hat{o}^\text{ready}\big\} &gt; t_\tilde{o}^\text{arrival}\)</span>，且 <span class="math display">\[
+\]</span> 可以推出<span
+class="math inline">\(\underset{\tilde{o}\in\mathcal{O}^r_\tilde{o}}{\max}
+\big\{t_\hat{o}^\text{ready}\big\} &gt;
+t_\tilde{o}^\text{arrival}\)</span>，且 <span class="math display">\[
 \begin{aligned}
 |\text{CT}_\tilde{o}-\text{PT}_\tilde{o}|&amp;=
 |t^\text{ready}_\tilde{o}-t^\text{departure}_\tilde{o}|\\
@@ -508,27 +535,36 @@ t_\tilde{o}^\text{arrival},
 \bigg| \\
 &amp;&lt; \alpha
 \end{aligned}
-\]</span> 通过以上方式来筛选出备餐的订单，然后通过统计这些订单的时长作为备餐时间特征。</p>
+\]</span>
+通过以上方式来筛选出备餐的订单，然后通过统计这些订单的时长作为备餐时间特征。</p>
 <p>（TODO：说实话这段写得太没逻辑了，到现在还没太看明白。）</p>
-<h2 id="供需特征supply-and-demand-features">供需特征（Supply and Demand Features）</h2>
-<p>由于用户需求的变化，订单量会有显著的变化，对OFCT有较大的影响，首先尖峰形状的需求，会被打包的策略（即一个骑手接多个相近起点的单）改善，当打包的大小增加时，会使得物流的效率更高（更加顺路，增加的边际时间比较少），同时也会增加每一个订单的OFCT。同时因为增加了订单，骑手无法选择最快的路径去送货，单个订单的配送时间会增加，但会降低总体的配送时常（顺路造成的额外成本）。我们用供需系数来描述这个现象 <span class="math display">\[
+<h2 id="供需特征supply-and-demand-features">供需特征（Supply and Demand
+Features）</h2>
+<p>由于用户需求的变化，订单量会有显著的变化，对OFCT有较大的影响，首先尖峰形状的需求，会被打包的策略（即一个骑手接多个相近起点的单）改善，当打包的大小增加时，会使得物流的效率更高（更加顺路，增加的边际时间比较少），同时也会增加每一个订单的OFCT。同时因为增加了订单，骑手无法选择最快的路径去送货，单个订单的配送时间会增加，但会降低总体的配送时常（顺路造成的额外成本）。我们用供需系数来描述这个现象
+<span class="math display">\[
 \text{DSR}_o=|C|^{-1}\bigg| \mathcal{O}_o^\text{uncompleted}\bigg|
-\]</span> 其中未完成订单是当前时间节点的未完成订单。同时我们定义派送系数特征 <span class="math display">\[
+\]</span>
+其中未完成订单是当前时间节点的未完成订单。同时我们定义派送系数特征 <span
+class="math display">\[
 \text{dropoff_ratio}_o=\bigg|
 \mathcal{O}_o^\text{uncompleted}
 \bigg|^{-1}\bigg|
 \mathcal{O}_o^\text{dropoff}
 \bigg|
-\]</span> 其中派送订单是指当前未完成订单中处于派送途中的。如果DSR更高，平均打包的大小会增加，因此OFCT会变得更长，另一方遍，更高的dropoff_ratio表明有更大比例的订单接近完成，有更多的骑手会变成空闲状态来接受其他订单，这使得打包的大小和OFCT都会降低。</p>
+\]</span>
+其中派送订单是指当前未完成订单中处于派送途中的。如果DSR更高，平均打包的大小会增加，因此OFCT会变得更长，另一方遍，更高的dropoff_ratio表明有更大比例的订单接近完成，有更多的骑手会变成空闲状态来接受其他订单，这使得打包的大小和OFCT都会降低。</p>
 <figure>
-<img src="5.jpg" alt="DSR和OFCT" /><figcaption aria-hidden="true">DSR和OFCT</figcaption>
+<img src="5.jpg" alt="DSR和OFCT" />
+<figcaption aria-hidden="true">DSR和OFCT</figcaption>
 </figure>
 <figure>
-<img src="6.jpg" alt="DSR和Bundle Size" /><figcaption aria-hidden="true">DSR和Bundle Size</figcaption>
+<img src="6.jpg" alt="DSR和Bundle Size" />
+<figcaption aria-hidden="true">DSR和Bundle Size</figcaption>
 </figure>
 <p>有些时候，客户订单会特别集中于某些店铺，超出了店铺的承受能力，我们通过未接单unfetched_order_count来衡量餐馆的忙碌程度，即订单请求到达但是上街未接单的数量。</p>
 <figure>
-<img src="7.jpg" alt="未接单" /><figcaption aria-hidden="true">未接单</figcaption>
+<img src="7.jpg" alt="未接单" />
+<figcaption aria-hidden="true">未接单</figcaption>
 </figure>
 <p>以上供需类特征都是采用实时特征，一个很自然的担心点就是这些特征可能是有偏的，因为未来的用户需求被忽略了。这个可以通过增加一个对于未来需求的预估来进行改善，然而，在我们的实践中，我们很难通过这种方式改进模型。其中潜在原因在于用户的需求很难被准确的孤寂，同时需求预测自身也依赖于OFCT所用到的特征，这使得需求的预测很难带来一些额外的信息。</p>
 <h2 id="骑手特征">骑手特征</h2>
@@ -539,18 +575,23 @@ t_\tilde{o}^\text{arrival},
 <li>紧急程度，骑手在满足时间窗约束时，完成身上的订单需要的最少时长，因为违反时间窗的约束会导致最终成本的增加</li>
 <li>相互距离，骑手身上订单的终点和餐馆的平均或者最小路径，这个值越大，说明骑手接这个订单绕路越远，产生的成本越高</li>
 </ol>
-<h2 id="配送时间特征eta-based-drop-off-time-features">配送时间特征（ETA-based Drop-off Time Features）</h2>
+<h2
+id="配送时间特征eta-based-drop-off-time-features">配送时间特征（ETA-based
+Drop-off Time Features）</h2>
 <p>历史相似订单的配送时长的加权平均作为特征。用TEMP+R的方式来刻画起终点的ETA距离，包含起终点的时间、经纬度，首先将订单映射为一个5维的向量，然后计算订单间的相近程度（欧氏距离），选出k个跟当前订单最相近的订单，然后加权求和得到预计的配送时长（公式太长懒得打...）</p>
 <figure>
-<img src="8.jpg" alt="配送时长特征&amp;相似订单" /><figcaption aria-hidden="true">配送时长特征&amp;相似订单</figcaption>
+<img src="8.jpg" alt="配送时长特征&amp;相似订单" />
+<figcaption aria-hidden="true">配送时长特征&amp;相似订单</figcaption>
 </figure>
 <p>这个是一个看着比较简单的操作，但是这个检索匹配难度应该还是挺大的，此处应该有一些工程优化，文中没有提及。</p>
-<h2 id="气象特征meteorological-features">气象特征（Meteorological Features）</h2>
+<h2 id="气象特征meteorological-features">气象特征（Meteorological
+Features）</h2>
 <p>天气相关特征，温度、空气质量、风速以及天气条件。前面几个是连续数值类型特征，后者是类别特征。</p>
 <h1 id="模型">模型</h1>
 <p>我们也采用encode&amp;predict的范式来构建我们的模型，首先不同的特征被encode为一个固定长度的向量，这些向量被拼接在一起喂进模型。</p>
 <figure>
-<img src="9.jpg" alt="模型结构" /><figcaption aria-hidden="true">模型结构</figcaption>
+<img src="9.jpg" alt="模型结构" />
+<figcaption aria-hidden="true">模型结构</figcaption>
 </figure>
 <h2 id="特征编码">特征编码</h2>
 <ol type="1">
@@ -559,14 +600,17 @@ t_\tilde{o}^\text{arrival},
 <li>骑手特征的编码，骑手需要用相关特征进行排序，我们采用一个两阶段的策略：首先先从所由骑手中召回一个子集，然后再对这个子集进行重排序，为了简化模型，第一步的召回我们采用取餐距离作为筛选标准，在重排序阶段我们采用QILCM进行排序，对于召回子集中的骑手，都会产生一个表征向量，最终我们采用排序得分来对这些骑手的表征向量加权求和。</li>
 </ol>
 <h2 id="回归模型">回归模型</h2>
-<p>回归模型整体是一个简单的多层神经网络，此处我们提出一个后处理模块。因为在之前的训练中，我们发现这个网络的收敛速度比较慢，同时表现不如预期，我们发现原因在于真实的OFCT分布和初始化预测时候的OFCT分布并不一致，这使得模型需要先去校准整体的分布，使得收敛速度非常慢，我们将回归模块的结果进行一个校准 <span class="math display">\[
-\text{OFCT}_o^\text{predict}=\mu^\text{real} +\sigma^\text{real}\cdot \frac{y_o^\text{out}-\mu^\text{ini}}{\sigma^{ini}}
+<p>回归模型整体是一个简单的多层神经网络，此处我们提出一个后处理模块。因为在之前的训练中，我们发现这个网络的收敛速度比较慢，同时表现不如预期，我们发现原因在于真实的OFCT分布和初始化预测时候的OFCT分布并不一致，这使得模型需要先去校准整体的分布，使得收敛速度非常慢，我们将回归模块的结果进行一个校准
+<span class="math display">\[
+\text{OFCT}_o^\text{predict}=\mu^\text{real} +\sigma^\text{real}\cdot
+\frac{y_o^\text{out}-\mu^\text{ini}}{\sigma^{ini}}
 \]</span> 这些统计值由整个训练集计算得出。</p>
 <h2 id="目标函数">目标函数</h2>
 <p>我们同时对预测值和排序值进行优化 <span class="math display">\[
 \begin{aligned}
 &amp;\ell_\text{predict} +\lambda \ell_\text{rank} \\
-&amp;\ell_\text{predict} =\big| \text{OFCT}_o^\text{predict} - \text{OFCT}_o\big| \\
+&amp;\ell_\text{predict} =\big| \text{OFCT}_o^\text{predict} -
+\text{OFCT}_o\big| \\
 &amp;\ell_\text{rank}=-\sum_{\forall c\in C^\text{candidate}}\big(
 \mathbb{I}(c=c_o)\log(s_c)
 \big)
@@ -575,18 +619,22 @@ t_\tilde{o}^\text{arrival},
 <h1 id="实验">实验</h1>
 <p>离线实验采用一个月做训练，未来的一个星期做测试，评估指标为MAE和MAPE，我们分别对比了相同的模型，去掉某一类特征对于MAE以及MAPE的影响</p>
 <figure>
-<img src="10.jpg" alt="去掉特征评估" /><figcaption aria-hidden="true">去掉特征评估</figcaption>
+<img src="10.jpg" alt="去掉特征评估" />
+<figcaption aria-hidden="true">去掉特征评估</figcaption>
 </figure>
 <p>以及不同模型的相关指标</p>
 <figure>
-<img src="11.jpg" alt="不同模型评估" /><figcaption aria-hidden="true">不同模型评估</figcaption>
+<img src="11.jpg" alt="不同模型评估" />
+<figcaption aria-hidden="true">不同模型评估</figcaption>
 </figure>
 <p>对于在线的AB测试，是和GBM的基线对比</p>
 <figure>
-<img src="12.jpg" alt="在线评估" /><figcaption aria-hidden="true">在线评估</figcaption>
+<img src="12.jpg" alt="在线评估" />
+<figcaption aria-hidden="true">在线评估</figcaption>
 </figure>
 <h1 id="建议阅读">建议阅读</h1>
-<p>官方解读：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/146916779">履约时间预估：如何让外卖更快送达？</a></p>
+<p>官方解读：<a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/146916779">履约时间预估：如何让外卖更快送达？</a></p>
 
       
     </div>
@@ -782,7 +830,12 @@ t_\tilde{o}^\text{arrival},
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#introduction-related-work"><span class="nav-number">1.</span> <span class="nav-text">Introduction &amp; Related Work</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#background"><span class="nav-number">2.</span> <span class="nav-text">Background</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#feature-extraction"><span class="nav-number">3.</span> <span class="nav-text">Feature Extraction</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A2%E5%8D%95%E4%BF%A1%E6%81%AForder-information"><span class="nav-number">3.1.</span> <span class="nav-text">订单信息（Order Information）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%81%9A%E5%90%88%E7%89%B9%E5%BE%81aggregation-features"><span class="nav-number">3.2.</span> <span class="nav-text">聚合特征（Aggregation Features）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A4%90%E5%93%81%E7%89%B9%E5%BE%81dish-features"><span class="nav-number">3.3.</span> <span class="nav-text">餐品特征（Dish Features）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%87%E9%A4%90%E6%97%B6%E9%97%B4%E7%89%B9%E5%BE%81cooking-time-features"><span class="nav-number">3.4.</span> <span class="nav-text">备餐时间特征（Cooking Time Features）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BE%9B%E9%9C%80%E7%89%B9%E5%BE%81supply-and-demand-features"><span class="nav-number">3.5.</span> <span class="nav-text">供需特征（Supply and Demand Features）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AA%91%E6%89%8B%E7%89%B9%E5%BE%81"><span class="nav-number">3.6.</span> <span class="nav-text">骑手特征</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E9%80%81%E6%97%B6%E9%97%B4%E7%89%B9%E5%BE%81eta-based-drop-off-time-features"><span class="nav-number">3.7.</span> <span class="nav-text">配送时间特征（ETA-based Drop-off Time Features）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B0%94%E8%B1%A1%E7%89%B9%E5%BE%81meteorological-features"><span class="nav-number">3.8.</span> <span class="nav-text">气象特征（Meteorological Features）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.</span> <span class="nav-text">模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E7%BC%96%E7%A0%81"><span class="nav-number">4.1.</span> <span class="nav-text">特征编码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9E%E5%BD%92%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.2.</span> <span class="nav-text">回归模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E5%87%BD%E6%95%B0"><span class="nav-number">4.3.</span> <span class="nav-text">目标函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C"><span class="nav-number">5.</span> <span class="nav-text">实验</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BB%BA%E8%AE%AE%E9%98%85%E8%AF%BB"><span class="nav-number">6.</span> <span class="nav-text">建议阅读</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#introduction-related-work"><span class="nav-number">1.</span> <span class="nav-text">Introduction &amp; Related Work</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#background"><span class="nav-number">2.</span> <span class="nav-text">Background</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#feature-extraction"><span class="nav-number">3.</span> <span class="nav-text">Feature Extraction</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A2%E5%8D%95%E4%BF%A1%E6%81%AForder-information"><span class="nav-number">3.1.</span> <span class="nav-text">订单信息（Order Information）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%81%9A%E5%90%88%E7%89%B9%E5%BE%81aggregation-features"><span class="nav-number">3.2.</span> <span class="nav-text">聚合特征（Aggregation
+Features）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A4%90%E5%93%81%E7%89%B9%E5%BE%81dish-features"><span class="nav-number">3.3.</span> <span class="nav-text">餐品特征（Dish Features）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%87%E9%A4%90%E6%97%B6%E9%97%B4%E7%89%B9%E5%BE%81cooking-time-features"><span class="nav-number">3.4.</span> <span class="nav-text">备餐时间特征（Cooking Time
+Features）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BE%9B%E9%9C%80%E7%89%B9%E5%BE%81supply-and-demand-features"><span class="nav-number">3.5.</span> <span class="nav-text">供需特征（Supply and Demand
+Features）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AA%91%E6%89%8B%E7%89%B9%E5%BE%81"><span class="nav-number">3.6.</span> <span class="nav-text">骑手特征</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E9%80%81%E6%97%B6%E9%97%B4%E7%89%B9%E5%BE%81eta-based-drop-off-time-features"><span class="nav-number">3.7.</span> <span class="nav-text">配送时间特征（ETA-based
+Drop-off Time Features）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B0%94%E8%B1%A1%E7%89%B9%E5%BE%81meteorological-features"><span class="nav-number">3.8.</span> <span class="nav-text">气象特征（Meteorological
+Features）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.</span> <span class="nav-text">模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E7%BC%96%E7%A0%81"><span class="nav-number">4.1.</span> <span class="nav-text">特征编码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9E%E5%BD%92%E6%A8%A1%E5%9E%8B"><span class="nav-number">4.2.</span> <span class="nav-text">回归模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E5%87%BD%E6%95%B0"><span class="nav-number">4.3.</span> <span class="nav-text">目标函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C"><span class="nav-number">5.</span> <span class="nav-text">实验</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BB%BA%E8%AE%AE%E9%98%85%E8%AF%BB"><span class="nav-number">6.</span> <span class="nav-text">建议阅读</span></a></li></ol></div>
             
 
           </div>

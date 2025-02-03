@@ -421,18 +421,26 @@
       
 
       
-        <p>以下内容选自<a target="_blank" rel="noopener" href="http://vdisk.weibo.com/s/dBF76LzKuNQAb?sudaref=www.baidu.com">Ensemble Methods Foundations and Algorithms (Zhihua Zhou)</a> 。</p>
+        <p>以下内容选自<a
+target="_blank" rel="noopener" href="http://vdisk.weibo.com/s/dBF76LzKuNQAb?sudaref=www.baidu.com">Ensemble
+Methods Foundations and Algorithms (Zhihua Zhou)</a> 。</p>
 <h3 id="a-general-boosting-procedure">A General Boosting Procedure</h3>
-<p>总的来说Boosting是一种将多个弱分类器(仅比随机猜测好)进行组合，通过对弱分类器的boosted变成强的分类器。一个广义的自助过程(the general boosting procedure)非常简单，可以在任意数据分布上使用，通过不断更正错误来获得新的数据分布，然后训练分类器，最后进行组合的输出。</p>
+<p>总的来说Boosting是一种将多个弱分类器(仅比随机猜测好)进行组合，通过对弱分类器的boosted变成强的分类器。一个广义的自助过程(the
+general boosting
+procedure)非常简单，可以在任意数据分布上使用，通过不断更正错误来获得新的数据分布，然后训练分类器，最后进行组合的输出。</p>
 <figure>
-<img src="2.png" alt="2" /><figcaption aria-hidden="true">2</figcaption>
+<img src="2.png" alt="2" />
+<figcaption aria-hidden="true">2</figcaption>
 </figure>
 <h3 id="adaboost">Adaboost</h3>
 <p>定义损失函数为指数损失函数 <span class="math display">\[
 \ell_{\exp}(h|\mathcal{D})=\mathbb{E}_{x\sim\mathcal{D}}[e^{-f(x)h(x)}]
-\]</span> 其中<span class="math inline">\(f(x)\)</span> 是真实的标记函数，<span class="math inline">\(h(x)\)</span> 是弱分类器的预测，弱分类器的加权结合记为 <span class="math display">\[
+\]</span> 其中<span class="math inline">\(f(x)\)</span>
+是真实的标记函数，<span class="math inline">\(h(x)\)</span>
+是弱分类器的预测，弱分类器的加权结合记为 <span class="math display">\[
 H(x)=\sum^T_{t=1}\alpha_th_t(x)
-\]</span> 当我们希望整体取得最优时，对损失函数求偏导 <span class="math display">\[
+\]</span> 当我们希望整体取得最优时，对损失函数求偏导 <span
+class="math display">\[
 \begin {aligned}
 \frac{\partial e^{-f(x)h(x)}}{\partial H(x)}&amp;=-f(x)e^{-f(x)h(x)}\\
 &amp;=-e^{-H(x)}P(f(x)=1|x)+e^{-H(x)}P(f(x)=-1|x)\\
@@ -450,14 +458,25 @@ sign(H(x))&amp;=sign(\frac{1}{2}\ln\frac{P(f(x)=1|x)}{P(f(x)=-1|x)})\\
 \end{cases}\\
 &amp;= \underset{y\in\{+1,-1\}}{\arg\min} P(f(x)=y|x)
 \end{aligned}
-\]</span> 可见，Adaboost所训练出来的分类器是贝叶斯最优分类器。分类器<span class="math inline">\(H(x)\)</span> 是由<span class="math inline">\(h_t\)</span> 和<span class="math inline">\(\alpha_t\)</span> 迭代生成的，而<span class="math inline">\(h_t\)</span> 是基于分布<span class="math inline">\(\mathcal{D}_t\)</span> 生成的，所以我们将指数损失函数写作 <span class="math display">\[
+\]</span>
+可见，Adaboost所训练出来的分类器是贝叶斯最优分类器。分类器<span
+class="math inline">\(H(x)\)</span> 是由<span
+class="math inline">\(h_t\)</span> 和<span
+class="math inline">\(\alpha_t\)</span> 迭代生成的，而<span
+class="math inline">\(h_t\)</span> 是基于分布<span
+class="math inline">\(\mathcal{D}_t\)</span>
+生成的，所以我们将指数损失函数写作 <span class="math display">\[
 \begin{aligned}
 \ell_{\exp}(\alpha_th_t|\mathcal{D}_t)&amp;=\mathbb{E}_{x\sim\mathbb{D}}[e^{-f(x)\alpha_th_t(x)}]\\
-&amp;=\mathbb{E}_{x\sim\mathbb{D}}[e^{-\alpha_t}\mathbb{I}(f(x)=h_t(x))+e^{\alpha_t}\mathbb{I}(f(x)\neq h_t(x))]\\
-&amp;=e^{-\alpha_t}P_{x\sim\mathbb{D}}(f(x)=h_t(x))+e^{\alpha_t}P_{x\sim\mathbb{D}}(f(x)\neq h_t(x))\\
+&amp;=\mathbb{E}_{x\sim\mathbb{D}}[e^{-\alpha_t}\mathbb{I}(f(x)=h_t(x))+e^{\alpha_t}\mathbb{I}(f(x)\neq
+h_t(x))]\\
+&amp;=e^{-\alpha_t}P_{x\sim\mathbb{D}}(f(x)=h_t(x))+e^{\alpha_t}P_{x\sim\mathbb{D}}(f(x)\neq
+h_t(x))\\
 &amp;=e^{-\alpha_t}(1-\epsilon_t)+e^{\alpha_t}\epsilon_t
 \end{aligned}
-\]</span> 我们对<span class="math inline">\(\alpha_t\)</span> 求导令其值为<span class="math inline">\(0\)</span> <span class="math display">\[
+\]</span> 我们对<span class="math inline">\(\alpha_t\)</span>
+求导令其值为<span class="math inline">\(0\)</span> <span
+class="math display">\[
 \frac{\partial \ell_{\exp}(\alpha_th_t|\mathcal{D})}{\partial \alpha_t}
 =-e^{-\alpha_t}(1-\epsilon_t)+e^{\alpha_t}\epsilon_t=0
 \]</span> 得到权重的值应为 <span class="math display">\[
@@ -475,7 +494,8 @@ sign(H(x))&amp;=sign(\frac{1}{2}\ln\frac{P(f(x)=1|x)}{P(f(x)=-1|x)})\\
 &amp;=\mathbb{E}_{x\sim\mathcal{D}}[
   e^{-f(x)H_{t-1}(x)}(1-f(x)h_t(x)+\frac{1}{2})
 \end{aligned}
-\]</span> 所以我们第<span class="math inline">\(t\)</span> 代的分类器应该为 <span class="math display">\[
+\]</span> 所以我们第<span class="math inline">\(t\)</span>
+代的分类器应该为 <span class="math display">\[
 \begin{aligned}
 h_t(x)&amp;= \underset{h}{\arg\min}\ell_{\exp}(H_{t-1}+h|\mathcal{D})\\
 &amp;= \underset{h}{\arg\min}\mathbb{E}_{x\sim\mathcal{D}}[
@@ -489,7 +509,10 @@ h_t(x)&amp;= \underset{h}{\arg\min}\ell_{\exp}(H_{t-1}+h|\mathcal{D})\\
   f(x)h(x)
 ]\\
 \end{aligned}
-\]</span> 其中<span class="math inline">\(\mathbb{E}_{x\sim\mathcal{D}}[e^{-f(x)H_{t-1}(x)}]\)</span> 为常数，我们将分布<span class="math inline">\(\mathcal{D}_t\)</span> 记为 <span class="math display">\[
+\]</span> 其中<span
+class="math inline">\(\mathbb{E}_{x\sim\mathcal{D}}[e^{-f(x)H_{t-1}(x)}]\)</span>
+为常数，我们将分布<span class="math inline">\(\mathcal{D}_t\)</span>
+记为 <span class="math display">\[
 \mathcal{D}_t(x)=\mathcal{D}(x)\frac{e^{-f(x)H_{t-1}(x)}}{\mathbb{E}_{x\sim\mathcal{D}}[e^{-f(x)H_{t-1}(x)}]}
 \]</span> 所以 <span class="math display">\[
 \begin{aligned}
@@ -504,8 +527,11 @@ h_t(x)&amp;=\underset{h}{\arg\max}\mathbb{E}_{x\sim\mathcal{D}}[
 \]</span> 记 <span class="math display">\[
 f(x)h_t(x)=1-2\mathbb{I}(f(x)\neq h(x))
 \]</span> 所以有 <span class="math display">\[
-h_t(x)=\underset{h}{\arg\min}\mathbb{E}_{x\sim\mathcal{D}_t}[\mathbb{I}(f(x)\neq h(x))]
-\]</span> 所以每一代选出的弱分类器只跟迭代时的分布有关，而分布的迭代关系如下 <span class="math display">\[
+h_t(x)=\underset{h}{\arg\min}\mathbb{E}_{x\sim\mathcal{D}_t}[\mathbb{I}(f(x)\neq
+h(x))]
+\]</span>
+所以每一代选出的弱分类器只跟迭代时的分布有关，而分布的迭代关系如下 <span
+class="math display">\[
 \begin{aligned}
 \mathcal{D}_{t+1}(x)&amp;=\mathcal{D}(x)\frac{e^{-f(x)H_{t}(x)}}{\mathbb{E}_{x\sim\mathcal{D}}[e^{-f(x)H_{t}(x)}]}\\
 &amp;=\frac{\mathcal{D}(x)e^{-f(x)H_{t-1}(x)}e^{-f(x)\alpha_th_{t}(x)}}{\mathbb{E}_{x\sim\mathcal{D}}[e^{-f(x)H_{t}(x)}]}\\
@@ -514,23 +540,33 @@ h_t(x)=\underset{h}{\arg\min}\mathbb{E}_{x\sim\mathcal{D}_t}[\mathbb{I}(f(x)\neq
 \end{aligned}
 \]</span> 具体算法图下图所示</p>
 <figure>
-<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
+<img src="1.png" alt="1" />
+<figcaption aria-hidden="true">1</figcaption>
 </figure>
 <h3 id="theoretical-issues">Theoretical Issues</h3>
 <p>AdaBoost的upper bound为 <span class="math display">\[
 \epsilon_{\mathcal{D}}\leq \epsilon_{D}+\tilde{O}(\sqrt{\frac{dT}{m}})
-\]</span> 其中<span class="math inline">\(d\)</span> 是基本的弱分类器的VC维，<span class="math inline">\(m\)</span> 是训练样本数量，<span class="math inline">\(T\)</span> 是学习的迭代次数。所以我们易得，为了取得较好的泛化性能，限制基本弱分类器的复杂度和学习迭代的次数同样十分重要。有意思的是，对于AdaBoost这样的算法，即使训练误差接近于0，同样会使训练误差有一定减少</p>
+\]</span> 其中<span class="math inline">\(d\)</span>
+是基本的弱分类器的VC维，<span class="math inline">\(m\)</span>
+是训练样本数量，<span class="math inline">\(T\)</span>
+是学习的迭代次数。所以我们易得，为了取得较好的泛化性能，限制基本弱分类器的复杂度和学习迭代的次数同样十分重要。有意思的是，对于AdaBoost这样的算法，即使训练误差接近于0，同样会使训练误差有一定减少</p>
 <figure>
-<img src="3.png" alt="3" /><figcaption aria-hidden="true">3</figcaption>
+<img src="3.png" alt="3" />
+<figcaption aria-hidden="true">3</figcaption>
 </figure>
-<p>这看似违背了Occam’s Razor原则，即取得相同的效果时我们更偏好简单的模型，所以后人会比较关心为什么AdaBoost算法可以避免过拟合，详情参考ensemble margin等相关理论。</p>
-<p>PAC学习理论的学者比较认同Margin理论，但是对于statistic的学者而言，显然这样做并不能让他们满足，他们认为AdaBoost算法可以解释为一种通过不断拟合叠加的对率回归模型的stagewise estimation procedure。</p>
+<p>这看似违背了Occam’s
+Razor原则，即取得相同的效果时我们更偏好简单的模型，所以后人会比较关心为什么AdaBoost算法可以避免过拟合，详情参考ensemble
+margin等相关理论。</p>
+<p>PAC学习理论的学者比较认同Margin理论，但是对于statistic的学者而言，显然这样做并不能让他们满足，他们认为AdaBoost算法可以解释为一种通过不断拟合叠加的对率回归模型的stagewise
+estimation procedure。</p>
 <figure>
-<img src="4.png" alt="4" /><figcaption aria-hidden="true">4</figcaption>
+<img src="4.png" alt="4" />
+<figcaption aria-hidden="true">4</figcaption>
 </figure>
 <h3 id="multiclass-extension">Multiclass Extension</h3>
 <figure>
-<img src="5.png" alt="5" /><figcaption aria-hidden="true">5</figcaption>
+<img src="5.png" alt="5" />
+<figcaption aria-hidden="true">5</figcaption>
 </figure>
 
       

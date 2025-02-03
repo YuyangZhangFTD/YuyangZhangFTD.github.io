@@ -426,12 +426,17 @@
       
 
       
-        <h1 id="markdowns-in-e-commerce-fresh-retail-a-counterfactual-prediction-and-multi-period-optimization-approach">Markdowns in E-Commerce Fresh Retail: A Counterfactual Prediction and Multi-Period Optimization Approach</h1>
+        <h1
+id="markdowns-in-e-commerce-fresh-retail-a-counterfactual-prediction-and-multi-period-optimization-approach">Markdowns
+in E-Commerce Fresh Retail: A Counterfactual Prediction and Multi-Period
+Optimization Approach</h1>
 <p>这篇文章中了KDD2021，是做阿里盒马生鲜的折扣定价问题。</p>
-<p>我个人很早之前也关注过电商商品定价的问题，之前看过比如说rue lala、一号店、zara的一些动态定价的方法，心里有些比较模糊的想法，当时想的大概是用choice-model来刻画商品互补替代效应的同时，加入价格的影响，然后在某个周期内求解最优化模型。由于种种原因，当时并没有深入思考算法细节以及针对实际问题进行实践，这类问题主要有三个比较棘手的问题：</p>
+<p>我个人很早之前也关注过电商商品定价的问题，之前看过比如说rue
+lala、一号店、zara的一些动态定价的方法，心里有些比较模糊的想法，当时想的大概是用choice-model来刻画商品互补替代效应的同时，加入价格的影响，然后在某个周期内求解最优化模型。由于种种原因，当时并没有深入思考算法细节以及针对实际问题进行实践，这类问题主要有三个比较棘手的问题：</p>
 <ol type="1">
 <li>在只有观测数据的时候，怎么构建价格弹性，现在来看这就是一个反事实推断的问题，不仅是如何做的问题，还有如何评估的问题</li>
-<li>长周期的规划决策问题怎么建模 &amp; 求解，如何在决策优化中考虑不确定性</li>
+<li>长周期的规划决策问题怎么建模 &amp;
+求解，如何在决策优化中考虑不确定性</li>
 <li>这种pricing的问题，在现实世界中如何做A/B、如何科学评估效果</li>
 </ol>
 <p>这篇文章有很多细节&amp;落地的工作，本文的几个主要贡献：</p>
@@ -443,7 +448,8 @@
 <p>在生鲜零售的场景，商品的新鲜程度是消费者最关心的问题，很多有保质期的商品，比如说蔬菜、肉类、鸡蛋、面包，都是只有有限的销售周期，为了提供新鲜、高质量的商品，控制库存就变得十分重要，如果一个商品在过期之前还没有卖完，那么零售商就会有损失，生鲜零售商往往会采用促销的手段来最大化总利润，但却很难知道最优的价格折扣是什么。</p>
 <p>本文中，我们考虑有两种渠道销售商品的生鲜零售商，其中一个是正常价格销售，另一个渠道是折扣商品，其中消费者可以在购满一定销售额的基础上，以一定折扣购买商品。</p>
 <figure>
-<img src="1.jpg" alt="example for 2 channel" /><figcaption aria-hidden="true">example for 2 channel</figcaption>
+<img src="1.jpg" alt="example for 2 channel" />
+<figcaption aria-hidden="true">example for 2 channel</figcaption>
 </figure>
 <p>为了最大化销售利润，零售商需要回答两个问题：</p>
 <ol type="1">
@@ -457,31 +463,56 @@
 <p>在离线实验和在线AB中，都有显著的提升。</p>
 <h2 id="problem-formulation">Problem Formulation</h2>
 <ul>
-<li>零售价格折扣<span class="math inline">\(d\in[0,1]\)</span>为我们的决策变量</li>
-<li>产品<span class="math inline">\(i\)</span>在折扣<span class="math inline">\(d_i\)</span>上的平均销量<span class="math inline">\(Y_i^\text{obs}\)</span></li>
+<li>零售价格折扣<span
+class="math inline">\(d\in[0,1]\)</span>为我们的决策变量</li>
+<li>产品<span class="math inline">\(i\)</span>在折扣<span
+class="math inline">\(d_i\)</span>上的平均销量<span
+class="math inline">\(Y_i^\text{obs}\)</span></li>
 <li>特征<span class="math inline">\(x_i\in\mathbb{R}^n\)</span></li>
-<li>类别特征<span class="math inline">\(L_i\in{0,1}^m\)</span>，假设有3级类别</li>
+<li>类别特征<span
+class="math inline">\(L_i\in{0,1}^m\)</span>，假设有3级类别</li>
 </ul>
 <h2 id="counterfactual-prediction">Counterfactual Prediction</h2>
-<p>反事实预测问题的目标是在干预<span class="math inline">\(d_i\)</span>和条件<span class="math inline">\(X=x_i\)</span>下预估需求/销量的期望<span class="math inline">\(\mathbb{E}[Y_i|do(d_i),x_i]\)</span>，此处我们假设满足unconfoundness假设。</p>
+<p>反事实预测问题的目标是在干预<span
+class="math inline">\(d_i\)</span>和条件<span
+class="math inline">\(X=x_i\)</span>下预估需求/销量的期望<span
+class="math inline">\(\mathbb{E}[Y_i|do(d_i),x_i]\)</span>，此处我们假设满足unconfoundness假设。</p>
 <p>因为历史上一个商品很少有多种折扣的数据，所以我们无法拟合单个商品的价格需求函数，为了解决这个问题，我们使用数据聚合的方式，我们把所有商品用类目信息进行聚合，然后联合学习多个商品的价格弹性。</p>
 <figure>
-<img src="2.jpg" alt="category" /><figcaption aria-hidden="true">category</figcaption>
+<img src="2.jpg" alt="category" />
+<figcaption aria-hidden="true">category</figcaption>
 </figure>
 <p>我们假设模型结构为 <span class="math display">\[
 \mathbb{E}\big[\ln(Y_i/Y_i^\text{nor})\big]
 =g(d_i;L_i,\theta) + h(d_i^\text{o},x_i) - g(d_i^\text{o};L_i,\theta)
 \]</span> 其中：</p>
 <ul>
-<li><span class="math inline">\(Y_i^\text{o}\)</span>是常规渠道产品<span class="math inline">\(i\)</span>近期的平均销量</li>
-<li><span class="math inline">\(d_i^\text{o}\)</span>是商品<span class="math inline">\(i\)</span>近期的平均折扣</li>
-<li><span class="math inline">\(Y_i/Y_i^\text{nor}\)</span>代表了折扣价格使得销量增加的百分比，因为不同商品销量差异很大，所以比率会比绝对值更有用</li>
-<li>函数<span class="math inline">\(g(d_i;L_i,\theta)\)</span>是参数化的价格弹性模型，参数<span class="math inline">\(\theta\in\mathbb{R}^{m+1}\)</span></li>
-<li>函数<span class="math inline">\(h(d_i^\text{o},x_i)\)</span>为非参数预测模型，用于预测基础折扣<span class="math inline">\(d_i^\text{o}\)</span>的销量，如果<span class="math inline">\(d_i=d_i^\text{o}\)</span>，那么<span class="math inline">\(\mathbb{E}\big[\ln(Y_i/Y_i^\text{nor})\big|d_i^\text{o}]=h(d_i^\text{o},x_i)\)</span></li>
+<li><span class="math inline">\(Y_i^\text{o}\)</span>是常规渠道产品<span
+class="math inline">\(i\)</span>近期的平均销量</li>
+<li><span class="math inline">\(d_i^\text{o}\)</span>是商品<span
+class="math inline">\(i\)</span>近期的平均折扣</li>
+<li><span
+class="math inline">\(Y_i/Y_i^\text{nor}\)</span>代表了折扣价格使得销量增加的百分比，因为不同商品销量差异很大，所以比率会比绝对值更有用</li>
+<li>函数<span
+class="math inline">\(g(d_i;L_i,\theta)\)</span>是参数化的价格弹性模型，参数<span
+class="math inline">\(\theta\in\mathbb{R}^{m+1}\)</span></li>
+<li>函数<span
+class="math inline">\(h(d_i^\text{o},x_i)\)</span>为非参数预测模型，用于预测基础折扣<span
+class="math inline">\(d_i^\text{o}\)</span>的销量，如果<span
+class="math inline">\(d_i=d_i^\text{o}\)</span>，那么<span
+class="math inline">\(\mathbb{E}\big[\ln(Y_i/Y_i^\text{nor})\big|d_i^\text{o}]=h(d_i^\text{o},x_i)\)</span></li>
 </ul>
-<p>对于价格弹性，我们提出一种双log结构的nested模型 <span class="math display">\[
-g(d_i;L_i,\theta)=\mathbb{E}\big[\ln(Y_i/Y_i^\text{nor})\big]=(\theta_1+\theta_2^\mathsf{T}L_i)\ln d_i +c
-\]</span> 其中<span class="math inline">\(\theta_2\in\mathbb{R}^m\)</span>，<span class="math inline">\(\theta=[\theta_1, \theta_2^\mathsf{T}]^\mathsf{T}\)</span>，<span class="math inline">\(c\)</span>为截距参数，<span class="math inline">\(L_i\)</span>为由三级one-hot变量组成 <span class="math display">\[
+<p>对于价格弹性，我们提出一种双log结构的nested模型 <span
+class="math display">\[
+g(d_i;L_i,\theta)=\mathbb{E}\big[\ln(Y_i/Y_i^\text{nor})\big]=(\theta_1+\theta_2^\mathsf{T}L_i)\ln
+d_i +c
+\]</span> 其中<span
+class="math inline">\(\theta_2\in\mathbb{R}^m\)</span>，<span
+class="math inline">\(\theta=[\theta_1,
+\theta_2^\mathsf{T}]^\mathsf{T}\)</span>，<span
+class="math inline">\(c\)</span>为截距参数，<span
+class="math inline">\(L_i\)</span>为由三级one-hot变量组成 <span
+class="math display">\[
 L_i=[
 \underbrace{0,\cdots,1,0}_\text{category 1},
 \underbrace{0,1,\cdots,0}_\text{category 2},
@@ -489,41 +520,70 @@ L_i=[
 ]^\mathsf{T}
 \]</span> 通过指数转换，模型可以写作 <span class="math display">\[
 Y_i=Y_i^\text{nor} e^c d_i^{\theta_1 +\theta_2^\mathsf{T}L_i},\forall i
-\]</span> 其中<span class="math inline">\(\theta_1 +\theta_2^\mathsf{T}L_i\)</span>就是价格弹性，所以每个独立SKU的价格弹性是由类别的价格弹性组成的。为了顾及价格弹性，我们用所有样本最小化均方误差来拟合模型，在现实电商场景中，一个更好的方式是在线实时更新参数： <span class="math display">\[
+\]</span> 其中<span class="math inline">\(\theta_1
++\theta_2^\mathsf{T}L_i\)</span>就是价格弹性，所以每个独立SKU的价格弹性是由类别的价格弹性组成的。为了顾及价格弹性，我们用所有样本最小化均方误差来拟合模型，在现实电商场景中，一个更好的方式是在线实时更新参数：
+<span class="math display">\[
 \underset{\theta,c}{\min}
 \sum_{i=1}^N\sum_{j=1}^t\tau^{t-j}
-\|\ln\frac{Y_{i,j}}{Y_{i,j}^\text{nor}} - \theta^\mathsf{T}\hat{L}_i \ln d_{i,j} - c\|^2_2 +\lambda\|\theta\|^2_2
-\]</span> 其中<span class="math inline">\(\lambda&gt;0\)</span>是正则系数，<span class="math inline">\(0&lt;\tau\leq1\)</span>为忘记因子，为了避免较遥远历史数据的影响。</p>
+\|\ln\frac{Y_{i,j}}{Y_{i,j}^\text{nor}} - \theta^\mathsf{T}\hat{L}_i \ln
+d_{i,j} - c\|^2_2 +\lambda\|\theta\|^2_2
+\]</span> 其中<span
+class="math inline">\(\lambda&gt;0\)</span>是正则系数，<span
+class="math inline">\(0&lt;\tau\leq1\)</span>为忘记因子，为了避免较遥远历史数据的影响。</p>
 <p>最终的预测模型为 <span class="math display">\[
-\ln Y_{i,t}(d_i)=\hat{\theta}_t^\mathsf{T}L_i (\ln d_i -\ln d_{i,t}^\mathsf{o}) + \ln Y_{i,t}^\mathsf{o}
-\]</span> 此处只是建模了商品的价格弹性，忽略了商品之间的互补替代效应。</p>
-<h2 id="multi-period-price-optimization">Multi-Period Price Optimization</h2>
+\ln Y_{i,t}(d_i)=\hat{\theta}_t^\mathsf{T}L_i (\ln d_i -\ln
+d_{i,t}^\mathsf{o}) + \ln Y_{i,t}^\mathsf{o}
+\]</span>
+此处只是建模了商品的价格弹性，忽略了商品之间的互补替代效应。</p>
+<h2 id="multi-period-price-optimization">Multi-Period Price
+Optimization</h2>
 <p>此处假设商品之间彼此独立，所以我们针对一个商品进行价格的优化。</p>
-<p>区域内存在<span class="math inline">\(|\mathcal{J}|\)</span>个零售店，每家店<span class="math inline">\(j\in\mathcal{J}\)</span>，有<span class="math inline">\(B_j\)</span>个商品在库，期望在<span class="math inline">\(T_j\)</span>天卖完，如果无法卖完，则会扔掉来保证货品的新鲜度，造成浪费。我们将每一天视作一个阶段，总阶段数为<span class="math inline">\(T_\max=\underset{j}{\arg\max} T_j\)</span>，在不同周期，商品都会有不同的需求。为了考虑所有店铺的目标，我们期望联合动态优化最优价格。</p>
+<p>区域内存在<span
+class="math inline">\(|\mathcal{J}|\)</span>个零售店，每家店<span
+class="math inline">\(j\in\mathcal{J}\)</span>，有<span
+class="math inline">\(B_j\)</span>个商品在库，期望在<span
+class="math inline">\(T_j\)</span>天卖完，如果无法卖完，则会扔掉来保证货品的新鲜度，造成浪费。我们将每一天视作一个阶段，总阶段数为<span
+class="math inline">\(T_\max=\underset{j}{\arg\max}
+T_j\)</span>，在不同周期，商品都会有不同的需求。为了考虑所有店铺的目标，我们期望联合动态优化最优价格。</p>
 <figure>
-<img src="3.jpg" alt="excample of problem" /><figcaption aria-hidden="true">excample of problem</figcaption>
+<img src="3.jpg" alt="excample of problem" />
+<figcaption aria-hidden="true">excample of problem</figcaption>
 </figure>
-商品价格为<span class="math inline">\(p_0\)</span>，这个价格是常规渠道的销售价格，且价格固定，用<span class="math inline">\(d_t\)</span>表示商品在周期<span class="math inline">\(t\)</span>时的折扣，对应的价格为<span class="math inline">\(p_t=p_0d_t\)</span>，我们对于常规渠道的销量预测为<span class="math inline">\(Z_{j,t}，\forall j,t\)</span>，反事实的销量预测为<span class="math inline">\(Y_{jt}(d_t)\)</span>，同时考虑到最后浪费的损失，优化问题为： $$
+商品价格为<span
+class="math inline">\(p_0\)</span>，这个价格是常规渠道的销售价格，且价格固定，用<span
+class="math inline">\(d_t\)</span>表示商品在周期<span
+class="math inline">\(t\)</span>时的折扣，对应的价格为<span
+class="math inline">\(p_t=p_0d_t\)</span>，我们对于常规渠道的销量预测为<span
+class="math inline">\(Z_{j,t}，\forall
+j,t\)</span>，反事实的销量预测为<span
+class="math inline">\(Y_{jt}(d_t)\)</span>，同时考虑到最后浪费的损失，优化问题为：
+$$
 <span class="math display">\[\begin{aligned}
 \underset{d_1,\cdots,d_T}{\max} &amp; \sum_{j\in\mathcal{J}}\bigg(
 \sum_{t=1}^{T_j} p_0d_tY_{jt}(d_t)-w_j\big[
 B_j-\sum_{t=1}^{T_J}\big(Y_{jt}(d_t)+Z_{jt}\big)
 \big]^+
-\bigg) 
+\bigg)
 \\
 
 \text{s.t.} &amp;
 \sum_{t=1}^{T_j}\big(
 Y_{jt}(d_t)+Z_{jt}
 \big) \leq B_j
-\quad \forall j\in \mathcal{J} 
+\quad \forall j\in \mathcal{J}
 \\
 
-&amp;lb_{jt} \leq p_t \leq ub_{jt} 
+&amp;lb_{jt} \leq p_t \leq ub_{jt}
 \quad \forall t=1,\dots,T_j,j\in \mathcal{J}
 \end{aligned}\]</span>
 <p>$$</p>
-其中<span class="math inline">\(w_j\)</span>是浪费损失的权重，<span class="math inline">\([\cdot]^+\)</span>为非负运算符，<span class="math inline">\(lb_{jt}\)</span>和<span class="math inline">\(ub_{jt}\)</span>是折扣最大和最小的上下限制，因为<span class="math inline">\(Z_{jt}\)</span>和<span class="math inline">\(B_j\)</span>是独立于决策变量的，所以可以简化上述问题为： $$
+其中<span class="math inline">\(w_j\)</span>是浪费损失的权重，<span
+class="math inline">\([\cdot]^+\)</span>为非负运算符，<span
+class="math inline">\(lb_{jt}\)</span>和<span
+class="math inline">\(ub_{jt}\)</span>是折扣最大和最小的上下限制，因为<span
+class="math inline">\(Z_{jt}\)</span>和<span
+class="math inline">\(B_j\)</span>是独立于决策变量的，所以可以简化上述问题为：
+$$
 <span class="math display">\[\begin{aligned}
 \underset{d_1,\cdots,d_T}{\max} &amp; \sum_{j\in\mathcal{J}}
 \sum_{t=1}^{T_j} \bigg(
@@ -536,32 +596,54 @@ p_0d_t+w_j
 \sum_{t=1}^{T_j}\big(
 Y_{jt}(d_t)+Z_{jt}
 \big) \leq B_j
-\quad \forall j\in \mathcal{J} 
+\quad \forall j\in \mathcal{J}
 \\
 
-&amp;lb_{jt} \leq p_t \leq ub_{jt} 
+&amp;lb_{jt} \leq p_t \leq ub_{jt}
 \quad \forall t=1,\dots,T_j,j\in \mathcal{J}
 \end{aligned}\]</span>
-<p>$$ 对于上面这个问题，我们并不准备直接求解，考虑到可以打的折扣是是有限的，我们将这个问题转化成离散优化问题。虽然模型已经给出了<span class="math inline">\(Y_{jt}(d_t)\)</span>和<span class="math inline">\(Z_{jt}\)</span>的预估，但是仍会有随机的误差，所以我们需要考虑上述问题的不确定性，我们用MDP来建模整个决策过程。</p>
-<p>定义每个门店<span class="math inline">\(j\)</span>在常规渠道和折扣渠道的真实销量为<span class="math inline">\(a^y_{jt}\)</span>和<span class="math inline">\(a^z_{jt}\)</span>，用<span class="math inline">\(s_{jt}\)</span>表示商品<span class="math inline">\(t\)</span>时刻在门店<span class="math inline">\(j\)</span>的库存： <span class="math display">\[
+<p>$$
+对于上面这个问题，我们并不准备直接求解，考虑到可以打的折扣是是有限的，我们将这个问题转化成离散优化问题。虽然模型已经给出了<span
+class="math inline">\(Y_{jt}(d_t)\)</span>和<span
+class="math inline">\(Z_{jt}\)</span>的预估，但是仍会有随机的误差，所以我们需要考虑上述问题的不确定性，我们用MDP来建模整个决策过程。</p>
+<p>定义每个门店<span
+class="math inline">\(j\)</span>在常规渠道和折扣渠道的真实销量为<span
+class="math inline">\(a^y_{jt}\)</span>和<span
+class="math inline">\(a^z_{jt}\)</span>，用<span
+class="math inline">\(s_{jt}\)</span>表示商品<span
+class="math inline">\(t\)</span>时刻在门店<span
+class="math inline">\(j\)</span>的库存： <span class="math display">\[
 \begin{aligned}
 s_{j,1} &amp;= B_j \\
 s_{j,t+1} &amp;= s_{j,t} - a_{j,t}^y - a_{jt}^z, \quad t&lt; T_j \\
-s_{j,t+1} &amp;= 0 \quad T_j \leq t \leq T_\max 
+s_{j,t+1} &amp;= 0 \quad T_j \leq t \leq T_\max
 \end{aligned}
-\]</span> 其中<span class="math inline">\(s_{jt}\)</span>是个单调递减的序列，候选折扣集合<span class="math inline">\(\cal{D}=\{d^1,\cdots,d^M\}\)</span>。</p>
-<p>为了建模销量的不确定性，我们从历史数据中发现，大部分情况下销量服从泊松分布，期望参数为<span class="math inline">\(Y_{jt}(d_t)\)</span>和<span class="math inline">\(Z_{jt}\)</span>（此处假设<span class="math inline">\(Y_{jt}(d_t)\)</span>和<span class="math inline">\(Z_{jt}\)</span>是<span class="math inline">\(a^y_{jt}\)</span>和<span class="math inline">\(a^z_{jt}\)</span>的无偏估计）</p>
-<p>定义<span class="math inline">\(a_{jt}=a^y_{jt}+a^z_{jt}\)</span>，销量不会高于库存，所以我们定义状态转移矩阵 <span class="math display">\[
+\]</span> 其中<span
+class="math inline">\(s_{jt}\)</span>是个单调递减的序列，候选折扣集合<span
+class="math inline">\(\cal{D}=\{d^1,\cdots,d^M\}\)</span>。</p>
+<p>为了建模销量的不确定性，我们从历史数据中发现，大部分情况下销量服从泊松分布，期望参数为<span
+class="math inline">\(Y_{jt}(d_t)\)</span>和<span
+class="math inline">\(Z_{jt}\)</span>（此处假设<span
+class="math inline">\(Y_{jt}(d_t)\)</span>和<span
+class="math inline">\(Z_{jt}\)</span>是<span
+class="math inline">\(a^y_{jt}\)</span>和<span
+class="math inline">\(a^z_{jt}\)</span>的无偏估计）</p>
+<p>定义<span
+class="math inline">\(a_{jt}=a^y_{jt}+a^z_{jt}\)</span>，销量不会高于库存，所以我们定义状态转移矩阵
+<span class="math display">\[
 \begin{aligned}
 P(s_{j,t+1}|s_{j,t},d_t)=
 \begin{cases}
-\text{Poi}\big(s_{j,t}-s_{j,t+1}|Y_{jt}(d,t)+Z_{jt}\big) &amp; 0&lt;s_{j,t+1} \leq s_{j,t} \\
+\text{Poi}\big(s_{j,t}-s_{j,t+1}|Y_{jt}(d,t)+Z_{jt}\big) &amp;
+0&lt;s_{j,t+1} \leq s_{j,t} \\
 1-Q(s_{j,t}-1,Y_{jt}(dt)+Z_{jt}) &amp; s_{j,t+1}=0
 \end{cases}
 \end{aligned}
 \]</span> 期望状态转移后的奖励为 <span class="math display">\[
 R(s_{j,t},d_t,s_{j,t+1})=(p_0d_t,+w_j)[s_{j,t}-s_{j,t+1}-Z_{jt}]^+
-\]</span> 所以多阶段的优化问题变成一个选择策略<span class="math inline">\(\pi(\cdot)\)</span>来最大化累计奖励的问题 <span class="math display">\[
+\]</span> 所以多阶段的优化问题变成一个选择策略<span
+class="math inline">\(\pi(\cdot)\)</span>来最大化累计奖励的问题 <span
+class="math display">\[
 \sum_{j\in\cal{J}}\sum_{t=1}^{T_j}R(s_{j,t},d_t,s_{j,t+1}), d_t=\pi(s_t)
 \]</span> <img src="4.jpg" alt="MDP" /></p>
 <p>为了求解这个MDP的问题，我们提出了一种两阶段的算法，分开反向求解和联合优化两步：</p>
@@ -569,7 +651,8 @@ R(s_{j,t},d_t,s_{j,t+1})=(p_0d_t,+w_j)[s_{j,t}-s_{j,t+1}-Z_{jt}]^+
 <li>对于每个门店，单独进行更新</li>
 </ol>
 <p><span class="math display">\[
-Q(s_{j,t},d_t)=\sum_{s_{j,t+1}=0}^{s_{j,t}} P(s_{j,t+1}|S_{j,t},d_t)\cdot\big(
+Q(s_{j,t},d_t)=\sum_{s_{j,t+1}=0}^{s_{j,t}}
+P(s_{j,t+1}|S_{j,t},d_t)\cdot\big(
 R(s_{j,t},d_t,s_{j,t+1})+\max_{d_{t+1}\in\cal{D}}Q(s_{j,t+1},d_t)
 \big), t=2,\cdots T_j, j\in\cal{J}
 \]</span></p>
@@ -577,28 +660,35 @@ R(s_{j,t},d_t,s_{j,t+1})+\max_{d_{t+1}\in\cal{D}}Q(s_{j,t+1},d_t)
 <li>联合优化，对于所有店铺联合优化，并在单个阶段求最优</li>
 </ol>
 <p><span class="math display">\[
-d_1^*=\underset{d_t\in\cal{D}}{\arg\max}\sum_{j\in\cal{J}} Q(s_{j,1}=B_j,_t)
+d_1^*=\underset{d_t\in\cal{D}}{\arg\max}\sum_{j\in\cal{J}}
+Q(s_{j,1}=B_j,_t)
 \]</span></p>
-<p>所以我们可以得到最优定价<span class="math inline">\(p_1^*=p_0d_1^*\)</span>，因为这个算法每天会重新更新训练，所以只需要每天重新计算第一阶段的最优值。</p>
+<p>所以我们可以得到最优定价<span
+class="math inline">\(p_1^*=p_0d_1^*\)</span>，因为这个算法每天会重新更新训练，所以只需要每天重新计算第一阶段的最优值。</p>
 <figure>
-<img src="5.jpg" alt="algo" /><figcaption aria-hidden="true">algo</figcaption>
+<img src="5.jpg" alt="algo" />
+<figcaption aria-hidden="true">algo</figcaption>
 </figure>
 <h2 id="experiment">Experiment</h2>
 <p>文中对比了不同模型：Xgb、DeepIV和提出的结构化的回归模型</p>
 <figure>
-<img src="6.jpg" alt="train" /><figcaption aria-hidden="true">train</figcaption>
+<img src="6.jpg" alt="train" />
+<figcaption aria-hidden="true">train</figcaption>
 </figure>
 <figure>
-<img src="7.jpg" alt="price-sale curve" /><figcaption aria-hidden="true">price-sale curve</figcaption>
+<img src="7.jpg" alt="price-sale curve" />
+<figcaption aria-hidden="true">price-sale curve</figcaption>
 </figure>
 <p>以及线上实现的结果</p>
 <figure>
-<img src="8.jpg" alt="ab" /><figcaption aria-hidden="true">ab</figcaption>
+<img src="8.jpg" alt="ab" />
+<figcaption aria-hidden="true">ab</figcaption>
 </figure>
 <h2 id="一些想法">一些想法</h2>
 <p>论文内容部分讲完了，总体是一篇很踏实的文章，一个业务有接近20%的GMV提升，可以说是非常“有效”的解决了问题，但这篇文章仍然有些缺点，或者说没有放在论文里的点，再回顾一下最开始的三个问题：</p>
 <ol type="1">
-<li>没有直面反事实学习和评估的问题，只是通过加入对于价格弹性的人工知识先验（选择模型+类目分层的关系）来规避这个问题，文中提到的price-sales curve，虽然看着结果很好，但实际上也不能算是非常靠谱的评估。</li>
+<li>没有直面反事实学习和评估的问题，只是通过加入对于价格弹性的人工知识先验（选择模型+类目分层的关系）来规避这个问题，文中提到的price-sales
+curve，虽然看着结果很好，但实际上也不能算是非常靠谱的评估。</li>
 <li>在做多阶段的优化时候，仍然是忽略了不同阶段预测模型效果的差异，T+1和T+N时候的预测，方差是逐渐变大的，如何建模这部分的不确定性，并没有细说。</li>
 <li>没有具体写AB实验怎么做的，是时间片还是分门店，还是线上用户分流，这些都没有详细写清楚，有很多容易受到challenge的点，这种业务如何科学合理的做实验仍是一个复杂且充满挑战的问题。</li>
 </ol>
@@ -799,7 +889,10 @@ d_1^*=\underset{d_t\in\cal{D}}{\arg\max}\sum_{j\in\cal{J}} Q(s_{j,1}=B_j,_t)
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#markdowns-in-e-commerce-fresh-retail-a-counterfactual-prediction-and-multi-period-optimization-approach"><span class="nav-number">1.</span> <span class="nav-text">Markdowns in E-Commerce Fresh Retail: A Counterfactual Prediction and Multi-Period Optimization Approach</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-number">1.1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#problem-formulation"><span class="nav-number">1.2.</span> <span class="nav-text">Problem Formulation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#counterfactual-prediction"><span class="nav-number">1.3.</span> <span class="nav-text">Counterfactual Prediction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#multi-period-price-optimization"><span class="nav-number">1.4.</span> <span class="nav-text">Multi-Period Price Optimization</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#experiment"><span class="nav-number">1.5.</span> <span class="nav-text">Experiment</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E6%83%B3%E6%B3%95"><span class="nav-number">1.6.</span> <span class="nav-text">一些想法</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#markdowns-in-e-commerce-fresh-retail-a-counterfactual-prediction-and-multi-period-optimization-approach"><span class="nav-number">1.</span> <span class="nav-text">Markdowns
+in E-Commerce Fresh Retail: A Counterfactual Prediction and Multi-Period
+Optimization Approach</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#introduction"><span class="nav-number">1.1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#problem-formulation"><span class="nav-number">1.2.</span> <span class="nav-text">Problem Formulation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#counterfactual-prediction"><span class="nav-number">1.3.</span> <span class="nav-text">Counterfactual Prediction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#multi-period-price-optimization"><span class="nav-number">1.4.</span> <span class="nav-text">Multi-Period Price
+Optimization</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#experiment"><span class="nav-number">1.5.</span> <span class="nav-text">Experiment</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E6%83%B3%E6%B3%95"><span class="nav-number">1.6.</span> <span class="nav-text">一些想法</span></a></li></ol></li></ol></div>
             
 
           </div>

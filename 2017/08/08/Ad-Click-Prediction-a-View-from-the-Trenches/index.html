@@ -417,45 +417,101 @@
       
 
       
-        <h3 id="introduction-brief-system-overview">Introduction &amp; Brief System Overview</h3>
-<p>CTR预估是这样一个问题：给定一个查询<span class="math inline">\(q\)</span> 和根据广告商选择的关键词来匹配查询<span class="math inline">\(q\)</span> 相关的候选广告<span class="math inline">\(a\)</span> ，也就是计算概率 <span class="math display">\[
+        <h3 id="introduction-brief-system-overview">Introduction &amp; Brief
+System Overview</h3>
+<p>CTR预估是这样一个问题：给定一个查询<span
+class="math inline">\(q\)</span> 和根据广告商选择的关键词来匹配查询<span
+class="math inline">\(q\)</span> 相关的候选广告<span
+class="math inline">\(a\)</span> ，也就是计算概率 <span
+class="math display">\[
 P(\text{click}|q,a)
-\]</span> 通常系统中所用到的特征会涉及方面面，包括查询本身、广告的文本、与广告相关的各种信息等等，同时特征也会非常稀疏，往往只会有少数是非零的。</p>
+\]</span>
+通常系统中所用到的特征会涉及方面面，包括查询本身、广告的文本、与广告相关的各种信息等等，同时特征也会非常稀疏，往往只会有少数是非零的。</p>
 <h3 id="online-learning-and-sparsity">Online learning and sparsity</h3>
-<p>因为特征的维数往往非常大，所以广义的线性模型更适合这种情况，就像对率回归。为了描述该问题我们做如下表述：<span class="math inline">\(g_t\in\mathbb{R}^d\)</span> 表明当前第<span class="math inline">\(t\)</span> 个训练实例，<span class="math inline">\(g_{t,i}\)</span> 表示其中第<span class="math inline">\(i\)</span> 项特征的值，同时有<span class="math inline">\(g_{1:t}=\sum^t_{s=1}g_s\)</span> ，对率回归模型可以表述为预测<span class="math inline">\(p_t=\sigma(w_t \cdot x_t)\)</span> ，其中<span class="math inline">\(\sigma(a)=1/(1+\exp(-a))\)</span> ，通过优化对数损失 <span class="math display">\[
+<p>因为特征的维数往往非常大，所以广义的线性模型更适合这种情况，就像对率回归。为了描述该问题我们做如下表述：<span
+class="math inline">\(g_t\in\mathbb{R}^d\)</span> 表明当前第<span
+class="math inline">\(t\)</span> 个训练实例，<span
+class="math inline">\(g_{t,i}\)</span> 表示其中第<span
+class="math inline">\(i\)</span> 项特征的值，同时有<span
+class="math inline">\(g_{1:t}=\sum^t_{s=1}g_s\)</span>
+，对率回归模型可以表述为预测<span class="math inline">\(p_t=\sigma(w_t
+\cdot x_t)\)</span> ，其中<span
+class="math inline">\(\sigma(a)=1/(1+\exp(-a))\)</span>
+，通过优化对数损失 <span class="math display">\[
 \ell_t(w_t)=-y_t\log p_t-(1-y_t)\log(1-p_t)
 \]</span> 其梯度为 <span class="math display">\[
 \triangledown\ell_t(w)=(\sigma(w\cdot x_t)-y_t)x_t=(p_t-y_t)x_t
-\]</span> 在线梯度下降(OGD)在这种问题上非常高效，用最少的计算资源，得到较高准确度的结果。但是，在现实中另一个不得不考虑的就是数据的稀疏性，随着模型越来越庞大，存储参数所需要的空间也变得十分庞大，所以让参数稀疏易储存十分重要。OGD在这方面就不是非常有效。单纯加一个<span class="math inline">\(L_1\)</span> 正则项并不会产生足够好的稀疏参数。更为复杂的方法，如<a target="_blank" rel="noopener" href="https://stanford.edu/~jduchi/projects/DuchiSi09b.pdf">FOBOS</a> 、<a target="_blank" rel="noopener" href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/xiao10JMLR.pdf">RDA</a>在引入稀疏性方面就非常有效。但是，RDA的参数稀疏性好，OGD准确性好，各有优点与缺点，<a target="_blank" rel="noopener" href="https://static.googleusercontent.com/media/research.google.com/zh-CN//pubs/archive/37013.pdf">FTRL-Proximal</a> 就在稀疏性和准确性上都做得很好，通常OGD的迭代式为 <span class="math display">\[
+\]</span>
+在线梯度下降(OGD)在这种问题上非常高效，用最少的计算资源，得到较高准确度的结果。但是，在现实中另一个不得不考虑的就是数据的稀疏性，随着模型越来越庞大，存储参数所需要的空间也变得十分庞大，所以让参数稀疏易储存十分重要。OGD在这方面就不是非常有效。单纯加一个<span
+class="math inline">\(L_1\)</span>
+正则项并不会产生足够好的稀疏参数。更为复杂的方法，如<a
+target="_blank" rel="noopener" href="https://stanford.edu/~jduchi/projects/DuchiSi09b.pdf">FOBOS</a>
+、<a
+target="_blank" rel="noopener" href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/xiao10JMLR.pdf">RDA</a>在引入稀疏性方面就非常有效。但是，RDA的参数稀疏性好，OGD准确性好，各有优点与缺点，<a
+target="_blank" rel="noopener" href="https://static.googleusercontent.com/media/research.google.com/zh-CN//pubs/archive/37013.pdf">FTRL-Proximal</a>
+就在稀疏性和准确性上都做得很好，通常OGD的迭代式为 <span
+class="math display">\[
 w_{t+1}=w_t-\eta_t g_t
-\]</span> 其中<span class="math inline">\(\eta\)</span> 为非负的学习率，而FTRL-Proximal算法做如下的迭代更新 <span class="math display">\[
-w_{t+1}=\underset{w}{\operatorname{\arg\min}} (g_{1:t}\cdot w+\frac{1}{2}\sum^t_{s=1}\sigma_s||w-w_s||^2_2+\lambda_1||w||_1)
-\]</span> 其中<span class="math inline">\(\sigma_s\)</span> 代表学习率，使<span class="math inline">\(\sigma_{1:t}=\frac{1}{\eta_t}\)</span> ，根据上式，我们知道在迭代的时候，会需要<span class="math inline">\(w\)</span> 在每次迭代的系数，这会耗费很大的存储空间，所以我们可以只最小化 <span class="math display">\[
-(g_{1:t}-\sum^t_{s=1}\sigma_sw_s)\cdot w+\frac{1}{\eta_t}||w||^2_2+\lambda_1||w||_1+\text{const}
-\]</span> 这样，如果我们只存储<span class="math inline">\(z_{t-1}=g_{1:t-1}-\sum^{t-1}_{s=1}\sigma_sw_s\)</span> ，并且使<span class="math inline">\(z_t=z_{t-1}+g_t+(\frac{1}{\eta_t}-\frac{1}{\eta_{t-1}})w_t\)</span> ，可以得 <span class="math display">\[
+\]</span> 其中<span class="math inline">\(\eta\)</span>
+为非负的学习率，而FTRL-Proximal算法做如下的迭代更新 <span
+class="math display">\[
+w_{t+1}=\underset{w}{\operatorname{\arg\min}} (g_{1:t}\cdot
+w+\frac{1}{2}\sum^t_{s=1}\sigma_s||w-w_s||^2_2+\lambda_1||w||_1)
+\]</span> 其中<span class="math inline">\(\sigma_s\)</span>
+代表学习率，使<span
+class="math inline">\(\sigma_{1:t}=\frac{1}{\eta_t}\)</span>
+，根据上式，我们知道在迭代的时候，会需要<span
+class="math inline">\(w\)</span>
+在每次迭代的系数，这会耗费很大的存储空间，所以我们可以只最小化 <span
+class="math display">\[
+(g_{1:t}-\sum^t_{s=1}\sigma_sw_s)\cdot
+w+\frac{1}{\eta_t}||w||^2_2+\lambda_1||w||_1+\text{const}
+\]</span> 这样，如果我们只存储<span
+class="math inline">\(z_{t-1}=g_{1:t-1}-\sum^{t-1}_{s=1}\sigma_sw_s\)</span>
+，并且使<span
+class="math inline">\(z_t=z_{t-1}+g_t+(\frac{1}{\eta_t}-\frac{1}{\eta_{t-1}})w_t\)</span>
+，可以得 <span class="math display">\[
 w_{t+1,i}=\begin{cases}
 0 &amp; \text{if} |z_{t,i}|\leq \lambda_1\\
 -\eta_t(z_{t,i}-sgn(z_{t,i})\lambda_1) &amp; \text{otherwise}
 \end{cases}
 \]</span> 下图为FTRL-Proximal算法步骤。</p>
 <figure>
-<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
+<img src="1.png" alt="1" />
+<figcaption aria-hidden="true">1</figcaption>
 </figure>
-<h3 id="saving-memory-at-massive-scale">SAVING MEMORY AT MASSIVE SCALE</h3>
+<h3 id="saving-memory-at-massive-scale">SAVING MEMORY AT MASSIVE
+SCALE</h3>
 <p>因为数据特征的维度非常大，同时也十分稀疏，对于数据特征的选择就十分重要，通常我们只需要取出现频率比较大的特征作为计算，但读取并筛选特征这一行为本身就是非常昂贵的。</p>
-<p>处理这种问题的一个角度是通过<span class="math inline">\(L_1\)</span> 正则化来实现稀疏性，这样做就不用统计这个特征为零的概率了，这样做可以使包含较少信息的特征在训练中被去除掉，但是这么做的同时，也会带来一定准确度的损失。另一个角度是采用概率特征包含(probabilistic feature inclusion)，新的特征第一次出现的时候以一定概率加入模型中，这种方法既能用于预处理数据，也可以用在在线学习中。这里提供两种实现方法：</p>
+<p>处理这种问题的一个角度是通过<span class="math inline">\(L_1\)</span>
+正则化来实现稀疏性，这样做就不用统计这个特征为零的概率了，这样做可以使包含较少信息的特征在训练中被去除掉，但是这么做的同时，也会带来一定准确度的损失。另一个角度是采用概率特征包含(probabilistic
+feature
+inclusion)，新的特征第一次出现的时候以一定概率加入模型中，这种方法既能用于预处理数据，也可以用在在线学习中。这里提供两种实现方法：</p>
 <ul>
-<li>Poisson Inclusion 泊松包含，当我们得到一个不在模型中的特征时，我们以概率<span class="math inline">\(p\)</span> 接收这个特征，一旦这个特征被添加在模型中，在其余观测样本中我们更新它的系数；</li>
-<li>Bloom Filter Inclusion，在训练中，记录一定样本中该特征出现的概率，如果超过一定阈值，则加入该特征。</li>
+<li>Poisson Inclusion
+泊松包含，当我们得到一个不在模型中的特征时，我们以概率<span
+class="math inline">\(p\)</span>
+接收这个特征，一旦这个特征被添加在模型中，在其余观测样本中我们更新它的系数；</li>
+<li>Bloom Filter
+Inclusion，在训练中，记录一定样本中该特征出现的概率，如果超过一定阈值，则加入该特征。</li>
 </ul>
-<p>OGD使用32位或者64位浮点数来存储参数，这样可以提高精度，但是，这对于需要参数稀疏的我们并不适合。几乎所有的参数都在<span class="math inline">\((-2,+2)\)</span> 的取件中，所以我们选择一种修正的<span class="math inline">\(q2.13\)</span> 的编码方式来代替浮点数。在<span class="math inline">\(q2.13\)</span> 编码中，我们用2bits存储整数部分，其余的13bits存储小数部分，1bits存储符号，16bits就可以存储一个值，在进行零均值处理之后，在损失很少的精度情况下，可以节约大部分的存储空间。</p>
-<p>对于迭代过程，计算梯度也会需要很大的计算资源，所以对梯度的计算也作近似 <span class="math display">\[
-\sum g_{t,i}^2=\sum_{\text{positive events}}(1-p_t)^2+\sum_{\text{negative events}}p_t^2
+<p>OGD使用32位或者64位浮点数来存储参数，这样可以提高精度，但是，这对于需要参数稀疏的我们并不适合。几乎所有的参数都在<span
+class="math inline">\((-2,+2)\)</span>
+的取件中，所以我们选择一种修正的<span
+class="math inline">\(q2.13\)</span> 的编码方式来代替浮点数。在<span
+class="math inline">\(q2.13\)</span>
+编码中，我们用2bits存储整数部分，其余的13bits存储小数部分，1bits存储符号，16bits就可以存储一个值，在进行零均值处理之后，在损失很少的精度情况下，可以节约大部分的存储空间。</p>
+<p>对于迭代过程，计算梯度也会需要很大的计算资源，所以对梯度的计算也作近似
+<span class="math display">\[
+\sum g_{t,i}^2=\sum_{\text{positive
+events}}(1-p_t)^2+\sum_{\text{negative events}}p_t^2
 \]</span></p>
 <p><span class="math display">\[
-\sum g_{t,i}^2\approx P(1-\frac{P}{N+P})^2+N(\frac{P}{N+P})^2=\frac{PN}{N+P}
+\sum g_{t,i}^2\approx
+P(1-\frac{P}{N+P})^2+N(\frac{P}{N+P})^2=\frac{PN}{N+P}
 \]</span></p>
-<p>其中<span class="math inline">\(P\)</span> 和<span class="math inline">\(N\)</span> 都可以通过统计得到并不需要计算。</p>
+<p>其中<span class="math inline">\(P\)</span> 和<span
+class="math inline">\(N\)</span> 都可以通过统计得到并不需要计算。</p>
 <p>典型的CTR的概率会远远低于50%，所以在面临样本不均衡时我们要做一些处理，常见的是对负样本进行次采样(Subsampling)。</p>
 <h3 id="summary">Summary</h3>
 <p>论文的剩下部分也对模型验证和改进等等做了一些介绍，感觉不是特别有意思所以就只扫了一眼。本文对CTR进行了一个大体的描述，一篇还可以的综述类文章。</p>
@@ -652,7 +708,9 @@ w_{t+1,i}=\begin{cases}
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#introduction-brief-system-overview"><span class="nav-number">1.</span> <span class="nav-text">Introduction &amp; Brief System Overview</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#online-learning-and-sparsity"><span class="nav-number">2.</span> <span class="nav-text">Online learning and sparsity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#saving-memory-at-massive-scale"><span class="nav-number">3.</span> <span class="nav-text">SAVING MEMORY AT MASSIVE SCALE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#summary"><span class="nav-number">4.</span> <span class="nav-text">Summary</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#introduction-brief-system-overview"><span class="nav-number">1.</span> <span class="nav-text">Introduction &amp; Brief
+System Overview</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#online-learning-and-sparsity"><span class="nav-number">2.</span> <span class="nav-text">Online learning and sparsity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#saving-memory-at-massive-scale"><span class="nav-number">3.</span> <span class="nav-text">SAVING MEMORY AT MASSIVE
+SCALE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#summary"><span class="nav-number">4.</span> <span class="nav-text">Summary</span></a></li></ol></div>
             
 
           </div>

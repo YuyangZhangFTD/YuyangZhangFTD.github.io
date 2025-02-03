@@ -106,7 +106,7 @@
 <meta property="og:image" content="http://yoursite.com/2017/10/12/A-Review-for-Boosting/1.png">
 <meta property="og:image" content="http://yoursite.com/2017/10/12/A-Review-for-Boosting/2.png">
 <meta property="article:published_time" content="2017-10-12T09:16:57.000Z">
-<meta property="article:modified_time" content="2018-03-02T15:32:30.625Z">
+<meta property="article:modified_time" content="2018-03-02T15:32:30.000Z">
 <meta property="article:author" content="YuyangZhangFTD">
 <meta property="article:tag" content="Machine Learning">
 <meta property="article:tag" content="Ensemble Method">
@@ -420,98 +420,160 @@
       
         <h1 id="a-review-for-boosting">A Review for Boosting</h1>
 <p>最近看GBDT，从头到尾好好地梳理了一下。</p>
-<p>说到Boosting，总的思路是通过一些weak的base learner，不断累加的思想，你先学，你学的不好的我来学，我学的不好的他来学，这样来提升最后的效果，一种串行合作相互弥补的方式，相比于bagging，bagging则是一种通过不同角度来学习，最后结合提升效果的方法，一种并行分工的合作方式。今天重点来总结Boosting。</p>
-<p>说到Boosting，就不得不说最经典的加法模型，additive model，经典的Adaboost和GBDT一些列都是从加法模型延伸而来（Adaboost好像不是，没有看过最初的论文，但可以这样解释）。</p>
-<p>此处插一个题外话，GBDT的最初作者Friedman老先生，看论文的时候觉得他的名字眼熟，所以去搜了一下，我勒个天，这个老先生，牛逼坏了。。这位老爷子不仅是GBDT的初创者，还做了一系列的加法模型，ensemble learning的大牛之一，同时出身于统计，在坐标提升（类似于梯度下降的方法）方法上贡献特别大，写了一个glmnet的R语言包，也称为弹性网络，成为三大流行统计R包（好像是这个title，记不清了）之一，而且一直到前几年，每年都有很经典的论文出来。</p>
+<p>说到Boosting，总的思路是通过一些weak的base
+learner，不断累加的思想，你先学，你学的不好的我来学，我学的不好的他来学，这样来提升最后的效果，一种串行合作相互弥补的方式，相比于bagging，bagging则是一种通过不同角度来学习，最后结合提升效果的方法，一种并行分工的合作方式。今天重点来总结Boosting。</p>
+<p>说到Boosting，就不得不说最经典的加法模型，additive
+model，经典的Adaboost和GBDT一些列都是从加法模型延伸而来（Adaboost好像不是，没有看过最初的论文，但可以这样解释）。</p>
+<p>此处插一个题外话，GBDT的最初作者Friedman老先生，看论文的时候觉得他的名字眼熟，所以去搜了一下，我勒个天，这个老先生，牛逼坏了。。这位老爷子不仅是GBDT的初创者，还做了一系列的加法模型，ensemble
+learning的大牛之一，同时出身于统计，在坐标提升（类似于梯度下降的方法）方法上贡献特别大，写了一个glmnet的R语言包，也称为弹性网络，成为三大流行统计R包（好像是这个title，记不清了）之一，而且一直到前几年，每年都有很经典的论文出来。</p>
 <h2 id="concept-of-boosting">Concept of Boosting</h2>
 <p>Boosting的目标是通过通过迭代弱学习器的方式结合得到更高准确率的分类器，仅仅多次使用弱分类器并不会带来任何改进，而是通过重新“修正”（reweight）样本来来改进学习的性能，这样，基学习器在每次迭代中都可以学到一个新的结果，最后通过结合来获得更好的结果。</p>
 <h2 id="adaboost">AdaBoost</h2>
-<p>AdaBoost是通过对样本加权的方式来reweight样本的重要性，具体可以参加我之前的博客<a target="_blank" rel="noopener" href="https://yuyangzhangftd.github.io/2017/08/16/Boosting/">boosting</a> 推到非常详细，本篇就不赘述了。</p>
+<p>AdaBoost是通过对样本加权的方式来reweight样本的重要性，具体可以参加我之前的博客<a
+target="_blank" rel="noopener" href="https://yuyangzhangftd.github.io/2017/08/16/Boosting/">boosting</a>
+推到非常详细，本篇就不赘述了。</p>
 <h2 id="statistical-boosting">Statistical Boosting</h2>
 <p>统计学上的boosting在这里提一下，这个也是之前老师给我们重点讲的，统计上一般叫bootstrap方法，简单来说就是通过重复对样本进行抽样，构造boostrap的经验分布，然后借助这个经验分布来做置信区间或者假设检验。比如说，你想求一个统计量的bootstrap经验分布，你可以从样本里抽，然后用抽出来的样本进行估计，重复多次之后，就可以得到这个统计量的经验分布，并根据这个经验分布做后续的假设检验。</p>
 <p>做ML的可能对这个比较陌生，但在统计里面，boostrap方法和EM算法一样，都是很重要很经典的东西。</p>
 <h2 id="gbm">GBM</h2>
-<p>GBM全称gradient boosting machine，包括了一系列的梯度提升模型，最著名且好用的是GBDT，全称是gradient boosting decision tree。梯度boosting就是源于是通过拟合梯度的方式来reweight样本的，通俗的说就是，adaboost用<span class="math inline">\(\text{new_sample}\leftarrow\text{weight}*\text{sample}\)</span> 的方式迭代，GBM用<span class="math inline">\(\text{new_sample}\leftarrow\text{residual/gradient}=\text{label}-\text{estimation}\)</span> 来迭代更新。</p>
-<p>这里突然有个疑惑，大家都是boosting模型，lr的boosting也很方便，为什么只有decision tree的boosting这么火呢？</p>
+<p>GBM全称gradient boosting
+machine，包括了一系列的梯度提升模型，最著名且好用的是GBDT，全称是gradient
+boosting decision
+tree。梯度boosting就是源于是通过拟合梯度的方式来reweight样本的，通俗的说就是，adaboost用<span
+class="math inline">\(\text{new_sample}\leftarrow\text{weight}*\text{sample}\)</span>
+的方式迭代，GBM用<span
+class="math inline">\(\text{new_sample}\leftarrow\text{residual/gradient}=\text{label}-\text{estimation}\)</span>
+来迭代更新。</p>
+<p>这里突然有个疑惑，大家都是boosting模型，lr的boosting也很方便，为什么只有decision
+tree的boosting这么火呢？</p>
 <h3 id="gredient-boosting">Gredient Boosting</h3>
 <p>我们的目标为： <span class="math display">\[
 \Phi(F)=\mathbb{E}_{x,y}[\mathcal{L}(y,F(x))]
 \]</span> 根据多个base learner来最小化琐事函数。</p>
 <p>考虑经典的加法模型： <span class="math display">\[
 F_0(x)=\underset{\rho}{\arg\min}\sum^N_{i=1}\mathcal{L}(y_i, \rho)
-\]</span> 对于<span class="math inline">\(m=1,...,M\)</span> 次迭代，有 <span class="math display">\[
+\]</span> 对于<span class="math inline">\(m=1,...,M\)</span> 次迭代，有
+<span class="math display">\[
 F^*(x)=f_0+\sum^M_{m=1}f_m(x)
-\]</span> 其中<span class="math inline">\(f_0\)</span> 为初始的base learner，其中每一步 <span class="math display">\[
+\]</span> 其中<span class="math inline">\(f_0\)</span> 为初始的base
+learner，其中每一步 <span class="math display">\[
 f_m(x)=-\rho_mg_m(x)
 \]</span> 其中 <span class="math display">\[
 g_m(x)=[\frac{\partial \Phi (F(x))}{\partial F(x)}]_{F(x)=F_{m-1}(x)}
-\]</span> 这里注意，我们一般的梯度都是对于变量来讲的，这里是对函数而言，选择这个函数（或者成为base learner）会产生的梯度，而权重<span class="math inline">\(\rho\)</span> 怎么可以通过线性搜索等方法来求 <span class="math display">\[
-\rho_m=\underset{\rho}{\arg\min}\mathbb{E}_{x,y}[\mathcal{L}(y,F_{m-1}(x)-\rho g_m(x))]
-\]</span> 即每一步产生观测值的权重是令当前所产生的所有学习base learner的结果误差最小化的值。（上面写得有点乱，主要看下面）</p>
-<p>将上述概念定义的通用一点，我们的目标是学习 <span class="math display">\[
+\]</span>
+这里注意，我们一般的梯度都是对于变量来讲的，这里是对函数而言，选择这个函数（或者成为base
+learner）会产生的梯度，而权重<span class="math inline">\(\rho\)</span>
+怎么可以通过线性搜索等方法来求 <span class="math display">\[
+\rho_m=\underset{\rho}{\arg\min}\mathbb{E}_{x,y}[\mathcal{L}(y,F_{m-1}(x)-\rho
+g_m(x))]
+\]</span> 即每一步产生观测值的权重是令当前所产生的所有学习base
+learner的结果误差最小化的值。（上面写得有点乱，主要看下面）</p>
+<p>将上述概念定义的通用一点，我们的目标是学习 <span
+class="math display">\[
 \{ \beta_m,\alpha_m \}^M_1=
-\underset{ \{ \beta_m&#39;,\alpha_m&#39; \}^M_1} 
+\underset{ \{ \beta_m&#39;,\alpha_m&#39; \}^M_1}
 {\arg\min}\sum^N_{i=1}
 \mathcal{L}(y_i,\sum^M_{m=1}\beta_m&#39;h(x_i;\alpha_m&#39;) )
-\]</span> 这里注意<span class="math inline">\(\beta\)</span> 你的base learner，classifier，hypothesis的权重，而<span class="math inline">\(\alpha\)</span> 是参数，总分类器可以由迭代得到 <span class="math display">\[
+\]</span> 这里注意<span class="math inline">\(\beta\)</span> 你的base
+learner，classifier，hypothesis的权重，而<span
+class="math inline">\(\alpha\)</span> 是参数，总分类器可以由迭代得到
+<span class="math display">\[
 F_m(x)=F_{m-1}(x)+\beta_mh(x;a_m)
 \]</span></p>
-<p>得到每一步的更新函数（新的base learner）和权重后 <span class="math display">\[
+<p>得到每一步的更新函数（新的base learner）和权重后 <span
+class="math display">\[
 F_m(x)=F_{m-1}(x)+\beta_m h(x;a_m)
-\]</span> 上式可以看作是对最优分类器<span class="math inline">\(F^*(x)\)</span> 采用梯度下降法的逐渐逼近，后一项为梯度，也就是经过<span class="math inline">\(M\)</span> 步迭代后，最后加出来的模型是我们需要的模型。所以我们更新的<span class="math inline">\(h(x;a_m)\)</span> 为单步修正方向 <span class="math display">\[
--g_m(x_i)=-[\frac{\partial \mathcal{L}(y_i,F(x_i))}{\partial F(x_i)}]_{F(x)=F_{m-1}(x)}
-\]</span> 在N维的数据空间，提供了最优的下降方向。注意此处思路的转变，以前都是对于<span class="math inline">\(k\)</span> 维数据<span class="math inline">\(N\)</span> 个样本的梯度下降，这次是函数级别，每个函数都是<span class="math inline">\(N\)</span> 维的变量（样本数），然后更新函数（也就是一般情况下的变量）通过函数的“梯度”更正最优的分类器，最后叠加起来（也不算是叠加，就是不断修正，此处指累加的加法模型），获得我们想要的最优函数（一般情况下的梯度下降，也可以看作是梯度的累加）。</p>
-<p>ps：这种想法，恩，真的是，居然还有这种骚操作！！ <span class="math display">\[
+\]</span> 上式可以看作是对最优分类器<span
+class="math inline">\(F^*(x)\)</span>
+采用梯度下降法的逐渐逼近，后一项为梯度，也就是经过<span
+class="math inline">\(M\)</span>
+步迭代后，最后加出来的模型是我们需要的模型。所以我们更新的<span
+class="math inline">\(h(x;a_m)\)</span> 为单步修正方向 <span
+class="math display">\[
+-g_m(x_i)=-[\frac{\partial \mathcal{L}(y_i,F(x_i))}{\partial
+F(x_i)}]_{F(x)=F_{m-1}(x)}
+\]</span>
+在N维的数据空间，提供了最优的下降方向。注意此处思路的转变，以前都是对于<span
+class="math inline">\(k\)</span> 维数据<span
+class="math inline">\(N\)</span>
+个样本的梯度下降，这次是函数级别，每个函数都是<span
+class="math inline">\(N\)</span>
+维的变量（样本数），然后更新函数（也就是一般情况下的变量）通过函数的“梯度”更正最优的分类器，最后叠加起来（也不算是叠加，就是不断修正，此处指累加的加法模型），获得我们想要的最优函数（一般情况下的梯度下降，也可以看作是梯度的累加）。</p>
+<p>ps：这种想法，恩，真的是，居然还有这种骚操作！！ <span
+class="math display">\[
 a_m=\underset{a,\beta}{\arg\min}\sum^N_{i=1}[-g_m(x_i)-\beta h(x_i;a)]^2
 \]</span></p>
 <p><span class="math display">\[
-\rho_m = \underset{\rho}{\arg\min}\sum^N_{i=1}\mathcal{L}(y_i,F_{m-1}(x)+\rho h(x_i;a_m))
+\rho_m =
+\underset{\rho}{\arg\min}\sum^N_{i=1}\mathcal{L}(y_i,F_{m-1}(x)+\rho
+h(x_i;a_m))
 \]</span></p>
 <p><span class="math display">\[
 F_m(x)=F_{m-1}(x)+\rho_mh(x;a_m)
 \]</span></p>
-<p>注意，这里的<span class="math inline">\(\beta\)</span> 和<span class="math inline">\(\rho\)</span> 的不同，一个是针对梯度修正的，一个是针对损失函数的，当你的损失函数比较特别时，二者等价。</p>
+<p>注意，这里的<span class="math inline">\(\beta\)</span> 和<span
+class="math inline">\(\rho\)</span>
+的不同，一个是针对梯度修正的，一个是针对损失函数的，当你的损失函数比较特别时，二者等价。</p>
 <figure>
-<img src="1.png" alt="1" /><figcaption aria-hidden="true">1</figcaption>
+<img src="1.png" alt="1" />
+<figcaption aria-hidden="true">1</figcaption>
 </figure>
-<p>讲到这里，梯度提升内容主要就讲完了，剩下的就是可以换用不同的损失函数和基学习器水论文了，Firedman老爷子还做了一个logistic regression版的。与之思路相似的还有一个likelihood-based boosting，有兴趣的同学可以搜一下。</p>
+<p>讲到这里，梯度提升内容主要就讲完了，剩下的就是可以换用不同的损失函数和基学习器水论文了，Firedman老爷子还做了一个logistic
+regression版的。与之思路相似的还有一个likelihood-based
+boosting，有兴趣的同学可以搜一下。</p>
 <h3 id="xgboost">Xgboost</h3>
 <p>都已经说GBDT讲完了，为什么还有？因为这个xgboost，很屌很强大。闲话不多说，下面开始描述它屌在哪。</p>
-<p>首先陈天奇给目标函数加了个正则项，避免我们的base learner的complex过大 <span class="math display">\[
+<p>首先陈天奇给目标函数加了个正则项，避免我们的base learner的complex过大
+<span class="math display">\[
 \mathcal{L}(\phi)=\sum_i\ell(\hat{y}_i,y_i)+\sum_k\Omega(f_k)\\
 \Omega(f)=\gamma T+\frac{1}{2}\lambda\|w\|^2
-\]</span> 面对梯度的时候，陈大哥说，要有二阶导！所以我们把loss在<span class="math inline">\(y_i^{(t-1)}\)</span> 处泰勒展开到二阶 <span class="math display">\[
+\]</span> 面对梯度的时候，陈大哥说，要有二阶导！所以我们把loss在<span
+class="math inline">\(y_i^{(t-1)}\)</span> 处泰勒展开到二阶 <span
+class="math display">\[
 \tilde{\mathcal{L}}^{(t)}\simeq\sum^n_{i=1}[
   \ell(y_i,\hat{y}_i^{(t-1)})+g_if_t(x_i)+\frac{1}{2}h_if_t^2(x_i)
 ]+\Omega(f_t)
 \]</span> 其中 <span class="math display">\[
 g_i=\partial_{\hat{y}_i^{(t-1)}}\ell(y_i,\hat{y}_i^{(t-1)})\\
 h_i=\partial^2_{\hat{y}_i^{(t-1)}}\ell(y_i,\hat{y}_i^{(t-1)})
-\]</span> 之前论文看到这里我卡在这里好久，如果采用square loss的话，二阶导不就是常数，有啥求的？到处搜找不到答案，知道我看到了陈大哥的slide</p>
+\]</span> 之前论文看到这里我卡在这里好久，如果采用square
+loss的话，二阶导不就是常数，有啥求的？到处搜找不到答案，知道我看到了陈大哥的slide</p>
 <figure>
-<img src="2.png" alt="2" /><figcaption aria-hidden="true">2</figcaption>
+<img src="2.png" alt="2" />
+<figcaption aria-hidden="true">2</figcaption>
 </figure>
-<p>艹，真的就这么简单。所以，去掉常数项之后，我们有第<span class="math inline">\(t\)</span> 步迭代的损失 <span class="math display">\[
+<p>艹，真的就这么简单。所以，去掉常数项之后，我们有第<span
+class="math inline">\(t\)</span> 步迭代的损失 <span
+class="math display">\[
 \tilde{\mathcal{L}}^{(t)}\simeq\sum^n_{i=1}[
   g_if_t(x_i)+\frac{1}{2}h_if_t^2(x_i)
 ]+\Omega(f_t)
-\]</span> 如果我们采用树模型，则定义<span class="math inline">\(I_j=\{j|q(x_i)=j\}\)</span> 为落在叶节点<span class="math inline">\(j\)</span>的样本，则损失函数变成 <span class="math display">\[
+\]</span> 如果我们采用树模型，则定义<span
+class="math inline">\(I_j=\{j|q(x_i)=j\}\)</span> 为落在叶节点<span
+class="math inline">\(j\)</span>的样本，则损失函数变成 <span
+class="math display">\[
 \begin{aligned}
 \tilde{\mathcal{L}}^{(t)}&amp;=\sum^n_{i=1}[
   g_if_t(x_i)+\frac{1}{2}h_if_t^2(x_i)
 ]+\gamma T+\frac{1}{2}\lambda\sum^T_{j=1}w_j^2\\
-&amp;=\sum^T_{j=1}[(\sum_{i\in I_j}g_i)w_j+\frac{1}{2}(\sum_{i\in I_j}h_i+\lambda)w_j^2]+\lambda T
+&amp;=\sum^T_{j=1}[(\sum_{i\in I_j}g_i)w_j+\frac{1}{2}(\sum_{i\in
+I_j}h_i+\lambda)w_j^2]+\lambda T
 \end{aligned}
 \]</span> 然后就很简单了，求出极值就可以了 <span class="math display">\[
 w_j^*=\frac{\sum_{i\in I_j}g_i}{\sum_{i\in I_j}h_i+\lambda}\\
-\tilde{\mathcal{L}}^{(t)}(q)=-\frac{1}{2}\sum^T_{j=1}\frac{(\sum_{i\in I_j}g_i)^2}{\sum_{i\in I_j}h_i+\lambda}+\gamma T
-\]</span> 所以我们可以根据上式选择最优的树模型结构<span class="math inline">\(q^*\)</span> 作为累加的模型之一。是否在节点继续划分，则根据gain来计算，也就是计算损失函数 <span class="math display">\[
+\tilde{\mathcal{L}}^{(t)}(q)=-\frac{1}{2}\sum^T_{j=1}\frac{(\sum_{i\in
+I_j}g_i)^2}{\sum_{i\in I_j}h_i+\lambda}+\gamma T
+\]</span> 所以我们可以根据上式选择最优的树模型结构<span
+class="math inline">\(q^*\)</span>
+作为累加的模型之一。是否在节点继续划分，则根据gain来计算，也就是计算损失函数
+<span class="math display">\[
 \mathcal{L}_{\text{split}}=\frac{1}{2}[
   \frac{(\sum_{i\in I_L}g_i)^2}{\sum_{i\in I_L}h_i+\lambda}+
   \frac{(\sum_{i\in I_R}g_i)^2}{\sum_{i\in I_R}h_i+\lambda}-
   \frac{(\sum_{i\in I}g_i)^2}{\sum_{i\in I}h_i+\lambda}
 ]-\gamma
-\]</span> xgboost主要思想到这里就结束了，可是陈哥屌啊，还提出了一系列工程上的好方法：</p>
+\]</span>
+xgboost主要思想到这里就结束了，可是陈哥屌啊，还提出了一系列工程上的好方法：</p>
 <ul>
 <li>近似分割方法，树节点划分需要遍历所有样本，但是这里做近似划分，只考察分位点的样本；</li>
 <li>近似分割同时考虑权重，采用二阶导作为权重，论文中有具体细节；</li>
@@ -523,11 +585,15 @@ w_j^*=\frac{\sum_{i\in I_j}g_i}{\sum_{i\in I_j}h_i+\lambda}\\
 <li>各种工程上的支持，具体参考github；</li>
 <li>...</li>
 </ul>
-<p>恩，反正就是各种工程优化+二阶导的Gradient Boosting思想，反正就是屌。</p>
+<p>恩，反正就是各种工程优化+二阶导的Gradient
+Boosting思想，反正就是屌。</p>
 <h3 id="lightgbm">LightGBM</h3>
 <p>这个没有细看过，只是工业上的重新实现，加了一些优化，换了一种树模型的实现方式，以及对分布式等的支持，速度非常快，计算开销较小，但是会有一些精度降低，不过，微软出品，必是精品。</p>
 <h2 id="summary">Summary</h2>
-<p>今天有总结了一波boosting，只不过这次是以GBM为主，理解了加法模型和梯度的关系，你就真的懂GBDT了，这几天总结完，感觉自己对tree model和ensemble learning的感觉又上了一个层次，gradient boosting的思路真的是妙啊，24K纯骚操作。还留了一个问题，为什么additive model不采用lr这种模型，这两天要看看论文找出答案。</p>
+<p>今天有总结了一波boosting，只不过这次是以GBM为主，理解了加法模型和梯度的关系，你就真的懂GBDT了，这几天总结完，感觉自己对tree
+model和ensemble learning的感觉又上了一个层次，gradient
+boosting的思路真的是妙啊，24K纯骚操作。还留了一个问题，为什么additive
+model不采用lr这种模型，这两天要看看论文找出答案。</p>
 
       
     </div>

@@ -417,77 +417,91 @@
       
         <h1 id="pytorch-note-09.09">Pytorch note 09.09</h1>
 <h2 id="求导机制">求导机制</h2>
-<p>每个变量的<code>requires_grad</code> 表明这个变量是否需要计算导数，在创建变量的时候进行设定</p>
+<p>每个变量的<code>requires_grad</code>
+表明这个变量是否需要计算导数，在创建变量的时候进行设定</p>
 <p><code>z = Variable(torch.randn(5, 5), requires_grad=True)</code></p>
 <p>这个参数可以让我们动态的调整每个变量是否需要梯度和是否更新。</p>
 <p><code>volatile</code> 是干什么的暂时没有看懂，先留个坑。</p>
 <h2 id="torch">torch</h2>
-<p>pytorch的基本包<code>torch</code> ，提供了Tensor的数据结构和基本函数，数学操作与numpy相似，本来记录了很多的但觉得官方文档都有，现查就可以了，就不在此赘述了。</p>
-<p>经过我尝试，pytorch支持基本运算符，同时可以使用变量自身的运算函数，<code>torch</code> 所带的运算函数也适用，都能达到相同的效果。</p>
-<p>总的来说，<code>torch</code> 的主要作用在于一些细节操作和宏观判断，比如对张量的判断以及一些适用于所有张量的操作。</p>
+<p>pytorch的基本包<code>torch</code>
+，提供了Tensor的数据结构和基本函数，数学操作与numpy相似，本来记录了很多的但觉得官方文档都有，现查就可以了，就不在此赘述了。</p>
+<p>经过我尝试，pytorch支持基本运算符，同时可以使用变量自身的运算函数，<code>torch</code>
+所带的运算函数也适用，都能达到相同的效果。</p>
+<p>总的来说，<code>torch</code>
+的主要作用在于一些细节操作和宏观判断，比如对张量的判断以及一些适用于所有张量的操作。</p>
 <h2 id="torch.tensor">torch.Tensor</h2>
 <table>
+<colgroup>
+<col style="width: 34%" />
+<col style="width: 28%" />
+<col style="width: 36%" />
+</colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>Data tyoe</th>
 <th>CPU tensor</th>
 <th>GPU tensor</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>32-bit floating point</td>
 <td><code>torch.FloatTensor</code></td>
 <td><code>torch.cuda.FloatTensor</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td>64-bit floating point</td>
 <td><code>torch.DoubleTensor</code></td>
 <td><code>torch.cuda.DoubleTensor</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td>16-bit floating point</td>
 <td>N/A</td>
 <td><code>torch.cuda.HalfTensor</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td>8-bit integer (unsigned)</td>
 <td><code>torch.ByteTensor</code></td>
 <td><code>torch.cuda.ByteTensor</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td>8-bit integer (signed)</td>
 <td><code>torch.CharTensor</code></td>
 <td><code>torch.cuda.CharTensor</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td>16-bit integer (signed)</td>
 <td><code>torch.ShortTensor</code></td>
 <td><code>torch.cuda.ShortTensor</code></td>
 </tr>
-<tr class="odd">
+<tr>
 <td>32-bit integer (signed)</td>
 <td><code>torch.IntTensor</code></td>
 <td><code>torch.cuda.IntTensor</code></td>
 </tr>
-<tr class="even">
+<tr>
 <td>64-bit integer (signed)</td>
 <td><code>torch.LongTensor</code></td>
 <td><code>torch.cuda.LongTensor</code></td>
 </tr>
 </tbody>
 </table>
-<p>张量主要有以上这些数据类型，默认<code>torch.FloatTensor</code> ，可以从<code>list</code> 或者<code>numpy</code> 来转换。</p>
-<p>直接用<code>torch.Tensor()</code> 创建的是全零的张量，但是在数值上会又很小很小的数字。</p>
+<p>张量主要有以上这些数据类型，默认<code>torch.FloatTensor</code>
+，可以从<code>list</code> 或者<code>numpy</code> 来转换。</p>
+<p>直接用<code>torch.Tensor()</code>
+创建的是全零的张量，但是在数值上会又很小很小的数字。</p>
 <p>支持python或者说是numpy自有格式的切片索引以及修改。</p>
-<p>会修改张量本身值的函数会在函数名后带一个下划线，如<code>torch.FloatTensor.abs_()</code> 。</p>
+<p>会修改张量本身值的函数会在函数名后带一个下划线，如<code>torch.FloatTensor.abs_()</code>
+。</p>
 <p>每一个张量都会有一个<code>torch.storage</code> 来保存值。</p>
 <h2 id="torch.storage">torch.Storage</h2>
-<p><code>torch.Storage</code> 是一个单一数据类型的一维数组，与张量一一对应。</p>
+<p><code>torch.Storage</code>
+是一个单一数据类型的一维数组，与张量一一对应。</p>
 <p>但我并没有太理解这个类是干嘛用的，为什么需要一个单独的类来存储呢？</p>
 <h2 id="torch.nn">torch.nn</h2>
 <h3 id="torch.nn.paramter">torch.nn.Paramter()</h3>
-<p><code>Variable</code>的子类 ，用于模块参数<code>module paramter</code></p>
+<p><code>Variable</code>的子类
+，用于模块参数<code>module paramter</code></p>
 <h3 id="torch.nn.module">torch.nn.Module</h3>
 <p>所有网络的基础类，构建自己的模型时务必继承这个类。</p>
 <h3 id="卷积层">卷积层</h3>
@@ -501,9 +515,11 @@
 <h3 id="dropout-layers">Dropout layers</h3>
 <p><code>torch.nn.Dropout(p=0.5, inplace=False)</code> Dropout层</p>
 <h3 id="linear-layers">Linear layers</h3>
-<p><code>torch.nn.Linear(in_features, out_features, bias=True)</code> 线性相加层。</p>
+<p><code>torch.nn.Linear(in_features, out_features, bias=True)</code>
+线性相加层。</p>
 <h3 id="sparse-layers">Sparse layers</h3>
-<p><code>torch.nn.Embedding(num_embeddings, embedding_dim, padding_idx=None, max_norm=None, norm_type=2, scale_grad_by_freq=False, sparse=False)</code> Embedding层。</p>
+<p><code>torch.nn.Embedding(num_embeddings, embedding_dim, padding_idx=None, max_norm=None, norm_type=2, scale_grad_by_freq=False, sparse=False)</code>
+Embedding层。</p>
 <h3 id="distance-functions">Distance functions</h3>
 <p><code>torch.nn.PairwiseDistance(p=2, eps=1e-06)</code>范数距离</p>
 <h3 id="loss-functions">Loss functions</h3>
@@ -511,19 +527,33 @@
 <h2 id="torch.nn.functional">torch.nn.functional</h2>
 <p>用到的所有函数这里都有，为了方便我们可以直接选择用层</p>
 <h2 id="torch.autograd">torch.autograd</h2>
-<p>提供了类和函数用来对任意标量函数进行求导。要想使用自动求导，只需要对已有的代码进行微小的改变，用<code>Variable</code> 类包含张量即可。</p>
+<p>提供了类和函数用来对任意标量函数进行求导。要想使用自动求导，只需要对已有的代码进行微小的改变，用<code>Variable</code>
+类包含张量即可。</p>
 <h2 id="torch.optim">torch.optim</h2>
-<p>优化算法，先构造对象，然后用对象调用<code>step()</code> 函数进行单次优化。</p>
+<p>优化算法，先构造对象，然后用对象调用<code>step()</code>
+函数进行单次优化。</p>
 <p>不同优化函数的参数不同。</p>
 <h2 id="torchvision">torchvision</h2>
 <p>包含了目前流行的数据集，模型结构和常用的图片转换工具。</p>
 <h2 id="summary">Summary</h2>
-<p>简单总结一下流程，首先需要定义一个网络，继承<code>torhc.nn.Module</code> ，如果采用层类来建模，则可以不用定义具体的<code>Variable</code> ，同时只需要定义好<code>forward()</code> 函数表明如何得到最后的值即可。</p>
-<p>然后创建该模型实例，选择一个损失函数<code>criterion</code> 和优化器<code>optimizer</code> ，然后进行迭代训练。每一步中读取训练数据，先调用<code>optimizer.zero_grad()</code> 初始化，清空优化器的缓存，然后得到输出，用损失函数计算<code>loss = criterion(outputs, labels)</code> ，然后调用<code>loss.backward()</code> 更新梯度，用优化器进行单步训练<code>optimizer.step()</code> 。</p>
+<p>简单总结一下流程，首先需要定义一个网络，继承<code>torhc.nn.Module</code>
+，如果采用层类来建模，则可以不用定义具体的<code>Variable</code>
+，同时只需要定义好<code>forward()</code>
+函数表明如何得到最后的值即可。</p>
+<p>然后创建该模型实例，选择一个损失函数<code>criterion</code>
+和优化器<code>optimizer</code>
+，然后进行迭代训练。每一步中读取训练数据，先调用<code>optimizer.zero_grad()</code>
+初始化，清空优化器的缓存，然后得到输出，用损失函数计算<code>loss = criterion(outputs, labels)</code>
+，然后调用<code>loss.backward()</code>
+更新梯度，用优化器进行单步训练<code>optimizer.step()</code> 。</p>
 <p>pytorch保存训练好的模型也十分简单，有两种选择</p>
 <ul>
-<li><p><code>torch.save(model_object, 'model.pkl')</code> 来保存模型，<code>model = torch.load('model.pkl')</code> 加载模型</p></li>
-<li><p><code>torch.save(net.state_dict(), 'model.pkl')</code> 保存模型，其中<code>net</code> 是你定义的网络模型实例，后面是保存文件。加载模型使用<code>net.load_state_dict(torch.load('model.pkl'))</code></p></li>
+<li><p><code>torch.save(model_object, 'model.pkl')</code>
+来保存模型，<code>model = torch.load('model.pkl')</code>
+加载模型</p></li>
+<li><p><code>torch.save(net.state_dict(), 'model.pkl')</code>
+保存模型，其中<code>net</code>
+是你定义的网络模型实例，后面是保存文件。加载模型使用<code>net.load_state_dict(torch.load('model.pkl'))</code></p></li>
 </ul>
 <p>总体感觉pytorch真的是十分容易上手，易用程度堪比keras，同时定义细节时候又如同numpy一样简单，这两天找时间动手实践一个。</p>
 

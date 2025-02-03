@@ -576,8 +576,10 @@ pr
           这次来回顾一下另一个经典模型，Factorization Machine。
 Factorization Machine
 模型形式如下 \[
-\hat{y}(x)=w_0+\sum^n_{i=1}w_ix_i+\sum^n_{i=1}\sum^n_{j=i+1}\langle v_i,v_j\rangle x_ix_j
-\] 包括对一阶和二阶特征的考虑，这样做是因为我们可以证明对于足够大的\(k\)
+\hat{y}(x)=w_0+\sum^n_{i=1}w_ix_i+\sum^n_{i=1}\sum^n_{j=i+1}\langle
+v_i,v_j\rangle x_ix_j
+\]
+包括对一阶和二阶特征的考虑，这样做是因为我们可以证明对于足够大的\(k\)
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -727,8 +729,11 @@ Factorization Machine
       
         
           
-          今天有点累了，记一篇之前看过的论文吧。Deep Content-based Music Recommendation这篇文章是发在13年的nips上，当年挺经典的一篇文章，后来很多music recommendation都是顺着他们的思路来的。
-文中分享了一个在推荐中很重要的点，semantic gap，就是说你能抓住拿来用的特征到刻画用户的偏好之间，会存在一个gap，而这个gap则是极难跨越的。
+          今天有点累了，记一篇之前看过的论文吧。Deep Content-based Music
+Recommendation这篇文章是发在13年的nips上，当年挺经典的一篇文章，后来很多music
+recommendation都是顺着他们的思路来的。
+文中分享了一个在推荐中很重要的点，semantic
+gap，就是说你能抓住拿来用的特征到刻画用户的偏好之间，会存在一个gap，而这个gap则是极难跨越的。
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -879,12 +884,14 @@ Factorization Machine
         
           
           这篇应该是最早的DL做CTR的文章了，好像是KDD2016的best，微软出品。
-现在看这篇文章有点普通，但在当时应该还是挺应景的，做的是15年火的embedding和16年火的residual network的结合。模型结构如图所示
+现在看这篇文章有点普通，但在当时应该还是挺应景的，做的是15年火的embedding和16年火的residual
+network的结合。模型结构如图所示
+
 
 1
 
 本篇论文突出的特点应该是不用人工设计feature，在当时应该也是一个break。
-文章后面重点写了embedding和stacking策略以及residu
+文章后面重点写了embedding和stacking策略以及resid
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1036,7 +1043,8 @@ Factorization Machine
           
           今天这篇是阿里的一篇文章，几个实习生做的，主要解决的是图片广告的推荐问题。这篇论文主要有以下几点：
 
-用DNN模型解决推荐问题，并没有直接采用高维稀疏特征和图片直接作为输入，仍做到了end to end的训练；
+用DNN模型解决推荐问题，并没有直接采用高维稀疏特征和图片直接作为输入，仍做到了end
+to end的训练；
 可以高效处理高维海量数据；
 在真实海量数据上进行实验，并取得了较好的结果；
 
@@ -1302,15 +1310,18 @@ f_{\text{Att}}(f_{\text{PI}}(\mathcal{E}))=\sum_{(i,j)\in\mathcal{R}_x}a_{ij}(v_
           再来看一篇。。有点累了都。。这篇文章是一篇FM和DL的结合，2017年的文章，这篇文章读起来就给人感觉比较符合当前的主流想法了。
 模型的主要结构如下图所示
 
+
 1
 
-与谷歌之前wide &amp; deep的model不同的是，DeepFM的输入层共享同样的embedding，模型也分为两部分，FM和Deep。
+与谷歌之前wide &amp;
+deep的model不同的是，DeepFM的输入层共享同样的embedding，模型也分为两部分，FM和Deep。
 FM部分的结构如下图所示
+
 
 2
 
 就是一个FM模型 \[
-y_{\text{FM}}=\
+y_{\text{FM}}
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1463,11 +1474,13 @@ y_{\text{FM}}=\
           这篇文章发于2016年1月，也是很早期的DL做CTR的文章，感觉这几篇文章看的时候没注意顺序，看的时候经常觉得蹦出来的是比较烂大街和过时的想法。。
 文中提出来的第一个模型是FNN
 
+
 1
 
-上面几层都很正常，最底下是一个FM层，就是比较经典的一个FM模型作为输入过激活函数 \[
+上面几层都很正常，最底下是一个FM层，就是比较经典的一个FM模型作为输入过激活函数
+\[
 y_{\text{FM}}=\text{sigmoid}(
-w_0+\sum^n_{i=1}w_ix_i+\sum^n_{
+w_0+\sum^n_{i=1}w_ix_i+\sum^n_
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1619,9 +1632,10 @@ w_0+\sum^n_{i=1}w_ix_i+\sum^n_{
           
           这篇文章是比较早期的一篇用DNN做CTR的文章，2016年的，思路比较清晰，也很简洁，就是用embedding去学习数据类别的表示，然后用全连接层学习高阶的特征交互，模型结构如下图所示
 
+
 1
 
-其中第一层除了包含一阶信息外，还有二次项一并带入激活函数，可以看出，作者对每个类别进行不同的embedding，这样可以最大程度上抓住每个类别的特点，然后还有inner-PNN和outer-PNN两种方式，
+其中第一层除了包含一阶信息外，还有二次项一并带入激活函数，可以看出，作者对每个类别进行不同的embedding，这样可以最大程度上抓住每个类别的特点，然后还有inner-PNN和outer-PNN两种方式
           ...
           <!--noindex-->
           <div class="post-button text-center">

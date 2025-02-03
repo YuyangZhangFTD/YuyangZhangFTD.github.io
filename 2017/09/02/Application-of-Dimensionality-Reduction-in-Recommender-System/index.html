@@ -416,7 +416,9 @@
 
       
         <p>这篇论文应该是最早用SVD做推荐系统的文章，观点早已烂大街，前面篇幅的推荐方法分析也不是很适用现在的情况，本篇就记录一下算法细节。</p>
-<h3 id="existing-recommender-systems-approaches-and-their-limitations">Existing Recommender Systems Approaches and their Limitations</h3>
+<h3
+id="existing-recommender-systems-approaches-and-their-limitations">Existing
+Recommender Systems Approaches and their Limitations</h3>
 <p>大部分协同过滤算法都是通过构造近似的近邻来达到推荐的目的，推荐算法分为：</p>
 <ul>
 <li>预测用户对物品的打分</li>
@@ -428,13 +430,26 @@
 <li>计算规模，随着物品和用户的增长，计算规模递增严重</li>
 <li>同义理解，并没法探寻物品之间的潜在联系</li>
 </ul>
-<h3 id="applying-svd-for-collaborative-filtering">Applying SVD for Collaborative Filtering</h3>
-<p>打分矩阵<span class="math inline">\(R\)</span> 是<span class="math inline">\(m \times n\)</span> 的矩阵，SVD分解为 <span class="math display">\[
+<h3 id="applying-svd-for-collaborative-filtering">Applying SVD for
+Collaborative Filtering</h3>
+<p>打分矩阵<span class="math inline">\(R\)</span> 是<span
+class="math inline">\(m \times n\)</span> 的矩阵，SVD分解为 <span
+class="math display">\[
 R=U\cdot S\cdot V^T
-\]</span> 其中<span class="math inline">\(U\)</span> 和<span class="math inline">\(V\)</span> 是形状为<span class="math inline">\(m \times r\)</span> 和 <span class="math inline">\(n \times r\)</span> 的矩阵，<span class="math inline">\(r\)</span> 为矩阵<span class="math inline">\(R\)</span> 的秩，在实际中我们可以选择<span class="math inline">\(k\)</span> 个最大的特征值对应的子矩阵做预测，从而很大程度上降低了计算规模。</p>
-<p>做预测时我们需要先对打分矩阵<span class="math inline">\(R\)</span> 进行处理，对于残缺值选择用用户的平均或者用物品的平均，文中说物品的平均会产生较好的效果，然后对打分做归一化，我们的预测分数为： <span class="math display">\[
-C_{P_{pred}}=\overline{C}+U_k\cdot \sqrt{S_k}^T(c)+\sqrt{S_k}\cdot V^T_k(P)
-\]</span> 在实际中，算法分为线下和线上两部分，线下部分需要大量的计算，同时也会有一些相应的存储，但计算量仍然会比简单的协同过滤要少，线上部分是动态计算并提供预测值。</p>
+\]</span> 其中<span class="math inline">\(U\)</span> 和<span
+class="math inline">\(V\)</span> 是形状为<span class="math inline">\(m
+\times r\)</span> 和 <span class="math inline">\(n \times r\)</span>
+的矩阵，<span class="math inline">\(r\)</span> 为矩阵<span
+class="math inline">\(R\)</span> 的秩，在实际中我们可以选择<span
+class="math inline">\(k\)</span>
+个最大的特征值对应的子矩阵做预测，从而很大程度上降低了计算规模。</p>
+<p>做预测时我们需要先对打分矩阵<span class="math inline">\(R\)</span>
+进行处理，对于残缺值选择用用户的平均或者用物品的平均，文中说物品的平均会产生较好的效果，然后对打分做归一化，我们的预测分数为：
+<span class="math display">\[
+C_{P_{pred}}=\overline{C}+U_k\cdot \sqrt{S_k}^T(c)+\sqrt{S_k}\cdot
+V^T_k(P)
+\]</span>
+在实际中，算法分为线下和线上两部分，线下部分需要大量的计算，同时也会有一些相应的存储，但计算量仍然会比简单的协同过滤要少，线上部分是动态计算并提供预测值。</p>
 
       
     </div>
@@ -628,7 +643,9 @@ C_{P_{pred}}=\overline{C}+U_k\cdot \sqrt{S_k}^T(c)+\sqrt{S_k}\cdot V^T_k(P)
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#existing-recommender-systems-approaches-and-their-limitations"><span class="nav-number">1.</span> <span class="nav-text">Existing Recommender Systems Approaches and their Limitations</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#applying-svd-for-collaborative-filtering"><span class="nav-number">2.</span> <span class="nav-text">Applying SVD for Collaborative Filtering</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#existing-recommender-systems-approaches-and-their-limitations"><span class="nav-number">1.</span> <span class="nav-text">Existing
+Recommender Systems Approaches and their Limitations</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#applying-svd-for-collaborative-filtering"><span class="nav-number">2.</span> <span class="nav-text">Applying SVD for
+Collaborative Filtering</span></a></li></ol></div>
             
 
           </div>

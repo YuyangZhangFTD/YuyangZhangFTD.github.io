@@ -418,7 +418,9 @@
         
           
           Chap1 Introduction
-我们的目标是研究：当一个人（agent）面对很多的选择时，行为过程是如何影响最终的决策。 定义可以观测到的影响因素用\(x\)表示，无法观测的影响因素用\(\epsilon\)表示，则通过一个函数\(y=h(x,\epsilon)\)标识用户的选择，这个函数称为行为过程，behavioral process。因为无法观测的变量\(\epsilon\)所以age
+我们的目标是研究：当一个人（agent）面对很多的选择时，行为过程是如何影响最终的决策。
+定义可以观测到的影响因素用\(x\)表示，无法观测的影响因素用\(\epsilon\)表示，则通过一个函数\(y=h(x,\epsilon)\)标识用户的选择，这个函数称为行为过程，behavioral
+process。因为无法观测的变量\(\epsilon\)所以age
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -728,7 +730,8 @@
         
           
           这篇文章主要做的内容是将正确size的商品推荐给客户，很细致的工作，亚马逊的推荐，发表在recsys2017。
-定义一个商品为parent product，而这个商品的不同尺寸的SKU称之为其的child prodcut，产品集合\(\mathcal{P}\)，用户集合\(\mathcal{C}\)，购买记录集合\(\mathcal{D}=(i,j,y_{ij})\)表示用户\(i\)购买\(j\
+定义一个商品为parent
+product，而这个商品的不同尺寸的SKU称之为其的child prodcut，产品集合\(\mathcal{P}\)，用户集合\(\mathcal{C}\)，购买记录集合\(\mathcal{D}=(i,j,y_{ij})\)表示用户\(i\)购买\(j\
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -878,11 +881,15 @@
       
         
           
-          这篇文章发于AAAI2018，阿里的一篇文章。文章主要想法是一种利用teacher-student network，来用简单的网络直接去学习复杂网络的表征，以降低计算的复杂度，应用于在线预测等方面。
+          这篇文章发于AAAI2018，阿里的一篇文章。文章主要想法是一种利用teacher-student
+network，来用简单的网络直接去学习复杂网络的表征，以降低计算的复杂度，应用于在线预测等方面。
+
 
 1
 
-图中可见，主要分为两部分的网络，一部分是booster net，一部分是light net，其中booster net中的层为计算复杂程度较高的网络连接，比如加BN，加ResBlock等等，可
+图中可见，主要分为两部分的网络，一部分是booster net，一部分是light
+net，其中booster
+net中的层为计算复杂程度较高的网络连接，比如加BN，加ResBlock等等，
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1032,8 +1039,10 @@
       
         
           
-          这篇文章主要解决了由于对物品和对用户做embedding时时长差距较大情况，而提出多种采样方式，来提高总体的训练速度，文中的review总结的很好。 
-作者先对已有的embedding做推荐的方式做了一个framework，如上图所示，矩阵分解或者其他embedding都可以认为是one-hot的用户与物品经过functional embedding之后再得到最后的结果。
+          这篇文章主要解决了由于对物品和对用户做embedding时时长差距较大情况，而提出多种采样方式，来提高总体的训练速度，文中的review总结的很好。
+
+作者先对已有的embedding做推荐的方式做了一个framework，如上图所示，矩阵分解或者其他embedding都可以认为是one-hot的用户与物品经过functional
+embedding之后再得到最后的结果。
 作者对当前implici
           ...
           <!--noindex-->
@@ -1313,7 +1322,9 @@
       
         
           
-          今天看nips2017的预选论文，翻到了4篇推荐相关的，其中3篇都是做cold start问题，看来这个问题最近很火热嘛，包括了RL和meta learning，看来有必要跟进一波潮流。再看其他的论文的时候，还翻到了微软的lightGBM，果断先捞出来看一下。
+          今天看nips2017的预选论文，翻到了4篇推荐相关的，其中3篇都是做cold
+start问题，看来这个问题最近很火热嘛，包括了RL和meta
+learning，看来有必要跟进一波潮流。再看其他的论文的时候，还翻到了微软的lightGBM，果断先捞出来看一下。
 之前网上流传了许多关于lightGBM相关的内容，但是看到论文才是最实在的，文中提到相比于其它关于GBDT的实现，对于计算信息增益来划分节
           ...
           <!--noindex-->
@@ -1619,8 +1630,10 @@
       
         
           
-          前一阵子在研究glmnet的时候还看见了ADMM，好像也很厉害，就顺便也看了看。ADMM是Boyd大爹提出的一种适用分布式的求解带约束问题最优化的方法，ADMM，alternating direction method of multipliers。
-这里说一下Boyd大爹，这位爹也是一个了不得的爹，凸优化的泰斗人物，大部分人都是读他的Convex Optimization入门的，而且不像Frie
+          前一阵子在研究glmnet的时候还看见了ADMM，好像也很厉害，就顺便也看了看。ADMM是Boyd大爹提出的一种适用分布式的求解带约束问题最优化的方法，ADMM，alternating
+direction method of multipliers。
+这里说一下Boyd大爹，这位爹也是一个了不得的爹，凸优化的泰斗人物，大部分人都是读他的Convex
+Optimization入门的，而且不像Frie
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1772,7 +1785,8 @@
           
           GAN笔记
 为了不被时代所抛弃，最近准备开始好好学一下深度学习的内容，主要针对CV方面，NLP先缓一缓，我还是会站在统计ML的角度来看DL的，今天先来总结一下最优美的GAN。
-首先明确GAN是什么，GAN是一种生成模型。讲到这里先说一下生成模型和判别模型，这两个模型最大的区别就是在于求解方式不同，一个是求解\(P(X,Y)\) 联合概率，另一个是求\(P(Y|X)\) 条件概率。就拿之前很火的VA
+首先明确GAN是什么，GAN是一种生成模型。讲到这里先说一下生成模型和判别模型，这两个模型最大的区别就是在于求解方式不同，一个是求解\(P(X,Y)\) 联合概率，另一个是求\(P(Y|X)\)
+条件概率。就拿之前很火的VA
           ...
           <!--noindex-->
           <div class="post-button text-center">

@@ -416,29 +416,47 @@
       
 
       
-        <p>前一阵子在研究glmnet的时候还看见了ADMM，好像也很厉害，就顺便也看了看。ADMM是Boyd大爹提出的一种适用分布式的求解带约束问题最优化的方法，ADMM，alternating direction method of multipliers。</p>
-<p>这里说一下Boyd大爹，这位爹也是一个了不得的爹，凸优化的泰斗人物，大部分人都是读他的Convex Optimization入门的，而且不像Friedman老爷子，这位爹这几年还是高产期，每年10+论文，ADMM就是他2011年提出来的。</p>
+        <p>前一阵子在研究glmnet的时候还看见了ADMM，好像也很厉害，就顺便也看了看。ADMM是Boyd大爹提出的一种适用分布式的求解带约束问题最优化的方法，ADMM，alternating
+direction method of multipliers。</p>
+<p>这里说一下Boyd大爹，这位爹也是一个了不得的爹，凸优化的泰斗人物，大部分人都是读他的Convex
+Optimization入门的，而且不像Friedman老爷子，这位爹这几年还是高产期，每年10+论文，ADMM就是他2011年提出来的。</p>
 <p>传统解决带约束凸问题时，往往会利用拉格朗日乘子法作转换，将其转化为无约束问题然后进行求解，但传统方法对数据及函数假设较为严格，所以一般情况很难达到收敛，假设要求宽松的又难以做大规模分布式计算，所以为了解决这个问题，Boyd大爹提出来ADMM。</p>
 <p>一般优化求解问题有以下形式 <span class="math display">\[
 \begin{aligned}
 \min&amp;f(x)\\
 s.t.&amp;Ax=b
 \end{aligned}
-\]</span> 熟悉凸优化的小伙伴肯定知道怎么去变化上述问题，定义拉格朗日函数 <span class="math display">\[
+\]</span> 熟悉凸优化的小伙伴肯定知道怎么去变化上述问题，定义拉格朗日函数
+<span class="math display">\[
 \mathcal{L}(x,y)=f(x)+y^T(Ax-b)
-\]</span> 通常我们做问题简化的时候，都是对其取极值然后最大化其对偶问题，如SVM，这里我们有 <span class="math display">\[
+\]</span>
+通常我们做问题简化的时候，都是对其取极值然后最大化其对偶问题，如SVM，这里我们有
+<span class="math display">\[
 \inf_x\mathcal{L}(x,y)=g(y)
-\]</span> <span class="math inline">\(g(y)\)</span> 就是其对偶问题（对偶函数，怎么舒服怎么叫），在强对偶条件下我们有 <span class="math display">\[
+\]</span> <span class="math inline">\(g(y)\)</span>
+就是其对偶问题（对偶函数，怎么舒服怎么叫），在强对偶条件下我们有 <span
+class="math display">\[
 f(x^*)=\underset{x}{\arg\min}\mathcal{L}(x,y^*)\\
 g(y*)=\underset{y}{\arg\min}\mathcal{L}(x^*,y)
-\]</span> 满足一些强假设后原问题与对偶问题会逐渐收敛。如果我们想放松假设，也可以用增广拉格朗日乘子法Argumented Lagrangians and the Method of Multipliers，想法也很简单，用ML的话来说就是在拉格朗日函数上加“L2正则项” <span class="math display">\[
+\]</span>
+满足一些强假设后原问题与对偶问题会逐渐收敛。如果我们想放松假设，也可以用增广拉格朗日乘子法Argumented
+Lagrangians and the Method of
+Multipliers，想法也很简单，用ML的话来说就是在拉格朗日函数上加“L2正则项”
+<span class="math display">\[
 \mathcal{L}_{\rho}=f(x)+y^T(Ax-b)+\frac{\rho}{2}\|Ax-b\|^2_2
-\]</span> 相当于后面对其增加了一个惩罚项，这样做就可以放松一些对偶上升法所需要的假设（具体是啥我也不太清楚）。迭代方式如下（一阶导为0时可以推出来迭代方式） <span class="math display">\[
+\]</span>
+相当于后面对其增加了一个惩罚项，这样做就可以放松一些对偶上升法所需要的假设（具体是啥我也不太清楚）。迭代方式如下（一阶导为0时可以推出来迭代方式）
+<span class="math display">\[
 x^{k+1}=\underset{x}{\arg\min}\mathcal{L}(x,y^k)\\
 y^{k+1}=y^k+\alpha^k\nabla g(y)=y^k+\alpha^k(Ax^{k+1}-b)
-\]</span> 当我们不选择上述方法时，我们在一些强假设条件下却有其它较好的性质，当满足 <span class="math display">\[
+\]</span>
+当我们不选择上述方法时，我们在一些强假设条件下却有其它较好的性质，当满足
+<span class="math display">\[
 f(x)=\sum^N_{i=1}f_i(x_i)
-\]</span> 时，即没有交叉项，每个变量可以相互分离时，该方法可以并行计算。增广拉格朗日乘子法虽然好，但是做并行的人不开心了，<span class="math inline">\(f(x)\)</span> 可分的情况下，后面的二次项强行让其不可分了。这个时候不得不感叹一句“鱼和熊掌不可兼得”了。</p>
+\]</span>
+时，即没有交叉项，每个变量可以相互分离时，该方法可以并行计算。增广拉格朗日乘子法虽然好，但是做并行的人不开心了，<span
+class="math inline">\(f(x)\)</span>
+可分的情况下，后面的二次项强行让其不可分了。这个时候不得不感叹一句“鱼和熊掌不可兼得”了。</p>
 <p>再来看神奇的ADMM <span class="math display">\[
 \begin{aligned}
 \min &amp;&amp;f(x)+g(z)\\
@@ -451,7 +469,9 @@ x^{k+1}=&amp;\underset{x}{\arg\min}\mathcal{L}_{\rho}(x,z^k,y^k)\\
 z^{k+1}=&amp;\underset{z}{\arg\min}\mathcal{L}_{\rho}(x^{k+1},z,y^k)\\
 y^{k+1}=&amp;y^k+\rho(Ax^{k+1}+Bz^{k+1}-c)
 \end{aligned}
-\]</span> 乍一看好像与一般的增广拉格朗日乘子法没什么区别，只不过拆了一下原问题中的变量，但是真正精髓的在于对于约束条件的处理，假如我们的约束条件为 <span class="math display">\[
+\]</span>
+乍一看好像与一般的增广拉格朗日乘子法没什么区别，只不过拆了一下原问题中的变量，但是真正精髓的在于对于约束条件的处理，假如我们的约束条件为
+<span class="math display">\[
 g(x)=\|x\|_1
 \]</span> 则ADMM变化后之后为 <span class="math display">\[
 \begin{aligned}
@@ -464,21 +484,28 @@ x_i^{k+1}=&amp;\underset{x}{\arg\min}\left(f_i(x_i)+y_i^{kT}(x_i-z^k)+\frac{\rho
 z^{k+1}=&amp;\underset{z}{\arg\min}\left(g(z)+\sum^N_{i=1}(-y_i^{kT}z+\frac{\rho}{2}\|x_i-z\|^2_2)\right)\\
 y^{k+1}=&amp;y^k+\rho(x_i^{k+1}-z^{k+1})
 \end{aligned}
-\]</span> 是不是屌？我就问你这个是不是屌？通过增加变量，把约束条件转化到原问题中，达到可以函数可分(separable)的目的，然后迭代求解时就可以进行分布式并行了。</p>
+\]</span>
+是不是屌？我就问你这个是不是屌？通过增加变量，把约束条件转化到原问题中，达到可以函数可分(separable)的目的，然后迭代求解时就可以进行分布式并行了。</p>
 <p>可以对比之前的增广拉格朗日乘子法，ADMM的核心就是加和拆，通过加变量来让原问题的函数可分，然后拆成并行迭代计算的形式。</p>
-<p>Boyd大爹还把ADMM做了一个形式变化，令<span class="math inline">\(r=Ax+Bz-c\)</span> ，对于后面两项有 <span class="math display">\[
+<p>Boyd大爹还把ADMM做了一个形式变化，令<span
+class="math inline">\(r=Ax+Bz-c\)</span> ，对于后面两项有 <span
+class="math display">\[
 \begin{aligned}
 y^Tr+\frac{\rho}{2}\|r\|^2_2&amp;=
 \frac{\rho}{2}\|r+\frac{1}{\rho}y\|^2_2-\frac{1}{2\rho}\|y\|^2_2\\
 &amp;=\frac{\rho}{2}\|r+u\|^2_2-\frac{\rho}{2}\|u\|^2_2
 \end{aligned}
-\]</span> 其中<span class="math inline">\(u=(1/\rho)y\)</span> ，迭代方式为 <span class="math display">\[
+\]</span> 其中<span class="math inline">\(u=(1/\rho)y\)</span>
+，迭代方式为 <span class="math display">\[
 \begin{aligned}
 x_i^{k+1}=&amp;\underset{x}{\arg\min}\left(f(x)+\frac{\rho}{2}\|Ax+Bz^k-c+u^k\|^2_2\right)\\
 z^{k+1}=&amp;\underset{z}{\arg\min}\left(g(z)+\frac{\rho}{2}\|Ax^{k+1}+Bz-c+u^k\|^2_2\right)\\
 u^{k+1}=&amp;u^k+Ax^{k+1}+Bz^{k+1}-c
 \end{aligned}
-\]</span> 是不是好看了很多。文中还给出了一些常见场景的具体迭代方式，如二次规划等。看完全篇给我感觉ADMM自己用的话，95%的场景Boyd大爹已经帮我们把迭代方式什么的都写好了，用就可以了，做研究的话，重点就在于<span class="math inline">\(z\)</span> 的设计，如何把约束条件转化为变量，进行分布式训练就是难点了，需要创造力了。最后强调一遍，ADMM是一个并行求解最优化框架，最大的特点是并行，而不是求解最优化。</p>
+\]</span>
+是不是好看了很多。文中还给出了一些常见场景的具体迭代方式，如二次规划等。看完全篇给我感觉ADMM自己用的话，95%的场景Boyd大爹已经帮我们把迭代方式什么的都写好了，用就可以了，做研究的话，重点就在于<span
+class="math inline">\(z\)</span>
+的设计，如何把约束条件转化为变量，进行分布式训练就是难点了，需要创造力了。最后强调一遍，ADMM是一个并行求解最优化框架，最大的特点是并行，而不是求解最优化。</p>
 
       
     </div>
