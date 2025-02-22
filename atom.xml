@@ -6,7 +6,7 @@
   <link href="http://yoursite.com/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2024-09-16T12:10:28.816Z</updated>
+  <updated>2025-02-22T13:42:24.634Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>年度反思之2024我在淘宝做内容</title>
+    <link href="http://yoursite.com/2025/02/22/%E5%B9%B4%E5%BA%A6%E5%8F%8D%E6%80%9D%E4%B9%8B2024%E6%88%91%E5%9C%A8%E6%B7%98%E5%AE%9D%E5%81%9A%E5%86%85%E5%AE%B9/"/>
+    <id>http://yoursite.com/2025/02/22/%E5%B9%B4%E5%BA%A6%E5%8F%8D%E6%80%9D%E4%B9%8B2024%E6%88%91%E5%9C%A8%E6%B7%98%E5%AE%9D%E5%81%9A%E5%86%85%E5%AE%B9/</id>
+    <published>2025-02-22T13:41:15.000Z</published>
+    <updated>2025-02-22T13:42:24.634Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;本文写于2025年2月，一方面是最近读到了若干篇Google在短视频推荐方向的文章，另一方面是年前和某前同事聊新工作在做的事情，感觉思路更开阔了，顺便把以前做的事情再拿出来“鞭尸”一下。&lt;/p&gt;
+&lt;p&gt;全文中的”内容“仅指</summary>
+        
+      
+    
+    
+    
+    <category term="Dairy" scheme="http://yoursite.com/categories/Dairy/"/>
+    
+    
+    <category term="Dairy" scheme="http://yoursite.com/tags/Dairy/"/>
+    
+  </entry>
   
   <entry>
     <title>LiRank: Industrial Large Scale Ranking Models at LinkedIn</title>
@@ -236,11 +262,11 @@ recurrent or convolutional neural</summary>
     
     <category term="Best Practice" scheme="http://yoursite.com/tags/Best-Practice/"/>
     
-    <category term="Online Learning" scheme="http://yoursite.com/tags/Online-Learning/"/>
-    
     <category term="Advertisiing" scheme="http://yoursite.com/tags/Advertisiing/"/>
     
     <category term="CTR" scheme="http://yoursite.com/tags/CTR/"/>
+    
+    <category term="Online Learning" scheme="http://yoursite.com/tags/Online-Learning/"/>
     
   </entry>
   
@@ -610,37 +636,6 @@ normal的问题。&lt;/p&gt;
     
     <category term="BriefSummary" scheme="http://yoursite.com/categories/BriefSummary/"/>
     
-    
-    <category term="Causal Inference" scheme="http://yoursite.com/tags/Causal-Inference/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Beyond Customer Lifetime Valuation: Measuring the Value of Acquisition and Retention for Subscription Services</title>
-    <link href="http://yoursite.com/2022/03/18/Beyond-Customer-Lifetime-Valuation-Measuring-the-Value-of-Acquisition-and-Retention-for-Subscription-Services/"/>
-    <id>http://yoursite.com/2022/03/18/Beyond-Customer-Lifetime-Valuation-Measuring-the-Value-of-Acquisition-and-Retention-for-Subscription-Services/</id>
-    <published>2022-03-17T16:01:34.000Z</published>
-    <updated>2022-03-17T16:05:39.000Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;TL;DR&lt;/p&gt;
-&lt;p&gt;这篇文章核心是在回答，如何评估营销活动期间的拉新、留存和流失召回的增量LTV。&lt;/p&gt;
-&lt;h1 id=&quot;introduction&quot;&gt;Introduction&lt;/h1&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Understanding the</summary>
-        
-      
-    
-    
-    
-    <category term="PaperNote" scheme="http://yoursite.com/categories/PaperNote/"/>
-    
-    
-    <category term="LTV" scheme="http://yoursite.com/tags/LTV/"/>
     
     <category term="Causal Inference" scheme="http://yoursite.com/tags/Causal-Inference/"/>
     
