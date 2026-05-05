@@ -6,7 +6,7 @@
   <link href="http://yoursite.com/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2025-02-22T13:42:24.634Z</updated>
+  <updated>2026-05-05T09:52:54.496Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>2026年AI发展随笔</title>
+    <link href="http://yoursite.com/2026/05/05/2026%E5%B9%B4AI%E5%8F%91%E5%B1%95%E9%9A%8F%E7%AC%94/"/>
+    <id>http://yoursite.com/2026/05/05/2026%E5%B9%B4AI%E5%8F%91%E5%B1%95%E9%9A%8F%E7%AC%94/</id>
+    <published>2026-05-05T09:27:13.000Z</published>
+    <updated>2026-05-05T09:52:54.496Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;最近几周密集关注学习了一下最近几年的LLM发展脉络，有些闲言碎语般的感悟在这里mark一下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;谈谈算法工程师。
+&lt;ul&gt;
+&lt;li&gt;技术门槛已经被磨平了。这也是最近很长一段时间没有写读paper博客的主要原因，如果你足够“智慧”，就不应该再从类似博客</summary>
+        
+      
+    
+    
+    
+    <category term="Daily" scheme="http://yoursite.com/categories/Daily/"/>
+    
+    
+    <category term="Daily" scheme="http://yoursite.com/tags/Daily/"/>
+    
+  </entry>
   
   <entry>
     <title>年度反思之2024我在淘宝做内容</title>
@@ -612,32 +641,6 @@ normal的问题。&lt;/p&gt;
     <category term="LTV" scheme="http://yoursite.com/tags/LTV/"/>
     
     <category term="Deep Learning" scheme="http://yoursite.com/tags/Deep-Learning/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ate_decomposition</title>
-    <link href="http://yoursite.com/2022/04/24/ate-decomposition/"/>
-    <id>http://yoursite.com/2022/04/24/ate-decomposition/</id>
-    <published>2022-04-24T10:42:43.000Z</published>
-    <updated>2022-04-24T12:22:00.000Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;今天在公司内部技术论坛上看到一个帖子，关于用Tree方法做ATE估计的，本着一个严（zhao）谨（cha）的态度，认认真真看了一遍，发现里面一个式子长的比较奇怪，随手推了推感觉还挺有意思的。在这里记一下。&lt;/p&gt;
-&lt;p&gt;POM框架就不多写了，这篇文章的目的是估计平均因果效应</summary>
-        
-      
-    
-    
-    
-    <category term="BriefSummary" scheme="http://yoursite.com/categories/BriefSummary/"/>
-    
-    
-    <category term="Causal Inference" scheme="http://yoursite.com/tags/Causal-Inference/"/>
     
   </entry>
   
